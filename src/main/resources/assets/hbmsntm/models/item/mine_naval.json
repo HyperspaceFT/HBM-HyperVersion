@@ -1,0 +1,35 @@
+{
+  "parent": "hbmsntm:block/mine_naval",
+  "display": {
+    "gui": {
+      "rotation": [0, 0, 0],
+      "translation": [3, 3, 0],
+      "scale": [0.375, 0.375, 0.375]
+    },
+    "ground": {
+      "rotation": [0, 0, 0],
+      "translation": [0, 0, 0],
+      "scale": [0.375, 0.375, 0.375]
+    },
+    "firstperson_righthand": {
+      "rotation": [0, 0, 0],
+      "translation": [4, 2, 0],
+      "scale": [0.375, 0.375, 0.375]
+    },
+    "firstperson_lefthand": {
+      "rotation": [0, 0, 0],
+      "translation": [0, 2, 0],
+      "scale": [0.375, 0.375, 0.375]
+    },
+    "thirdperson_righthand": {
+      "rotation": [-100, 0, 0],
+      "translation": [3, 7, -2],
+      "scale": [0.375, 0.375, 0.375]
+    },
+    "thirdperson_lefthand": {
+      "rotation": [-100, 0, 0],
+      "translation": [-3, 7, -2],
+      "scale": [0.375, 0.375, 0.375]
+    }
+  }
+}
