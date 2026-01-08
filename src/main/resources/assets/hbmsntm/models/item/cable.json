@@ -1,5 +1,13 @@
 {
-  "parent": "hbmsntm:block/cable",
+  "loader": "hbmsntm:hfr_obj",
+  "model": "hbmsntm:models/obj/block/cable_neo.obj",
+  "smoothing": true,
+  "as_vbo": true,
+  "render_all": false,
+  "render_only": ["Core", "posX", "negX", "posZ", "negZ"],
+  "textures": {
+    "texture": "hbmsntm:block/cable_neo"
+  },
   "transform": {
     "translation": [0.6, 0.0, 0.5],
     "rotation": [0, 0, 0],
