@@ -1,36 +1,22 @@
 package com.hbm.inventory.menus;
 
 import com.hbm.blockentity.machine.storage.BatterySocketBlockEntity;
-import com.hbm.blocks.DummyableBlock;
 import com.hbm.inventory.ModMenuTypes;
 import com.hbm.inventory.SlotNonRetarded;
-import net.minecraft.core.BlockPos;
+import com.hbm.util.CompatExternal;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.inventory.AbstractContainerMenu;
 import net.minecraft.world.inventory.Slot;
 import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.level.Level;
-import net.minecraft.world.level.block.Block;
 
 public class BatterySocketMenu extends AbstractContainerMenu {
 
     public BatterySocketBlockEntity socket;
 
     public BatterySocketMenu(int id, Inventory inventory, FriendlyByteBuf extraData) {
-        this(id, inventory, getBlockEntity(inventory.player.level(), extraData.readBlockPos()));
-    }
-
-    private static BatterySocketBlockEntity getBlockEntity(Level level, BlockPos pos) {
-        Block b = level.getBlockState(pos).getBlock();
-        if (b instanceof DummyableBlock dummy) {
-            // pos might be null, i dont care
-            BlockPos dummyCore = dummy.findCore(level, pos);
-            // if minecraft going to crash its not my fault
-            return (BatterySocketBlockEntity) level.getBlockEntity(dummyCore);
-        }
-        return null;
+        this(id, inventory, (BatterySocketBlockEntity) CompatExternal.getCoreFromPos(inventory.player.level(), extraData.readBlockPos()));
     }
 
     public BatterySocketMenu(int id, Inventory inventory, BatterySocketBlockEntity be) {
