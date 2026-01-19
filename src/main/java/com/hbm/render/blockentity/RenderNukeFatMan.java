@@ -19,21 +19,10 @@ import net.minecraft.resources.ResourceLocation;
 
 public class RenderNukeFatMan implements BlockEntityRenderer<NukeFatManBlockEntity> {
 
-    // you need to register every standalone model resource location??? fuck this
-    private static IModelCustom getModel(ResourceLocation location) {
-        HFRObjBakedModel bakedModel = (HFRObjBakedModel) Minecraft.getInstance().getModelManager().getModel(ModelResourceLocation.standalone(location));
-        return bakedModel.getRenderModel();
-    }
-
     public RenderNukeFatMan(BlockEntityRendererProvider.Context ignored) { }
 
     @Override
     public void render(NukeFatManBlockEntity be, float partialTicks, PoseStack poseStack, MultiBufferSource buffer, int packedLight, int packedOverlay) {
-
-//        if (model == null) {
-//            model = getModel(HBMsNTM.withDefaultNamespaceNT("block/nuke_fatman"));
-//            return;
-//        }
 
         Direction facing = be.getBlockState().getValue(NukeManBlock.FACING);
         float rot = switch (facing) {
@@ -51,10 +40,5 @@ public class RenderNukeFatMan implements BlockEntityRenderer<NukeFatManBlockEnti
         ResourceManager.nuke_fat_man.renderAll(poseStack, consumer, packedLight, packedOverlay);
 
         poseStack.popPose();
-    }
-
-    @Override
-    public boolean shouldRenderOffScreen(NukeFatManBlockEntity blockEntity) {
-        return true;
     }
 }

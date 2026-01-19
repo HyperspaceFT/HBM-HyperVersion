@@ -6,15 +6,10 @@ import com.hbm.entity.effect.NukeTorex;
 import com.hbm.entity.logic.NukeExplosionMK5;
 import com.hbm.interfaces.IBomb;
 import com.mojang.serialization.MapCodec;
-import net.minecraft.ChatFormatting;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
-import net.minecraft.core.NonNullList;
-import net.minecraft.network.chat.Component;
-import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.*;
 import net.minecraft.world.entity.player.Player;
-import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.context.BlockPlaceContext;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.*;
@@ -59,11 +54,6 @@ public class NukeManBlock extends BaseEntityBlock implements IBomb {
 
     @Override
     protected InteractionResult useWithoutItem(BlockState state, Level level, BlockPos pos, Player player, BlockHitResult hitResult) {
-        if (player.isSpectator()) {
-            player.displayClientMessage(Component.literal("You can open GUIs while in spectator").withStyle(ChatFormatting.RED), true);
-            return InteractionResult.FAIL;
-        }
-
         if (level.isClientSide) {
             return InteractionResult.SUCCESS;
         }
