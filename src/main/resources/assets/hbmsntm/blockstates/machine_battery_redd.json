@@ -1,7 +1,7 @@
 {
   "variants": {
     "": {
-      "model": "hbmsntm:block/machine_battery_redd"
+      "model": "hbmsntm:block/steel_particle"
     }
   }
 }
