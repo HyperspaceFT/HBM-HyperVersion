@@ -1,7 +1,7 @@
 package com.hbm.inventory.screens;
 
 import com.hbm.HBMsNTM;
-import com.hbm.blockentity.bomb.NukeBoyBlockEntity;
+import com.hbm.blockentity.bomb.NukeLittleBoyBlockEntity;
 import com.hbm.inventory.menus.NukeLittleBoyMenu;
 import com.hbm.items.ModItems;
 import com.hbm.util.i18n.I18nUtil;
@@ -17,7 +17,7 @@ public class NukeLittleBoyScreen extends InfoScreen<NukeLittleBoyMenu> {
 
     private static final ResourceLocation TEXTURE = HBMsNTM.withDefaultNamespaceNT("textures/gui/weapon/lil_boy_schematic.png");
 
-    private final NukeBoyBlockEntity be;
+    private final NukeLittleBoyBlockEntity be;
 
     public NukeLittleBoyScreen(NukeLittleBoyMenu menu, Inventory playerInventory, Component title) {
         super(menu, playerInventory, title);

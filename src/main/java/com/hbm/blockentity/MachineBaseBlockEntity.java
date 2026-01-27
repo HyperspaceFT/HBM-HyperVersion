@@ -8,17 +8,19 @@ import net.minecraft.core.NonNullList;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.ListTag;
 import net.minecraft.network.chat.Component;
+import net.minecraft.world.MenuProvider;
 import net.minecraft.world.Nameable;
 import net.minecraft.world.WorldlyContainer;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.entity.BlockEntityType;
+import net.minecraft.world.level.block.entity.FurnaceBlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
 
 import javax.annotation.Nullable;
 
-public abstract class MachineBaseBlockEntity extends LoadedBaseBlockEntity implements WorldlyContainer, Nameable {
+public abstract class MachineBaseBlockEntity extends LoadedBaseBlockEntity implements WorldlyContainer, Nameable, MenuProvider {
 
     public NonNullList<ItemStack> slots;
 
@@ -35,6 +37,21 @@ public abstract class MachineBaseBlockEntity extends LoadedBaseBlockEntity imple
             level.blockEntityChanged(this.worldPosition);
         }
     }
+
+    public Component getName() {
+        return this.customName != null ? this.customName : this.getDefaultName();
+    }
+
+    public Component getDisplayName() {
+        return this.getName();
+    }
+
+    @Nullable
+    public Component getCustomName() {
+        return this.customName;
+    }
+
+    protected abstract Component getDefaultName();
 
     @Override
     public int getContainerSize() {
@@ -61,23 +78,6 @@ public abstract class MachineBaseBlockEntity extends LoadedBaseBlockEntity imple
     public void setItem(int index, ItemStack itemStack) {
         this.slots.set(index, itemStack);
         itemStack.limitSize(this.getMaxStackSize(itemStack));
-    }
-
-    @Override
-    public Component getDisplayName() {
-        return this.hasCustomName() ? this.customName : getName();
-    }
-
-    public abstract Component getName();
-
-    @Override
-    public boolean hasCustomName() {
-        return this.customName != null && !this.customName.getString().isEmpty();
-    }
-
-    public void setCustomName(Component name) {
-        this.customName = name;
-        this.setChanged();
     }
 
     @Override
