@@ -1,6 +1,6 @@
 package com.hbm.blocks.generic;
 
-import com.hbm.blockentity.ModBlockEntities;
+import com.hbm.blockentity.ModBlockEntityTypes;
 import com.hbm.blocks.ITooltipProvider;
 import com.hbm.blocks.ModBlocks;
 import com.hbm.lib.ModSounds;
@@ -102,19 +102,19 @@ public class PlushieBlock extends Block implements EntityBlock, ITooltipProvider
         }
 
         public static PlushieBlockEntity yomi(BlockPos pos, BlockState state) {
-            return new PlushieBlockEntity(ModBlockEntities.PLUSHIE_YOMI.get(), pos, state, PlushieType.YOMI);
+            return new PlushieBlockEntity(ModBlockEntityTypes.PLUSHIE_YOMI.get(), pos, state, PlushieType.YOMI);
         }
 
         public static PlushieBlockEntity numbernine(BlockPos pos, BlockState state) {
-            return new PlushieBlockEntity(ModBlockEntities.PLUSHIE_NUMBERNINE.get(), pos, state, PlushieType.NUMBERNINE);
+            return new PlushieBlockEntity(ModBlockEntityTypes.PLUSHIE_NUMBERNINE.get(), pos, state, PlushieType.NUMBERNINE);
         }
 
         public static PlushieBlockEntity hundun(BlockPos pos, BlockState state) {
-            return new PlushieBlockEntity(ModBlockEntities.PLUSHIE_HUNDUN.get(), pos, state, PlushieType.HUNDUN);
+            return new PlushieBlockEntity(ModBlockEntityTypes.PLUSHIE_HUNDUN.get(), pos, state, PlushieType.HUNDUN);
         }
 
         public static PlushieBlockEntity derg(BlockPos pos, BlockState state) {
-            return new PlushieBlockEntity(ModBlockEntities.PLUSHIE_DERG.get(), pos, state, PlushieType.DERG);
+            return new PlushieBlockEntity(ModBlockEntityTypes.PLUSHIE_DERG.get(), pos, state, PlushieType.DERG);
         }
 
         @Override
