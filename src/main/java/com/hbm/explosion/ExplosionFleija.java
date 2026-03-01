@@ -91,7 +91,7 @@ public class ExplosionFleija {
         if(dist > 0) {
             dist = (int) Math.sqrt(dist);
             for(int y = (int) (dist / this.explosionCoefficient2); y > -dist / this.explosionCoefficient; y--) {
-                if(this.posY + y > 0) {
+                if(this.posY + y > this.level.getMinBuildHeight()) {
                     this.level.setBlock(new BlockPos(this.posX + x, this.posY + y, this.posZ + z), Blocks.AIR.defaultBlockState(), 3);
                 }
             }
