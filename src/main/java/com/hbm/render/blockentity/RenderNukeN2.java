@@ -41,7 +41,7 @@ public class RenderNukeN2 extends BlockEntityRendererNT<NukeN2BlockEntity> imple
         poseStack.mulPose(Axis.YP.rotationDegrees(90F));
         poseStack.mulPose(Axis.YP.rotationDegrees(rot));
 
-        VertexConsumer consumer = buffer.getBuffer(RenderType.entitySmoothCutout(ResourceManager.NUKE_N2_TEX));
+        VertexConsumer consumer = buffer.getBuffer(RenderType.entityCutout(ResourceManager.NUKE_N2_TEX));
         ResourceManager.nuke_n2.renderAll(poseStack, consumer, packedLight, packedOverlay);
 
         poseStack.popPose();
