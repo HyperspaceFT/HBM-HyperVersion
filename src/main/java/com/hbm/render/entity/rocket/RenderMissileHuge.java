@@ -23,14 +23,14 @@ public class RenderMissileHuge extends EntityRenderer<MissileTier3> {
     }
 
     @Override
-    public void render(MissileTier3 entity, float yaw, float partialTicks, PoseStack poseStack, MultiBufferSource buffer, int packedLight) {
+    public void render(MissileTier3 missile, float yaw, float partialTicks, PoseStack poseStack, MultiBufferSource buffer, int packedLight) {
         poseStack.pushPose();
 
-        poseStack.mulPose(Axis.YP.rotationDegrees(Mth.lerp(partialTicks, entity.yRotO, entity.yRot) - 90.0F));
-        poseStack.mulPose(Axis.ZP.rotationDegrees(Mth.lerp(partialTicks, entity.xRotO, entity.xRot)));
-        poseStack.mulPose(Axis.YN.rotationDegrees(Mth.lerp(partialTicks, entity.yRotO, entity.yRot) - 90.0F));
+        poseStack.mulPose(Axis.YP.rotationDegrees(Mth.lerp(partialTicks, missile.yRotO, missile.yRot) - 90.0F));
+        poseStack.mulPose(Axis.ZP.rotationDegrees(Mth.lerp(partialTicks, missile.xRotO, missile.xRot)));
+        poseStack.mulPose(Axis.YN.rotationDegrees(Mth.lerp(partialTicks, missile.yRotO, missile.yRot) - 90.0F));
 
-        Direction facing = entity.getEntityData().get(MissileBaseNT.ROT);
+        Direction facing = missile.getEntityData().get(MissileBaseNT.ROT);
         float rot = switch (facing) {
             case DOWN, UP -> 0.0F;
             case WEST -> 90F;
@@ -41,21 +41,18 @@ public class RenderMissileHuge extends EntityRenderer<MissileTier3> {
 
         poseStack.mulPose(Axis.YP.rotationDegrees(rot));
 
-        VertexConsumer consumer = null;
-
-        if (entity instanceof MissileBurst) consumer = buffer.getBuffer(RenderType.entityCutoutNoCull(ResourceManager.MISSILE_HUGE_HE_TEX));
-        if (entity instanceof MissileInferno) consumer = buffer.getBuffer(RenderType.entityCutoutNoCull(ResourceManager.MISSILE_HUGE_IN_TEX));
-        if (entity instanceof MissileRain) consumer = buffer.getBuffer(RenderType.entityCutoutNoCull(ResourceManager.MISSILE_HUGE_CL_TEX));
-        if (entity instanceof MissileDrill) consumer = buffer.getBuffer(RenderType.entityCutoutNoCull(ResourceManager.MISSILE_HUGE_BU_TEX));
-
-        if (consumer == null) return;
+        VertexConsumer consumer = buffer.getBuffer(RenderType.entityCutout(this.getTextureLocation(missile)));
         ResourceManager.missileHuge.renderAll(poseStack, consumer, packedLight, OverlayTexture.NO_OVERLAY);
 
         poseStack.popPose();
     }
 
     @Override
-    public ResourceLocation getTextureLocation(MissileTier3 entity) {
-        return ResourceManager.MISSILE_V2_HE_TEX;
+    public ResourceLocation getTextureLocation(MissileTier3 missile) {
+        if (missile instanceof MissileBurst)   return ResourceManager.MISSILE_HUGE_HE_TEX;
+        if (missile instanceof MissileInferno) return ResourceManager.MISSILE_HUGE_IN_TEX;
+        if (missile instanceof MissileRain)    return ResourceManager.MISSILE_HUGE_CL_TEX;
+        if (missile instanceof MissileDrill)   return ResourceManager.MISSILE_HUGE_BU_TEX;
+        return ResourceManager.EMPTY;
     }
 }
