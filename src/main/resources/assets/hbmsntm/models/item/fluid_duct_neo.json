@@ -2,7 +2,7 @@
   "loader": "hbmsntm:pipe_geometry_loader",
   "block": false,
   "textures": {
-    "texture": "hbmsntm:block/pipe_neo",
-    "overlay": "hbmsntm:block/pipe_neo_overlay"
+    "texture": "hbmsntm:block/pipe_silver",
+    "overlay": "hbmsntm:block/pipe_silver_overlay"
   }
 }
