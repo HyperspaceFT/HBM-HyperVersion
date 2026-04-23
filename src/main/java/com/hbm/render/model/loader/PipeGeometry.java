@@ -27,8 +27,8 @@ public class PipeGeometry implements IUnbakedGeometry<PipeGeometry> {
         TextureAtlasSprite textureSprite = null;
         TextureAtlasSprite overlaySprite = null;
 
-        if (context.hasMaterial("texture")) textureSprite = spriteGetter.apply(context.getMaterial("texture"));
-        if (context.hasMaterial("overlay")) overlaySprite = spriteGetter.apply(context.getMaterial("overlay"));
+        if(context.hasMaterial("texture")) textureSprite = spriteGetter.apply(context.getMaterial("texture"));
+        if(context.hasMaterial("overlay")) overlaySprite = spriteGetter.apply(context.getMaterial("overlay"));
 
         HFRWavefrontObject obj = new HFRWavefrontObject("models/obj/block/pipe_neo.obj");
 
