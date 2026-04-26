@@ -1,10 +1,12 @@
 package com.hbm.render.model;
 
 import com.hbm.blocks.network.CableBlock;
-import com.hbm.blocks.network.FluidDuctConnectingBlock;
+import com.hbm.main.NuclearTechMod;
 import com.hbm.render.loader.HFRWavefrontObject;
-import it.unimi.dsi.fastutil.objects.ObjectOpenHashSet;
+import com.mojang.blaze3d.vertex.PoseStack;
+import com.mojang.math.Axis;
 import net.minecraft.client.renderer.block.model.BakedQuad;
+import net.minecraft.client.renderer.block.model.ItemTransforms;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.core.Direction;
 import net.minecraft.util.RandomSource;
@@ -14,7 +16,6 @@ import javax.annotation.Nullable;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
-import java.util.Set;
 
 public class CableBakedModel extends AbstractWavefrontBakedModel {
 
@@ -24,7 +25,7 @@ public class CableBakedModel extends AbstractWavefrontBakedModel {
     private List<BakedQuad> itemQuads;
 
     public CableBakedModel(HFRWavefrontObject model, TextureAtlasSprite baseSprite, boolean forBlock) {
-        super(model, BakedModelTransforms.PIPE_ITEM);
+        super(model, ItemTransforms.NO_TRANSFORMS);
         this.sprite = baseSprite;
         this.forBlock = forBlock;
     }
@@ -49,7 +50,7 @@ public class CableBakedModel extends AbstractWavefrontBakedModel {
                 nY = state.getValue(CableBlock.DOWN);
                 pZ = state.getValue(CableBlock.SOUTH);
                 nZ = state.getValue(CableBlock.NORTH);
-            } catch (Exception ignored) {}
+            } catch(Exception ignored) {}
         }
 
         int mask = (pX ? 1 : 0) | (nX ? 2 : 0) | (pY ? 4 : 0) | (nY ? 8 : 0) | (pZ ? 16 : 0) | (nZ ? 32 : 0);
@@ -79,6 +80,7 @@ public class CableBakedModel extends AbstractWavefrontBakedModel {
             if(pZ) parts.add("negZ");
         }
 
+        NuclearTechMod.LOGGER.debug("Build world quads with list of {}", parts);
         return bakeSimpleQuads(parts, 0.0F, 0.0F, 0.0F, true, BlockTranslate.CENTER, sprite);
     }
 

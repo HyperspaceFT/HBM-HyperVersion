@@ -16,12 +16,6 @@ import java.util.function.Function;
 
 public class CableGeometry implements IUnbakedGeometry<CableGeometry> {
 
-    protected final boolean forBlock;
-
-    public CableGeometry(boolean forBlock) {
-        this.forBlock = forBlock;
-    }
-
     @Override
     public BakedModel bake(IGeometryBakingContext context, ModelBaker baker, Function<Material, TextureAtlasSprite> spriteGetter, ModelState state, ItemOverrides overrides) {
 
@@ -31,6 +25,6 @@ public class CableGeometry implements IUnbakedGeometry<CableGeometry> {
 
         HFRWavefrontObject obj = new HFRWavefrontObject("models/obj/block/cable_neo.obj");
 
-        return new CableBakedModel(obj, textureSprite, forBlock);
+        return new CableBakedModel(obj, textureSprite, true);
     }
 }
