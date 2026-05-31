@@ -22,7 +22,6 @@ public class ExplosionSmallParticle extends RotatingParticleNT {
     private final float hue;
 
     private static final ResourceLocation TEXTURE = NuclearTechMod.withDefaultNamespace("textures/particle/base_particle.png");
-
     private static final RenderType EXP_SMALL = RenderType.create(
             "explosion_small_render_type", DefaultVertexFormat.NEW_ENTITY, VertexFormat.Mode.QUADS, 43241,
             RenderType.CompositeState.builder()
@@ -32,6 +31,7 @@ public class ExplosionSmallParticle extends RotatingParticleNT {
                     .setLightmapState(RenderType.LIGHTMAP)
                     .setOverlayState(RenderType.OVERLAY)
                     .setWriteMaskState(RenderStateShard.COLOR_WRITE)
+                    .setOutputState(RenderStateShard.TRANSLUCENT_TARGET)
                     .createCompositeState(false)
     );
 
