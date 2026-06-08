@@ -36,7 +36,7 @@ public class RenderCableItem extends ItemRenderBaseStandard {
                 this.getSprite("block/cable_neo")
         };
         this.models = new CableBakedModel[] {
-                new CableBakedModel(ResourceManager.cable_neo, sprites[0], false)
+                new CableBakedModel(ResourceManager.cable_neo, sprites[0])
         };
     }
 }
