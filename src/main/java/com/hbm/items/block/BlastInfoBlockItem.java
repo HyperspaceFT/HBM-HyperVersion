@@ -1,5 +1,6 @@
 package com.hbm.items.block;
 
+import com.hbm.util.i18n.I18nUtil;
 import net.minecraft.ChatFormatting;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.item.ItemStack;
@@ -18,6 +19,6 @@ public class BlastInfoBlockItem extends BlockItemBase {
     public void appendHoverText(ItemStack stack, TooltipContext context, List<Component> components, TooltipFlag flag) {
         super.appendHoverText(stack, context, components, flag);
 
-        components.add(Component.translatable("block.hbmsntm.desc.blastRes", this.getBlock().getExplosionResistance()).withStyle(ChatFormatting.GOLD));
+        components.add(Component.translatable("block.hbmsntm.obj_blast_info.desc", this.getBlock().getExplosionResistance()).withStyle(ChatFormatting.GOLD));
     }
 }
