@@ -15,6 +15,7 @@ import net.minecraft.client.renderer.ShaderInstance;
 import java.util.ArrayList;
 import java.util.List;
 
+@Deprecated
 public class HFRWavefrontObjectVBO implements IModelCustomNamed {
 
     private static class GroupVBO {
