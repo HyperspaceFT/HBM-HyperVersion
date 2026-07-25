@@ -62,46 +62,6 @@ public class MachineWoodBurnerBlock extends DummyableBlock implements ITooltipPr
     }
 
     @Override
-    public BlockState playerWillDestroy(Level level, BlockPos pos, BlockState state, Player player) {
-        BlockState result = super.playerWillDestroy(level, pos, state, player);
-        if(!level.isClientSide && !safeRem) {
-            this.destroyWoodBurner(level, pos);
-        }
-
-        return result;
-    }
-
-    @Override
-    public void onRemove(BlockState state, Level level, BlockPos pos, BlockState newState, boolean isMoving) {
-        if(!level.isClientSide && state.getBlock() == this && !state.is(newState.getBlock()) && !safeRem) {
-            this.destroyWoodBurner(level, pos);
-        }
-
-        super.onRemove(state, level, pos, newState, isMoving);
-    }
-
-    private void destroyWoodBurner(Level level, BlockPos pos) {
-        BlockPos core = this.findCore(level, pos);
-        if(core == null) core = pos;
-
-        safeRem = true;
-        try {
-            for(int dx = -2; dx <= 2; dx++) {
-                for(int dy = 0; dy <= 2; dy++) {
-                    for(int dz = -2; dz <= 2; dz++) {
-                        BlockPos target = core.offset(dx, dy, dz);
-                        if(level.getBlockState(target).getBlock() == this) {
-                            level.removeBlock(target, false);
-                        }
-                    }
-                }
-            }
-        } finally {
-            safeRem = false;
-        }
-    }
-
-    @Override
     protected InteractionResult useWithoutItem(BlockState state, Level level, BlockPos pos, Player player, BlockHitResult hitResult) {
         return this.standardOpenBehavior(level, pos, player);
     }
