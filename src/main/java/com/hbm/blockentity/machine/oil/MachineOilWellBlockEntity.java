@@ -18,6 +18,7 @@ import net.minecraft.sounds.SoundSource;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.inventory.AbstractContainerMenu;
+import net.minecraft.world.item.TooltipFlag;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.Vec3;
@@ -116,18 +117,18 @@ public class MachineOilWellBlockEntity extends OilDrillBaseBlockEntity {
     }
 
     @Override
-    public void provideInfo(UpgradeType type, int level, List<Component> components, boolean extendedInfo) {
+    public void provideInfo(UpgradeType type, int lvl, List<Component> components, TooltipFlag flag) {
         components.add(IUpgradeInfoProvider.getStandardLabel(NtmBlocks.MACHINE_WELL.get()));
         if(type == UpgradeType.SPEED) {
-            components.add(Component.translatable(KEY_DELAY, "-" + (level * 25) + "%").withStyle(ChatFormatting.GREEN));
-            components.add(Component.translatable(KEY_CONSUMPTION, "+" + (level * 25) + "%").withStyle(ChatFormatting.RED));
+            components.add(Component.translatable(KEY_DELAY, "-" + (lvl * 25) + "%").withStyle(ChatFormatting.GREEN));
+            components.add(Component.translatable(KEY_CONSUMPTION, "+" + (lvl * 25) + "%").withStyle(ChatFormatting.RED));
         }
         if(type == UpgradeType.POWER) {
-            components.add(Component.translatable(KEY_CONSUMPTION, "-" + (level * 25) + "%").withStyle(ChatFormatting.GREEN));
-            components.add(Component.translatable(KEY_DELAY, "+" + (level * 10) + "%").withStyle(ChatFormatting.RED));
+            components.add(Component.translatable(KEY_CONSUMPTION, "-" + (lvl * 25) + "%").withStyle(ChatFormatting.GREEN));
+            components.add(Component.translatable(KEY_DELAY, "+" + (lvl * 10) + "%").withStyle(ChatFormatting.RED));
         }
         if(type == UpgradeType.AFTERBURN) {
-            components.add(Component.translatable(KEY_BURN, level * 10, level * 50).withStyle(ChatFormatting.GREEN));
+            components.add(Component.translatable(KEY_BURN, lvl * 10, lvl * 50).withStyle(ChatFormatting.GREEN));
         }
         if(type == UpgradeType.OVERDRIVE) {
             components.add(Component.translatable(KEY_YES).withStyle(BobMathUtil.getBlink() ? ChatFormatting.RED : ChatFormatting.DARK_GRAY));
