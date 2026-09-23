@@ -46,6 +46,8 @@ public class NtmDataGenerators {
         builder.add(NeoForgeRegistries.Keys.BIOME_MODIFIERS, NtmBiomeModifiers::bootstrap);
         DatapackBuiltinEntriesProvider datapackProvider = new DatapackBuiltinEntriesProvider(output, lookup, builder, Set.of(NuclearTechMod.MODID));
         generator.addProvider(event.includeServer(), datapackProvider);
+        // Tags and recipes must see this run's custom registries, even on a clean checkout.
+        CompletableFuture<HolderLookup.Provider> generatedLookup = datapackProvider.getRegistryProvider();
 
         // Client things
         generator.addProvider(event.includeClient(), new NtmItemModelProvider(output, helper));
@@ -55,13 +57,13 @@ public class NtmDataGenerators {
 
         // Server things
         LootTableProvider.SubProviderEntry blockLootTableSubProvider = new LootTableProvider.SubProviderEntry(NtmBlockLootTableProvider::new, LootContextParamSets.BLOCK);
-        generator.addProvider(event.includeServer(), (DataProvider.Factory<LootTableProvider>) lootTableOutput -> new LootTableProvider(lootTableOutput, Collections.emptySet(), List.of(blockLootTableSubProvider), event.getLookupProvider()));
+        generator.addProvider(event.includeServer(), (DataProvider.Factory<LootTableProvider>) lootTableOutput -> new LootTableProvider(lootTableOutput, Collections.emptySet(), List.of(blockLootTableSubProvider), generatedLookup));
 
-        BlockTagsProvider blockTagsProvider = new NtmBlockTagProvider(output, lookup, helper);
+        BlockTagsProvider blockTagsProvider = new NtmBlockTagProvider(output, generatedLookup, helper);
         generator.addProvider(event.includeServer(), blockTagsProvider);
-        generator.addProvider(event.includeServer(), new NtmItemTagProvider(output, lookup, blockTagsProvider.contentsGetter(), helper));
-        generator.addProvider(event.includeServer(), new NtmDamageTypeTagsProvider(output, lookup, helper));
-        generator.addProvider(event.includeServer(), new NtmFluidTagsProvider(output, lookup, helper));
-        generator.addProvider(event.includeServer(), new NtmRecipeProvider(output, lookup));
+        generator.addProvider(event.includeServer(), new NtmItemTagProvider(output, generatedLookup, blockTagsProvider.contentsGetter(), helper));
+        generator.addProvider(event.includeServer(), new NtmDamageTypeTagsProvider(output, generatedLookup, helper));
+        generator.addProvider(event.includeServer(), new NtmFluidTagsProvider(output, generatedLookup, helper));
+        generator.addProvider(event.includeServer(), new NtmRecipeProvider(output, generatedLookup));
     }
 }

@@ -1,0 +1,27 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "key": {
+    "A": {
+      "item": "hbmsntm:wire_copper"
+    },
+    "B": {
+      "item": "hbmsntm:plate_polymer"
+    },
+    "C": {
+      "item": "hbmsntm:ingot_polymer"
+    },
+    "D": {
+      "item": "hbmsntm:circuit_integrated_board"
+    }
+  },
+  "pattern": [
+    "ACA",
+    "BDB",
+    "ACA"
+  ],
+  "result": {
+    "count": 1,
+    "id": "hbmsntm:upgrade_template"
+  }
+}

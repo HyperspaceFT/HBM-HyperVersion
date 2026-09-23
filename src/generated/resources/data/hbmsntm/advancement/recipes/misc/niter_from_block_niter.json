@@ -1,0 +1,32 @@
+{
+  "parent": "minecraft:recipes/root",
+  "criteria": {
+    "has_block_niter": {
+      "conditions": {
+        "items": [
+          {
+            "items": "hbmsntm:block_niter"
+          }
+        ]
+      },
+      "trigger": "minecraft:inventory_changed"
+    },
+    "has_the_recipe": {
+      "conditions": {
+        "recipe": "hbmsntm:niter_from_block_niter"
+      },
+      "trigger": "minecraft:recipe_unlocked"
+    }
+  },
+  "requirements": [
+    [
+      "has_the_recipe",
+      "has_block_niter"
+    ]
+  ],
+  "rewards": {
+    "recipes": [
+      "hbmsntm:niter_from_block_niter"
+    ]
+  }
+}

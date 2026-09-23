@@ -1,0 +1,32 @@
+{
+  "parent": "minecraft:recipes/root",
+  "criteria": {
+    "has_powder_yellowcake": {
+      "conditions": {
+        "items": [
+          {
+            "items": "hbmsntm:powder_yellowcake"
+          }
+        ]
+      },
+      "trigger": "minecraft:inventory_changed"
+    },
+    "has_the_recipe": {
+      "conditions": {
+        "recipe": "hbmsntm:block_yellowcake_from_9_powder_yellowcake"
+      },
+      "trigger": "minecraft:recipe_unlocked"
+    }
+  },
+  "requirements": [
+    [
+      "has_the_recipe",
+      "has_powder_yellowcake"
+    ]
+  ],
+  "rewards": {
+    "recipes": [
+      "hbmsntm:block_yellowcake_from_9_powder_yellowcake"
+    ]
+  }
+}

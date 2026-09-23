@@ -6,6 +6,7 @@ import com.hbm.lib.Library;
 import com.mojang.serialization.MapCodec;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
+import net.minecraft.world.item.context.BlockPlaceContext;
 import net.minecraft.world.level.BlockGetter;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.LevelAccessor;
@@ -64,6 +65,15 @@ public class CableBlock extends Block implements EntityBlock {
 
     @Override
     public BlockState updateShape(BlockState state, Direction dir, BlockState neighborState, LevelAccessor level, BlockPos pos, BlockPos neighborPos) {
+        return this.updateConnections(state, level, pos);
+    }
+
+    @Override
+    public BlockState getStateForPlacement(BlockPlaceContext context) {
+        return this.updateConnections(this.defaultBlockState(), context.getLevel(), context.getClickedPos());
+    }
+
+    private BlockState updateConnections(BlockState state, BlockGetter level, BlockPos pos) {
         state = state
                 .setValue(NORTH, Library.canConnect(level, pos.relative(Direction.NORTH), Direction.NORTH))
                 .setValue(SOUTH, Library.canConnect(level, pos.relative(Direction.SOUTH), Direction.SOUTH))

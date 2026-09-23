@@ -1,0 +1,68 @@
+{
+  "multipart": [
+    {
+      "apply": {
+        "model": "hbmsntm:block/oil_spill_1"
+      },
+      "when": {
+        "layers": "1"
+      }
+    },
+    {
+      "apply": {
+        "model": "hbmsntm:block/oil_spill_2"
+      },
+      "when": {
+        "layers": "2"
+      }
+    },
+    {
+      "apply": {
+        "model": "hbmsntm:block/oil_spill_3"
+      },
+      "when": {
+        "layers": "3"
+      }
+    },
+    {
+      "apply": {
+        "model": "hbmsntm:block/oil_spill_4"
+      },
+      "when": {
+        "layers": "4"
+      }
+    },
+    {
+      "apply": {
+        "model": "hbmsntm:block/oil_spill_5"
+      },
+      "when": {
+        "layers": "5"
+      }
+    },
+    {
+      "apply": {
+        "model": "hbmsntm:block/oil_spill_6"
+      },
+      "when": {
+        "layers": "6"
+      }
+    },
+    {
+      "apply": {
+        "model": "hbmsntm:block/oil_spill_7"
+      },
+      "when": {
+        "layers": "7"
+      }
+    },
+    {
+      "apply": {
+        "model": "hbmsntm:block/oil_spill_8"
+      },
+      "when": {
+        "layers": "8"
+      }
+    }
+  ]
+}

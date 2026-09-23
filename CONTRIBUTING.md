@@ -1,47 +1,23 @@
-## Keep it concise
+# Local development
 
-The best PRs are the ones that are small and to the point. The entire PR should focus on the thing you're trying to do, whether it's a fix or a feature PR. If your PR adds the Super Weldtronic 9000, there's no reason to include changes and tweaks to other things that have nothing to do with the Super Weldtronic 9000. If you think those changes are still necessary, open a new PR.
+This checkout is for personal modifications and migration from the sibling
+`Hbm-s-Nuclear-Tech-GIT` repository. Open the shared `HBM Code` workspace and
+follow `../AGENTS.md` and its workspace-local routing skill.
 
-## Keep it clean
+Keep local changes and reports here. There is no upstream contribution or
+review process for this working copy; do not open issues or pull requests,
+contact upstream maintainers, or publish builds unless the user requests it.
+Upstream contribution policies apply only to a separately authorized upstream
+submission. They do not prohibit local AI-assisted development.
 
-While admittedly my own code isn't the cleanest on earth, please try to keep terrible practices at a minimum. Also avoid things like unused variables and imports, mixed indentation styles or changes that have a high likelihood of breaking things.
-
-Things you should also avoid include:
-* new libraries (unless your PR absolutely needs it like for special mod compat)
-* duplicate util functions (just use what we have, man)
-* unused or half finished util functions (for obvious reasons)
-* half finished or obviously broken features (à la "bob will fix it, i'm sure of it", please don't do that)
-* updating the changelog (you're guaranteed to cause a merge conflict with that)
-* any use of `I18n`, use `I18nUtil` instead
-
-## Test your code
-
-This should go without saying, but please don't PR code that was never actually tested or has obvious compiler errors in it.
-Another thing is test your code on server side only, if something works for singleplayer, it doesn't mean it will work on server.
-
-**Addendum:** Because apparently some people think that testing is somehow optional, it is now **mandatory** to test the code both on a client and on a server. If the PR contains compat code, the game has to work **with and without** the mod that the compat is for.
-
-## No refactor PRs
-
-Your refactors suck ass and usually something ends up breaking.
-
-## Communication
-
-If you're planning on adding some new thing or doing a grand change, it's best to ask whether that's a good idea before spending 50 hours on a project that won't end up getting merged, due to issues that could have been entirely avoidable with communication.
-
-## No guarantees
-
-This ties together with the previous point - there's no guarantees that your PR gets merged no matter how hard or long you've worked on it. However, if you follow these guidelines, there's a good chance that your PR will be accepted.
-
-## AI policy
-
-You may not contribute code to this project that was entirely or partially generated using AI. No vibe coding, please.
-<br>
-You may contribute code if you wrote it with the **assistance** of AI. You yourself still have to write the code that you contribute.
-
-## I want to help but don't know where to start
-
-If you want to help the project, consider getting involved with the [wiki](https://nucleartech.wiki/) first. Writing an article is the easiest and quickest way of helping, and requires no programming knowledge. If you do know Java and want to help, consider these places first:
-
-* Localization, i.e. translations in different language are always accepted.
-* Adding tooltips to more machines, explaining some of the basics.
+- Keep each change focused. Preserve unrelated edits, useful comments, licenses,
+  and original authorship; avoid unrelated changelog edits and refactoring.
+- Reuse existing utilities and dependencies; avoid duplicate helpers, unused
+  imports, and unfinished features. Use the project's `I18nUtil` for localization.
+- For a port, compare the actual legacy behavior with the existing NEO
+  implementation, including registration, resources, networking, and saved data.
+- Choose checks proportional to the changed behavior. Client-only success does
+  not prove dedicated-server compatibility; compatibility changes need evidence
+  for the affected dependency-present and dependency-absent cases.
+- Keep investigation static. Run implementation checks only within the user's
+  execution and permission limits, and report exactly what was verified.

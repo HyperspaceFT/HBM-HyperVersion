@@ -1,0 +1,32 @@
+{
+  "parent": "minecraft:recipes/root",
+  "criteria": {
+    "has_billet_plutonium_fuel": {
+      "conditions": {
+        "items": [
+          {
+            "items": "hbmsntm:billet_plutonium_fuel"
+          }
+        ]
+      },
+      "trigger": "minecraft:inventory_changed"
+    },
+    "has_the_recipe": {
+      "conditions": {
+        "recipe": "hbmsntm:ingot_plutonium_fuel_from_3_billet_plutonium_fuel"
+      },
+      "trigger": "minecraft:recipe_unlocked"
+    }
+  },
+  "requirements": [
+    [
+      "has_the_recipe",
+      "has_billet_plutonium_fuel"
+    ]
+  ],
+  "rewards": {
+    "recipes": [
+      "hbmsntm:ingot_plutonium_fuel_from_3_billet_plutonium_fuel"
+    ]
+  }
+}

@@ -3,6 +3,7 @@ package com.hbm.inventory.recipes;
 import com.hbm.blocks.NtmBlocks;
 import com.hbm.inventory.FluidStack;
 import com.hbm.inventory.MetaHelper;
+import com.hbm.inventory.NtmTags;
 import com.hbm.inventory.RecipesCommon;
 import com.hbm.inventory.RecipesCommon.ComparableStack;
 import com.hbm.inventory.fluid.FluidType;
@@ -244,5 +245,10 @@ public class AssemblyMachineRecipes extends GenericRecipes<GenericRecipe> {
             this.register(new GenericRecipe("ass.unpackage" + type.getUnlocalizedName()).setup(40, 100).setIcon(FluidIconItem.make(type, 32_000)).outputItems(new ItemStack(NtmItems.FLUID_PACK_EMPTY.get()))
                     .inputItems(new ComparableStack(MetaHelper.newStack(NtmItems.FLUID_PACK_FULL, 1, type.getID()))).outputFluids(new FluidStack(type, 32_000)));
         }
+
+        this.register(new GenericRecipe("ass.shredder").setup(100, 100).outputItems(new ItemStack(NtmBlocks.MACHINE_SHREDDER.get()))
+                .inputItems(new RecipesCommon.TagStack(NtmTags.Items.PLATES_STEEL, 8),
+                        new RecipesCommon.TagStack(NtmTags.Items.PLATES_COPPER, 4),
+                        new ComparableStack(NtmItems.MOTOR.get(), 2)));
     }
 }

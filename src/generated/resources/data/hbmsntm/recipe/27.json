@@ -1,0 +1,21 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "key": {
+    "A": {
+      "item": "hbmsntm:coil_gold"
+    },
+    "B": {
+      "item": "hbmsntm:plate_steel"
+    }
+  },
+  "pattern": [
+    " A ",
+    "ABA",
+    " A "
+  ],
+  "result": {
+    "count": 2,
+    "id": "hbmsntm:coil_gold_ring"
+  }
+}

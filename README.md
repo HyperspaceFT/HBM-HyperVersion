@@ -1,9 +1,15 @@
 This is a port of the minecraft <a href="https://github.com/HbmMods/Hbm-s-Nuclear-Tech-GIT/">Hbm's Nuclear Tech Mod</a> to minecraft 1.21.1!
 <br>As the name implies, this mod brings advanced technology, nuclear weapons, hazards and more!
 
+## Local development copy
+
+This checkout is maintained locally for personal changes and migration from the sibling `Hbm-s-Nuclear-Tech-GIT` checkout. It is not an official NEO release. Keep reports about local changes in this workspace; do not send them to the upstream authors or issue trackers.
+
+Shared development instructions are in `../AGENTS.md`. The NEO Git remote, GitHub Actions workflow, upstream issue links, and NEO update check have been removed. Git history, licenses, and original authorship are preserved.
+
 ## WARNING :
 
-A lot of content is missing, so this mod is NOT ready for survival! There may be bugs, crashes and other scary things. So use this mod for fun and not in your worlds that you care! When there are updates, it's best to re-create your world. Please report any issues via the <a href="https://github.com/ohiomannnn/HBMsNTM-NEO-EDITION/issues">GitHub Issues</a> page.
+A lot of content is missing, so this mod is NOT ready for survival! There may be bugs, crashes and other scary things. So use this mod for fun and not in your worlds that you care! When there are updates, it's best to re-create your world.
 
 ## Installation
 
@@ -23,7 +29,9 @@ Iris adds support to shaders, somehow breaking a lot of rendering stuff.
 - Hbm's Nuclear Tech Mod created by <a href="https://github.com/HbmMods">The Bobcat (HbmMods)</a>.
 - NeoForged Team for creating NeoForge and Mojang for their work on Minecraft.
 
-## Links
+## Upstream distribution links
+
+These pages describe upstream releases, not this local working copy.
 
 - `Curseforge`: https://www.curseforge.com/minecraft/mc-mods/hbms-nuclear-tech-ne
 - `Modrinth`: https://modrinth.com/mod/hbms-nuclear-tech-ne

@@ -10,6 +10,7 @@ import com.hbm.inventory.FluidStack;
 import com.hbm.inventory.MetaHelper;
 import com.hbm.inventory.RecipesCommon.AStack;
 import com.hbm.inventory.RecipesCommon.ComparableStack;
+import com.hbm.inventory.RecipesCommon.TagStack;
 import com.hbm.inventory.fluid.FluidType;
 import com.hbm.inventory.fluid.Fluids;
 import com.hbm.inventory.recipes.SolderingRecipes;
@@ -26,6 +27,7 @@ import com.hbm.util.TagsUtil;
 import com.hbm.util.Tuple.Pair;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.tags.ItemTags;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 
@@ -53,8 +55,6 @@ public abstract class SerializableRecipe {
         recipeHandlers.add(new PressRecipes());
         recipeHandlers.add(new ShredderRecipes());
         recipeHandlers.add(new CentrifugeRecipes());
-
-        recipeHandlers.add(new AssemblyMachineRecipes());
 
         //GENERIC
         recipeHandlers.add(AssemblyMachineRecipes.INSTANCE);
@@ -232,6 +232,9 @@ public abstract class SerializableRecipe {
                 int meta = array.size() > 3 ? array.get(3).getAsInt() : 0;
                 return new ComparableStack(item, stacksize, meta);
             }
+            if("tag".equals(type)) {
+                return new TagStack(ItemTags.create(ResourceLocation.parse(array.get(1).getAsString())), stacksize);
+            }
             //if("dict".equals(type)) {
             //    String dict = array.get(1).getAsString();
             //    return new OreDictStack(dict, stacksize);
@@ -267,6 +270,10 @@ public abstract class SerializableRecipe {
             writer.value(BuiltInRegistries.ITEM.getKey(comp.toStack().getItem()).toString());   //item name
             if (comp.stacksize != 1 || comp.meta > 0) writer.value(comp.stacksize);             //stack size
             if (comp.meta > 0) writer.value(comp.meta);                                         //metadata
+        } else if(astack instanceof TagStack tagged) {
+            writer.value("tag");
+            writer.value(tagged.tag.location().toString());
+            if(tagged.stacksize != 1) writer.value(tagged.stacksize);
         }
         //} else if(astack instanceof OreDictStack) {
         //    OreDictStack ore = (OreDictStack) astack;

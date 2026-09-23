@@ -1,0 +1,27 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "key": {
+    "A": {
+      "item": "hbmsntm:wire_red_copper"
+    },
+    "B": {
+      "item": "hbmsntm:plate_iron"
+    },
+    "C": {
+      "item": "hbmsntm:coil_copper"
+    },
+    "D": {
+      "item": "hbmsntm:coil_copper_ring"
+    }
+  },
+  "pattern": [
+    " A ",
+    "BCB",
+    "BDB"
+  ],
+  "result": {
+    "count": 2,
+    "id": "hbmsntm:motor"
+  }
+}

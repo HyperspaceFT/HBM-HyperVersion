@@ -1,0 +1,27 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "key": {
+    "A": {
+      "item": "hbmsntm:wire_copper"
+    },
+    "B": {
+      "item": "hbmsntm:plate_polymer"
+    },
+    "C": {
+      "item": "hbmsntm:plate_iron"
+    },
+    "D": {
+      "item": "hbmsntm:circuit_analog_board"
+    }
+  },
+  "pattern": [
+    "ACA",
+    "BDB",
+    "ACA"
+  ],
+  "result": {
+    "count": 1,
+    "id": "hbmsntm:upgrade_template"
+  }
+}

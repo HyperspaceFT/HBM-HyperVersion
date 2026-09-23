@@ -1,0 +1,24 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "key": {
+    "A": {
+      "item": "minecraft:brick"
+    },
+    "B": {
+      "item": "hbmsntm:ingot_desh"
+    },
+    "C": {
+      "item": "hbmsntm:ingot_ferrouranium"
+    }
+  },
+  "pattern": [
+    "ABA",
+    "BCB",
+    "ABA"
+  ],
+  "result": {
+    "count": 1,
+    "id": "hbmsntm:stamp_desh_flat"
+  }
+}

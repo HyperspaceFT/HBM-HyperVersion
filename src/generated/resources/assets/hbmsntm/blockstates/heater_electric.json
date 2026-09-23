@@ -1,0 +1,7 @@
+{
+  "variants": {
+    "": {
+      "model": "hbmsntm:block/heater_electric_particle"
+    }
+  }
+}

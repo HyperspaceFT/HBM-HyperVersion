@@ -1,0 +1,24 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "key": {
+    "A": {
+      "item": "hbmsntm:plate_polymer"
+    },
+    "B": {
+      "item": "hbmsntm:powder_aluminium"
+    },
+    "C": {
+      "item": "hbmsntm:wire_copper"
+    }
+  },
+  "pattern": [
+    "   ",
+    "ABA",
+    "C C"
+  ],
+  "result": {
+    "count": 2,
+    "id": "hbmsntm:circuit_capacitor"
+  }
+}

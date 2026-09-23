@@ -44,6 +44,12 @@ public class LoadedBaseBlockEntity extends BlockEntity implements ILoadedBE, IBu
     }
 
     @Override
+    public void onLoad() {
+        super.onLoad();
+        this.isLoaded = true;
+    }
+
+    @Override
     public void onChunkUnloaded() {
         this.isLoaded = false;
     }

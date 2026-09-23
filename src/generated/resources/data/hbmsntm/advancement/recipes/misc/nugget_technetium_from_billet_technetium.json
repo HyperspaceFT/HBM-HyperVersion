@@ -1,0 +1,32 @@
+{
+  "parent": "minecraft:recipes/root",
+  "criteria": {
+    "has_billet_technetium": {
+      "conditions": {
+        "items": [
+          {
+            "items": "hbmsntm:billet_technetium"
+          }
+        ]
+      },
+      "trigger": "minecraft:inventory_changed"
+    },
+    "has_the_recipe": {
+      "conditions": {
+        "recipe": "hbmsntm:nugget_technetium_from_billet_technetium"
+      },
+      "trigger": "minecraft:recipe_unlocked"
+    }
+  },
+  "requirements": [
+    [
+      "has_the_recipe",
+      "has_billet_technetium"
+    ]
+  ],
+  "rewards": {
+    "recipes": [
+      "hbmsntm:nugget_technetium_from_billet_technetium"
+    ]
+  }
+}

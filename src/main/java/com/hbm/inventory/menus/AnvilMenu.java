@@ -15,6 +15,7 @@ import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.inventory.Slot;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.level.block.state.BlockState;
 
 public class AnvilMenu extends MenuBase<SimpleContainer> {
 
@@ -71,12 +72,16 @@ public class AnvilMenu extends MenuBase<SimpleContainer> {
     @Override
     public boolean stillValid(Player player) {
         if(player.level() == null) return false;
-        if(!player.level().getBlockState(this.pos).is(NtmBlocks.ANVIL.get())) return false;
+        BlockState state = player.level().getBlockState(this.pos);
+        if(!state.is(NtmBlocks.ANVIL.get())) return false;
+        if(((NTMAnvilBlock) state.getBlock()).getTier(state) != this.tier) return false;
         return player.distanceToSqr(this.pos.getX() + 0.5D, this.pos.getY() + 0.5D, this.pos.getZ() + 0.5D) <= 64.0D;
     }
 
     @Override
     public ItemStack quickMoveStack(Player player, int index) {
+        if(index < 0 || index >= this.slots.size()) return ItemStack.EMPTY;
+
         ItemStack result = ItemStack.EMPTY;
         Slot slot = this.slots.get(index);
 
@@ -85,6 +90,7 @@ public class AnvilMenu extends MenuBase<SimpleContainer> {
             result = stack.copy();
 
             if(index <= OUTPUT) {
+                if(index == OUTPUT && !this.canMoveOutput(result)) return ItemStack.EMPTY;
                 if(!this.moveItemStackTo(stack, OUTPUT + 1, this.slots.size(), true)) {
                     return ItemStack.EMPTY;
                 }
@@ -99,9 +105,37 @@ public class AnvilMenu extends MenuBase<SimpleContainer> {
             } else {
                 slot.setChanged();
             }
+
+            if(index == OUTPUT) {
+                slot.onTake(player, result);
+            }
         }
 
         return result;
+    }
+
+    private boolean canMoveOutput(ItemStack output) {
+        int remaining = output.getCount();
+
+        for(int i = OUTPUT + 1; i < this.slots.size(); i++) {
+            Slot destination = this.slots.get(i);
+            if(!destination.mayPlace(output) || !destination.hasItem()) continue;
+            ItemStack existing = destination.getItem();
+            if(ItemStack.isSameItemSameComponents(existing, output)) {
+                remaining -= Math.max(0, destination.getMaxStackSize(output) - existing.getCount());
+                if(remaining <= 0) return true;
+            }
+        }
+
+        for(int i = OUTPUT + 1; i < this.slots.size(); i++) {
+            Slot destination = this.slots.get(i);
+            if(destination.mayPlace(output) && !destination.hasItem()) {
+                remaining -= destination.getMaxStackSize(output);
+                if(remaining <= 0) return true;
+            }
+        }
+
+        return false;
     }
 
     private void updateResult() {

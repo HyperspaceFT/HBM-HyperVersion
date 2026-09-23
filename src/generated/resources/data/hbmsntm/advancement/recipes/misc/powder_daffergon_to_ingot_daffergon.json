@@ -1,0 +1,32 @@
+{
+  "parent": "minecraft:recipes/root",
+  "criteria": {
+    "has_powder_daffergon": {
+      "conditions": {
+        "items": [
+          {
+            "items": "hbmsntm:powder_daffergon"
+          }
+        ]
+      },
+      "trigger": "minecraft:inventory_changed"
+    },
+    "has_the_recipe": {
+      "conditions": {
+        "recipe": "hbmsntm:powder_daffergon_to_ingot_daffergon"
+      },
+      "trigger": "minecraft:recipe_unlocked"
+    }
+  },
+  "requirements": [
+    [
+      "has_the_recipe",
+      "has_powder_daffergon"
+    ]
+  ],
+  "rewards": {
+    "recipes": [
+      "hbmsntm:powder_daffergon_to_ingot_daffergon"
+    ]
+  }
+}

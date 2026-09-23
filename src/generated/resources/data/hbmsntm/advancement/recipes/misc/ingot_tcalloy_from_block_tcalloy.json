@@ -1,0 +1,32 @@
+{
+  "parent": "minecraft:recipes/root",
+  "criteria": {
+    "has_block_tcalloy": {
+      "conditions": {
+        "items": [
+          {
+            "items": "hbmsntm:block_tcalloy"
+          }
+        ]
+      },
+      "trigger": "minecraft:inventory_changed"
+    },
+    "has_the_recipe": {
+      "conditions": {
+        "recipe": "hbmsntm:ingot_tcalloy_from_block_tcalloy"
+      },
+      "trigger": "minecraft:recipe_unlocked"
+    }
+  },
+  "requirements": [
+    [
+      "has_the_recipe",
+      "has_block_tcalloy"
+    ]
+  ],
+  "rewards": {
+    "recipes": [
+      "hbmsntm:ingot_tcalloy_from_block_tcalloy"
+    ]
+  }
+}

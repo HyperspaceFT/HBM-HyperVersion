@@ -1,0 +1,21 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "key": {
+    "A": {
+      "item": "hbmsntm:plate_polymer"
+    },
+    "B": {
+      "item": "hbmsntm:plate_gold"
+    }
+  },
+  "pattern": [
+    " A ",
+    " B ",
+    "   "
+  ],
+  "result": {
+    "count": 4,
+    "id": "hbmsntm:circuit_printed_board"
+  }
+}

@@ -1,0 +1,13 @@
+# Goal 4 isolated shredder processing regression
+
+Run from the NEO repository with the existing Python and JDK 21:
+
+```powershell
+& 'C:\Users\显卡超频和烤机测试\.cache\codex-runtimes\codex-primary-runtime\dependencies\python\python.exe' -B tools/migration/verify_goal4_processing.py
+```
+
+Every run writes a new UUID directory and command transcript under `build/migration/goal4/processing-regression/`. The harness compiles the current production `MachineShredderBlockEntity`, `MachineBaseBlockEntity`, `MachineShredderMenu`, `MenuBase`, `SlotNonRetarded`, `SlotTakeOnly`, `MachineWoodBurnerBlockEntity`, `CableBaseBlockEntity`, power interfaces, power network, and nodespace. The integrated case executes burner and shredder ticks, cable registration, and `UniNodespace.updateNodespace` until the actual shredder produces output from fuel supplied through the network.
+
+The fixture checks 60 valid ticks at 5 HE each, separate and competing inputs, blade requirements and wear (steel 256, titanium 512, non-damageable Desh), power and output interruptions, mid-cycle input replacement, per-item and per-container stack limits, component matching, recipe fallback versus an explicitly empty result, six energy ports, sided inventory routing, state/status changes, power clamping and dirty marks, plus malformed NBT. The integrated case cuts a live production cable, consumes stored receiver HE, resets when energy is exhausted, and reconnects before output. It executes the production menu's `quickMoveStack` and slot classes using a narrow modeled `AbstractContainerMenu.moveItemStackTo`; the modeled merge pass deliberately skips `mayPlace` for occupied slots, matching the relevant vanilla behavior. The production index guard and forbidden-input precheck are therefore exercised.
+
+The real `MachineBaseBlockEntity.saveAdditional/loadAdditional` path is compiled and invoked for all 30 slots, including both blade damage values and a component-bearing output stack. `ContainerHelper` and the item/NBT codec are stand-ins that copy the modeled stack data; this confirms the base method call chain and saved state continuity, but not Minecraft's actual registry codec, real disk serialization, or old-world compatibility. `LoadedBaseBlockEntity`, Minecraft item/component classes, registry holders, level, player inventory, network server shell, menu merge engine, fluids, battery charging, sounds, and packet services are explicit stand-ins. The `ShredderRecipes.getShredderResult` resolver is a fixture map with the same fallback shape; recipe registration and JSON behavior require their separate recipe checks. There is no Minecraft client, dedicated server, actual world, or UI rendering in this harness.

@@ -1,0 +1,32 @@
+{
+  "parent": "minecraft:recipes/root",
+  "criteria": {
+    "has_billet_les": {
+      "conditions": {
+        "items": [
+          {
+            "items": "hbmsntm:billet_les"
+          }
+        ]
+      },
+      "trigger": "minecraft:inventory_changed"
+    },
+    "has_the_recipe": {
+      "conditions": {
+        "recipe": "hbmsntm:nugget_les_from_billet_les"
+      },
+      "trigger": "minecraft:recipe_unlocked"
+    }
+  },
+  "requirements": [
+    [
+      "has_the_recipe",
+      "has_billet_les"
+    ]
+  ],
+  "rewards": {
+    "recipes": [
+      "hbmsntm:nugget_les_from_billet_les"
+    ]
+  }
+}

@@ -27,6 +27,13 @@ public class HeaterFireboxMenu extends MenuBase<HeaterFireboxBlockEntity> {
     }
 
     @Override
+    public ItemStack quickMoveStack(Player player, int index) {
+        if(index < 0 || index >= this.slots.size()) return ItemStack.EMPTY;
+        if(index >= 2 && !this.be.canPlaceItem(0, this.slots.get(index).getItem())) return ItemStack.EMPTY;
+        return super.quickMoveStack(player, index);
+    }
+
+    @Override
     public void removed(Player player) {
         super.removed(player);
         this.be.stopOpen(player);

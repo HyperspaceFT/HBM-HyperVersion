@@ -1,0 +1,13 @@
+{
+  "type": "minecraft:crafting_shapeless",
+  "category": "misc",
+  "ingredients": [
+    {
+      "item": "hbmsntm:powder_au198"
+    }
+  ],
+  "result": {
+    "count": 9,
+    "id": "hbmsntm:powder_au198_tiny"
+  }
+}

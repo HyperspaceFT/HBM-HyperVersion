@@ -42,8 +42,14 @@ public class BlastFurnaceRecipes extends GenericRecipes<BlastFurnaceRecipe> {
         this.register(new BlastFurnaceRecipe("blast.steelFromOre").setDuration(800)
                 .inputItems(new ComparableStack(Blocks.IRON_ORE), new ComparableStack(Blocks.SAND))
                 .outputItems(new ItemStack(NtmItems.INGOT_STEEL.get(), 2), slag(2)));
+        this.register(new BlastFurnaceRecipe("blast.steelFromOreRedSand").setDuration(800)
+                .inputItems(new ComparableStack(Blocks.IRON_ORE), new ComparableStack(Blocks.RED_SAND))
+                .outputItems(new ItemStack(NtmItems.INGOT_STEEL.get(), 2), slag(2)));
         this.register(new BlastFurnaceRecipe("blast.steelFromDeepslateOre").setDuration(800)
                 .inputItems(new ComparableStack(Blocks.DEEPSLATE_IRON_ORE), new ComparableStack(Blocks.SAND))
+                .outputItems(new ItemStack(NtmItems.INGOT_STEEL.get(), 2), slag(2)));
+        this.register(new BlastFurnaceRecipe("blast.steelFromDeepslateOreRedSand").setDuration(800)
+                .inputItems(new ComparableStack(Blocks.DEEPSLATE_IRON_ORE), new ComparableStack(Blocks.RED_SAND))
                 .outputItems(new ItemStack(NtmItems.INGOT_STEEL.get(), 2), slag(2)));
         this.register(new BlastFurnaceRecipe("blast.steelWithFlux").setDuration(1200)
                 .inputItems(new ComparableStack(Blocks.IRON_ORE), new ComparableStack(NtmItems.POWDER_FLUX.get()))
@@ -55,11 +61,17 @@ public class BlastFurnaceRecipes extends GenericRecipes<BlastFurnaceRecipe> {
         this.register(new BlastFurnaceRecipe("blast.mingrade").setDuration(400)
                 .inputItems(new ComparableStack(NtmItems.INGOT_COPPER.get()), new ComparableStack(Items.REDSTONE))
                 .outputItems(new ItemStack(NtmItems.INGOT_RED_COPPER.get(), 2)));
+        this.register(new BlastFurnaceRecipe("blast.mingradeVanillaCopper").setDuration(400)
+                .inputItems(new ComparableStack(Items.COPPER_INGOT), new ComparableStack(Items.REDSTONE))
+                .outputItems(new ItemStack(NtmItems.INGOT_RED_COPPER.get(), 2)));
         this.register(new BlastFurnaceRecipe("blast.mingradeDust").setDuration(400)
                 .inputItems(new ComparableStack(NtmItems.POWDER_COPPER.get()), new ComparableStack(Items.REDSTONE))
                 .outputItems(new ItemStack(NtmItems.INGOT_RED_COPPER.get(), 2)));
         this.register(new BlastFurnaceRecipe("blast.mingradeIngot").setDuration(400)
                 .inputItems(new ComparableStack(NtmItems.INGOT_COPPER.get()), new ComparableStack(redstoneIngot()))
+                .outputItems(new ItemStack(NtmItems.INGOT_RED_COPPER.get(), 2)));
+        this.register(new BlastFurnaceRecipe("blast.mingradeIngotVanillaCopper").setDuration(400)
+                .inputItems(new ComparableStack(Items.COPPER_INGOT), new ComparableStack(redstoneIngot()))
                 .outputItems(new ItemStack(NtmItems.INGOT_RED_COPPER.get(), 2)));
         this.register(new BlastFurnaceRecipe("blast.mingradeCursed").setDuration(400)
                 .inputItems(new ComparableStack(NtmItems.POWDER_COPPER.get()), new ComparableStack(redstoneIngot()))
@@ -93,7 +105,6 @@ public class BlastFurnaceRecipes extends GenericRecipes<BlastFurnaceRecipe> {
     }
 
     public BlastFurnaceRecipe getRecipe(ItemStack first, ItemStack second) {
-        this.ensureDefaults();
         for(BlastFurnaceRecipe recipe : this.recipeOrderedList) {
             if(matchesInputs(recipe, first, second, true)) return recipe;
         }
@@ -101,7 +112,6 @@ public class BlastFurnaceRecipes extends GenericRecipes<BlastFurnaceRecipe> {
     }
 
     public boolean isItemValid(ItemStack stack) {
-        this.ensureDefaults();
         if(stack.isEmpty()) return false;
         for(BlastFurnaceRecipe recipe : this.recipeOrderedList) {
             if(recipe.inputItem == null) continue;
@@ -110,12 +120,6 @@ public class BlastFurnaceRecipes extends GenericRecipes<BlastFurnaceRecipe> {
             }
         }
         return false;
-    }
-
-    private void ensureDefaults() {
-        if(this.recipeOrderedList.isEmpty()) {
-            this.registerDefaults();
-        }
     }
 
     public static boolean matchesInputs(BlastFurnaceRecipe recipe, ItemStack first, ItemStack second, boolean ignoreSize) {

@@ -1,0 +1,28 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "key": {
+    "A": {
+      "type": "neoforge:components",
+      "components": {
+        "hbmsntm:meta": 0
+      },
+      "items": "hbmsntm:barbed_wire"
+    },
+    "B": {
+      "item": "hbmsntm:powder_poison"
+    }
+  },
+  "pattern": [
+    "AAA",
+    "ABA",
+    "AAA"
+  ],
+  "result": {
+    "components": {
+      "hbmsntm:meta": 2
+    },
+    "count": 8,
+    "id": "hbmsntm:barbed_wire"
+  }
+}

@@ -1,0 +1,32 @@
+{
+  "parent": "minecraft:recipes/root",
+  "criteria": {
+    "has_crystal_lead": {
+      "conditions": {
+        "items": [
+          {
+            "items": "hbmsntm:crystal_lead"
+          }
+        ]
+      },
+      "trigger": "minecraft:inventory_changed"
+    },
+    "has_the_recipe": {
+      "conditions": {
+        "recipe": "hbmsntm:ingot_lead_from_crystal_lead"
+      },
+      "trigger": "minecraft:recipe_unlocked"
+    }
+  },
+  "requirements": [
+    [
+      "has_the_recipe",
+      "has_crystal_lead"
+    ]
+  ],
+  "rewards": {
+    "recipes": [
+      "hbmsntm:ingot_lead_from_crystal_lead"
+    ]
+  }
+}

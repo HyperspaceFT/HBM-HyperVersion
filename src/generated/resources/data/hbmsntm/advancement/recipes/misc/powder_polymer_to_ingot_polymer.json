@@ -1,0 +1,32 @@
+{
+  "parent": "minecraft:recipes/root",
+  "criteria": {
+    "has_powder_polymer": {
+      "conditions": {
+        "items": [
+          {
+            "items": "hbmsntm:powder_polymer"
+          }
+        ]
+      },
+      "trigger": "minecraft:inventory_changed"
+    },
+    "has_the_recipe": {
+      "conditions": {
+        "recipe": "hbmsntm:powder_polymer_to_ingot_polymer"
+      },
+      "trigger": "minecraft:recipe_unlocked"
+    }
+  },
+  "requirements": [
+    [
+      "has_the_recipe",
+      "has_powder_polymer"
+    ]
+  ],
+  "rewards": {
+    "recipes": [
+      "hbmsntm:powder_polymer_to_ingot_polymer"
+    ]
+  }
+}

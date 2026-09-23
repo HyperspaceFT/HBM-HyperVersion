@@ -27,7 +27,7 @@ public record AnvilConstructionPacket(int recipeIndex, int mode) implements Cust
 
     public static void handleServer(AnvilConstructionPacket packet, IPayloadContext context) {
         context.enqueueWork(() -> {
-            if(!(context.player().containerMenu instanceof AnvilMenu menu)) {
+            if(packet.mode < 0 || packet.mode > 1 || !(context.player().containerMenu instanceof AnvilMenu menu) || !menu.stillValid(context.player())) {
                 return;
             }
 

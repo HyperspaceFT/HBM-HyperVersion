@@ -1,0 +1,32 @@
+{
+  "parent": "minecraft:recipes/root",
+  "criteria": {
+    "has_nugget_arsenic": {
+      "conditions": {
+        "items": [
+          {
+            "items": "hbmsntm:nugget_arsenic"
+          }
+        ]
+      },
+      "trigger": "minecraft:inventory_changed"
+    },
+    "has_the_recipe": {
+      "conditions": {
+        "recipe": "hbmsntm:ingot_arsenic_from_nugget_arsenic"
+      },
+      "trigger": "minecraft:recipe_unlocked"
+    }
+  },
+  "requirements": [
+    [
+      "has_the_recipe",
+      "has_nugget_arsenic"
+    ]
+  ],
+  "rewards": {
+    "recipes": [
+      "hbmsntm:ingot_arsenic_from_nugget_arsenic"
+    ]
+  }
+}

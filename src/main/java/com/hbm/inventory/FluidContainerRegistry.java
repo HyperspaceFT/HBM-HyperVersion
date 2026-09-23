@@ -81,12 +81,21 @@ public class FluidContainerRegistry {
         if (!containerMap.containsKey(type)) return ItemStack.EMPTY;
 
         for (FluidContainer container : containerMap.get(type)) {
-            if (!container.emptyContainer.isEmpty() && container.emptyContainer.is(sta.getItem())) {
+            if (!container.emptyContainer.isEmpty() && MetaHelper.compareStacks(container.emptyContainer, sta)) {
                 return container.fullContainer.copy();
             }
         }
 
         return ItemStack.EMPTY;
+    }
+
+    /** A registered empty container can be inserted before a machine has selected its fluid. */
+    public static boolean isEmptyContainer(ItemStack stack) {
+        if (stack.isEmpty()) return false;
+        for (FluidContainer container : allContainers) {
+            if (!container.emptyContainer.isEmpty() && MetaHelper.compareStacks(container.emptyContainer, stack)) return true;
+        }
+        return false;
     }
 
     public static ItemStack getEmptyContainer(ItemStack stack) {

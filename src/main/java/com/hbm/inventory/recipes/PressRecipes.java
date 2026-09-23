@@ -26,22 +26,38 @@ public class PressRecipes extends SerializableRecipe {
     public static HashMap<Pair<AStack, StampType>, ItemStack> recipes = new HashMap<>();
 
     public static ItemStack getOutput(ItemStack ingredient, ItemStack stamp) {
+        Entry<Pair<AStack, StampType>, ItemStack> recipe = getRecipe(ingredient, stamp);
+        return recipe == null ? ItemStack.EMPTY : recipe.getValue();
+    }
 
-        if(ingredient.isEmpty() || stamp.isEmpty()) return ItemStack.EMPTY;
-        if(!(stamp.getItem() instanceof StampItem stampItem)) return ItemStack.EMPTY;
+    public static int getInputCount(ItemStack ingredient, ItemStack stamp) {
+        Entry<Pair<AStack, StampType>, ItemStack> recipe = getRecipe(ingredient, stamp);
+        return recipe == null ? 0 : recipe.getKey().getKey().stacksize;
+    }
+
+    private static Entry<Pair<AStack, StampType>, ItemStack> getRecipe(ItemStack ingredient, ItemStack stamp) {
+
+        if(ingredient.isEmpty() || stamp.isEmpty()) return null;
+        if(!(stamp.getItem() instanceof StampItem stampItem)) return null;
 
         StampType type = stampItem.type;
 
         for(Entry<Pair<AStack, StampType>, ItemStack> recipe : recipes.entrySet()) {
 
-            if(recipe.getKey().getValue() == type && recipe.getKey().getKey().matchesRecipe(ingredient, true)) return recipe.getValue();
+            if(recipe.getKey().getKey().stacksize > 0 && recipe.getKey().getValue() == type
+                    && recipe.getKey().getKey().matchesRecipe(ingredient, false)) return recipe;
         }
 
-        return ItemStack.EMPTY;
+        return null;
     }
 
     @Override
     public void registerDefaults() {
+
+        // Upstream ANY_COKE.gem() covers these three NEO coke identities, not coke blocks.
+        makeRecipe(StampType.FLAT, new ComparableStack(NtmItems.COKE_COAL.get()),               NtmItems.INGOT_GRAPHITE.get());
+        makeRecipe(StampType.FLAT, new ComparableStack(NtmItems.COKE_LIGNITE.get()),            NtmItems.INGOT_GRAPHITE.get());
+        makeRecipe(StampType.FLAT, new ComparableStack(NtmItems.COKE_PETROLEUM.get()),          NtmItems.INGOT_GRAPHITE.get());
 
         makeRecipe(StampType.PLATE, new ComparableStack(Items.IRON_INGOT),			                NtmItems.PLATE_IRON.get());
         makeRecipe(StampType.PLATE, new ComparableStack(Items.GOLD_INGOT),			                NtmItems.PLATE_GOLD.get());
@@ -50,6 +66,7 @@ public class PressRecipes extends SerializableRecipe {
         makeRecipe(StampType.PLATE, new ComparableStack(NtmItems.INGOT_STEEL.get()),		        NtmItems.PLATE_STEEL.get());
         makeRecipe(StampType.PLATE, new ComparableStack(NtmItems.INGOT_LEAD.get()),			        NtmItems.PLATE_LEAD.get());
         makeRecipe(StampType.PLATE, new ComparableStack(Items.COPPER_INGOT),			            NtmItems.PLATE_COPPER.get());
+        makeRecipe(StampType.PLATE, new ComparableStack(NtmItems.INGOT_COPPER.get()),             NtmItems.PLATE_COPPER.get());
         makeRecipe(StampType.PLATE, new ComparableStack(NtmItems.INGOT_SCHRABIDIUM.get()),		    NtmItems.PLATE_SCHRABIDIUM.get());
         makeRecipe(StampType.PLATE, new ComparableStack(NtmItems.INGOT_COMBINE_STEEL.get()),		NtmItems.PLATE_COMBINE_STEEL.get());
         makeRecipe(StampType.PLATE, new ComparableStack(NtmItems.INGOT_GUNMETAL.get()),		        NtmItems.PLATE_GUNMETAL.get());
@@ -62,6 +79,12 @@ public class PressRecipes extends SerializableRecipe {
         makeRecipe(StampType.WIRE, new ComparableStack(NtmItems.INGOT_STEEL.get()),		            new ItemStack(NtmItems.WIRE_STEEL.get(), 8));
         makeRecipe(StampType.WIRE, new ComparableStack(NtmItems.INGOT_LEAD.get()),			        new ItemStack(NtmItems.WIRE_LEAD.get(), 8));
         makeRecipe(StampType.WIRE, new ComparableStack(Items.COPPER_INGOT),			                new ItemStack(NtmItems.WIRE_COPPER.get(), 8));
+        makeRecipe(StampType.WIRE, new ComparableStack(NtmItems.INGOT_COPPER.get()),             new ItemStack(NtmItems.WIRE_COPPER.get(), 8));
+        // Original HBM generates these from materials with the WIRE shape and an ingot entry.
+        // MAT_CARBON also uses the graphite ingot through the ingotCarbon ore-dictionary alias.
+        makeRecipe(StampType.WIRE, new ComparableStack(NtmItems.INGOT_GRAPHITE.get()),           new ItemStack(NtmItems.WIRE_CARBON.get(), 8));
+        makeRecipe(StampType.WIRE, new ComparableStack(NtmItems.INGOT_RED_COPPER.get()),         new ItemStack(NtmItems.WIRE_RED_COPPER.get(), 8));
+        makeRecipe(StampType.WIRE, new ComparableStack(NtmItems.INGOT_TUNGSTEN.get()),           new ItemStack(NtmItems.WIRE_TUNGSTEN.get(), 8));
         makeRecipe(StampType.WIRE, new ComparableStack(NtmItems.INGOT_SCHRABIDIUM.get()),		    new ItemStack(NtmItems.WIRE_SCHRABIDIUM.get(), 8));
     }
 

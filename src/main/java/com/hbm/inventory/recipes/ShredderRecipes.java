@@ -54,7 +54,7 @@ public class ShredderRecipes extends SerializableRecipe {
     }
 
     public static ItemStack getShredderResult(ItemStack stack) {
-        if(stack.isEmpty()) return new ItemStack(NtmItems.DUST.get());
+        if(stack.isEmpty()) return ItemStack.EMPTY;
 
         ComparableStack key = new ComparableStack(stack).makeSingular();
         ItemStack result = RECIPES.get(key);
@@ -266,6 +266,7 @@ public class ShredderRecipes extends SerializableRecipe {
         registerIfAbsent(new ItemStack(NtmItems.INGOT_COBALT.get()), new ItemStack(NtmItems.POWDER_COBALT.get(), 1));
         registerIfAbsent(new ItemStack(NtmItems.INGOT_COMBINE_STEEL.get()), new ItemStack(NtmItems.POWDER_COMBINE_STEEL.get(), 1));
         registerIfAbsent(new ItemStack(NtmItems.INGOT_COPPER.get()), new ItemStack(NtmItems.POWDER_COPPER.get(), 1));
+        registerIfAbsent(new ItemStack(Items.COPPER_INGOT), new ItemStack(NtmItems.POWDER_COPPER.get(), 1));
         registerIfAbsent(new ItemStack(NtmItems.INGOT_DAFFERGON.get()), new ItemStack(NtmItems.POWDER_DAFFERGON.get(), 1));
         registerIfAbsent(new ItemStack(NtmItems.INGOT_DESH.get()), new ItemStack(NtmItems.POWDER_DESH.get(), 1));
         registerIfAbsent(new ItemStack(NtmItems.INGOT_DINEUTRONIUM.get()), new ItemStack(NtmItems.POWDER_DINEUTRONIUM.get(), 1));
@@ -290,6 +291,7 @@ public class ShredderRecipes extends SerializableRecipe {
         registerIfAbsent(new ItemStack(NtmItems.INGOT_SCHRABIDIUM.get()), new ItemStack(NtmItems.POWDER_SCHRABIDIUM.get(), 1));
         registerIfAbsent(new ItemStack(NtmItems.INGOT_SR90.get()), new ItemStack(NtmItems.POWDER_SR90.get(), 1));
         registerIfAbsent(new ItemStack(NtmItems.INGOT_STEEL.get()), new ItemStack(NtmItems.POWDER_STEEL.get(), 1));
+        registerIfAbsent(new ItemStack(Items.IRON_INGOT), new ItemStack(NtmItems.POWDER_IRON.get(), 1));
         registerIfAbsent(new ItemStack(NtmItems.INGOT_TANTALIUM.get()), new ItemStack(NtmItems.POWDER_TANTALIUM.get(), 1));
         registerIfAbsent(new ItemStack(NtmItems.INGOT_TCALLOY.get()), new ItemStack(NtmItems.POWDER_TCALLOY.get(), 1));
         registerIfAbsent(new ItemStack(NtmItems.INGOT_TENNESSINE.get()), new ItemStack(NtmItems.POWDER_TENNESSINE.get(), 1));

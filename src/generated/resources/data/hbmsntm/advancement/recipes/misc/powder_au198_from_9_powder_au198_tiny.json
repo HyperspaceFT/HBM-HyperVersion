@@ -1,0 +1,32 @@
+{
+  "parent": "minecraft:recipes/root",
+  "criteria": {
+    "has_powder_au198_tiny": {
+      "conditions": {
+        "items": [
+          {
+            "items": "hbmsntm:powder_au198_tiny"
+          }
+        ]
+      },
+      "trigger": "minecraft:inventory_changed"
+    },
+    "has_the_recipe": {
+      "conditions": {
+        "recipe": "hbmsntm:powder_au198_from_9_powder_au198_tiny"
+      },
+      "trigger": "minecraft:recipe_unlocked"
+    }
+  },
+  "requirements": [
+    [
+      "has_the_recipe",
+      "has_powder_au198_tiny"
+    ]
+  ],
+  "rewards": {
+    "recipes": [
+      "hbmsntm:powder_au198_from_9_powder_au198_tiny"
+    ]
+  }
+}

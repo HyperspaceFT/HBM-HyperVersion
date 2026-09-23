@@ -47,7 +47,9 @@ public class HeaterFireboxScreen extends InfoScreen<HeaterFireboxMenu> {
                 5,
                 mouseX,
                 mouseY,
-                Component.literal(String.format("%,d", this.be.heatEnergy) + " / " + String.format("%,d", HeaterFireboxBlockEntity.maxHeatEnergy) + " TU")
+                Component.translatable("container.heaterFirebox.heat", String.format("%,d", this.be.heatEnergy), String.format("%,d", HeaterFireboxBlockEntity.maxHeatEnergy)),
+                Component.translatable("container.heaterFirebox.placement"),
+                Component.translatable("container.heaterFirebox.full")
         );
         this.drawCustomInfoStat(
                 guiGraphics,
@@ -59,8 +61,8 @@ public class HeaterFireboxScreen extends InfoScreen<HeaterFireboxMenu> {
                 5,
                 mouseX,
                 mouseY,
-                Component.literal(String.format("%,d", this.be.burnHeat) + " TU/t"),
-                Component.literal(String.format("%,d", this.be.burnTime / 20) + " s")
+                Component.translatable("container.heaterFirebox.rate", String.format("%,d", this.be.burnHeat)),
+                Component.translatable("container.heaterFirebox.time", String.format("%,d", this.be.burnTime / 20))
         );
     }
 

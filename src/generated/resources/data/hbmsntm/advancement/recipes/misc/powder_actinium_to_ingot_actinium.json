@@ -1,0 +1,32 @@
+{
+  "parent": "minecraft:recipes/root",
+  "criteria": {
+    "has_powder_actinium": {
+      "conditions": {
+        "items": [
+          {
+            "items": "hbmsntm:powder_actinium"
+          }
+        ]
+      },
+      "trigger": "minecraft:inventory_changed"
+    },
+    "has_the_recipe": {
+      "conditions": {
+        "recipe": "hbmsntm:powder_actinium_to_ingot_actinium"
+      },
+      "trigger": "minecraft:recipe_unlocked"
+    }
+  },
+  "requirements": [
+    [
+      "has_the_recipe",
+      "has_powder_actinium"
+    ]
+  ],
+  "rewards": {
+    "recipes": [
+      "hbmsntm:powder_actinium_to_ingot_actinium"
+    ]
+  }
+}

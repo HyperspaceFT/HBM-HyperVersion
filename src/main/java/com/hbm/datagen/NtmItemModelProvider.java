@@ -79,6 +79,7 @@ public class NtmItemModelProvider extends ItemModelProvider {
         this.basicItem(NtmItems.INGOT_BORON.get());
         this.basicItem(NtmItems.INGOT_GRAPHITE.get());
         this.basicItem(NtmItems.INGOT_FIREBRICK.get());
+        this.basicItem(NtmItems.BALL_FIRECLAY.get());
         this.basicItem(NtmItems.INGOT_DURA_STEEL.get());
         this.basicItem(NtmItems.INGOT_POLYMER.get());
         this.basicItem(NtmItems.INGOT_BAKELITE.get());
@@ -372,6 +373,9 @@ public class NtmItemModelProvider extends ItemModelProvider {
         this.basicItem(NtmItems.MOTOR.get());
         this.basicItem(NtmItems.CAST_PLATE_WELDED.get());
         this.basicItem(NtmItems.CAST_PLATE.get());
+        this.basicItem(NtmItems.MOLD_BASE.get());
+        this.basicItem(NtmItems.MOLD_PLATE_CAST.get());
+        this.basicItem(NtmItems.SCRAPS.get());
         this.basicItem(NtmItems.PIPES_STEEL.get());
         this.basicItem(NtmItems.CRT_DISPLAY.get());
         this.basicItem(NtmItems.RING_STARMETAL.get());

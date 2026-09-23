@@ -4,6 +4,7 @@ import com.hbm.items.NtmItems;
 import com.hbm.util.ItemStackUtil;
 import net.minecraft.ChatFormatting;
 import net.minecraft.network.chat.Component;
+import net.minecraft.tags.ItemTags;
 import net.minecraft.world.item.ItemStack;
 
 import java.util.ArrayList;
@@ -61,6 +62,9 @@ public class ModuleBurnTime {
         if(stack.is(NtmItems.BALEFIRE_AND_STEEL.get())) {
             return mod[MOD_BALEFIRE];
         }
+
+        // Bark and stripped wood blocks are logs too, even when their registry name contains no "log".
+        if(stack.is(ItemTags.LOGS)) return mod[MOD_LOG];
 
         String path = stack.getItem().builtInRegistryHolder().key().location().getPath().toLowerCase(Locale.US);
         List<String> tags = ItemStackUtil.getTags(stack);

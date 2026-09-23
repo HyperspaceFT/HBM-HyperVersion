@@ -26,6 +26,11 @@ public class NtmTags {
 
     public static class Items {
 
+        public static final TagKey<Item> DUSTS_ALUMINIUM = commonTag("dusts/aluminum");
+        public static final TagKey<Item> ORES_ALUMINIUM = commonTag("ores/aluminum");
+        public static final TagKey<Item> PLATES_STEEL = commonTag("plates/steel");
+        public static final TagKey<Item> PLATES_COPPER = commonTag("plates/copper");
+
         /*
          * TANKS
          */

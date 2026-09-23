@@ -1,0 +1,32 @@
+{
+  "parent": "minecraft:recipes/root",
+  "criteria": {
+    "has_powder_niobium_tiny": {
+      "conditions": {
+        "items": [
+          {
+            "items": "hbmsntm:powder_niobium_tiny"
+          }
+        ]
+      },
+      "trigger": "minecraft:inventory_changed"
+    },
+    "has_the_recipe": {
+      "conditions": {
+        "recipe": "hbmsntm:powder_niobium_from_9_powder_niobium_tiny"
+      },
+      "trigger": "minecraft:recipe_unlocked"
+    }
+  },
+  "requirements": [
+    [
+      "has_the_recipe",
+      "has_powder_niobium_tiny"
+    ]
+  ],
+  "rewards": {
+    "recipes": [
+      "hbmsntm:powder_niobium_from_9_powder_niobium_tiny"
+    ]
+  }
+}

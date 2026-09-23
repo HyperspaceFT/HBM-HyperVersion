@@ -1,6 +1,7 @@
 package com.hbm.blockentity;
 
 import api.hbm.energymk2.IEnergyConductorMK2;
+import api.hbm.energymk2.IEnergyConnectorMK2;
 import api.hbm.energymk2.IEnergyReceiverMK2;
 import api.hbm.fluidmk2.IFluidReceiverMK2;
 import api.hbm.redstoneoverradio.IRORInfo;
@@ -115,8 +116,8 @@ public class ProxyComboBlockEntity extends ProxyBaseBlockEntity implements IEner
     @Override
     public boolean canConnect(Direction dir) {
 
-        if (this.power && this.getCoreObject() instanceof IEnergyReceiverMK2 rec) {
-            return rec.canConnect(dir);
+        if (this.power && this.getCoreObject() instanceof IEnergyConnectorMK2 connector) {
+            return connector.canConnect(dir);
         }
 
         if (this.conductor && this.getCoreObject() instanceof IEnergyConductorMK2 con) {

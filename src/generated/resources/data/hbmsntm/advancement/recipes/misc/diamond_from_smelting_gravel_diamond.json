@@ -1,0 +1,32 @@
+{
+  "parent": "minecraft:recipes/root",
+  "criteria": {
+    "has_gravel_diamond": {
+      "conditions": {
+        "items": [
+          {
+            "items": "hbmsntm:gravel_diamond"
+          }
+        ]
+      },
+      "trigger": "minecraft:inventory_changed"
+    },
+    "has_the_recipe": {
+      "conditions": {
+        "recipe": "hbmsntm:diamond_from_smelting_gravel_diamond"
+      },
+      "trigger": "minecraft:recipe_unlocked"
+    }
+  },
+  "requirements": [
+    [
+      "has_the_recipe",
+      "has_gravel_diamond"
+    ]
+  ],
+  "rewards": {
+    "recipes": [
+      "hbmsntm:diamond_from_smelting_gravel_diamond"
+    ]
+  }
+}

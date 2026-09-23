@@ -3,6 +3,7 @@ package com.hbm.inventory.recipes.anvil;
 import com.hbm.blocks.NtmBlocks;
 import com.hbm.blocks.machine.NTMAnvilBlock;
 import com.hbm.inventory.MetaHelper;
+import com.hbm.inventory.NtmTags;
 import com.hbm.inventory.RecipesCommon;
 import com.hbm.inventory.RecipesCommon.AStack;
 import com.hbm.inventory.RecipesCommon.ComparableStack;
@@ -123,6 +124,7 @@ public class AnvilRecipes {
 
         SMITHING_RECIPES.add(new AnvilSmithingCyanideRecipe());
         SMITHING_RECIPES.add(new AnvilSmithingRenameRecipe());
+        SMITHING_RECIPES.add(new AnvilSmithingCastMoldRecipe());
     }
 
     private static void addUpgrade(NTMAnvilBlock.Variant input, NTMAnvilBlock.Variant output, ItemLike ingredient, int amount) {
@@ -174,7 +176,7 @@ public class AnvilRecipes {
                         new ComparableStack(NtmItems.CIRCUIT_VACUUM_TUBE.get(), 4)
                 },
                 new AnvilOutput(new ItemStack(NtmBlocks.MACHINE_ASSEMBLY_MACHINE.asItem()))
-        ).setTier(1).setOverlay(OverlayType.CONSTRUCTION));
+        ).setTier(2).setOverlay(OverlayType.CONSTRUCTION));
 
         CONSTRUCTION_RECIPES.add(new AnvilConstructionRecipe(
                 new AStack[] {
@@ -323,6 +325,52 @@ public class AnvilRecipes {
         addRecycleRecipe(NtmBlocks.DECO_TITANIUM.get(), NtmItems.INGOT_TITANIUM.get(), 4, 1);
         addRecycleRecipe(NtmBlocks.DECO_TUNGSTEN.get(), NtmItems.INGOT_TUNGSTEN.get(), 4, 1);
         addRecycleRecipe(NtmBlocks.DECO_ASBESTOS.get(), NtmItems.INGOT_ASBESTOS.get(), 4, 1);
+
+        // Normal upstream motor route; retain the existing cast-plate alternative and list indices.
+        CONSTRUCTION_RECIPES.add(new AnvilConstructionRecipe(
+                new AStack[] {
+                        new ComparableStack(NtmItems.PLATE_IRON.get(), 2),
+                        new ComparableStack(NtmItems.COIL_COPPER.get()),
+                        new ComparableStack(NtmItems.COIL_COPPER_RING.get())
+                },
+                new AnvilOutput(new ItemStack(NtmItems.MOTOR.get(), 2))
+        ).setTier(1).setOverlay(OverlayType.CONSTRUCTION));
+
+        CONSTRUCTION_RECIPES.add(new AnvilConstructionRecipe(
+                new AStack[] {
+                        new ComparableStack(Blocks.FURNACE),
+                        new RecipesCommon.TagStack(NtmTags.Items.PLATES_STEEL, 8),
+                        new ComparableStack(Items.COPPER_INGOT, 8)
+                },
+                new AnvilOutput(new ItemStack(NtmBlocks.HEATER_FIREBOX.asItem()))
+        ).setTier(2).setOverlay(OverlayType.CONSTRUCTION));
+
+        CONSTRUCTION_RECIPES.add(new AnvilConstructionRecipe(
+                new AStack[] {
+                        new ComparableStack(Blocks.FURNACE),
+                        new RecipesCommon.TagStack(NtmTags.Items.PLATES_STEEL, 8),
+                        new ComparableStack(NtmItems.INGOT_COPPER.get(), 8)
+                },
+                new AnvilOutput(new ItemStack(NtmBlocks.HEATER_FIREBOX.asItem()))
+        ).setTier(2).setOverlay(OverlayType.CONSTRUCTION));
+
+        CONSTRUCTION_RECIPES.add(new AnvilConstructionRecipe(
+                new AStack[] {
+                        new ComparableStack(NtmItems.INGOT_FIREBRICK.get(), 20),
+                        new ComparableStack(Items.COPPER_INGOT, 8),
+                        new RecipesCommon.TagStack(NtmTags.Items.PLATES_STEEL, 8)
+                },
+                new AnvilOutput(new ItemStack(NtmBlocks.MACHINE_CRUCIBLE.asItem()))
+        ).setTier(2).setOverlay(OverlayType.CONSTRUCTION));
+
+        CONSTRUCTION_RECIPES.add(new AnvilConstructionRecipe(
+                new AStack[] {
+                        new ComparableStack(NtmItems.INGOT_FIREBRICK.get(), 20),
+                        new ComparableStack(NtmItems.INGOT_COPPER.get(), 8),
+                        new RecipesCommon.TagStack(NtmTags.Items.PLATES_STEEL, 8)
+                },
+                new AnvilOutput(new ItemStack(NtmBlocks.MACHINE_CRUCIBLE.asItem()))
+        ).setTier(2).setOverlay(OverlayType.CONSTRUCTION));
 
     }
 

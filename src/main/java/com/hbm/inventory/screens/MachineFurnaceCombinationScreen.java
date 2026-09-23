@@ -27,9 +27,24 @@ public class MachineFurnaceCombinationScreen extends InfoScreen<MachineFurnaceCo
         super.render(guiGraphics, mouseX, mouseY, partialTicks);
         this.be.tank.renderTankTooltip(guiGraphics, mouseX, mouseY, this.leftPos + 118, this.topPos + 18, 16, 52);
         this.drawCustomInfoStat(guiGraphics, mouseX, mouseY, this.leftPos + 44, this.topPos + 36, 39, 7, mouseX, mouseY,
-                Component.literal(String.format("%,d / %,d TU", this.be.progress, MachineFurnaceCombinationBlockEntity.PROCESS_TIME)).withStyle(ChatFormatting.YELLOW));
+                Component.translatable("container.furnace_combination.progress", String.format("%,d", this.be.progress), String.format("%,d", MachineFurnaceCombinationBlockEntity.PROCESS_TIME)).withStyle(ChatFormatting.YELLOW),
+                Component.translatable("container.furnace_combination.process"),
+                Component.translatable("container.furnace_combination.blocked"));
         this.drawCustomInfoStat(guiGraphics, mouseX, mouseY, this.leftPos + 44, this.topPos + 45, 39, 7, mouseX, mouseY,
-                Component.literal(String.format("%,d / %,d TU", this.be.heat, MachineFurnaceCombinationBlockEntity.MAX_HEAT)).withStyle(ChatFormatting.YELLOW));
+                Component.translatable("container.heaterFirebox.heat", String.format("%,d", this.be.heat), String.format("%,d", MachineFurnaceCombinationBlockEntity.MAX_HEAT)).withStyle(ChatFormatting.YELLOW),
+                Component.translatable("container.furnace_combination.placement"),
+                Component.translatable("container.furnace_combination.interruption"));
+        this.drawCustomInfoStat(guiGraphics, mouseX, mouseY, this.leftPos + 26, this.topPos + 36, 16, 16, mouseX, mouseY,
+                Component.translatable("container.furnace_combination.input"),
+                Component.translatable("container.furnace_combination.switch"));
+        this.drawCustomInfoStat(guiGraphics, mouseX, mouseY, this.leftPos + 136, this.topPos + 18, 16, 16, mouseX, mouseY,
+                Component.translatable("container.furnace_combination.container"),
+                Component.translatable("container.furnace_combination.container_amount"),
+                Component.translatable("container.furnace_combination.container_whole"),
+                Component.translatable("container.furnace_combination.container_blocked"));
+        this.drawCustomInfoStat(guiGraphics, mouseX, mouseY, this.leftPos + 136, this.topPos + 54, 16, 16, mouseX, mouseY,
+                Component.translatable("container.furnace_combination.container_recovery"),
+                Component.translatable("container.furnace_combination.container_unload"));
         this.renderTooltip(guiGraphics, mouseX, mouseY);
     }
 

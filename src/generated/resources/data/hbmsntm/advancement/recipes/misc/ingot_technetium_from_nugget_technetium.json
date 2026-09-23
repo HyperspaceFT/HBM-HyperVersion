@@ -1,0 +1,32 @@
+{
+  "parent": "minecraft:recipes/root",
+  "criteria": {
+    "has_nugget_technetium": {
+      "conditions": {
+        "items": [
+          {
+            "items": "hbmsntm:nugget_technetium"
+          }
+        ]
+      },
+      "trigger": "minecraft:inventory_changed"
+    },
+    "has_the_recipe": {
+      "conditions": {
+        "recipe": "hbmsntm:ingot_technetium_from_nugget_technetium"
+      },
+      "trigger": "minecraft:recipe_unlocked"
+    }
+  },
+  "requirements": [
+    [
+      "has_the_recipe",
+      "has_nugget_technetium"
+    ]
+  ],
+  "rewards": {
+    "recipes": [
+      "hbmsntm:ingot_technetium_from_nugget_technetium"
+    ]
+  }
+}

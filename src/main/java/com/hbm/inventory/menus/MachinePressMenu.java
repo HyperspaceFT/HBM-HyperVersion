@@ -3,6 +3,7 @@ package com.hbm.inventory.menus;
 import com.hbm.blockentity.machine.MachinePressBlockEntity;
 import com.hbm.inventory.NtmMenuTypes;
 import com.hbm.inventory.SlotCraftingOutput;
+import com.hbm.inventory.SlotNonRetarded;
 import com.hbm.items.machine.StampItem;
 import com.hbm.util.CompatExternal;
 import net.minecraft.network.FriendlyByteBuf;
@@ -21,11 +22,11 @@ public class MachinePressMenu extends MenuBase<MachinePressBlockEntity> {
         super(NtmMenuTypes.PRESS.get(), id, be);
 
         // Coal
-        this.addSlot(new Slot(be, 0, 26, 53));
+        this.addSlot(new SlotNonRetarded(be, 0, 26, 53));
         // Stamp
-        this.addSlot(new Slot(be, 1, 80, 17));
+        this.addSlot(new SlotNonRetarded(be, 1, 80, 17));
         // Input
-        this.addSlot(new Slot(be, 2, 80, 53));
+        this.addSlot(new SlotNonRetarded(be, 2, 80, 53));
         // Output
         this.addSlot(new SlotCraftingOutput(inventory.player, be, 3, 140, 35));
         // Extra Storage
@@ -37,6 +38,7 @@ public class MachinePressMenu extends MenuBase<MachinePressBlockEntity> {
 
     @Override
     public ItemStack quickMoveStack(Player player, int index) {
+        if(index < 0 || index >= this.slots.size()) return ItemStack.EMPTY;
 
         ItemStack newStack = ItemStack.EMPTY;
         Slot slot = this.slots.get(index);
@@ -47,7 +49,7 @@ public class MachinePressMenu extends MenuBase<MachinePressBlockEntity> {
             newStack = stack.copy();
 
             if(index <= 12) {
-                if(!this.moveItemStackTo(stack, 14, this.slots.size(), true)) {
+                if(!this.moveItemStackTo(stack, 13, this.slots.size(), true)) {
                     return ItemStack.EMPTY;
                 }
             } else {

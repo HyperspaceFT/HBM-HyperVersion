@@ -1,0 +1,32 @@
+{
+  "parent": "minecraft:recipes/root",
+  "criteria": {
+    "has_block_saturnite": {
+      "conditions": {
+        "items": [
+          {
+            "items": "hbmsntm:block_saturnite"
+          }
+        ]
+      },
+      "trigger": "minecraft:inventory_changed"
+    },
+    "has_the_recipe": {
+      "conditions": {
+        "recipe": "hbmsntm:ingot_saturnite_from_block_saturnite"
+      },
+      "trigger": "minecraft:recipe_unlocked"
+    }
+  },
+  "requirements": [
+    [
+      "has_the_recipe",
+      "has_block_saturnite"
+    ]
+  ],
+  "rewards": {
+    "recipes": [
+      "hbmsntm:ingot_saturnite_from_block_saturnite"
+    ]
+  }
+}

@@ -159,6 +159,7 @@ public class CommonEvents {
         event.register(NtmMenuTypes.MACHINE_OIL_WELL.get(), MachineOilWellScreen::new);
         event.register(NtmMenuTypes.MACHINE_REFINERY.get(), MachineRefineryScreen::new);
         event.register(NtmMenuTypes.FURNACE_COMBINATION.get(), MachineFurnaceCombinationScreen::new);
+        event.register(NtmMenuTypes.MACHINE_CRUCIBLE.get(), MachineCrucibleScreen::new);
         event.register(NtmMenuTypes.MACHINE_BLAST_FURNACE.get(), MachineBlastFurnaceScreen::new);
         event.register(NtmMenuTypes.MACHINE_WOOD_BURNER.get(), MachineWoodBurnerScreen::new);
         event.register(NtmMenuTypes.MACHINE_CENTRIFUGE.get(), MachineCentrifugeScreen::new);

@@ -1,0 +1,21 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "key": {
+    "A": {
+      "item": "hbmsntm:blade_tungsten"
+    },
+    "B": {
+      "item": "hbmsntm:ingot_dura_steel"
+    }
+  },
+  "pattern": [
+    "AAA",
+    "ABA",
+    "AAA"
+  ],
+  "result": {
+    "count": 1,
+    "id": "hbmsntm:turbine_tungsten"
+  }
+}

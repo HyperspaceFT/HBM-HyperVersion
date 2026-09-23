@@ -1,0 +1,24 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "key": {
+    "A": {
+      "tag": "c:glass_panes"
+    },
+    "B": {
+      "item": "hbmsntm:wire_tungsten"
+    },
+    "C": {
+      "item": "hbmsntm:plate_polymer"
+    }
+  },
+  "pattern": [
+    " A ",
+    " B ",
+    " C "
+  ],
+  "result": {
+    "count": 1,
+    "id": "hbmsntm:circuit_vacuum_tube"
+  }
+}

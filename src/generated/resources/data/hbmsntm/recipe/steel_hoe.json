@@ -1,0 +1,21 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "equipment",
+  "key": {
+    "#": {
+      "item": "minecraft:stick"
+    },
+    "X": {
+      "item": "hbmsntm:ingot_steel"
+    }
+  },
+  "pattern": [
+    "XX ",
+    " # ",
+    " # "
+  ],
+  "result": {
+    "count": 1,
+    "id": "hbmsntm:steel_hoe"
+  }
+}

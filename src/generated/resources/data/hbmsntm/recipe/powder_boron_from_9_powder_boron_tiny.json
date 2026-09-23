@@ -1,0 +1,18 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "key": {
+    "T": {
+      "item": "hbmsntm:powder_boron_tiny"
+    }
+  },
+  "pattern": [
+    "TTT",
+    "TTT",
+    "TTT"
+  ],
+  "result": {
+    "count": 1,
+    "id": "hbmsntm:powder_boron"
+  }
+}

@@ -81,6 +81,11 @@ public class HeaterFireboxBlockEntity extends AbstractHeaterMachineBlockEntity {
             return;
         }
 
+        int oldHeat = this.heatEnergy;
+        int oldBurnTime = this.burnTime;
+        int oldBurnHeat = this.burnHeat;
+        boolean oldWasOn = this.wasOn;
+        boolean consumedFuel = false;
         this.wasOn = false;
 
         if(this.burnTime <= 0) {
@@ -100,6 +105,7 @@ public class HeaterFireboxBlockEntity extends AbstractHeaterMachineBlockEntity {
                 if(stack.isEmpty()) {
                     this.slots.set(i, remainder);
                 }
+                consumedFuel = true;
 
                 this.wasOn = true;
                 break;
@@ -118,6 +124,10 @@ public class HeaterFireboxBlockEntity extends AbstractHeaterMachineBlockEntity {
             this.burnHeat = 0;
         }
 
+        if(consumedFuel || oldHeat != this.heatEnergy || oldBurnTime != this.burnTime
+                || oldBurnHeat != this.burnHeat || oldWasOn != this.wasOn) {
+            this.setChanged();
+        }
         this.networkPackNT(25);
     }
 
@@ -135,7 +145,7 @@ public class HeaterFireboxBlockEntity extends AbstractHeaterMachineBlockEntity {
     @Override
     public void stopOpen(Player player) {
         if(this.level == null) return;
-        if(!this.level.isClientSide) this.playersUsing--;
+        if(!this.level.isClientSide) this.playersUsing = Math.max(0, this.playersUsing - 1);
     }
 
     @Override
@@ -146,9 +156,6 @@ public class HeaterFireboxBlockEntity extends AbstractHeaterMachineBlockEntity {
         tag.putInt("burnTime", this.burnTime);
         tag.putInt("burnHeat", this.burnHeat);
         tag.putBoolean("wasOn", this.wasOn);
-        tag.putInt("playersUsing", this.playersUsing);
-        tag.putFloat("doorAngle", this.doorAngle);
-        tag.putFloat("prevDoorAngle", this.prevDoorAngle);
     }
 
     @Override
@@ -159,14 +166,12 @@ public class HeaterFireboxBlockEntity extends AbstractHeaterMachineBlockEntity {
         this.burnTime = tag.getInt("burnTime");
         this.burnHeat = tag.getInt("burnHeat");
         this.wasOn = tag.getBoolean("wasOn");
-        this.playersUsing = tag.getInt("playersUsing");
-        this.doorAngle = tag.getFloat("doorAngle");
-        this.prevDoorAngle = tag.getFloat("prevDoorAngle");
+        this.normalizeLoadedState();
     }
 
     @Override
     public boolean canPlaceItem(int slot, ItemStack stack) {
-        return burnModule.getBurnTime(stack) > 0;
+        return slot >= 0 && slot < 2 && !stack.isEmpty() && burnModule.getBurnTime(stack) > 0;
     }
 
     @Override
@@ -176,9 +181,7 @@ public class HeaterFireboxBlockEntity extends AbstractHeaterMachineBlockEntity {
         this.burnTime = tag.getInt("burnTime");
         this.burnHeat = tag.getInt("burnHeat");
         this.wasOn = tag.getBoolean("wasOn");
-        this.playersUsing = tag.getInt("playersUsing");
-        this.doorAngle = tag.getFloat("doorAngle");
-        this.prevDoorAngle = tag.getFloat("prevDoorAngle");
+        this.normalizeLoadedState();
     }
 
     @Override
@@ -188,9 +191,16 @@ public class HeaterFireboxBlockEntity extends AbstractHeaterMachineBlockEntity {
         tag.putInt("burnTime", this.burnTime);
         tag.putInt("burnHeat", this.burnHeat);
         tag.putBoolean("wasOn", this.wasOn);
-        tag.putInt("playersUsing", this.playersUsing);
-        tag.putFloat("doorAngle", this.doorAngle);
-        tag.putFloat("prevDoorAngle", this.prevDoorAngle);
+    }
+
+    private void normalizeLoadedState() {
+        this.heatEnergy = Math.clamp(this.heatEnergy, 0, this.getMaxHeat());
+        this.maxBurnTime = Math.max(0, this.maxBurnTime);
+        this.burnTime = Math.clamp(this.burnTime, 0, this.maxBurnTime);
+        this.burnHeat = Math.clamp(this.burnHeat, 0, this.getMaxHeat());
+        // Open menus and door animation do not survive a chunk load or item placement.
+        this.playersUsing = 0;
+        this.doorAngle = this.prevDoorAngle = 0;
     }
 
     @Override

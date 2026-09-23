@@ -1,0 +1,32 @@
+{
+  "parent": "minecraft:recipes/root",
+  "criteria": {
+    "has_billet_australium": {
+      "conditions": {
+        "items": [
+          {
+            "items": "hbmsntm:billet_australium"
+          }
+        ]
+      },
+      "trigger": "minecraft:inventory_changed"
+    },
+    "has_the_recipe": {
+      "conditions": {
+        "recipe": "hbmsntm:ingot_australium_from_3_billet_australium"
+      },
+      "trigger": "minecraft:recipe_unlocked"
+    }
+  },
+  "requirements": [
+    [
+      "has_the_recipe",
+      "has_billet_australium"
+    ]
+  ],
+  "rewards": {
+    "recipes": [
+      "hbmsntm:ingot_australium_from_3_billet_australium"
+    ]
+  }
+}

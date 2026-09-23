@@ -1,0 +1,27 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "key": {
+    "A": {
+      "item": "hbmsntm:plate_steel"
+    },
+    "B": {
+      "item": "hbmsntm:circuit_vacuum_tube"
+    },
+    "C": {
+      "item": "hbmsntm:powder_aluminium"
+    },
+    "D": {
+      "item": "minecraft:glass_pane"
+    }
+  },
+  "pattern": [
+    " C ",
+    "ADA",
+    " B "
+  ],
+  "result": {
+    "count": 4,
+    "id": "hbmsntm:crt_display"
+  }
+}

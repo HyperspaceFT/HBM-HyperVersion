@@ -27,6 +27,13 @@ import net.minecraft.world.level.block.state.BlockState;
 public class MachineShredderBlockEntity extends MachineBaseBlockEntity implements IEnergyReceiverMK2 {
 
     public static final int PROCESSING_SPEED = 60;
+    public static final int STATUS_IDLE = 0;
+    public static final int STATUS_RUNNING = 1;
+    public static final int STATUS_MISSING_BLADES = 2;
+    public static final int STATUS_BROKEN_BLADES = 3;
+    public static final int STATUS_NO_POWER = 4;
+    public static final int STATUS_OUTPUT_BLOCKED = 5;
+    public static final int STATUS_INVALID_INPUT = 6;
     private static final int INPUT_START = 0;
     private static final int INPUT_END = 9;
     private static final int OUTPUT_START = 9;
@@ -39,6 +46,7 @@ public class MachineShredderBlockEntity extends MachineBaseBlockEntity implement
     public long maxPower = 10_000L;
     public int progress;
     public int soundCycle;
+    private int operatingStatus = STATUS_IDLE;
     private AudioWrapper audio;
 
     public MachineShredderBlockEntity(BlockPos pos, BlockState state) {
@@ -55,7 +63,7 @@ public class MachineShredderBlockEntity extends MachineBaseBlockEntity implement
         if(this.level == null) return;
 
         if(this.level.isClientSide) {
-            if(this.progress > 0) {
+            if(this.operatingStatus == STATUS_RUNNING) {
                 if(this.audio == null) {
                     this.audio = this.createAudioLoop();
                     if(this.audio != null) {
@@ -79,14 +87,19 @@ public class MachineShredderBlockEntity extends MachineBaseBlockEntity implement
             this.trySubscribe(this.level, dirPos);
         }
 
-        if(this.isPowered() && this.canProcess()) {
+        long previousPower = this.power;
+        int previousProgress = this.progress;
+        int previousSoundCycle = this.soundCycle;
+        this.power = this.getPower();
+        this.operatingStatus = this.findOperatingStatus();
+
+        if(this.operatingStatus == STATUS_RUNNING) {
             this.progress++;
             this.power -= 5L;
 
             if(this.progress >= PROCESSING_SPEED) {
                 this.progress = 0;
-                this.damageBlades();
-                this.processItem();
+                if(this.processItem()) this.damageBlades();
                 this.setChanged();
             }
 
@@ -96,37 +109,54 @@ public class MachineShredderBlockEntity extends MachineBaseBlockEntity implement
             }
         } else {
             this.progress = 0;
+            this.soundCycle = 0;
         }
 
-        this.power = Library.chargeTEFromItems(this.slots, BATTERY, this.power, this.maxPower);
+        this.setPower(Library.chargeTEFromItems(this.slots, BATTERY, this.power, this.getMaxPower()));
+        if(previousPower != this.power || previousProgress != this.progress || previousSoundCycle != this.soundCycle) {
+            this.setChanged();
+        }
         this.networkPackNT(25);
     }
 
-    private boolean isPowered() {
-        return this.getPower() > 0;
+    public int getOperatingStatus() {
+        return this.operatingStatus;
     }
 
-    private boolean canProcess() {
-        if(this.getPower() < 5L) return false;
-        if(this.getGearLeft() <= 0 || this.getGearLeft() >= 3) return false;
-        if(this.getGearRight() <= 0 || this.getGearRight() >= 3) return false;
+    private int findOperatingStatus() {
+        if(this.getGearLeft() == 0 || this.getGearRight() == 0) return STATUS_MISSING_BLADES;
+        if(this.getGearLeft() == 3 || this.getGearRight() == 3) return STATUS_BROKEN_BLADES;
 
+        boolean hasInput = false;
+        boolean hasResult = false;
         for(int i = INPUT_START; i < INPUT_END; i++) {
             ItemStack stack = this.slots.get(i);
             if(stack.isEmpty()) continue;
-            if(this.hasSpace(stack)) return true;
+            hasInput = true;
+            ItemStack result = this.getProcessResult(stack);
+            if(result.isEmpty()) continue;
+            hasResult = true;
+            if(this.hasSpaceForResult(result)) return this.getPower() >= 5L ? STATUS_RUNNING : STATUS_NO_POWER;
         }
 
-        return false;
+        if(!hasInput) return STATUS_IDLE;
+        return hasResult ? STATUS_OUTPUT_BLOCKED : STATUS_INVALID_INPUT;
     }
 
-    private void processItem() {
+    private ItemStack getProcessResult(ItemStack input) {
+        if(input.isEmpty() || this.isBlade(input) || input.getItem() instanceof IBatteryItem) return ItemStack.EMPTY;
+        return ShredderRecipes.getShredderResult(input);
+    }
+
+    private boolean processItem() {
+        boolean processed = false;
         for(int inputSlot = INPUT_START; inputSlot < INPUT_END; inputSlot++) {
             ItemStack input = this.slots.get(inputSlot);
             if(input.isEmpty()) continue;
-            if(!this.hasSpace(input)) continue;
 
-            ItemStack output = ShredderRecipes.getShredderResult(input);
+            // Recheck against outputs already reserved by earlier inputs in this round.
+            ItemStack output = this.getProcessResult(input);
+            if(!this.hasSpaceForResult(output)) continue;
             int remaining = output.getCount();
 
             for(int outSlot = OUTPUT_START; outSlot < OUTPUT_END && remaining > 0; outSlot++) {
@@ -134,7 +164,7 @@ public class MachineShredderBlockEntity extends MachineBaseBlockEntity implement
                 if(current.isEmpty()) continue;
                 if(!ItemStack.isSameItemSameComponents(current, output)) continue;
 
-                int space = current.getMaxStackSize() - current.getCount();
+                int space = Math.min(this.getMaxStackSize(), current.getMaxStackSize()) - current.getCount();
                 if(space <= 0) continue;
 
                 int moved = Math.min(space, remaining);
@@ -146,7 +176,7 @@ public class MachineShredderBlockEntity extends MachineBaseBlockEntity implement
                 ItemStack current = this.slots.get(outSlot);
                 if(!current.isEmpty()) continue;
 
-                int moved = Math.min(remaining, output.getMaxStackSize());
+                int moved = Math.min(remaining, Math.min(this.getMaxStackSize(), output.getMaxStackSize()));
                 ItemStack placed = output.copy();
                 placed.setCount(moved);
                 this.slots.set(outSlot, placed);
@@ -157,7 +187,9 @@ public class MachineShredderBlockEntity extends MachineBaseBlockEntity implement
             if(input.isEmpty()) {
                 this.slots.set(inputSlot, ItemStack.EMPTY);
             }
+            processed = true;
         }
+        return processed;
     }
 
     private void damageBlades() {
@@ -169,19 +201,19 @@ public class MachineShredderBlockEntity extends MachineBaseBlockEntity implement
         }
     }
 
-    private boolean hasSpace(ItemStack stack) {
-        ItemStack result = ShredderRecipes.getShredderResult(stack);
+    private boolean hasSpaceForResult(ItemStack result) {
         if(result.isEmpty()) return false;
 
-        int spaceLeft = 0;
+        long spaceLeft = 0;
 
         for(int outSlot = OUTPUT_START; outSlot < OUTPUT_END; outSlot++) {
             ItemStack current = this.slots.get(outSlot);
             if(current.isEmpty()) {
-                spaceLeft += result.getMaxStackSize();
+                spaceLeft += Math.min(this.getMaxStackSize(), result.getMaxStackSize());
             } else if(ItemStack.isSameItemSameComponents(current, result)) {
-                spaceLeft += current.getMaxStackSize() - current.getCount();
+                spaceLeft += Math.max(0, Math.min(this.getMaxStackSize(), current.getMaxStackSize()) - current.getCount());
             }
+            if(spaceLeft >= result.getCount()) return true;
         }
 
         return spaceLeft >= result.getCount();
@@ -201,7 +233,7 @@ public class MachineShredderBlockEntity extends MachineBaseBlockEntity implement
         if(stack.getItem() != NtmItems.BLADES_STEEL.get() && stack.getItem() != NtmItems.BLADES_TITANIUM.get() && stack.getItem() != NtmItems.BLADES_DESH.get()) return 0;
         if(!stack.isDamageableItem()) return 1;
         if(stack.getDamageValue() < stack.getMaxDamage() / 2) return 1;
-        if(stack.getDamageValue() != stack.getMaxDamage()) return 2;
+        if(stack.getDamageValue() < stack.getMaxDamage()) return 2;
         return 3;
     }
 
@@ -211,7 +243,9 @@ public class MachineShredderBlockEntity extends MachineBaseBlockEntity implement
                 new DirPos(pos.getX() + 1, pos.getY(), pos.getZ(), Direction.EAST),
                 new DirPos(pos.getX() - 1, pos.getY(), pos.getZ(), Direction.WEST),
                 new DirPos(pos.getX(), pos.getY(), pos.getZ() + 1, Direction.SOUTH),
-                new DirPos(pos.getX(), pos.getY(), pos.getZ() - 1, Direction.NORTH)
+                new DirPos(pos.getX(), pos.getY(), pos.getZ() - 1, Direction.NORTH),
+                new DirPos(pos.getX(), pos.getY() + 1, pos.getZ(), Direction.UP),
+                new DirPos(pos.getX(), pos.getY() - 1, pos.getZ(), Direction.DOWN)
         };
     }
 
@@ -220,13 +254,13 @@ public class MachineShredderBlockEntity extends MachineBaseBlockEntity implement
     }
 
     public int getPowerScaled(int pixels) {
-        return (int) (this.getPower() * pixels / Math.max(this.getMaxPower(), 1L));
+        return (int) ((double) this.getPower() / Math.max(this.getMaxPower(), 1L) * pixels);
     }
 
     @Override
     public boolean canPlaceItem(int slot, ItemStack stack) {
         if(slot >= INPUT_START && slot < INPUT_END) {
-            return !this.isBlade(stack) && !(stack.getItem() instanceof IBatteryItem);
+            return !this.getProcessResult(stack).isEmpty();
         }
 
         if(slot == LEFT_BLADE || slot == RIGHT_BLADE) {
@@ -238,6 +272,22 @@ public class MachineShredderBlockEntity extends MachineBaseBlockEntity implement
         }
 
         return false;
+    }
+
+    @Override
+    public boolean canPlaceItemThroughFace(int index, ItemStack stack, Direction direction) {
+        if(index == BATTERY || !this.canPlaceItem(index, stack)) return false;
+        if(index == LEFT_BLADE || index == RIGHT_BLADE) return true;
+        ItemStack current = this.slots.get(index);
+        if(current.isEmpty()) return true;
+
+        // Fill empty input positions before stacking, so automation can use all nine per round.
+        for(int slot = INPUT_START; slot < INPUT_END; slot++) {
+            ItemStack other = this.slots.get(slot);
+            if(other.isEmpty()) return false;
+            if(ItemStack.isSameItemSameComponents(other, stack) && other.getCount() < current.getCount()) return false;
+        }
+        return true;
     }
 
     @Override
@@ -261,9 +311,11 @@ public class MachineShredderBlockEntity extends MachineBaseBlockEntity implement
     protected void loadAdditional(CompoundTag tag, HolderLookup.Provider registries) {
         super.loadAdditional(tag, registries);
         this.power = tag.getLong("power");
-        this.maxPower = tag.getLong("maxPower");
-        this.progress = tag.getInt("progress");
-        this.soundCycle = tag.getInt("soundCycle");
+        this.maxPower = tag.contains("maxPower") && tag.getLong("maxPower") > 0 ? tag.getLong("maxPower") : 10_000L;
+        this.power = this.getPower();
+        this.progress = Math.max(0, Math.min(tag.getInt("progress"), PROCESSING_SPEED - 1));
+        this.soundCycle = Math.max(0, Math.min(tag.getInt("soundCycle"), 49));
+        this.operatingStatus = STATUS_IDLE;
     }
 
     @Override
@@ -282,6 +334,7 @@ public class MachineShredderBlockEntity extends MachineBaseBlockEntity implement
         buf.writeLong(this.maxPower);
         buf.writeInt(this.progress);
         buf.writeInt(this.soundCycle);
+        buf.writeInt(this.operatingStatus);
     }
 
     @Override
@@ -291,21 +344,35 @@ public class MachineShredderBlockEntity extends MachineBaseBlockEntity implement
         this.maxPower = buf.readLong();
         this.progress = buf.readInt();
         this.soundCycle = buf.readInt();
+        this.operatingStatus = buf.readInt();
     }
 
     @Override
     public long getPower() {
-        return Math.max(Math.min(this.power, this.maxPower), 0L);
+        return Math.max(Math.min(this.power, this.getMaxPower()), 0L);
     }
 
     @Override
     public void setPower(long power) {
-        this.power = power;
+        long clamped = Math.max(0L, Math.min(power, this.getMaxPower()));
+        if(this.power != clamped) {
+            this.power = clamped;
+            this.setChanged();
+        }
+    }
+
+    @Override
+    public long transferPower(long power) {
+        if(power <= 0L) return power;
+        // Subtract capacity before adding, including for unusually large provider requests.
+        long accepted = Math.min(power, this.getMaxPower() - this.getPower());
+        this.setPower(this.getPower() + accepted);
+        return power - accepted;
     }
 
     @Override
     public long getMaxPower() {
-        return this.maxPower;
+        return Math.max(0L, this.maxPower);
     }
 
     @Override

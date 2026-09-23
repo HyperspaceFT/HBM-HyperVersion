@@ -42,12 +42,11 @@ public class MachineBlastFurnaceBlockEntity extends MachineBaseBlockEntity imple
     public final FluidTank[] tanks;
     public boolean isProgressing;
     public float progress;
-    public float speed = 0.5F;
+    public float speed = 1.0F;
     public int fuel;
 
     public MachineBlastFurnaceBlockEntity(BlockPos pos, BlockState state) {
         super(NtmBlockEntityTypes.MACHINE_BLAST_FURNACE.get(), pos, state, 5);
-        BlastFurnaceRecipes.INSTANCE.registerDefaults();
         this.tanks = new FluidTank[] {
                 new FluidTank(Fluids.AIRBLAST, 4_000),
                 new FluidTank(Fluids.FLUE, 1_000)
@@ -75,7 +74,7 @@ public class MachineBlastFurnaceBlockEntity extends MachineBaseBlockEntity imple
         BlastFurnaceRecipe recipe = BlastFurnaceRecipes.INSTANCE.getRecipe(this.slots.get(SLOT_INPUT_1), this.slots.get(SLOT_INPUT_2));
         if(!this.tilted && recipe != null && this.fuel >= FUEL_RATE && this.canOutput(recipe)) {
             this.isProgressing = true;
-            this.speed = Math.max(0.5F, Math.min(5.0F, 0.5F + this.tanks[0].getFill() * 8.0F / this.tanks[0].getMaxFill()));
+            this.speed = Math.max(1.0F, Math.min(5.0F, 1.0F + this.tanks[0].getFill() * 8.0F / this.tanks[0].getMaxFill()));
             this.progress += this.speed / Math.max(recipe.duration, 1);
             if(this.tanks[0].getFill() > 0) {
                 this.tanks[0].setFill(Math.max(0, this.tanks[0].getFill() - 1));
@@ -90,12 +89,14 @@ public class MachineBlastFurnaceBlockEntity extends MachineBaseBlockEntity imple
                 this.progress = 0.0F;
                 this.fuel -= FUEL_RATE;
                 this.tanks[1].setFill(Math.min(this.tanks[1].getMaxFill(), this.tanks[1].getFill() + FLUE_GAS));
-                this.setChanged();
             }
+            this.setChanged();
         } else {
+            boolean changed = this.isProgressing || this.progress != 0.0F || this.speed != 1.0F;
             this.isProgressing = false;
             this.progress = 0.0F;
-            this.speed = 0.5F;
+            this.speed = 1.0F;
+            if(changed) this.setChanged();
         }
 
         this.networkPackNT(100);
@@ -137,10 +138,12 @@ public class MachineBlastFurnaceBlockEntity extends MachineBaseBlockEntity imple
 
     private boolean canOutputToSlot(int slot, ItemStack output) {
         if(output.isEmpty()) return true;
+        int capacity = Math.min(output.getMaxStackSize(), this.getMaxStackSize(output));
+        if(output.getCount() > capacity) return false;
         ItemStack current = this.slots.get(slot);
         if(current.isEmpty()) return true;
         if(!ItemStack.isSameItemSameComponents(current, output)) return false;
-        return current.getCount() + output.getCount() <= current.getMaxStackSize();
+        return current.getCount() + output.getCount() <= capacity;
     }
 
     private void process(BlastFurnaceRecipe recipe) {

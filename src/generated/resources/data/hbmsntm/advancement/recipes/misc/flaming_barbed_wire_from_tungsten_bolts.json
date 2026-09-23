@@ -1,0 +1,32 @@
+{
+  "parent": "minecraft:recipes/root",
+  "criteria": {
+    "has_the_recipe": {
+      "conditions": {
+        "recipe": "hbmsntm:flaming_barbed_wire_from_tungsten_bolts"
+      },
+      "trigger": "minecraft:recipe_unlocked"
+    },
+    "has_tungsten_bolt": {
+      "conditions": {
+        "items": [
+          {
+            "items": "hbmsntm:bolt"
+          }
+        ]
+      },
+      "trigger": "minecraft:inventory_changed"
+    }
+  },
+  "requirements": [
+    [
+      "has_the_recipe",
+      "has_tungsten_bolt"
+    ]
+  ],
+  "rewards": {
+    "recipes": [
+      "hbmsntm:flaming_barbed_wire_from_tungsten_bolts"
+    ]
+  }
+}

@@ -1,0 +1,32 @@
+{
+  "parent": "minecraft:recipes/root",
+  "criteria": {
+    "has_nugget_euphemium": {
+      "conditions": {
+        "items": [
+          {
+            "items": "hbmsntm:nugget_euphemium"
+          }
+        ]
+      },
+      "trigger": "minecraft:inventory_changed"
+    },
+    "has_the_recipe": {
+      "conditions": {
+        "recipe": "hbmsntm:ingot_euphemium_from_nugget_euphemium"
+      },
+      "trigger": "minecraft:recipe_unlocked"
+    }
+  },
+  "requirements": [
+    [
+      "has_the_recipe",
+      "has_nugget_euphemium"
+    ]
+  ],
+  "rewards": {
+    "recipes": [
+      "hbmsntm:ingot_euphemium_from_nugget_euphemium"
+    ]
+  }
+}

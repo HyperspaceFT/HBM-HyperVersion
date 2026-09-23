@@ -16,6 +16,8 @@ import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.inventory.Slot;
 import net.minecraft.world.item.ItemStack;
 
+import java.util.List;
+
 public class MachineAssemblyMachineScreen extends InfoScreen<MachineAssemblyMachineMenu> {
 
     private static final ResourceLocation TEXTURE = NuclearTechMod.withDefaultNamespace("textures/gui/processing/assembler.png");
@@ -45,8 +47,17 @@ public class MachineAssemblyMachineScreen extends InfoScreen<MachineAssemblyMach
                 GenericRecipe recipe = AssemblyMachineRecipes.INSTANCE.recipeNameMap.get(this.be.assemblerModule.recipe);
                 guiGraphics.renderComponentTooltip(this.font, recipe.print(), mouseX, mouseY);
             } else {
-                guiGraphics.renderTooltip(this.font, Component.translatable("container.recipe.set_recipe").withStyle(ChatFormatting.YELLOW), mouseX, mouseY);
+                guiGraphics.renderComponentTooltip(this.font, List.of(
+                        Component.translatable("container.recipe.set_recipe").withStyle(ChatFormatting.YELLOW),
+                        Component.translatable("container.assembly_machine.select_recipe")), mouseX, mouseY);
             }
+        }
+
+        if(this.isHovering(62, 126, 70, 16, mouseX, mouseY)) {
+            guiGraphics.renderComponentTooltip(this.font, List.of(
+                    Component.translatable("container.assembly_machine.progress", (int)(be.assemblerModule.progress * 100)),
+                    Component.translatable("container.assembly_machine.interruption"),
+                    Component.translatable("container.assembly_machine.change_recipe")), mouseX, mouseY);
         }
 
         this.renderTooltip(guiGraphics, mouseX, mouseY);
@@ -54,7 +65,10 @@ public class MachineAssemblyMachineScreen extends InfoScreen<MachineAssemblyMach
 
     @Override
     public boolean mouseClicked(double mouseX, double mouseY, int button) {
-        if(this.isHovered(mouseX, mouseY, 7, 125, 18, 18)) RecipeSelectorScreen.openSelector(AssemblyMachineRecipes.INSTANCE, be, be.assemblerModule.recipe, 0, BlueprintsItem.grabPool(be.slots.get(1)), this);
+        if(button == 0 && this.isHovered(mouseX, mouseY, 7, 125, 18, 18)) {
+            RecipeSelectorScreen.openSelector(AssemblyMachineRecipes.INSTANCE, be, be.assemblerModule.recipe, 0, BlueprintsItem.grabPool(be.slots.get(1)), this);
+            return true;
+        }
 
         return super.mouseClicked(mouseX, mouseY, button);
     }

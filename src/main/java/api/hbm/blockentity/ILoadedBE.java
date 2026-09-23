@@ -25,8 +25,14 @@ public interface ILoadedBE {
 
         public final BlockEntity be;
         public final long expiresOn;
+        public final Level level;
 
         public BlockEntityAccessCache(BlockEntity be, long expiresOn) {
+            this(be == null ? null : be.getLevel(), be, expiresOn);
+        }
+
+        public BlockEntityAccessCache(Level level, BlockEntity be, long expiresOn) {
+            this.level = level;
             this.be = be;
             this.expiresOn = expiresOn;
         }
@@ -44,14 +50,19 @@ public interface ILoadedBE {
             publicCumRag.mangle(pos.getX(), pos.getY(), pos.getZ(), level.dimension());
             BlockEntityAccessCache cache = BlockEntityAccessCache.cache.get(publicCumRag);
 
-            if(cache == null || cache.hasExpired(level.getGameTime())) {
+            // Dimension keys alone cannot distinguish a new server/world or the client copy.
+            if(cache == null || cache.level != level || cache.hasExpired(level.getGameTime())) {
                 BlockEntity be = Compat.getBlockEntityStandard(level, pos);
-                cache = new BlockEntityAccessCache(be, level.getGameTime() + (be == null ? NULL_CACHE : NONNULL_CACHE));
+                cache = new BlockEntityAccessCache(level, be, level.getGameTime() + (be == null ? NULL_CACHE : NONNULL_CACHE));
                 BlockEntityAccessCache.cache.put(publicCumRag.clone(), cache);
                 return be;
             } else {
                 return cache.be;
             }
+        }
+
+        public static void clearLevel(Level level) {
+            cache.entrySet().removeIf(entry -> entry.getValue().level == level);
         }
     }
 }

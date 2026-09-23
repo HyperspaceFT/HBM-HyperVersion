@@ -1,0 +1,28 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "key": {
+    "A": {
+      "type": "neoforge:components",
+      "components": {
+        "hbmsntm:meta": 0
+      },
+      "items": "hbmsntm:cast_plate"
+    },
+    "B": {
+      "item": "hbmsntm:block_beryllium"
+    },
+    "C": {
+      "item": "hbmsntm:pipe_dura_steel"
+    }
+  },
+  "pattern": [
+    "ABA",
+    "BCB",
+    "ABA"
+  ],
+  "result": {
+    "count": 1,
+    "id": "hbmsntm:flywheel_beryllium"
+  }
+}

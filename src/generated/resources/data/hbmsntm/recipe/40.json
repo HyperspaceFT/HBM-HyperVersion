@@ -1,0 +1,21 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "key": {
+    "A": {
+      "item": "hbmsntm:plate_titanium"
+    },
+    "B": {
+      "item": "hbmsntm:ingot_titanium"
+    }
+  },
+  "pattern": [
+    " AA",
+    "BBB",
+    " AA"
+  ],
+  "result": {
+    "count": 1,
+    "id": "hbmsntm:fins_quad_titanium"
+  }
+}

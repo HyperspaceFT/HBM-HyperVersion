@@ -1,0 +1,32 @@
+{
+  "parent": "minecraft:recipes/root",
+  "criteria": {
+    "has_ingot_co60": {
+      "conditions": {
+        "items": [
+          {
+            "items": "hbmsntm:ingot_co60"
+          }
+        ]
+      },
+      "trigger": "minecraft:inventory_changed"
+    },
+    "has_the_recipe": {
+      "conditions": {
+        "recipe": "hbmsntm:nugget_co60_from_ingot_co60"
+      },
+      "trigger": "minecraft:recipe_unlocked"
+    }
+  },
+  "requirements": [
+    [
+      "has_the_recipe",
+      "has_ingot_co60"
+    ]
+  ],
+  "rewards": {
+    "recipes": [
+      "hbmsntm:nugget_co60_from_ingot_co60"
+    ]
+  }
+}

@@ -1,0 +1,32 @@
+{
+  "parent": "minecraft:recipes/root",
+  "criteria": {
+    "has_ingot_ra226": {
+      "conditions": {
+        "items": [
+          {
+            "items": "hbmsntm:ingot_ra226"
+          }
+        ]
+      },
+      "trigger": "minecraft:inventory_changed"
+    },
+    "has_the_recipe": {
+      "conditions": {
+        "recipe": "hbmsntm:block_ra226_from_9_ingot_ra226"
+      },
+      "trigger": "minecraft:recipe_unlocked"
+    }
+  },
+  "requirements": [
+    [
+      "has_the_recipe",
+      "has_ingot_ra226"
+    ]
+  ],
+  "rewards": {
+    "recipes": [
+      "hbmsntm:block_ra226_from_9_ingot_ra226"
+    ]
+  }
+}

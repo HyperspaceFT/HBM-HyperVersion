@@ -1,0 +1,21 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "key": {
+    "A": {
+      "item": "hbmsntm:plate_iron"
+    },
+    "B": {
+      "item": "minecraft:iron_ingot"
+    }
+  },
+  "pattern": [
+    "AAA",
+    "B B",
+    "BBB"
+  ],
+  "result": {
+    "count": 1,
+    "id": "hbmsntm:crate_iron"
+  }
+}

@@ -1,0 +1,32 @@
+{
+  "parent": "minecraft:recipes/root",
+  "criteria": {
+    "has_ingot_neptunium_fuel": {
+      "conditions": {
+        "items": [
+          {
+            "items": "hbmsntm:ingot_neptunium_fuel"
+          }
+        ]
+      },
+      "trigger": "minecraft:inventory_changed"
+    },
+    "has_the_recipe": {
+      "conditions": {
+        "recipe": "hbmsntm:nugget_neptunium_fuel_from_ingot_neptunium_fuel"
+      },
+      "trigger": "minecraft:recipe_unlocked"
+    }
+  },
+  "requirements": [
+    [
+      "has_the_recipe",
+      "has_ingot_neptunium_fuel"
+    ]
+  ],
+  "rewards": {
+    "recipes": [
+      "hbmsntm:nugget_neptunium_fuel_from_ingot_neptunium_fuel"
+    ]
+  }
+}

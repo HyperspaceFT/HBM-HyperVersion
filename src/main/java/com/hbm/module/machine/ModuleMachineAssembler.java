@@ -5,9 +5,12 @@ import com.hbm.inventory.fluid.tank.FluidTank;
 import com.hbm.inventory.recipes.AssemblyMachineRecipes;
 import com.hbm.inventory.recipes.loader.GenericRecipe;
 import com.hbm.inventory.recipes.loader.GenericRecipes;
+import com.hbm.items.machine.BlueprintsItem;
 import com.hbm.util.BobMathUtil;
 import net.minecraft.core.NonNullList;
 import net.minecraft.world.item.ItemStack;
+
+import java.util.Objects;
 
 public class ModuleMachineAssembler extends ModuleMachineBase {
 
@@ -22,6 +25,38 @@ public class ModuleMachineAssembler extends ModuleMachineBase {
     @Override
     public GenericRecipes<GenericRecipe> getRecipeSet() {
         return AssemblyMachineRecipes.INSTANCE;
+    }
+
+    @Override
+    public void update(double speed, double power, boolean extraCondition, ItemStack blueprint) {
+        double previousProgress = this.progress;
+        String previousRecipe = this.recipe;
+        GenericRecipe selected = this.getRecipe();
+        if(selected != null && selected.isPooled() && !selected.isPartOfPool(BlueprintsItem.grabPool(blueprint))) {
+            this.recipe = "null";
+            this.progress = 0D;
+            this.didProcess = false;
+            this.markDirty = true;
+            return;
+        }
+        super.update(speed, power, extraCondition, blueprint);
+        // An interrupted cycle must save its reset even when no energy or inventory changed.
+        this.markDirty |= this.progress != previousProgress || !Objects.equals(this.recipe, previousRecipe);
+    }
+
+    @Override
+    protected boolean canFitOutput(GenericRecipe recipe) {
+        if(!super.canFitOutput(recipe)) return false;
+        if(recipe.outputItem == null) return true;
+        for(int i = 0; i < Math.min(recipe.outputItem.length, this.outputSlots.length); i++) {
+            if(recipe.outputItem[i].possibleMultiOutput()) continue;
+            ItemStack stack = this.slots.get(this.outputSlots[i]);
+            ItemStack result = recipe.outputItem[i].getSingle();
+            if(result == null || result.isEmpty()) continue;
+            if(result.getCount() > Math.min(64, result.getMaxStackSize()) - stack.getCount()) return false;
+            if(!stack.isEmpty() && !ItemStack.isSameItemSameComponents(stack, result)) return false;
+        }
+        return true;
     }
 
     @Override

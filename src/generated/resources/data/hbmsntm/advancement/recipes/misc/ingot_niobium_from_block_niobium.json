@@ -1,0 +1,32 @@
+{
+  "parent": "minecraft:recipes/root",
+  "criteria": {
+    "has_block_niobium": {
+      "conditions": {
+        "items": [
+          {
+            "items": "hbmsntm:block_niobium"
+          }
+        ]
+      },
+      "trigger": "minecraft:inventory_changed"
+    },
+    "has_the_recipe": {
+      "conditions": {
+        "recipe": "hbmsntm:ingot_niobium_from_block_niobium"
+      },
+      "trigger": "minecraft:recipe_unlocked"
+    }
+  },
+  "requirements": [
+    [
+      "has_the_recipe",
+      "has_block_niobium"
+    ]
+  ],
+  "rewards": {
+    "recipes": [
+      "hbmsntm:ingot_niobium_from_block_niobium"
+    ]
+  }
+}

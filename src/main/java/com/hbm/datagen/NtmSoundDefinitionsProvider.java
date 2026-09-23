@@ -292,6 +292,7 @@ public class NtmSoundDefinitionsProvider extends SoundDefinitionsProvider {
                 .with(sound("hbmsntm:block/centrifugeoperate"))
         );
         this.add(NtmSoundEvents.CHEMICAL_PLANT_OPERATE, SoundDefinition.definition()
+                .subtitle("subtitles.block.chemplantOperate")
                 .with(sound("hbmsntm:block/chemicalplant"))
         );
         this.add(NtmSoundEvents.METAL_IMPACT, SoundDefinition.definition()

@@ -1,11 +1,9 @@
 package com.hbm.inventory.fluid.tank;
 
 import com.hbm.inventory.FluidContainerRegistry;
-import com.hbm.inventory.MetaHelper;
 import com.hbm.inventory.fluid.FluidType;
+import com.hbm.items.component.NtmDataComponents;
 import net.minecraft.core.NonNullList;
-import net.minecraft.core.component.DataComponents;
-import net.minecraft.network.chat.Component;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
 
@@ -13,90 +11,68 @@ public class FluidLoaderStandard extends FluidLoadingHandler {
 
     @Override
     public boolean fillItem(Level level, NonNullList<ItemStack> slots, int in, int out, FluidTank tank) {
+        if (tank.pressure != 0 || !validSlots(slots, in, out)) return false;
 
-        if (tank.pressure != 0) return false;
-        if (slots.get(in).isEmpty()) return true;
-
+        ItemStack input = slots.get(in);
         FluidType type = tank.getTankType();
-        ItemStack full = FluidContainerRegistry.getFullContainer(slots.get(in), type);
+        ItemStack full = FluidContainerRegistry.getFullContainer(input, type);
+        if (full.isEmpty()) return false;
 
-        if (!full.isEmpty() && tank.getFill() - FluidContainerRegistry.getFluidContent(full, type) >= 0) {
-            Component name = slots.get(in).has(DataComponents.CUSTOM_NAME) ? slots.get(in).getHoverName() : null;
+        int amount = FluidContainerRegistry.getFluidContent(full, type);
+        ItemStack result = convertedStack(input, full);
+        // A recognized standard container owns this attempt, even when it must wait.
+        if (amount <= 0 || amount > tank.getFill() || !canOutput(slots.get(out), result)) return true;
 
-            if (slots.get(out).isEmpty()) {
-                tank.setFill(tank.getFill() - FluidContainerRegistry.getFluidContent(full, type));
-                slots.set(out, full.copy());
-                slots.get(in).shrink(1);
-                if (slots.get(in).getCount() <= 0) {
-                    slots.set(in, ItemStack.EMPTY);
-                }
-
-                if (name != null) slots.get(out).set(DataComponents.CUSTOM_NAME, name);
-
-            } else if (slots.get(out).getItem() == full.getItem() &&
-                    MetaHelper.getMeta(slots.get(out)) == MetaHelper.getMeta(full) &&
-                    slots.get(out).getCount() < slots.get(out).getMaxStackSize()
-            ) {
-                tank.setFill(tank.getFill() - FluidContainerRegistry.getFluidContent(full, type));
-                slots.get(in).shrink(1);
-
-                if (slots.get(in).getCount() <= 0) {
-                    slots.set(in, ItemStack.EMPTY);
-                }
-                slots.get(out).grow(1);
-
-                if (name != null) slots.get(out).set(DataComponents.CUSTOM_NAME, name);
-            }
-        }
-
-        return false;
+        commitItems(slots, in, out, result);
+        tank.setFill(tank.getFill() - amount);
+        return true;
     }
 
     @Override
     public boolean emptyItem(Level level, NonNullList<ItemStack> slots, int in, int out, FluidTank tank) {
-        if (slots.get(in).isEmpty()) return true;
+        if (tank.pressure != 0 || !validSlots(slots, in, out)) return false;
 
-        FluidType type = tank.getTankType();
-        int amount = FluidContainerRegistry.getFluidContent(slots.get(in), type);
+        ItemStack input = slots.get(in);
+        int amount = FluidContainerRegistry.getFluidContent(input, tank.getTankType());
+        if (amount <= 0) return false;
 
-        if (amount > 0 && tank.getFill() + amount <= tank.maxFluid) {
-            ItemStack emptyContainer = FluidContainerRegistry.getEmptyContainer(slots.get(in));
+        ItemStack result = convertedStack(input, FluidContainerRegistry.getEmptyContainer(input));
+        if (amount > tank.getMaxFill() - tank.getFill() || !canOutput(slots.get(out), result)) return true;
 
-            Component name = slots.get(in).has(DataComponents.CUSTOM_NAME) ? slots.get(in).getHoverName() : null;
+        commitItems(slots, in, out, result);
+        tank.setFill(tank.getFill() + amount);
+        return true;
+    }
 
-            if (slots.get(out).isEmpty()) {
+    private static boolean validSlots(NonNullList<ItemStack> slots, int in, int out) {
+        return in >= 0 && out >= 0 && in < slots.size() && out < slots.size()
+                && in != out && !slots.get(in).isEmpty() && slots.get(in) != slots.get(out);
+    }
 
-                tank.setFill(tank.getFill() + amount);
-                slots.set(out, emptyContainer);
+    private static ItemStack convertedStack(ItemStack input, ItemStack registered) {
+        if (registered.isEmpty()) return ItemStack.EMPTY;
+        // Preserve the individual container's name and other components, replacing its fluid identity.
+        // Removing old META also restores an ordinary empty stack instead of leaving a stale fluid ID.
+        ItemStack result = input.transmuteCopy(registered.getItem(), registered.getCount());
+        result.remove(NtmDataComponents.META.get());
+        result.applyComponents(registered.getComponentsPatch());
+        return result;
+    }
 
-                if (!emptyContainer.isEmpty()) {
-                    if (name != null) slots.get(out).set(DataComponents.CUSTOM_NAME, name);
-                }
+    private static boolean canOutput(ItemStack output, ItemStack result) {
+        if (result.isEmpty()) return true; // Registered disposable containers have no remainder.
+        if (result.getCount() > result.getMaxStackSize()) return false;
+        if (output.isEmpty()) return true;
+        return ItemStack.isSameItemSameComponents(output, result)
+                && result.getCount() <= output.getMaxStackSize() - output.getCount();
+    }
 
-                slots.get(in).shrink(1);
-                if (slots.get(in).getCount() <= 0) {
-                    slots.set(in, ItemStack.EMPTY);
-                }
-            } else if (!slots.get(out).isEmpty() && (emptyContainer.isEmpty() || (slots.get(out).getItem() == emptyContainer.getItem() &&
-                    MetaHelper.getMeta(slots.get(out)) == MetaHelper.getMeta(emptyContainer) &&
-                    slots.get(out).getCount() < slots.get(out).getMaxStackSize()))
-            ) {
-                tank.setFill(tank.getFill() + amount);
-                slots.get(in).shrink(1);
-
-                if (slots.get(in).getCount() <= 0) {
-                    slots.set(in, ItemStack.EMPTY);
-                }
-
-                if (!emptyContainer.isEmpty()) {
-                    slots.get(out).grow(1);
-                    if (name != null) slots.get(out).set(DataComponents.CUSTOM_NAME, name);
-                }
-            }
-
-            return true;
+    private static void commitItems(NonNullList<ItemStack> slots, int in, int out, ItemStack result) {
+        if (!result.isEmpty()) {
+            if (slots.get(out).isEmpty()) slots.set(out, result);
+            else slots.get(out).grow(result.getCount());
         }
-
-        return false;
+        slots.get(in).shrink(1);
+        if (slots.get(in).isEmpty()) slots.set(in, ItemStack.EMPTY);
     }
 }

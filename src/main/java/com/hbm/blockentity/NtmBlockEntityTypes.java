@@ -124,6 +124,18 @@ public class NtmBlockEntityTypes {
                             MachineFurnaceCombinationBlockEntity::new,
                             NtmBlocks.FURNACE_COMBINATION.get())
                     .build(null));
+    public static final Supplier<BlockEntityType<MachineCrucibleBlockEntity>> MACHINE_CRUCIBLE = BLOCK_ENTITY_TYPES.register(
+            "machine_crucible",
+            () -> BlockEntityType.Builder.of(
+                            MachineCrucibleBlockEntity::new,
+                            NtmBlocks.MACHINE_CRUCIBLE.get())
+                    .build(null));
+    public static final Supplier<BlockEntityType<FoundryMoldBlockEntity>> FOUNDRY_MOLD = BLOCK_ENTITY_TYPES.register(
+            "foundry_mold",
+            () -> BlockEntityType.Builder.of(
+                            FoundryMoldBlockEntity::new,
+                            NtmBlocks.FOUNDRY_MOLD.get())
+                    .build(null));
 
     public static final Supplier<BlockEntityType<MachineBlastFurnaceBlockEntity>> MACHINE_BLAST_FURNACE = BLOCK_ENTITY_TYPES.register(
             "machine_blast_furnace",

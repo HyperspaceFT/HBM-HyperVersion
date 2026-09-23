@@ -8,6 +8,7 @@ import mezz.jei.api.gui.drawable.IDrawable;
 import mezz.jei.api.gui.ingredient.IRecipeSlotsView;
 import mezz.jei.api.helpers.IGuiHelper;
 import mezz.jei.api.recipe.IFocusGroup;
+import mezz.jei.api.recipe.RecipeIngredientRole;
 import mezz.jei.api.recipe.RecipeType;
 import mezz.jei.api.recipe.category.IRecipeCategory;
 import net.minecraft.client.gui.GuiGraphics;
@@ -57,16 +58,31 @@ public class ShredderRecipeHandler implements IRecipeCategory<ShredderRecipes.Sh
 
     @Override
     public void setRecipe(IRecipeLayoutBuilder builder, ShredderRecipes.ShredderRecipe recipe, IFocusGroup focuses) {
-        builder.addInputSlot(38, 23)
+        var inputSlot = builder.addInputSlot(38, 23)
                 .setStandardSlotBackground()
-                .addItemStack(recipe.input.copy());
+                .setSlotName("shredder_input");
+        inputSlot.addItemStack(recipe.input.copy());
+        inputSlot.addRichTooltipCallback((slotView, tooltip) -> {
+            tooltip.add(Component.translatable("container.machine_shredder.jei.input"));
+            tooltip.add(Component.translatable("container.machine_shredder.jei.unknown_fallback"));
+            tooltip.add(Component.translatable("container.machine_shredder.raw_ore_hint"));
+        });
 
-        builder.addOutputSlot(128, 23)
+        var outputSlot = builder.addOutputSlot(128, 23)
                 .setStandardSlotBackground()
-                .addItemStack(recipe.output.copy());
+                .setSlotName("shredder_output");
+        outputSlot.addItemStack(recipe.output.copy());
+        outputSlot.addRichTooltipCallback((slotView, tooltip) -> tooltip.add(Component.translatable("container.machine_shredder.jei.output")));
 
-        var topBlade = builder.addInputSlot(83, 5).setStandardSlotBackground();
-        var bottomBlade = builder.addInputSlot(83, 41).setStandardSlotBackground();
+        var topBlade = builder.addSlot(RecipeIngredientRole.CATALYST, 83, 5).setStandardSlotBackground().setSlotName("shredder_blade_left");
+        var bottomBlade = builder.addSlot(RecipeIngredientRole.CATALYST, 83, 41).setStandardSlotBackground().setSlotName("shredder_blade_right");
+
+        var bladeTooltip = (mezz.jei.api.gui.ingredient.IRecipeSlotRichTooltipCallback) (slotView, tooltip) -> {
+            tooltip.add(Component.translatable("container.machine_shredder.jei.blade_catalyst"));
+            tooltip.add(Component.translatable("container.machine_shredder.jei.process"));
+        };
+        topBlade.addRichTooltipCallback(bladeTooltip);
+        bottomBlade.addRichTooltipCallback(bladeTooltip);
 
         for(ItemStack blade : ShredderRecipes.getBlades()) {
             topBlade.addItemStack(blade.copy());

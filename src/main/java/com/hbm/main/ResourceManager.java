@@ -51,6 +51,8 @@ public class ResourceManager {
     public static final ResourceLocation FRACKING_TOWER_TEX = NuclearTechMod.withDefaultNamespace("textures/models/machines/fracking_tower.png");
     public static final ResourceLocation REFINERY_TEX = NuclearTechMod.withDefaultNamespace("textures/models/machines/refinery.png");
     public static final ResourceLocation FURNACE_COMBINATION_TEX = NuclearTechMod.withDefaultNamespace("textures/models/machines/combination_oven.png");
+    public static final ResourceLocation MACHINE_CRUCIBLE_TEX = NuclearTechMod.withDefaultNamespace("textures/models/machines/crucible_heat.png");
+    public static final ResourceLocation MACHINE_CRUCIBLE_LAVA_TEX = NuclearTechMod.withDefaultNamespace("textures/models/machines/lava.png");
     public static final ResourceLocation BLAST_FURNACE_TEX = NuclearTechMod.withDefaultNamespace("textures/models/machines/blast_furnace.png");
     public static final ResourceLocation WOOD_BURNER_TEX = NuclearTechMod.withDefaultNamespace("textures/models/machines/wood_burner.png");
     public static final ResourceLocation CENTRIFUGE_TEX = NuclearTechMod.withDefaultNamespace("textures/models/machines/centrifuge_new.png");
@@ -165,12 +167,12 @@ public class ResourceManager {
     public static final ResourceLocation SOYUZ_AUTHENTIC_SIDEENGINES = NuclearTechMod.withDefaultNamespace("textures/models/soyuz_authentic/sideengines.png");
     public static final ResourceLocation SOYUZ_AUTHENTIC_BOOSTER = NuclearTechMod.withDefaultNamespace("textures/models/soyuz_authentic/booster.png");
     public static final ResourceLocation SOYUZ_AUTHENTIC_BOOSTERSIDE = NuclearTechMod.withDefaultNamespace("textures/models/soyuz_authentic/boosterside.png");
-    public static final ResourceLocation SOYUZ_MEMENTO = NuclearTechMod.withDefaultNamespace("textures/items/polaroid_memento.png");
+    public static final ResourceLocation SOYUZ_MEMENTO = NuclearTechMod.withDefaultNamespace("textures/item/polaroid_memento.png");
 
     public static final ResourceLocation SOYUZ_LANDER_TEX = NuclearTechMod.withDefaultNamespace("textures/models/soyuz_capsule/soyuz_lander.png");
     public static final ResourceLocation SOYUZ_LANDER_RUST_TEX = NuclearTechMod.withDefaultNamespace("textures/models/soyuz_capsule/soyuz_lander_rust.png");
     public static final ResourceLocation SOYUZ_CHUTE_TEX = NuclearTechMod.withDefaultNamespace("textures/models/soyuz_capsule/soyuz_chute.png");
-    public static final ResourceLocation SUPPLY_CRATE = NuclearTechMod.withDefaultNamespace("textures/blocks/crate_can.png");
+    public static final ResourceLocation SUPPLY_CRATE = NuclearTechMod.withDefaultNamespace("textures/block/crate_can.png");
 
     public static final ResourceLocation SOYUZ_MODULE_DOME_TEX = NuclearTechMod.withDefaultNamespace("textures/models/soyuz_capsule/module_dome.png");
     public static final ResourceLocation SOYUZ_MODULE_LANDER_TEX = NuclearTechMod.withDefaultNamespace("textures/models/soyuz_capsule/module_lander.png");
@@ -289,6 +291,7 @@ public class ResourceManager {
     public static IModelCustom fracking_tower;
     public static IModelCustom refinery;
     public static IModelCustom furnace_combination;
+    public static IModelCustom machine_crucible;
     public static IModelCustom blast_furnace;
     public static IModelCustom wood_burner;
     public static IModelCustom centrifuge;
@@ -424,6 +427,7 @@ public class ResourceManager {
         fracking_tower = new HFRWavefrontObject("models/obj/machines/fracking_tower.obj").asVBO();
         refinery = new HFRWavefrontObject("models/obj/machines/refinery.obj").asVBO();
         furnace_combination = new HFRWavefrontObject("models/obj/machines/combination_oven.obj").asVBO();
+        machine_crucible = new HFRWavefrontObject("models/obj/machines/crucible.obj").asVBO();
         blast_furnace = new HFRWavefrontObject("models/obj/machines/blast_furnace.obj").asVBO();
         wood_burner = new HFRWavefrontObject("models/obj/machines/wood_burner.obj").asVBO();
         centrifuge = new HFRWavefrontObject("models/obj/machines/centrifuge.obj").asVBO();

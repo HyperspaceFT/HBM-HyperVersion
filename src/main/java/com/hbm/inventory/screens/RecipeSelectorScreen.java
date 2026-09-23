@@ -274,6 +274,7 @@ public class RecipeSelectorScreen extends Screen {
         if(this.leftPos + 152 <= mouseX && this.leftPos + 152 + 16 > mouseX && this.topPos + 90 < mouseY && this.topPos + 90 + 16 >= mouseY) {
             this.onClose();
             Minecraft.getInstance().setScreen(previousScreen);
+            return true;
         }
 
         return super.mouseClicked(mouseX, mouseY, button);
@@ -326,6 +327,7 @@ public class RecipeSelectorScreen extends Screen {
         if(keyCode == GLFW.GLFW_KEY_ESCAPE || this.minecraft.options.keyInventory.isActiveAndMatches(key)) {
             this.onClose();
             Minecraft.getInstance().setScreen(previousScreen);
+            return true;
         }
 
         return super.keyPressed(keyCode, scanCode, modifiers);

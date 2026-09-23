@@ -1,0 +1,32 @@
+{
+  "parent": "minecraft:recipes/root",
+  "criteria": {
+    "has_block_insulator": {
+      "conditions": {
+        "items": [
+          {
+            "items": "hbmsntm:block_insulator"
+          }
+        ]
+      },
+      "trigger": "minecraft:inventory_changed"
+    },
+    "has_the_recipe": {
+      "conditions": {
+        "recipe": "hbmsntm:plate_polymer_from_block_insulator"
+      },
+      "trigger": "minecraft:recipe_unlocked"
+    }
+  },
+  "requirements": [
+    [
+      "has_the_recipe",
+      "has_block_insulator"
+    ]
+  ],
+  "rewards": {
+    "recipes": [
+      "hbmsntm:plate_polymer_from_block_insulator"
+    ]
+  }
+}

@@ -1,0 +1,21 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "key": {
+    "A": {
+      "item": "minecraft:brick"
+    },
+    "B": {
+      "item": "minecraft:obsidian"
+    }
+  },
+  "pattern": [
+    "   ",
+    "AAA",
+    "BBB"
+  ],
+  "result": {
+    "count": 1,
+    "id": "hbmsntm:stamp_obsidian_flat"
+  }
+}

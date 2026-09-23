@@ -314,6 +314,8 @@ public class NtmBlockStateProvider extends BlockStateProvider {
         this.particleOnlyBlock(NtmBlocks.MACHINE_SOLDERING_STATION, modLoc("block/block_steel"));
         this.particleOnlyBlock(NtmBlocks.MACHINE_REFINERY, modLoc("block/block_steel"));
         this.particleOnlyBlock(NtmBlocks.FURNACE_COMBINATION, modLoc("block/block_steel"));
+        this.particleOnlyBlock(NtmBlocks.MACHINE_CRUCIBLE, modLoc("block/block_steel"));
+        this.registerFoundryMold();
         this.particleOnlyBlock(NtmBlocks.MACHINE_BLAST_FURNACE, modLoc("block/block_steel"));
         this.particleOnlyBlock(NtmBlocks.MACHINE_WOOD_BURNER, modLoc("block/block_steel"));
         this.particleOnlyBlock(NtmBlocks.MACHINE_CENTRIFUGE, modLoc("block/block_steel"));
@@ -557,7 +559,7 @@ public class NtmBlockStateProvider extends BlockStateProvider {
                 modLoc("block/machine_shredder_front_alt"),
                 modLoc("block/machine_shredder_side_alt"),
                 modLoc("block/machine_shredder_side_alt")
-        );
+        ).texture("particle", modLoc("block/machine_shredder_front_alt"));
 
         this.getVariantBuilder(block).forAllStates(state -> {
             int y = switch(state.getValue(com.hbm.blocks.machine.MachineShredderBlock.FACING)) {
@@ -657,6 +659,37 @@ public class NtmBlockStateProvider extends BlockStateProvider {
 
     public void simpleBlockWithItem(DeferredBlock<? extends Block> block, ModelFile model) {
         this.simpleBlockWithItem(block.get(), model);
+    }
+
+    private void registerFoundryMold() {
+        BlockModelBuilder model = models().withExistingParent("foundry_mold", mcLoc("block/block"))
+                .texture("top", modLoc("block/foundry_mold_top"))
+                .texture("side", modLoc("block/foundry_mold_side"))
+                .texture("bottom", modLoc("block/foundry_mold_bottom"))
+                .texture("inner", modLoc("block/foundry_mold_inner"))
+                .texture("particle", modLoc("block/foundry_mold_side"));
+        model.element().from(0, 0, 0).to(16, 2, 16)
+                .face(Direction.UP).texture("#inner").end()
+                .face(Direction.DOWN).texture("#bottom").end()
+                .face(Direction.NORTH).texture("#side").end()
+                .face(Direction.SOUTH).texture("#side").end()
+                .face(Direction.WEST).texture("#side").end()
+                .face(Direction.EAST).texture("#side").end().end();
+        this.foundryMoldWall(model, 0, 2, 0, 16, 8, 2);
+        this.foundryMoldWall(model, 0, 2, 14, 16, 8, 16);
+        this.foundryMoldWall(model, 0, 2, 2, 2, 8, 14);
+        this.foundryMoldWall(model, 14, 2, 2, 16, 8, 14);
+        this.simpleBlockWithItem(NtmBlocks.FOUNDRY_MOLD.get(), model);
+    }
+
+    private void foundryMoldWall(BlockModelBuilder model, int x1, int y1, int z1, int x2, int y2, int z2) {
+        model.element().from(x1, y1, z1).to(x2, y2, z2)
+                .face(Direction.UP).texture("#top").end()
+                .face(Direction.DOWN).texture("#bottom").end()
+                .face(Direction.NORTH).texture("#side").end()
+                .face(Direction.SOUTH).texture("#side").end()
+                .face(Direction.WEST).texture("#side").end()
+                .face(Direction.EAST).texture("#side").end().end();
     }
 
     /** Creates block with item, uses cube all model */

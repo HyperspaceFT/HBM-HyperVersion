@@ -1,0 +1,32 @@
+{
+  "parent": "minecraft:recipes/root",
+  "criteria": {
+    "has_ingot_polymer": {
+      "conditions": {
+        "items": [
+          {
+            "items": "hbmsntm:ingot_polymer"
+          }
+        ]
+      },
+      "trigger": "minecraft:inventory_changed"
+    },
+    "has_the_recipe": {
+      "conditions": {
+        "recipe": "hbmsntm:plate_polymer_from_polymer"
+      },
+      "trigger": "minecraft:recipe_unlocked"
+    }
+  },
+  "requirements": [
+    [
+      "has_the_recipe",
+      "has_ingot_polymer"
+    ]
+  ],
+  "rewards": {
+    "recipes": [
+      "hbmsntm:plate_polymer_from_polymer"
+    ]
+  }
+}

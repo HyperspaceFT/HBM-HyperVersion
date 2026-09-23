@@ -1,16 +1,19 @@
 package com.hbm.blockentity.machine;
 
 import api.hbm.fluidmk2.IFluidStandardTransceiverMK2;
+import api.hbm.fluidmk2.IFillableItem;
 import api.hbm.tile.IHeatSource;
 import com.hbm.blockentity.LoadedBaseBlockEntity;
 import com.hbm.blockentity.MachineBaseBlockEntity;
 import com.hbm.blockentity.NtmBlockEntityTypes;
 import com.hbm.inventory.FluidStack;
+import com.hbm.inventory.FluidContainerRegistry;
 import com.hbm.inventory.fluid.FluidType;
 import com.hbm.inventory.fluid.Fluids;
 import com.hbm.inventory.fluid.tank.FluidTank;
 import com.hbm.inventory.menus.MachineFurnaceCombinationMenu;
 import com.hbm.inventory.recipes.CombinationRecipes;
+import com.hbm.items.machine.InfiniteFluidItem;
 import com.hbm.util.Tuple;
 import com.hbm.util.fauxpointtwelve.DirPos;
 import net.minecraft.core.BlockPos;
@@ -64,9 +67,14 @@ public class MachineFurnaceCombinationBlockEntity extends MachineBaseBlockEntity
             return;
         }
 
+        int oldHeat = this.heat;
+        int oldProgress = this.progress;
+        boolean oldWasOn = this.wasOn;
+        int oldFill = this.tank.getFill();
+        FluidType oldType = this.tank.getTankType();
         this.checkTilt(LoadedBaseBlockEntity.TiltType.CONFIG, false);
         this.tryPullHeat();
-        this.tank.unloadTank(this.level, SLOT_FLUID_IN, SLOT_FLUID_OUT, this.slots);
+        boolean unloaded = this.tank.unloadTank(this.level, SLOT_FLUID_IN, SLOT_FLUID_OUT, this.slots);
 
         if(this.level.getGameTime() % 20 == 0) {
             for(DirPos pos : this.getConPos()) {
@@ -76,7 +84,9 @@ public class MachineFurnaceCombinationBlockEntity extends MachineBaseBlockEntity
             }
         }
 
-        if(this.canProcess()) {
+        // Resolve once so capacity checks and both outputs describe the same completion.
+        Tuple.Pair<ItemStack, FluidStack> recipe = CombinationRecipes.getOutput(this.slots.get(SLOT_INPUT));
+        if(this.canProcess(recipe)) {
             int speed = this.heat / 100;
             if(speed > 0) {
                 this.progress += speed;
@@ -89,7 +99,7 @@ public class MachineFurnaceCombinationBlockEntity extends MachineBaseBlockEntity
 
                 if(this.progress >= PROCESS_TIME) {
                     this.progress -= PROCESS_TIME;
-                    this.finishRecipe();
+                    this.finishRecipe(recipe);
                 }
             } else {
                 this.wasOn = false;
@@ -99,6 +109,10 @@ public class MachineFurnaceCombinationBlockEntity extends MachineBaseBlockEntity
             this.wasOn = false;
         }
 
+        if(unloaded || oldHeat != this.heat || oldProgress != this.progress || oldWasOn != this.wasOn
+                || oldFill != this.tank.getFill() || oldType != this.tank.getTankType()) {
+            this.setChanged();
+        }
         this.networkPackNT(50);
     }
 
@@ -116,8 +130,7 @@ public class MachineFurnaceCombinationBlockEntity extends MachineBaseBlockEntity
         );
     }
 
-    private boolean canProcess() {
-        Tuple.Pair<ItemStack, FluidStack> recipe = CombinationRecipes.getOutput(this.slots.get(SLOT_INPUT));
+    private boolean canProcess(Tuple.Pair<ItemStack, FluidStack> recipe) {
         if(recipe == null) return false;
 
         ItemStack itemOutput = recipe.getKey();
@@ -125,23 +138,21 @@ public class MachineFurnaceCombinationBlockEntity extends MachineBaseBlockEntity
 
         if(!itemOutput.isEmpty()) {
             ItemStack slot = this.slots.get(SLOT_OUTPUT);
-            if(!slot.isEmpty() && (!ItemStack.isSameItemSameComponents(slot, itemOutput) || slot.getCount() + itemOutput.getCount() > slot.getMaxStackSize())) {
-                return false;
-            }
+            if(!slot.isEmpty() && !ItemStack.isSameItemSameComponents(slot, itemOutput)) return false;
+            int limit = this.getMaxStackSize(itemOutput);
+            if(itemOutput.getCount() > limit - slot.getCount()) return false;
         }
 
         if(fluidOutput != null) {
-            if(this.tank.getTankType() != Fluids.NONE && this.tank.getTankType() != fluidOutput.type) return false;
-            if(this.tank.getFill() + fluidOutput.fill > this.tank.getMaxFill()) return false;
+            // An emptied tank may retain its previous type; only actual contents prevent a change.
+            if(this.tank.getFill() > 0 && this.tank.getTankType() != fluidOutput.type) return false;
+            if(fluidOutput.fill < 0 || fluidOutput.fill > this.tank.getMaxFill() - this.tank.getFill()) return false;
         }
 
         return true;
     }
 
-    private void finishRecipe() {
-        Tuple.Pair<ItemStack, FluidStack> recipe = CombinationRecipes.getOutput(this.slots.get(SLOT_INPUT));
-        if(recipe == null) return;
-
+    private void finishRecipe(Tuple.Pair<ItemStack, FluidStack> recipe) {
         ItemStack itemOutput = recipe.getKey();
         FluidStack fluidOutput = recipe.getValue();
 
@@ -155,7 +166,7 @@ public class MachineFurnaceCombinationBlockEntity extends MachineBaseBlockEntity
         }
 
         if(fluidOutput != null) {
-            if(this.tank.getTankType() == Fluids.NONE) {
+            if(this.tank.getTankType() != fluidOutput.type) {
                 this.tank.setTankType(fluidOutput.type);
             }
             this.tank.setFill(this.tank.getFill() + fluidOutput.fill);
@@ -170,16 +181,17 @@ public class MachineFurnaceCombinationBlockEntity extends MachineBaseBlockEntity
     }
 
     private void tryPullHeat() {
-        if(this.heat < MAX_HEAT) {
-            BlockEntity be = this.level.getBlockEntity(this.worldPosition.below());
-            if(be instanceof IHeatSource source) {
-                int pulled = (int) Math.ceil((source.getHeatStored() - this.heat) * DIFFUSION);
-                if(pulled > 0) {
-                    int accepted = Math.min(pulled, MAX_HEAT - this.heat);
-                    this.heat += accepted;
-                    source.useUpHeat(accepted);
-                    return;
-                }
+        if(this.heat >= MAX_HEAT) return;
+        BlockEntity be = this.level.getBlockEntity(this.worldPosition.below());
+        if(be instanceof IHeatSource source) {
+            int difference = source.getHeatStored() - this.heat;
+            if(difference == 0) return;
+            int pulled = (int) Math.ceil(difference * DIFFUSION);
+            if(pulled > 0) {
+                int accepted = Math.min(pulled, MAX_HEAT - this.heat);
+                this.heat += accepted;
+                source.useUpHeat(accepted);
+                return;
             }
         }
 
@@ -200,7 +212,11 @@ public class MachineFurnaceCombinationBlockEntity extends MachineBaseBlockEntity
 
     @Override
     public boolean canPlaceItem(int slot, ItemStack stack) {
-        return slot == SLOT_INPUT || slot == SLOT_FLUID_IN;
+        if (slot == SLOT_INPUT) return CombinationRecipes.isItemValid(stack);
+        return slot == SLOT_FLUID_IN && !stack.isEmpty()
+                && (FluidContainerRegistry.isEmptyContainer(stack)
+                || stack.getItem() instanceof IFillableItem
+                || stack.getItem() instanceof InfiniteFluidItem);
     }
 
     @Override
@@ -216,10 +232,13 @@ public class MachineFurnaceCombinationBlockEntity extends MachineBaseBlockEntity
     @Override
     protected void loadAdditional(CompoundTag tag, HolderLookup.Provider registries) {
         super.loadAdditional(tag, registries);
-        this.progress = tag.getInt("progress");
-        this.heat = tag.getInt("heat");
+        this.progress = Math.clamp(tag.getInt("progress"), 0, PROCESS_TIME - 1);
+        this.heat = Math.clamp(tag.getInt("heat"), 0, MAX_HEAT);
         this.wasOn = tag.getBoolean("wasOn");
-        this.tank.readFromNBT(tag, "tank");
+        // Old tags may omit capacity; keep this machine's fixed tank size without changing shared tanks.
+        CompoundTag tankTag = tag.copy();
+        tankTag.putInt("tank_max", 24_000);
+        this.tank.readFromNBT(tankTag, "tank");
     }
 
     @Override

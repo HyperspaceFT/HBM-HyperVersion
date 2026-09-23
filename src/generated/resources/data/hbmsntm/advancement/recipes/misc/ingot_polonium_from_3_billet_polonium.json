@@ -1,0 +1,32 @@
+{
+  "parent": "minecraft:recipes/root",
+  "criteria": {
+    "has_billet_polonium": {
+      "conditions": {
+        "items": [
+          {
+            "items": "hbmsntm:billet_polonium"
+          }
+        ]
+      },
+      "trigger": "minecraft:inventory_changed"
+    },
+    "has_the_recipe": {
+      "conditions": {
+        "recipe": "hbmsntm:ingot_polonium_from_3_billet_polonium"
+      },
+      "trigger": "minecraft:recipe_unlocked"
+    }
+  },
+  "requirements": [
+    [
+      "has_the_recipe",
+      "has_billet_polonium"
+    ]
+  ],
+  "rewards": {
+    "recipes": [
+      "hbmsntm:ingot_polonium_from_3_billet_polonium"
+    ]
+  }
+}

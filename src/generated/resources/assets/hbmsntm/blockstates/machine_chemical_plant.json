@@ -1,0 +1,7 @@
+{
+  "variants": {
+    "": {
+      "model": "hbmsntm:block/machine_chemical_plant_particle"
+    }
+  }
+}

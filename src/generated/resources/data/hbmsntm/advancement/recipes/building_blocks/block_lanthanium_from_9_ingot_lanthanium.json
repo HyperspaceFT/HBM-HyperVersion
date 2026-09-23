@@ -1,0 +1,32 @@
+{
+  "parent": "minecraft:recipes/root",
+  "criteria": {
+    "has_ingot_lanthanium": {
+      "conditions": {
+        "items": [
+          {
+            "items": "hbmsntm:ingot_lanthanium"
+          }
+        ]
+      },
+      "trigger": "minecraft:inventory_changed"
+    },
+    "has_the_recipe": {
+      "conditions": {
+        "recipe": "hbmsntm:block_lanthanium_from_9_ingot_lanthanium"
+      },
+      "trigger": "minecraft:recipe_unlocked"
+    }
+  },
+  "requirements": [
+    [
+      "has_the_recipe",
+      "has_ingot_lanthanium"
+    ]
+  ],
+  "rewards": {
+    "recipes": [
+      "hbmsntm:block_lanthanium_from_9_ingot_lanthanium"
+    ]
+  }
+}

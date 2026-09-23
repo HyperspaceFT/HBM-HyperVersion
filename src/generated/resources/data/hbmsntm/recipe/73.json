@@ -1,0 +1,27 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "key": {
+    "A": {
+      "item": "hbmsntm:plate_polymer"
+    },
+    "B": {
+      "item": "minecraft:glass_pane"
+    },
+    "C": {
+      "item": "hbmsntm:powder_quartz"
+    },
+    "D": {
+      "item": "hbmsntm:circuit_printed_board"
+    }
+  },
+  "pattern": [
+    " B ",
+    "ACA",
+    " D "
+  ],
+  "result": {
+    "count": 1,
+    "id": "hbmsntm:photo_panel"
+  }
+}

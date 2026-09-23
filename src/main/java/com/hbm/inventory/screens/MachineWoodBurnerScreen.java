@@ -45,11 +45,14 @@ public class MachineWoodBurnerScreen extends InfoScreen<MachineWoodBurnerMenu> {
             this.be.tank.renderTankTooltip(guiGraphics, mouseX, mouseY, this.leftPos + 80, this.topPos + 18, 16, 52);
         } else {
             this.drawCustomInfoStat(guiGraphics, mouseX, mouseY, this.leftPos + 16, this.topPos + 17, 8, 54, mouseX, mouseY,
-                    Component.literal(this.be.burnTime / 20 + "s"));
+                    Component.translatable("container.wood_burner.stored_burn", this.be.burnTime / 20));
         }
 
         this.drawCustomInfoStat(guiGraphics, mouseX, mouseY, this.leftPos + 53, this.topPos + 17, 16, 15, mouseX, mouseY,
-                Component.literal(this.be.isOn ? "ON" : "OFF").withStyle(this.be.isOn ? ChatFormatting.GREEN : ChatFormatting.RED));
+                Component.translatable(this.be.isOn ? "container.wood_burner.on" : "container.wood_burner.off")
+                        .withStyle(this.be.isOn ? ChatFormatting.GREEN : ChatFormatting.RED));
+        this.drawCustomInfoStat(guiGraphics, mouseX, mouseY, this.leftPos + 46, this.topPos + 37, 30, 14, mouseX, mouseY,
+                Component.translatable(this.be.liquidBurn ? "container.wood_burner.liquid_mode" : "container.wood_burner.solid_mode"));
         this.renderTooltip(guiGraphics, mouseX, mouseY);
     }
 

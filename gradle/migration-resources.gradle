@@ -1,0 +1,429 @@
+import groovy.json.JsonOutput
+import groovy.json.JsonSlurper
+import java.nio.charset.CharacterCodingException
+import java.nio.charset.CodingErrorAction
+import java.nio.charset.StandardCharsets
+import java.nio.file.Files
+import java.nio.file.LinkOption
+import java.nio.file.StandardCopyOption
+import java.nio.file.StandardOpenOption
+import java.nio.channels.FileChannel
+import java.nio.channels.OverlappingFileLockException
+import java.security.MessageDigest
+import java.util.HexFormat
+
+def generatedRoot = file('src/generated/resources')
+def stageRoot = file(project.migrationDataStage)
+def mainRoot = file('src/main/resources')
+def stampFile = file('src/generated/resources/.migration-stamp.json')
+def publicationRoot = file('build/migration/publication')
+def pendingFile = new File(publicationRoot, 'pending.json')
+def publicationLockFile = new File(publicationRoot, 'active.lock')
+def inputFiles = [
+        'build.gradle', 'gradle.properties', 'settings.gradle',
+        'gradle/migration-resources.gradle', 'gradle/wrapper/gradle-wrapper.properties'
+]
+def optionalInputFiles = ['gradle.lockfile']
+def textExtensions = [
+        'cfg', 'csv', 'fsh', 'gradle', 'java', 'json', 'lang', 'mcmeta', 'md',
+        'mtl', 'obj', 'properties', 'toml', 'txt', 'vsh', 'xml', 'yaml', 'yml'
+] as Set
+
+def resourceFiles = { File root ->
+    if (!root.isDirectory()) return [:]
+    def result = new TreeMap<String, File>()
+    fileTree(root).files.each { File item ->
+        def relative = root.toPath().relativize(item.toPath()).toString().replace('\\', '/')
+        if ((root != generatedRoot && root != stageRoot) ||
+                (relative != '.migration-stamp.json' && !relative.split('/').contains('.cache'))) {
+            result[relative] = item
+        }
+    }
+    result
+}
+
+def hashFile = { File item ->
+    byte[] bytes = Files.readAllBytes(item.toPath())
+    def extension = item.name.contains('.') ? item.name.substring(item.name.lastIndexOf('.') + 1).toLowerCase(Locale.ROOT) : ''
+    if (textExtensions.contains(extension)) {
+        try {
+            def decoder = StandardCharsets.UTF_8.newDecoder()
+                    .onMalformedInput(CodingErrorAction.REPORT)
+                    .onUnmappableCharacter(CodingErrorAction.REPORT)
+            def normalized = decoder.decode(java.nio.ByteBuffer.wrap(bytes)).toString()
+                    .replace('\r\n', '\n').replace('\r', '\n')
+            bytes = normalized.getBytes(StandardCharsets.UTF_8)
+        } catch (CharacterCodingException ignored) {
+            // Legacy resource mislabeled as text: hash its exact bytes.
+        }
+    }
+    HexFormat.of().formatHex(MessageDigest.getInstance('SHA-256').digest(bytes))
+}
+
+def rawHash = { File item ->
+    HexFormat.of().formatHex(MessageDigest.getInstance('SHA-256').digest(Files.readAllBytes(item.toPath())))
+}
+
+def safeChild = { File root, String path ->
+    if (!path || path.contains('\\') || path.startsWith('/') ||
+            path.split('/').any { it == '.' || it == '..' || !it }) {
+        throw new GradleException("Unsafe migration resource path: ${path}")
+    }
+    File child = new File(root, path)
+    def rootPath = root.toPath().toAbsolutePath().normalize()
+    def childPath = child.toPath().toAbsolutePath().normalize()
+    if (!childPath.startsWith(rootPath) || childPath == rootPath) {
+        throw new GradleException("Migration resource path leaves ${root}: ${path}")
+    }
+    for (def part = childPath; part != null && part.startsWith(rootPath); part = part.parent) {
+        if (Files.isSymbolicLink(part)) throw new GradleException("Migration resource path uses a symlink: ${part}")
+    }
+    child
+}
+
+def writeJsonAtomically = { File destination, Map value ->
+    Files.createDirectories(destination.parentFile.toPath())
+    File temporary = new File(destination.parentFile, "${destination.name}.${UUID.randomUUID()}.tmp")
+    Files.writeString(temporary.toPath(), JsonOutput.prettyPrint(JsonOutput.toJson(value)) + '\n', StandardCharsets.UTF_8)
+    try {
+        Files.move(temporary.toPath(), destination.toPath(), StandardCopyOption.ATOMIC_MOVE)
+    } finally {
+        Files.deleteIfExists(temporary.toPath())
+    }
+}
+
+def publicationChannel
+def publicationLock
+def acquirePublicationLock = {
+    if (!publicationRoot.canonicalFile.toPath().startsWith(project.projectDir.canonicalFile.toPath()) ||
+            Files.isSymbolicLink(publicationLockFile.toPath())) {
+        throw new GradleException('Migration publication lock path is unsafe.')
+    }
+    Files.createDirectories(publicationRoot.toPath())
+    publicationChannel = FileChannel.open(publicationLockFile.toPath(),
+            StandardOpenOption.CREATE, StandardOpenOption.WRITE)
+    try {
+        publicationLock = publicationChannel.tryLock()
+    } catch (OverlappingFileLockException ignored) {
+        publicationLock = null
+    }
+    if (publicationLock == null) {
+        publicationChannel.close()
+        publicationChannel = null
+        throw new GradleException('Another migration resource generation or verification is active; retry after it finishes.')
+    }
+}
+
+gradle.buildFinished {
+    try { publicationLock?.release() } finally { publicationChannel?.close() }
+}
+
+def manifest = { Map<String, File> files ->
+    def result = new TreeMap<String, String>()
+    files.each { String path, File item -> result[path] = hashFile(item) }
+    result
+}
+
+def inputs = {
+    def files = new TreeMap<String, File>()
+    ['src/main/java', 'src/main/resources'].each { String dir ->
+        resourceFiles(file(dir)).each { String path, File item -> files["${dir}/${path}"] = item }
+    }
+    inputFiles.each { String path ->
+        File item = file(path)
+        if (!item.isFile()) throw new GradleException("Missing migration input: ${path}")
+        files[path] = item
+    }
+    optionalInputFiles.each { String path ->
+        File item = file(path)
+        if (item.isFile()) files[path] = item
+    }
+    manifest(files)
+}
+
+def fingerprint = { Map<String, String> files ->
+    def canonical = files.collect { String path, String hash -> "${path}\u0000${hash}\n" }.join('')
+    HexFormat.of().formatHex(MessageDigest.getInstance('SHA-256').digest(canonical.getBytes(StandardCharsets.UTF_8)))
+}
+
+def validateResourceGroups = { Map<String, File> generated ->
+    def main = resourceFiles(mainRoot)
+    def seen = [:]
+    [main, generated].each { Map<String, File> group ->
+        group.each { String path, File item ->
+            def folded = path.toLowerCase(Locale.ROOT)
+            def previous = seen[folded]
+            if (previous != null) {
+                if (previous.path != path) {
+                    throw new GradleException("Resource case collision: ${previous.file} and ${item}")
+                }
+                if (!java.util.Arrays.equals(Files.readAllBytes(previous.file.toPath()), Files.readAllBytes(item.toPath()))) {
+                    throw new GradleException("Divergent resource duplicate: ${previous.file} and ${item}")
+                }
+            } else {
+                seen[folded] = [path: path, file: item]
+            }
+        }
+    }
+}
+
+def readStamp = {
+    try {
+        new JsonSlurper().parse(stampFile, 'UTF-8')
+    } catch (Exception error) {
+        throw new GradleException('Migration resource stamp is unreadable; rerun runData.', error)
+    }
+}
+
+def recoverPublication = {
+    if (!Files.exists(pendingFile.toPath(), LinkOption.NOFOLLOW_LINKS)) return
+    if (Files.isSymbolicLink(pendingFile.toPath())) {
+        throw new GradleException('Migration publication journal is a symlink; preserve it for manual recovery.')
+    }
+    def journal
+    try {
+        journal = new JsonSlurper().parse(pendingFile, 'UTF-8')
+    } catch (Exception error) {
+        throw new GradleException('Migration publication journal is unreadable; preserve the generated tree for manual recovery.', error)
+    }
+    if (journal.version != 1 || !(journal.id instanceof String) ||
+            !(journal.files instanceof Map) || !(journal.oldStamp instanceof String) ||
+            !(journal.newStamp instanceof String)) {
+        throw new GradleException('Migration publication journal is invalid; preserve the generated tree for manual recovery.')
+    }
+    if (!(journal.id ==~ /[0-9a-fA-F-]{36}/)) {
+        throw new GradleException('Migration publication journal has an unsafe transaction ID.')
+    }
+    File backupRoot = new File(publicationRoot, journal.id)
+    File stampBackup = safeChild(backupRoot, 'stamp.json')
+    def entries = journal.files.collect { String path, value ->
+        if (!(value instanceof Map) || !(value.old instanceof String) || !(value.fresh instanceof String)) {
+            throw new GradleException("Invalid migration journal entry: ${path}")
+        }
+        [path: path, old: value.old, fresh: value.fresh,
+         active: safeChild(generatedRoot, path), backup: safeChild(backupRoot, "files/${path}")]
+    }
+    // Inspect the entire transaction before changing anything. A user edit blocks recovery.
+    entries.each { entry ->
+        if (entry.old) {
+            if (!entry.backup.isFile() || rawHash(entry.backup) != entry.old) {
+                throw new GradleException("Migration backup is missing or modified: ${entry.backup}")
+            }
+        }
+        if (entry.active.exists() &&
+                !(rawHash(entry.active) in [entry.old, entry.fresh])) {
+            throw new GradleException("Generated resource changed during interrupted publication: ${entry.active}")
+        }
+    }
+    if (journal.oldStamp && (!stampBackup.isFile() || rawHash(stampBackup) != journal.oldStamp)) {
+        throw new GradleException('Migration stamp backup is missing or modified.')
+    }
+    if (stampFile.exists() && !(rawHash(stampFile) in [journal.oldStamp, journal.newStamp])) {
+        throw new GradleException('Migration stamp changed during interrupted publication.')
+    }
+    entries.each { entry ->
+        if (entry.old) {
+            Files.createDirectories(entry.active.parentFile.toPath())
+            Files.copy(entry.backup.toPath(), entry.active.toPath(), StandardCopyOption.REPLACE_EXISTING)
+        } else {
+            Files.deleteIfExists(entry.active.toPath())
+        }
+    }
+    if (journal.oldStamp) {
+        Files.copy(stampBackup.toPath(), stampFile.toPath(), StandardCopyOption.REPLACE_EXISTING)
+    } else {
+        Files.deleteIfExists(stampFile.toPath())
+    }
+    Files.delete(pendingFile.toPath())
+    logger.lifecycle("Restored interrupted migration publication from ${backupRoot}")
+}
+
+def publishResources = { Map<String, File> active, Map<String, File> fresh,
+                         Map<String, String> afterRun, String beforeRun, Collection<String> orphans ->
+    if (pendingFile.exists()) throw new GradleException('Migration publication is pending recovery.')
+    String id = UUID.randomUUID().toString()
+    File backupRoot = new File(publicationRoot, id)
+    File archiveRoot = new File(file('build/migration/retired'), stageRoot.name)
+    def paths = new TreeSet<String>(active.keySet())
+    paths.addAll(fresh.keySet())
+    def journalFiles = new TreeMap<String, Map<String, String>>()
+    paths.each { String path ->
+        File current = safeChild(generatedRoot, path)
+        File staged = fresh[path]
+        safeChild(backupRoot, "files/${path}")
+        if (staged != null) safeChild(stageRoot, path)
+        if (current.exists() && Files.isSymbolicLink(current.toPath())) {
+            throw new GradleException("Active resource uses a symlink: ${current}")
+        }
+        journalFiles[path] = [old: active.containsKey(path) ? rawHash(active[path]) : '',
+                              fresh: staged != null ? rawHash(staged) : '']
+    }
+    orphans.each { String path ->
+        File archived = safeChild(archiveRoot, path)
+        if (Files.exists(archived.toPath(), LinkOption.NOFOLLOW_LINKS)) {
+            throw new GradleException("Migration archive target exists: ${archived}")
+        }
+    }
+    if (Files.exists(pendingFile.toPath(), LinkOption.NOFOLLOW_LINKS) ||
+            Files.exists(backupRoot.toPath(), LinkOption.NOFOLLOW_LINKS)) {
+        throw new GradleException('Migration publication transaction path already exists.')
+    }
+    def generatedHashes = manifest(fresh)
+    def stamp = [version: 1, inputFingerprint: beforeRun, inputs: afterRun,
+                 generatedFingerprint: fingerprint(generatedHashes), generated: generatedHashes]
+    String stampText = JsonOutput.prettyPrint(JsonOutput.toJson(stamp)) + '\n'
+    String newStampHash = HexFormat.of().formatHex(MessageDigest.getInstance('SHA-256').digest(stampText.getBytes(StandardCharsets.UTF_8)))
+    if (Files.isSymbolicLink(stampFile.toPath())) {
+        throw new GradleException('Migration resource stamp is a symlink.')
+    }
+    String oldStampHash = stampFile.isFile() ? rawHash(stampFile) : ''
+
+    // A complete backup and journal precede the first change to active resources.
+    active.each { String path, File item ->
+        File backup = safeChild(backupRoot, "files/${path}")
+        Files.createDirectories(backup.parentFile.toPath())
+        Files.copy(item.toPath(), backup.toPath())
+        if (rawHash(backup) != journalFiles[path].old) throw new GradleException("Backup changed: ${item}")
+    }
+    if (oldStampHash) {
+        File backup = safeChild(backupRoot, 'stamp.json')
+        Files.copy(stampFile.toPath(), backup.toPath())
+        if (rawHash(backup) != oldStampHash) throw new GradleException('Migration stamp changed while backing up.')
+    }
+    writeJsonAtomically(pendingFile, [version: 1, id: id, files: journalFiles,
+                                      oldStamp: oldStampHash, newStamp: newStampHash])
+    try {
+        orphans.each { String path ->
+            File archive = safeChild(archiveRoot, path)
+            Files.createDirectories(archive.parentFile.toPath())
+            Files.copy(safeChild(backupRoot, "files/${path}").toPath(), archive.toPath())
+            if (rawHash(archive) != journalFiles[path].old) throw new GradleException("Archive changed: ${archive}")
+        }
+        int copies = 0
+        paths.each { String path ->
+            File target = safeChild(generatedRoot, path)
+            String oldHash = journalFiles[path].old
+            if (target.exists() && rawHash(target) != oldHash) {
+                throw new GradleException("Generated resource changed during publication: ${target}")
+            }
+            if (fresh.containsKey(path)) {
+                File staged = fresh[path]
+                if (rawHash(staged) != journalFiles[path].fresh) {
+                    throw new GradleException("Staged resource changed during publication: ${staged}")
+                }
+                Files.createDirectories(target.parentFile.toPath())
+                Files.copy(staged.toPath(), target.toPath(), StandardCopyOption.REPLACE_EXISTING)
+                if (rawHash(target) != journalFiles[path].fresh) throw new GradleException("Published resource changed: ${target}")
+            } else {
+                Files.delete(target.toPath())
+            }
+            copies++
+            if (project.findProperty('migrationFixture') == true &&
+                    project.findProperty('migrationTestFailAfterCopies')?.toString() == copies.toString()) {
+                throw new GradleException('Injected migration publication failure after copy.')
+            }
+        }
+        if (manifest(resourceFiles(generatedRoot)) != generatedHashes ||
+                fingerprint(inputs()) != beforeRun) {
+            throw new GradleException('Migration resources or inputs changed during publication; stamp was not updated.')
+        }
+        Files.writeString(stampFile.toPath(), stampText, StandardCharsets.UTF_8)
+        if (rawHash(stampFile) != newStampHash) throw new GradleException('Published migration stamp changed.')
+        Files.delete(pendingFile.toPath())
+        if (!orphans.isEmpty()) logger.lifecycle("Archived retired generated resources to ${archiveRoot}")
+    } catch (Exception error) {
+        if (project.findProperty('migrationFixture') != true ||
+                project.findProperty('migrationTestLeavePending')?.toString() != 'true') {
+            try { recoverPublication() } catch (Exception recovery) { error.addSuppressed(recovery) }
+        }
+        throw error
+    }
+}
+
+def validateResources = {
+    if (Files.exists(pendingFile.toPath(), LinkOption.NOFOLLOW_LINKS)) {
+        throw new GradleException('Migration publication was interrupted; runData will restore the last stamped resources before regenerating.')
+    }
+    def generated = resourceFiles(generatedRoot)
+    if (generated.isEmpty() || !generated.containsKey('assets/hbmsntm/lang/en_us.json')) {
+        throw new GradleException('Generated resources are missing (including assets/hbmsntm/lang/en_us.json); runData first.')
+    }
+    validateResourceGroups(generated)
+
+    if (!stampFile.isFile()) throw new GradleException('Migration resource stamp is missing; runData first.')
+    def stamp = readStamp()
+    def currentInputs = inputs()
+    def currentGenerated = manifest(generated)
+    if (stamp.version != 1 || stamp.inputs != currentInputs ||
+            stamp.inputFingerprint != fingerprint(currentInputs) ||
+            stamp.generated != currentGenerated || stamp.generatedFingerprint != fingerprint(currentGenerated)) {
+        throw new GradleException('Migration resources are stale or modified; rerun runData, then build in a separate invocation.')
+    }
+}
+
+def graphStartFingerprint
+tasks.named('runData').configure {
+    def beforeRun
+    doFirst {
+        recoverPublication()
+        beforeRun = fingerprint(inputs())
+        if (beforeRun != graphStartFingerprint) {
+            throw new GradleException('Migration inputs changed before runData started; rerun with stable inputs.')
+        }
+    }
+    doLast {
+        def afterRun = inputs()
+        if (fingerprint(afterRun) != beforeRun) {
+            throw new GradleException('Migration inputs changed during runData; rerun it with stable inputs.')
+        }
+        def fresh = resourceFiles(stageRoot)
+        if (fresh.isEmpty() || !fresh.containsKey('assets/hbmsntm/lang/en_us.json')) {
+            throw new GradleException("runData produced no complete fresh resource set in ${stageRoot}.")
+        }
+        validateResourceGroups(fresh)
+        def active = resourceFiles(generatedRoot)
+        def activeHashes = manifest(active)
+        if (stampFile.isFile()) {
+            def oldStamp = readStamp()
+            if (oldStamp.version != 1 || !(oldStamp.generated instanceof Map) ||
+                    oldStamp.generated != activeHashes ||
+                    oldStamp.generatedFingerprint != fingerprint(activeHashes)) {
+                throw new GradleException('Active generated resources differ from their prior stamp; preserve edits and reconcile them before rerunning runData.')
+            }
+        } else if (!active.isEmpty()) {
+            throw new GradleException('Active generated resources have no prior stamp; preserve and reconcile them before publishing fresh data.')
+        }
+        def orphans = active.keySet().findAll { String path -> !fresh.containsKey(path) }
+        if (!orphans.isEmpty()) {
+            if (project.findProperty('migrationArchiveOrphans')?.toString() != 'true') {
+                throw new GradleException("Generated paths no longer produced: ${orphans.join(', ')}. Fresh output remains at ${stageRoot}; rerun with -PmigrationArchiveOrphans=true to archive only these verified paths, or reconcile them manually.")
+            }
+        }
+        publishResources(active, fresh, afterRun, beforeRun, orphans)
+    }
+}
+
+def verifyMigrationResources = tasks.register('verifyMigrationResources') {
+    group = 'verification'
+    description = 'Check that generated resources match the last successful runData and can be packaged safely.'
+    doLast { validateResources() }
+}
+
+// runData needs processResources to start; gating that task would create a bootstrap cycle.
+// Compile/process alone is not migration acceptance. Run runData, then build separately.
+tasks.named('jar').configure { dependsOn verifyMigrationResources }
+tasks.named('check').configure { dependsOn verifyMigrationResources }
+gradle.taskGraph.whenReady { graph ->
+    def runsData = graph.hasTask(tasks.named('runData').get())
+    def verifiesData = graph.hasTask(verifyMigrationResources.get())
+    if (runsData &&
+            (graph.hasTask(tasks.named('jar').get()) || graph.hasTask(tasks.named('check').get()))) {
+        throw new GradleException('Run runData and build/check in separate Gradle invocations so packaging processes the new resources.')
+    }
+    // Lock before compile/process dependencies, through build completion. A crashed process
+    // releases the OS lock, leaving its journal available for the next runData to recover.
+    if (!gradle.startParameter.dryRun && (runsData || verifiesData)) {
+        acquirePublicationLock()
+        if (runsData) graphStartFingerprint = fingerprint(inputs())
+    }
+}

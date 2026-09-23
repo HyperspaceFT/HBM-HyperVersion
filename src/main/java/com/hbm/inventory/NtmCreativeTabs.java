@@ -77,6 +77,7 @@ public class NtmCreativeTabs {
                         output.accept(NtmItems.INGOT_BORON.get());
                         output.accept(NtmItems.INGOT_GRAPHITE.get());
                         output.accept(NtmItems.INGOT_FIREBRICK.get());
+                        output.accept(NtmItems.BALL_FIRECLAY.get());
                         output.accept(NtmItems.INGOT_DURA_STEEL.get());
                         output.accept(NtmItems.INGOT_POLYMER.get());
                         output.accept(NtmItems.INGOT_BAKELITE.get());
@@ -292,6 +293,9 @@ public class NtmCreativeTabs {
                         output.accept(NtmItems.MOTOR.get());
                         addMetaItems(output, NtmItems.CAST_PLATE_WELDED.get());
                         addMetaItems(output, NtmItems.CAST_PLATE.get());
+                        output.accept(NtmItems.MOLD_BASE.get());
+                        output.accept(NtmItems.MOLD_PLATE_CAST.get());
+                        output.accept(NtmItems.SCRAPS.get());
                         output.accept(NtmItems.PIPES_STEEL.get());
                         output.accept(NtmItems.CRT_DISPLAY.get());
                         output.accept(NtmItems.RING_STARMETAL.get());
@@ -785,6 +789,8 @@ public class NtmCreativeTabs {
                         output.accept(NtmBlocks.MACHINE_FRACKING_TOWER);
                         output.accept(NtmBlocks.MACHINE_REFINERY);
                         output.accept(NtmBlocks.FURNACE_COMBINATION);
+                        output.accept(NtmBlocks.MACHINE_CRUCIBLE);
+                        output.accept(NtmBlocks.FOUNDRY_MOLD);
                         output.accept(NtmBlocks.MACHINE_BLAST_FURNACE);
                         output.accept(NtmBlocks.MACHINE_WOOD_BURNER);
                         output.accept(NtmBlocks.MACHINE_CENTRIFUGE);

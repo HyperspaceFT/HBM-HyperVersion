@@ -1,6 +1,7 @@
 package com.hbm.blockentity.machine;
 
 import api.hbm.energymk2.IEnergyReceiverMK2;
+import api.hbm.energymk2.IBatteryItem;
 import api.hbm.fluidmk2.IFluidStandardTransceiverMK2;
 import com.hbm.blockentity.IUpgradeInfoProvider;
 import com.hbm.blockentity.MachineBaseBlockEntity;
@@ -14,6 +15,7 @@ import com.hbm.inventory.menus.MachineAssemblyMachineMenu;
 import com.hbm.inventory.recipes.AssemblyMachineRecipes;
 import com.hbm.inventory.recipes.loader.GenericRecipe;
 import com.hbm.items.NtmItems;
+import com.hbm.items.machine.BlueprintsItem;
 import com.hbm.items.machine.MachineUpgradeItem;
 import com.hbm.items.machine.MachineUpgradeItem.UpgradeType;
 import com.hbm.lib.Library;
@@ -28,6 +30,7 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.nbt.CompoundTag;
+import net.minecraft.nbt.Tag;
 import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.network.chat.Component;
 import net.minecraft.sounds.SoundSource;
@@ -90,6 +93,7 @@ public class MachineAssemblyMachineBlockEntity extends MachineBaseBlockEntity im
         if(maxPower <= 0) this.maxPower = 1_000_000;
 
         if(!level.isClientSide) {
+            long previousPower = this.power;
             GenericRecipe recipe = AssemblyMachineRecipes.INSTANCE.recipeNameMap.get(assemblerModule.recipe);
             if(recipe != null) {
                 this.maxPower = recipe.power * 100;
@@ -117,7 +121,7 @@ public class MachineAssemblyMachineBlockEntity extends MachineBaseBlockEntity im
 
             this.assemblerModule.update(speed, pow, true, slots.get(1));
             this.didProcess = this.assemblerModule.didProcess;
-            if(this.assemblerModule.markDirty) this.setChanged();
+            if(this.assemblerModule.markDirty || this.power != previousPower) this.setChanged();
 
 //            if(didProcess) {
 //                if(slots[0] != null && slots[0].getItem() == ModItems.meteorite_sword_alloyed)
@@ -279,7 +283,7 @@ public class MachineAssemblyMachineBlockEntity extends MachineBaseBlockEntity im
 
     @Override
     public boolean canPlaceItem(int slot, ItemStack stack) {
-        if(slot == 0) return true; // battery
+        if(slot == 0) return stack.getItem() instanceof IBatteryItem; // battery
         if(slot == 1 && stack.getItem() == NtmItems.BLUEPRINTS.get()) return true;
         if(slot >= 2 && slot <= 3 && stack.getItem() instanceof MachineUpgradeItem) return true; // upgrades
         if(this.assemblerModule.isItemValid(slot, stack)) return true; // recipe input crap
@@ -292,7 +296,13 @@ public class MachineAssemblyMachineBlockEntity extends MachineBaseBlockEntity im
     }
 
     @Override public long getPower() { return power; }
-    @Override public void setPower(long power) { this.power = power; }
+    @Override public void setPower(long power) {
+        long bounded = Math.max(0L, Math.min(this.maxPower, power));
+        if(this.power != bounded) {
+            this.power = bounded;
+            this.setChanged();
+        }
+    }
     @Override public long getMaxPower() { return maxPower; }
 
     @Override public FluidTank[] getReceivingTanks() { return new FluidTank[] { inputTank }; }
@@ -304,18 +314,29 @@ public class MachineAssemblyMachineBlockEntity extends MachineBaseBlockEntity im
         return new MachineAssemblyMachineMenu(id, inventory, this);
     }
 
-    @Override public boolean hasPermission(Player player) { return this.stillValid(player); }
+    @Override public boolean hasPermission(Player player) {
+        return this.level != null && !this.level.isClientSide && player.level() == this.level
+                && player.containerMenu instanceof MachineAssemblyMachineMenu menu && menu.be == this
+                && this.stillValid(player);
+    }
 
     @Override
     public void receiveControl(CompoundTag tag) {
-        if(tag.contains("index") && tag.contains("selection")) {
-            int index = tag.getInt("index");
-            String selection = tag.getString("selection");
-            if(index == 0) {
-                this.assemblerModule.recipe = selection;
-                this.setChanged();
-            }
+        if(tag == null || !tag.contains("index", Tag.TAG_INT) || !tag.contains("selection", Tag.TAG_STRING)) return;
+        if(tag.getInt("index") != 0) return;
+        String selection = tag.getString("selection");
+        if(!"null".equals(selection)) {
+            GenericRecipe recipe = AssemblyMachineRecipes.INSTANCE.recipeNameMap.get(selection);
+            if(recipe == null || (recipe.isPooled() && !recipe.isPartOfPool(BlueprintsItem.grabPool(this.slots.get(1))))) return;
         }
+        if(selection.equals(this.assemblerModule.recipe)) return;
+
+        // Work already paid for belongs to the previous recipe, never the newly selected one.
+        this.assemblerModule.recipe = selection;
+        this.assemblerModule.progress = 0D;
+        this.assemblerModule.didProcess = false;
+        this.didProcess = false;
+        this.setChanged();
     }
 
     @Override

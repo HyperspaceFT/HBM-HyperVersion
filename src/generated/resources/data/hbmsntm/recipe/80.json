@@ -1,0 +1,27 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "key": {
+    "A": {
+      "item": "minecraft:iron_ingot"
+    },
+    "B": {
+      "item": "hbmsntm:circuit_capacitor"
+    },
+    "C": {
+      "item": "hbmsntm:coil_copper"
+    },
+    "D": {
+      "item": "hbmsntm:ingot_red_copper"
+    }
+  },
+  "pattern": [
+    "ABA",
+    "CDC",
+    "ABA"
+  ],
+  "result": {
+    "count": 1,
+    "id": "hbmsntm:transformer"
+  }
+}

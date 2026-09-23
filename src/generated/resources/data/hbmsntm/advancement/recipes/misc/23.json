@@ -1,0 +1,32 @@
+{
+  "parent": "minecraft:recipes/root",
+  "criteria": {
+    "has_red_copper_wire": {
+      "conditions": {
+        "items": [
+          {
+            "items": "hbmsntm:wire_red_copper"
+          }
+        ]
+      },
+      "trigger": "minecraft:inventory_changed"
+    },
+    "has_the_recipe": {
+      "conditions": {
+        "recipe": "hbmsntm:23"
+      },
+      "trigger": "minecraft:recipe_unlocked"
+    }
+  },
+  "requirements": [
+    [
+      "has_the_recipe",
+      "has_red_copper_wire"
+    ]
+  ],
+  "rewards": {
+    "recipes": [
+      "hbmsntm:23"
+    ]
+  }
+}

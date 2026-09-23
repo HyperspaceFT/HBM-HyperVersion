@@ -43,6 +43,7 @@ public class MachineShredderMenu extends MenuBase<MachineShredderBlockEntity> {
 
     @Override
     public ItemStack quickMoveStack(Player player, int index) {
+        if(index < 0 || index >= this.slots.size()) return ItemStack.EMPTY;
         ItemStack ret = ItemStack.EMPTY;
         Slot slot = this.slots.get(index);
 
@@ -57,8 +58,9 @@ public class MachineShredderMenu extends MenuBase<MachineShredderBlockEntity> {
                     if(!this.moveItemStackTo(stack, 29, 30, false)) return ItemStack.EMPTY;
                 } else if(isBlade(stack)) {
                     if(!this.moveItemStackTo(stack, 27, 29, false)) return ItemStack.EMPTY;
-                } else if(!this.moveItemStackTo(stack, 0, 9, false)) {
-                    return ItemStack.EMPTY;
+                } else {
+                    // Vanilla's merge pass can extend an existing stack without asking mayPlace.
+                    if(!this.be.canPlaceItem(0, stack) || !this.moveItemStackTo(stack, 0, 9, false)) return ItemStack.EMPTY;
                 }
             }
 

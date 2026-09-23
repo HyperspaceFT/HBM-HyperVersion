@@ -1,5 +1,6 @@
 package com.hbm.datagen;
 
+import com.hbm.blocks.NtmBlocks;
 import com.hbm.items.NtmItems;
 import com.hbm.main.NuclearTechMod;
 import net.minecraft.core.HolderLookup;
@@ -41,6 +42,11 @@ public class NtmItemTagProvider extends ItemTagsProvider {
 
     @Override
     protected void addTags(HolderLookup.Provider provider) {
+
+        this.tag(DUSTS_ALUMINIUM).add(NtmItems.POWDER_ALUMINIUM.get());
+        this.tag(ORES_ALUMINIUM).add(NtmBlocks.ORE_ALUMINIUM.asItem(), NtmBlocks.ORE_ALUMINIUM_DEEPSLATE.asItem());
+        this.tag(PLATES_STEEL).add(NtmItems.PLATE_STEEL.get());
+        this.tag(PLATES_COPPER).add(NtmItems.PLATE_COPPER.get());
 
         /*
          * TANKS

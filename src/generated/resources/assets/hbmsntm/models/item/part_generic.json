@@ -1,0 +1,40 @@
+{
+  "overrides": [
+    {
+      "model": "hbmsntm:item/part_generic_0",
+      "predicate": {
+        "hbmsntm:item_meta": 0.0
+      }
+    },
+    {
+      "model": "hbmsntm:item/part_generic_1",
+      "predicate": {
+        "hbmsntm:item_meta": 1.0
+      }
+    },
+    {
+      "model": "hbmsntm:item/part_generic_2",
+      "predicate": {
+        "hbmsntm:item_meta": 2.0
+      }
+    },
+    {
+      "model": "hbmsntm:item/part_generic_3",
+      "predicate": {
+        "hbmsntm:item_meta": 3.0
+      }
+    },
+    {
+      "model": "hbmsntm:item/part_generic_4",
+      "predicate": {
+        "hbmsntm:item_meta": 4.0
+      }
+    },
+    {
+      "model": "hbmsntm:item/part_generic_5",
+      "predicate": {
+        "hbmsntm:item_meta": 5.0
+      }
+    }
+  ]
+}

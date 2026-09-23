@@ -1,0 +1,27 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "key": {
+    "A": {
+      "item": "hbmsntm:plate_steel"
+    },
+    "B": {
+      "item": "hbmsntm:coil_copper"
+    },
+    "C": {
+      "item": "minecraft:iron_ingot"
+    },
+    "D": {
+      "item": "minecraft:furnace"
+    }
+  },
+  "pattern": [
+    "AAA",
+    "BDB",
+    "C C"
+  ],
+  "result": {
+    "count": 1,
+    "id": "hbmsntm:machine_wood_burner"
+  }
+}

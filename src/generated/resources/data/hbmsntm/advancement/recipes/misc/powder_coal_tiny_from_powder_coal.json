@@ -1,0 +1,32 @@
+{
+  "parent": "minecraft:recipes/root",
+  "criteria": {
+    "has_powder_coal": {
+      "conditions": {
+        "items": [
+          {
+            "items": "hbmsntm:powder_coal"
+          }
+        ]
+      },
+      "trigger": "minecraft:inventory_changed"
+    },
+    "has_the_recipe": {
+      "conditions": {
+        "recipe": "hbmsntm:powder_coal_tiny_from_powder_coal"
+      },
+      "trigger": "minecraft:recipe_unlocked"
+    }
+  },
+  "requirements": [
+    [
+      "has_the_recipe",
+      "has_powder_coal"
+    ]
+  ],
+  "rewards": {
+    "recipes": [
+      "hbmsntm:powder_coal_tiny_from_powder_coal"
+    ]
+  }
+}

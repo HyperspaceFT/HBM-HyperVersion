@@ -1,0 +1,32 @@
+{
+  "parent": "minecraft:recipes/root",
+  "criteria": {
+    "has_powder_copper": {
+      "conditions": {
+        "items": [
+          {
+            "items": "hbmsntm:powder_copper"
+          }
+        ]
+      },
+      "trigger": "minecraft:inventory_changed"
+    },
+    "has_the_recipe": {
+      "conditions": {
+        "recipe": "hbmsntm:powder_copper_to_ingot_copper"
+      },
+      "trigger": "minecraft:recipe_unlocked"
+    }
+  },
+  "requirements": [
+    [
+      "has_the_recipe",
+      "has_powder_copper"
+    ]
+  ],
+  "rewards": {
+    "recipes": [
+      "hbmsntm:powder_copper_to_ingot_copper"
+    ]
+  }
+}

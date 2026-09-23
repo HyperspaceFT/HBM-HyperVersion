@@ -1,0 +1,32 @@
+{
+  "parent": "minecraft:recipes/root",
+  "criteria": {
+    "has_powder_gold": {
+      "conditions": {
+        "items": [
+          {
+            "items": "hbmsntm:powder_gold"
+          }
+        ]
+      },
+      "trigger": "minecraft:inventory_changed"
+    },
+    "has_the_recipe": {
+      "conditions": {
+        "recipe": "hbmsntm:powder_gold_to_gold_ingot"
+      },
+      "trigger": "minecraft:recipe_unlocked"
+    }
+  },
+  "requirements": [
+    [
+      "has_the_recipe",
+      "has_powder_gold"
+    ]
+  ],
+  "rewards": {
+    "recipes": [
+      "hbmsntm:powder_gold_to_gold_ingot"
+    ]
+  }
+}

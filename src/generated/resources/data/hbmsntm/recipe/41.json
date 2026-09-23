@@ -1,0 +1,21 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "key": {
+    "A": {
+      "item": "hbmsntm:plate_steel"
+    },
+    "B": {
+      "item": "hbmsntm:ingot_steel"
+    }
+  },
+  "pattern": [
+    "ABA",
+    "B B",
+    "ABA"
+  ],
+  "result": {
+    "count": 1,
+    "id": "hbmsntm:sphere_steel"
+  }
+}

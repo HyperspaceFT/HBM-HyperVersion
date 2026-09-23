@@ -1,0 +1,25 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "building",
+  "key": {
+    "B": {
+      "type": "neoforge:components",
+      "components": {
+        "hbmsntm:meta": 33
+      },
+      "items": "hbmsntm:bolt"
+    },
+    "G": {
+      "item": "minecraft:gold_ingot"
+    }
+  },
+  "pattern": [
+    " B ",
+    "BGB",
+    " B "
+  ],
+  "result": {
+    "count": 1,
+    "id": "minecraft:gold_block"
+  }
+}

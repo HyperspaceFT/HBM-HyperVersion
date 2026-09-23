@@ -1,0 +1,13 @@
+{
+  "type": "minecraft:crafting_shapeless",
+  "category": "misc",
+  "ingredients": [
+    {
+      "item": "hbmsntm:powder_iodine"
+    }
+  ],
+  "result": {
+    "count": 9,
+    "id": "hbmsntm:powder_iodine_tiny"
+  }
+}

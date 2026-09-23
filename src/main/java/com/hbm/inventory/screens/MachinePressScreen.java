@@ -41,6 +41,13 @@ public class MachinePressScreen extends InfoScreen<MachinePressMenu> {
         this.drawCustomInfoStat(guiGraphics, mouseX, mouseY, this.leftPos + 25, this.topPos + 16, 18, 18, mouseX, mouseY, Component.literal((be.speed * 100 / MachinePressBlockEntity.maxSpeed) + "%"));
         this.drawCustomInfoStat(guiGraphics, mouseX, mouseY, this.leftPos + 25, this.topPos + 34, 18, 18, mouseX, mouseY, Component.translatable("container.press.left", (be.burnTime / 200)));
 
+        this.drawInfoPanel(guiGraphics, this.leftPos + 153, this.topPos + 67, 0);
+        this.drawCustomInfoStat(guiGraphics, mouseX, mouseY, this.leftPos + 153, this.topPos + 67, 8, 8, mouseX, mouseY,
+                Component.translatable("container.press.carbon_graphite"),
+                Component.translatable("container.press.carbon_wire"),
+                Component.translatable("container.press.carbon_input"),
+                Component.translatable("container.press.operation_cost"));
+
         this.renderTooltip(guiGraphics, mouseX, mouseY);
     }
 

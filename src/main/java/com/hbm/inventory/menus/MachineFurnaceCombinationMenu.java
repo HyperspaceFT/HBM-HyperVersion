@@ -28,6 +28,7 @@ public class MachineFurnaceCombinationMenu extends MenuBase<MachineFurnaceCombin
 
     @Override
     public ItemStack quickMoveStack(Player player, int index) {
+        if(index < 0 || index >= this.slots.size()) return ItemStack.EMPTY;
         ItemStack ret = ItemStack.EMPTY;
         Slot slot = this.slots.get(index);
         if(!slot.hasItem()) return ret;
@@ -40,9 +41,8 @@ public class MachineFurnaceCombinationMenu extends MenuBase<MachineFurnaceCombin
         } else if(this.be.canPlaceItem(MachineFurnaceCombinationBlockEntity.SLOT_INPUT, stack)) {
             if(!this.moveItemStackTo(stack, MachineFurnaceCombinationBlockEntity.SLOT_INPUT, MachineFurnaceCombinationBlockEntity.SLOT_INPUT + 1, false)) return ItemStack.EMPTY;
         } else {
-            if(!this.moveItemStackTo(stack, MachineFurnaceCombinationBlockEntity.SLOT_FLUID_IN, MachineFurnaceCombinationBlockEntity.SLOT_FLUID_IN + 1, false)) {
-                return ItemStack.EMPTY;
-            }
+            // Like the original oven, Shift inserts recipe inputs; container slots remain manual.
+            return ItemStack.EMPTY;
         }
 
         if(stack.isEmpty()) slot.set(ItemStack.EMPTY);

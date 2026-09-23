@@ -1,0 +1,32 @@
+{
+  "parent": "minecraft:recipes/root",
+  "criteria": {
+    "has_crystal_starmetal": {
+      "conditions": {
+        "items": [
+          {
+            "items": "hbmsntm:crystal_starmetal"
+          }
+        ]
+      },
+      "trigger": "minecraft:inventory_changed"
+    },
+    "has_the_recipe": {
+      "conditions": {
+        "recipe": "hbmsntm:ingot_starmetal_from_crystal_starmetal"
+      },
+      "trigger": "minecraft:recipe_unlocked"
+    }
+  },
+  "requirements": [
+    [
+      "has_the_recipe",
+      "has_crystal_starmetal"
+    ]
+  ],
+  "rewards": {
+    "recipes": [
+      "hbmsntm:ingot_starmetal_from_crystal_starmetal"
+    ]
+  }
+}

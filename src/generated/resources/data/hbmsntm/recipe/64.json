@@ -1,0 +1,28 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "key": {
+    "A": {
+      "item": "hbmsntm:ingot_tungsten"
+    },
+    "B": {
+      "item": "hbmsntm:ingot_rubber"
+    },
+    "C": {
+      "type": "neoforge:components",
+      "components": {
+        "hbmsntm:meta": 7400
+      },
+      "items": "hbmsntm:bolt"
+    }
+  },
+  "pattern": [
+    "CAC",
+    "B B",
+    "C C"
+  ],
+  "result": {
+    "count": 1,
+    "id": "hbmsntm:reacher"
+  }
+}

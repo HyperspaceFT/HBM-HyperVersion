@@ -1,0 +1,32 @@
+{
+  "parent": "minecraft:recipes/root",
+  "criteria": {
+    "has_lithium": {
+      "conditions": {
+        "items": [
+          {
+            "items": "hbmsntm:lithium"
+          }
+        ]
+      },
+      "trigger": "minecraft:inventory_changed"
+    },
+    "has_the_recipe": {
+      "conditions": {
+        "recipe": "hbmsntm:block_lithium_from_9_lithium"
+      },
+      "trigger": "minecraft:recipe_unlocked"
+    }
+  },
+  "requirements": [
+    [
+      "has_the_recipe",
+      "has_lithium"
+    ]
+  ],
+  "rewards": {
+    "recipes": [
+      "hbmsntm:block_lithium_from_9_lithium"
+    ]
+  }
+}

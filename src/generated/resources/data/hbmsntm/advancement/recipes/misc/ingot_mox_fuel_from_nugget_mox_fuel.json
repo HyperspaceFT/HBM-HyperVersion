@@ -1,0 +1,32 @@
+{
+  "parent": "minecraft:recipes/root",
+  "criteria": {
+    "has_nugget_mox_fuel": {
+      "conditions": {
+        "items": [
+          {
+            "items": "hbmsntm:nugget_mox_fuel"
+          }
+        ]
+      },
+      "trigger": "minecraft:inventory_changed"
+    },
+    "has_the_recipe": {
+      "conditions": {
+        "recipe": "hbmsntm:ingot_mox_fuel_from_nugget_mox_fuel"
+      },
+      "trigger": "minecraft:recipe_unlocked"
+    }
+  },
+  "requirements": [
+    [
+      "has_the_recipe",
+      "has_nugget_mox_fuel"
+    ]
+  ],
+  "rewards": {
+    "recipes": [
+      "hbmsntm:ingot_mox_fuel_from_nugget_mox_fuel"
+    ]
+  }
+}

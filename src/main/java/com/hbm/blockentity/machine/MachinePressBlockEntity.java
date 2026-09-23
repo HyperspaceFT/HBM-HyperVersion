@@ -51,6 +51,10 @@ public class MachinePressBlockEntity extends MachineBaseBlockEntity {
 
         if(!this.level.isClientSide) {
 
+            int previousSpeed = this.speed;
+            int previousPress = this.press;
+            boolean previouslyRetracting = this.isRetracting;
+
             boolean preheated = false;
 
             for(Direction dir : Direction.values()) {
@@ -80,7 +84,7 @@ public class MachinePressBlockEntity extends MachineBaseBlockEntity {
                 int stampSpeed = speed * progressAtMax / maxSpeed;
 
                 if(this.isRetracting) {
-                    this.press -= stampSpeed;
+                    this.press = Math.max(0, this.press - stampSpeed);
 
                     if(this.press <= 0) {
                         this.isRetracting = false;
@@ -97,7 +101,7 @@ public class MachinePressBlockEntity extends MachineBaseBlockEntity {
                         } else {
                             this.slots.get(3).grow(output.getCount());
                         }
-                        this.removeItem(2, 1);
+                        this.removeItem(2, PressRecipes.getInputCount(this.slots.get(2), this.slots.get(1)));
 
                         if(this.slots.get(1).getMaxDamage() != 0) {
                             ItemStack stackToDamage = this.slots.get(1);
@@ -132,6 +136,9 @@ public class MachinePressBlockEntity extends MachineBaseBlockEntity {
                 this.setChanged();
             }
 
+            if(this.speed != previousSpeed || this.press != previousPress || this.isRetracting != previouslyRetracting) {
+                this.setChanged();
+            }
             this.networkPackNT(50);
 
         } else {
@@ -176,11 +183,13 @@ public class MachinePressBlockEntity extends MachineBaseBlockEntity {
 
         ItemStack output = PressRecipes.getOutput(slots.get(2), slots.get(1));
         if(output.isEmpty()) return false;
+        int limit = Math.min(output.getMaxStackSize(), this.getMaxStackSize());
+        if(output.getCount() > limit) return false;
 
         ItemStack outSlot = slots.get(3);
         if(outSlot.isEmpty()) return true;
 
-        if(outSlot.getCount() + output.getCount() <= outSlot.getMaxStackSize() && ItemStack.isSameItemSameComponents(outSlot, output)) return true;
+        if(outSlot.getCount() <= limit - output.getCount() && ItemStack.isSameItemSameComponents(outSlot, output)) return true;
         return false;
     }
 

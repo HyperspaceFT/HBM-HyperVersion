@@ -49,9 +49,20 @@ public class UniNodespace {
     }
 
     public static void destroyNode(Level level, GenNode node) {
-        if (node != null) {
+        if (node != null && levels.containsKey(level)) {
             levels.get(level).popNode(node);
         }
+    }
+
+    /** Release a whole world, while ordinary chunk unload still retains conductor nodes. */
+    public static void removeLevel(Level level) {
+        UniNodeWorld nodeWorld = levels.remove(level);
+        if(nodeWorld == null) return;
+        for(GenNode node : new HashSet<>(nodeWorld.nodes.values())) {
+            if(node.net != null) node.net.destroy();
+            node.expired = true;
+        }
+        nodeWorld.nodes.clear();
     }
 
     public static void updateNodespace(MinecraftServer server) {

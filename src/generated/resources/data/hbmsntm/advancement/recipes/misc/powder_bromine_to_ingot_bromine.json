@@ -1,0 +1,32 @@
+{
+  "parent": "minecraft:recipes/root",
+  "criteria": {
+    "has_powder_bromine": {
+      "conditions": {
+        "items": [
+          {
+            "items": "hbmsntm:powder_bromine"
+          }
+        ]
+      },
+      "trigger": "minecraft:inventory_changed"
+    },
+    "has_the_recipe": {
+      "conditions": {
+        "recipe": "hbmsntm:powder_bromine_to_ingot_bromine"
+      },
+      "trigger": "minecraft:recipe_unlocked"
+    }
+  },
+  "requirements": [
+    [
+      "has_the_recipe",
+      "has_powder_bromine"
+    ]
+  ],
+  "rewards": {
+    "recipes": [
+      "hbmsntm:powder_bromine_to_ingot_bromine"
+    ]
+  }
+}

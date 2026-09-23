@@ -1,0 +1,32 @@
+{
+  "parent": "minecraft:recipes/root",
+  "criteria": {
+    "has_ingot_starmetal": {
+      "conditions": {
+        "items": [
+          {
+            "items": "hbmsntm:ingot_starmetal"
+          }
+        ]
+      },
+      "trigger": "minecraft:inventory_changed"
+    },
+    "has_the_recipe": {
+      "conditions": {
+        "recipe": "hbmsntm:starmetal_axe"
+      },
+      "trigger": "minecraft:recipe_unlocked"
+    }
+  },
+  "requirements": [
+    [
+      "has_the_recipe",
+      "has_ingot_starmetal"
+    ]
+  ],
+  "rewards": {
+    "recipes": [
+      "hbmsntm:starmetal_axe"
+    ]
+  }
+}

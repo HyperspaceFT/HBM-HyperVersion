@@ -24,6 +24,9 @@ base {
 
 java.toolchain.languageVersion = JavaLanguageVersion.of(21)
 
+// Each data run writes a fresh tree so providers that stop emitting files are visible.
+ext.migrationDataStage = file("build/migration/datagen/${UUID.randomUUID()}")
+
 neoForge {
     // Specify the version of NeoForge to use.
     version = project.neo_version
@@ -67,7 +70,7 @@ neoForge {
             // gameDirectory = project.file('run-data')
 
             // Specify the modid for data generation, where to output the resulting resource, and where to look for existing resources.
-            programArguments.addAll '--mod', project.mod_id, '--all', '--output', file('src/generated/resources/').getAbsolutePath(), '--existing', file('src/main/resources/').getAbsolutePath()
+            programArguments.addAll '--mod', project.mod_id, '--all', '--output', project.migrationDataStage.getAbsolutePath(), '--existing', file('src/main/resources/').getAbsolutePath()
         }
 
         // applies to all the run configs above
@@ -105,6 +108,12 @@ sourceSets.main.resources { srcDir 'src/generated/resources' }
 // "optional", meaning it will not be pulled by dependents of this mod.
 configurations {
     runtimeClasspath.extendsFrom localRuntime
+}
+
+// Preserve the resolved dependency set across content-only migration batches.
+// Refresh locks explicitly when a reviewed dependency change requires it.
+dependencyLocking {
+    lockAllConfigurations()
 }
 
 repositories {
@@ -157,7 +166,9 @@ tasks.withType(ProcessResources).configureEach {
             mod_authors             : mod_authors,
     ]
 
-    duplicatesStrategy = DuplicatesStrategy.WARN
+    // verifyMigrationResources checks duplicates before packaging; identical generated copies are kept once.
+    duplicatesStrategy = DuplicatesStrategy.EXCLUDE
+    exclude '**/.cache/**', '**/.migration-stamp.json'
 
     inputs.properties replaceProperties
 
@@ -190,3 +201,6 @@ idea {
         downloadJavadoc = true
     }
 }
+
+// Applied after the resource source set and run configurations are declared.
+apply from: 'gradle/migration-resources.gradle'

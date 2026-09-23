@@ -1,0 +1,32 @@
+{
+  "parent": "minecraft:recipes/root",
+  "criteria": {
+    "has_powder_weidanium": {
+      "conditions": {
+        "items": [
+          {
+            "items": "hbmsntm:powder_weidanium"
+          }
+        ]
+      },
+      "trigger": "minecraft:inventory_changed"
+    },
+    "has_the_recipe": {
+      "conditions": {
+        "recipe": "hbmsntm:powder_weidanium_to_ingot_weidanium"
+      },
+      "trigger": "minecraft:recipe_unlocked"
+    }
+  },
+  "requirements": [
+    [
+      "has_the_recipe",
+      "has_powder_weidanium"
+    ]
+  ],
+  "rewards": {
+    "recipes": [
+      "hbmsntm:powder_weidanium_to_ingot_weidanium"
+    ]
+  }
+}

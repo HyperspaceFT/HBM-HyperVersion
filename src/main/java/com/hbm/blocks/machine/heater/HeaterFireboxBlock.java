@@ -87,9 +87,8 @@ public class HeaterFireboxBlock extends AbstractHeaterBlock implements ITooltipP
 
     private void destroyHeater(Level level, BlockPos pos) {
         BlockPos center = this.findCore(level, pos);
-        if(center == null) {
-            center = pos;
-        }
+        // An orphan has no owned footprint; let the normal dummy removal path handle it.
+        if(center == null) return;
 
         if(level.getBlockState(center).getBlock() != this) {
             return;
@@ -97,7 +96,7 @@ public class HeaterFireboxBlock extends AbstractHeaterBlock implements ITooltipP
 
         safeRem = true;
         try {
-            this.clearMatching(level, center, -2, 2, -1, 2, -2, 2);
+            this.clearMatching(level, center, -1, 1, 0, 0, -1, 1);
         } finally {
             safeRem = false;
         }

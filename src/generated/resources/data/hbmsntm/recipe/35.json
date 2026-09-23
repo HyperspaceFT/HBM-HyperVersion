@@ -1,0 +1,24 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "key": {
+    "A": {
+      "item": "hbmsntm:ingot_cdalloy"
+    },
+    "B": {
+      "item": "hbmsntm:sulfur"
+    },
+    "C": {
+      "item": "hbmsntm:catalyst_clay"
+    }
+  },
+  "pattern": [
+    "ABA",
+    "BCB",
+    "ABA"
+  ],
+  "result": {
+    "count": 1,
+    "id": "hbmsntm:deuterium_filter"
+  }
+}

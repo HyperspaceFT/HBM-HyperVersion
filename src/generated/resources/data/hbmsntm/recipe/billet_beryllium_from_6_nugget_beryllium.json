@@ -1,0 +1,17 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "key": {
+    "n": {
+      "item": "hbmsntm:nugget_beryllium"
+    }
+  },
+  "pattern": [
+    "nnn",
+    "nnn"
+  ],
+  "result": {
+    "count": 1,
+    "id": "hbmsntm:billet_beryllium"
+  }
+}

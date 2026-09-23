@@ -14,55 +14,24 @@ public class HTTPHandler {
 
     public static List<String> capsule = new ArrayList<>();
     public static List<String> tipOfTheDay = new ArrayList<>();
-    public static boolean newVersion = false;
-    public static String versionNumber = "";
 
     public static void loadStats() {
 
-        Thread versionChecker = new Thread("NTM-Version-Checker") {
+        Thread resourceLoader = new Thread("NTM-Online-Resources") {
 
             @Override
             public void run() {
                 try {
-                    loadVersion();
                     loadSoyuz();
                     loadTips();
                 } catch(IOException e) {
-                    NuclearTechMod.LOGGER.warn("Version checker failed!");
+                    NuclearTechMod.LOGGER.warn("Online resource loading failed!");
                 }
             }
 
         };
 
-        versionChecker.start();
-    }
-
-    private static void loadVersion() throws IOException {
-
-        URL github = URI.create("https://raw.githubusercontent.com/ohiomannnn/HBMsNTM-NEO-EDITION/refs/heads/master/src/main/java/com/hbm/main/NuclearTechMod.java").toURL();
-        BufferedReader in = new BufferedReader(new InputStreamReader(github.openStream()));
-
-        NuclearTechMod.LOGGER.info("Searching for new versions...");
-        String line;
-
-        while((line = in.readLine()) != null) {
-
-            if(line.contains("String VERSION")) {
-
-                int begin = line.indexOf('"');
-                int end = line.lastIndexOf('"');
-
-                String sub = line.substring(begin + 1, end);
-
-                newVersion = !NuclearTechMod.VERSION.equals(sub);
-                versionNumber = sub;
-                NuclearTechMod.LOGGER.info("Found version {}", sub);
-                break;
-            }
-        }
-
-        NuclearTechMod.LOGGER.info("Version checker ended.");
-        in.close();
+        resourceLoader.start();
     }
 
     private static void loadSoyuz() throws IOException {

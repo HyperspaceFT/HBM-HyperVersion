@@ -1,0 +1,21 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "key": {
+    "A": {
+      "item": "minecraft:brick"
+    },
+    "B": {
+      "item": "hbmsntm:ingot_titanium"
+    }
+  },
+  "pattern": [
+    "   ",
+    "AAA",
+    "BBB"
+  ],
+  "result": {
+    "count": 1,
+    "id": "hbmsntm:stamp_titanium_flat"
+  }
+}

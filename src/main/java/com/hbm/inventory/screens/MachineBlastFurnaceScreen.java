@@ -30,7 +30,7 @@ public class MachineBlastFurnaceScreen extends InfoScreen<MachineBlastFurnaceMen
         this.be.tanks[0].renderTankTooltip(guiGraphics, mouseX, mouseY, this.leftPos + 25, this.topPos + 71, 18, 18);
         this.be.tanks[1].renderTankTooltip(guiGraphics, mouseX, mouseY, this.leftPos + 25, this.topPos + 17, 18, 18);
         this.drawCustomInfoStat(guiGraphics, mouseX, mouseY, this.leftPos + 79, this.topPos + 62, 18, 18, mouseX, mouseY,
-                Component.literal("Speed: " + (int) (this.be.speed * 100F) + "%").withStyle(ChatFormatting.YELLOW));
+                Component.translatable("container.machine_blast_furnace.speed", (int) (this.be.speed * 100F)).withStyle(ChatFormatting.YELLOW));
         this.renderTooltip(guiGraphics, mouseX, mouseY);
     }
 

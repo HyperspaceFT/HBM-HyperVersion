@@ -1,0 +1,32 @@
+{
+  "parent": "minecraft:recipes/root",
+  "criteria": {
+    "has_ingot_u235": {
+      "conditions": {
+        "items": [
+          {
+            "items": "hbmsntm:ingot_u235"
+          }
+        ]
+      },
+      "trigger": "minecraft:inventory_changed"
+    },
+    "has_the_recipe": {
+      "conditions": {
+        "recipe": "hbmsntm:block_u235_from_9_ingot_u235"
+      },
+      "trigger": "minecraft:recipe_unlocked"
+    }
+  },
+  "requirements": [
+    [
+      "has_the_recipe",
+      "has_ingot_u235"
+    ]
+  ],
+  "rewards": {
+    "recipes": [
+      "hbmsntm:block_u235_from_9_ingot_u235"
+    ]
+  }
+}

@@ -1,0 +1,19 @@
+{
+  "variants": {
+    "facing=east": {
+      "model": "hbmsntm:block/crate_tungsten",
+      "y": 90
+    },
+    "facing=north": {
+      "model": "hbmsntm:block/crate_tungsten"
+    },
+    "facing=south": {
+      "model": "hbmsntm:block/crate_tungsten",
+      "y": 180
+    },
+    "facing=west": {
+      "model": "hbmsntm:block/crate_tungsten",
+      "y": 270
+    }
+  }
+}

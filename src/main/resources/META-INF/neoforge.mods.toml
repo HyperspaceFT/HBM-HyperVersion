@@ -5,9 +5,6 @@ loaderVersion="${loader_version_range}"
 
 license="${mod_license}"
 
-displayURL="https://github.com/ohiomannnn/HBMsNTM-NEO-EDITION"
-issueTrackerURL="https://github.com/ohiomannnn/HBMsNTM-NEO-EDITION/issues"
-
 [[mods]]
     modId="${mod_id}"
     version="${mod_version}"

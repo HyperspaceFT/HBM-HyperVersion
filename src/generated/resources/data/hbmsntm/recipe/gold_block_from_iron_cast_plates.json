@@ -1,0 +1,22 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "building",
+  "key": {
+    "#": {
+      "type": "neoforge:components",
+      "components": {
+        "hbmsntm:meta": 0
+      },
+      "items": "hbmsntm:cast_plate"
+    }
+  },
+  "pattern": [
+    "###",
+    "###",
+    "###"
+  ],
+  "result": {
+    "count": 1,
+    "id": "minecraft:gold_block"
+  }
+}

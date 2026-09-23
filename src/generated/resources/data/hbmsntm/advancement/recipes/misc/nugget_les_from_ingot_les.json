@@ -1,0 +1,32 @@
+{
+  "parent": "minecraft:recipes/root",
+  "criteria": {
+    "has_ingot_les": {
+      "conditions": {
+        "items": [
+          {
+            "items": "hbmsntm:ingot_les"
+          }
+        ]
+      },
+      "trigger": "minecraft:inventory_changed"
+    },
+    "has_the_recipe": {
+      "conditions": {
+        "recipe": "hbmsntm:nugget_les_from_ingot_les"
+      },
+      "trigger": "minecraft:recipe_unlocked"
+    }
+  },
+  "requirements": [
+    [
+      "has_the_recipe",
+      "has_ingot_les"
+    ]
+  ],
+  "rewards": {
+    "recipes": [
+      "hbmsntm:nugget_les_from_ingot_les"
+    ]
+  }
+}

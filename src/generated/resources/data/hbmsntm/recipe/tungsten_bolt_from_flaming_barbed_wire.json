@@ -1,0 +1,25 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "key": {
+    "#": {
+      "type": "neoforge:components",
+      "components": {
+        "hbmsntm:meta": 1
+      },
+      "items": "hbmsntm:barbed_wire"
+    }
+  },
+  "pattern": [
+    "###",
+    "###",
+    "###"
+  ],
+  "result": {
+    "components": {
+      "hbmsntm:meta": 7400
+    },
+    "count": 1,
+    "id": "hbmsntm:bolt"
+  }
+}

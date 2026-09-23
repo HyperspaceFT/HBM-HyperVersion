@@ -31,7 +31,7 @@ public class AssemblyMachineTransferInfo implements IRecipeTransferInfo<MachineA
 
     @Override
     public boolean canHandle(MachineAssemblyMachineMenu container, GenericRecipe recipe) {
-        return true;
+        return recipe.getInternalName().equals(container.be.assemblerModule.recipe);
     }
 
     @Override

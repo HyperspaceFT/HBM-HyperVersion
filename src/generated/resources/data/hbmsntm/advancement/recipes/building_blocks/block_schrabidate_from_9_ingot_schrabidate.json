@@ -1,0 +1,32 @@
+{
+  "parent": "minecraft:recipes/root",
+  "criteria": {
+    "has_ingot_schrabidate": {
+      "conditions": {
+        "items": [
+          {
+            "items": "hbmsntm:ingot_schrabidate"
+          }
+        ]
+      },
+      "trigger": "minecraft:inventory_changed"
+    },
+    "has_the_recipe": {
+      "conditions": {
+        "recipe": "hbmsntm:block_schrabidate_from_9_ingot_schrabidate"
+      },
+      "trigger": "minecraft:recipe_unlocked"
+    }
+  },
+  "requirements": [
+    [
+      "has_the_recipe",
+      "has_ingot_schrabidate"
+    ]
+  ],
+  "rewards": {
+    "recipes": [
+      "hbmsntm:block_schrabidate_from_9_ingot_schrabidate"
+    ]
+  }
+}

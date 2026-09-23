@@ -7,6 +7,8 @@ import com.hbm.blockentity.MachineBaseBlockEntity;
 import com.hbm.blockentity.NtmBlockEntityTypes;
 import com.hbm.blocks.DummyableBlock;
 import com.hbm.interfaces.IControlReceiver;
+import com.hbm.handler.pollution.PollutionHandler;
+import com.hbm.handler.pollution.PollutionHandler.PollutionType;
 import com.hbm.inventory.fluid.FluidType;
 import com.hbm.inventory.fluid.Fluids;
 import com.hbm.inventory.fluid.tank.FluidTank;
@@ -23,10 +25,12 @@ import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.network.chat.Component;
+import net.minecraft.tags.ItemTags;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.inventory.AbstractContainerMenu;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.Items;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.AABB;
@@ -81,6 +85,10 @@ public class MachineWoodBurnerBlockEntity extends MachineBaseBlockEntity impleme
             return;
         }
 
+        long previousPower = this.power;
+        int previousBurnTime = this.burnTime;
+        int previousFill = this.tank.getFill();
+        FluidType previousFluid = this.tank.getTankType();
         this.powerGen = 0;
         this.tank.setType(SLOT_IDENTIFIER, this.slots);
         this.tank.loadTank(this.level, SLOT_FLUID_IN, SLOT_FLUID_OUT, this.slots);
@@ -102,6 +110,8 @@ public class MachineWoodBurnerBlockEntity extends MachineBaseBlockEntity impleme
         }
 
         this.power = Math.min(MAX_POWER, this.power + this.powerGen);
+        if(this.power != previousPower || this.burnTime != previousBurnTime
+                || this.tank.getFill() != previousFill || this.tank.getTankType() != previousFluid) this.setChanged();
         this.networkPackNT(25);
     }
 
@@ -129,6 +139,9 @@ public class MachineWoodBurnerBlockEntity extends MachineBaseBlockEntity impleme
         } else if(this.power < MAX_POWER && this.isOn) {
             this.burnTime--;
             this.powerGen += POWER_PER_TICK;
+            if(this.level.getGameTime() % 20 == 0) {
+                PollutionHandler.incrementPollution(this.level, this.worldPosition, PollutionType.SOOT, PollutionHandler.SOOT_PER_SECOND);
+            }
         }
     }
 
@@ -157,22 +170,22 @@ public class MachineWoodBurnerBlockEntity extends MachineBaseBlockEntity impleme
             case MISC -> new ItemStack(NtmItems.POWDER_ASH_MISC.get());
         };
 
-        for(int i = 0; i <= SLOT_FLUID_OUT; i++) {
-            ItemStack stack = this.slots.get(i);
-            if(stack.isEmpty()) {
-                this.slots.set(i, ash.copy());
-                return true;
-            }
-            if(ItemStack.isSameItemSameComponents(stack, ash) && stack.getCount() < stack.getMaxStackSize()) {
-                stack.grow(1);
-                return true;
-            }
+        ItemStack stack = this.slots.get(SLOT_ASH);
+        if(stack.isEmpty()) {
+            this.slots.set(SLOT_ASH, ash);
+            return true;
+        }
+        if(ItemStack.isSameItemSameComponents(stack, ash)
+                && stack.getCount() < Math.min(stack.getMaxStackSize(), this.getMaxStackSize())) {
+            stack.grow(1);
+            return true;
         }
 
         return false;
     }
 
     private static AshType getAshType(ItemStack stack) {
+        if(stack.is(Items.CHARCOAL) || stack.is(ItemTags.LOGS) || stack.is(ItemTags.SAPLINGS)) return AshType.WOOD;
         String path = stack.getItem().builtInRegistryHolder().key().location().getPath().toLowerCase(Locale.US);
         if(path.contains("log") || path.contains("wood") || path.contains("plank")) return AshType.WOOD;
         if(path.contains("coal") || path.contains("coke") || path.contains("lignite")) return AshType.COAL;
@@ -210,11 +223,12 @@ public class MachineWoodBurnerBlockEntity extends MachineBaseBlockEntity impleme
     public DirPos[] getPowerConPos() {
         Direction facing = this.getBlockState().getValue(DummyableBlock.FACING);
         Direction side = facing.getClockWise();
-        BlockPos leftFront = this.worldPosition.relative(facing);
+        // The two powered EXTRA blocks are one block behind the core; sample just outside them.
+        BlockPos leftFront = this.worldPosition.relative(facing.getOpposite(), 2);
         BlockPos rightFront = leftFront.relative(side);
         return new DirPos[] {
-                new DirPos(leftFront.getX(), leftFront.getY(), leftFront.getZ(), facing),
-                new DirPos(rightFront.getX(), rightFront.getY(), rightFront.getZ(), facing)
+                new DirPos(leftFront.getX(), leftFront.getY(), leftFront.getZ(), facing.getOpposite()),
+                new DirPos(rightFront.getX(), rightFront.getY(), rightFront.getZ(), facing.getOpposite())
         };
     }
 
@@ -232,7 +246,7 @@ public class MachineWoodBurnerBlockEntity extends MachineBaseBlockEntity impleme
     public boolean canConnect(Direction dir) {
         if(dir == null) return false;
         Direction facing = this.getBlockState().getValue(DummyableBlock.FACING);
-        return dir == facing;
+        return dir == facing.getOpposite();
     }
 
     @Override
@@ -245,7 +259,13 @@ public class MachineWoodBurnerBlockEntity extends MachineBaseBlockEntity impleme
     @Override public FluidTank[] getReceivingTanks() { return new FluidTank[] { this.tank }; }
     @Override public FluidTank getTankToPaste() { return this.tank; }
     @Override public long getPower() { return this.power; }
-    @Override public void setPower(long power) { this.power = power; }
+    @Override public void setPower(long power) {
+        long bounded = Math.max(0L, Math.min(MAX_POWER, power));
+        if(this.power != bounded) {
+            this.power = bounded;
+            this.setChanged();
+        }
+    }
     @Override public long getMaxPower() { return MAX_POWER; }
 
     @Override
@@ -271,11 +291,11 @@ public class MachineWoodBurnerBlockEntity extends MachineBaseBlockEntity impleme
 
     @Override
     public void receiveControl(CompoundTag tag) {
-        if(tag.contains("toggle")) {
+        if(tag.getBoolean("toggle")) {
             this.isOn = !this.isOn;
             this.setChanged();
         }
-        if(tag.contains("switch")) {
+        if(tag.getBoolean("switch")) {
             this.liquidBurn = !this.liquidBurn;
             this.setChanged();
         }
@@ -283,13 +303,15 @@ public class MachineWoodBurnerBlockEntity extends MachineBaseBlockEntity impleme
 
     @Override
     public boolean hasPermission(Player player) {
-        return this.stillValid(player);
+        return this.level != null && !this.level.isClientSide && player.level() == this.level
+                && player.containerMenu instanceof MachineWoodBurnerMenu menu && menu.be == this
+                && this.stillValid(player);
     }
 
     @Override
     protected void loadAdditional(CompoundTag tag, HolderLookup.Provider registries) {
         super.loadAdditional(tag, registries);
-        this.power = tag.getLong("power");
+        this.power = Math.max(0L, Math.min(MAX_POWER, tag.getLong("power")));
         this.burnTime = tag.getInt("burnTime");
         this.maxBurnTime = tag.getInt("maxBurnTime");
         this.isOn = tag.getBoolean("isOn");
@@ -329,7 +351,7 @@ public class MachineWoodBurnerBlockEntity extends MachineBaseBlockEntity impleme
     @Override
     public void deserialize(RegistryFriendlyByteBuf buf) {
         super.deserialize(buf);
-        this.power = buf.readLong();
+        this.power = Math.max(0L, Math.min(MAX_POWER, buf.readLong()));
         this.burnTime = buf.readInt();
         this.maxBurnTime = buf.readInt();
         this.liquidBurn = buf.readBoolean();

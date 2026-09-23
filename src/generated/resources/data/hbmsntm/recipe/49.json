@@ -1,0 +1,21 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "key": {
+    "A": {
+      "item": "hbmsntm:plate_desh"
+    },
+    "B": {
+      "item": "hbmsntm:blades_titanium"
+    }
+  },
+  "pattern": [
+    " A ",
+    "ABA",
+    " A "
+  ],
+  "result": {
+    "count": 1,
+    "id": "hbmsntm:blades_desh"
+  }
+}

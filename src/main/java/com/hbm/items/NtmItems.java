@@ -85,6 +85,7 @@ public class NtmItems {
     public static final DeferredItem<Item> INGOT_BORON = ITEMS.register("ingot_boron", () -> new Item(new Item.Properties()));
     public static final DeferredItem<Item> INGOT_GRAPHITE = ITEMS.register("ingot_graphite", () -> new Item(new Item.Properties()));
     public static final DeferredItem<Item> INGOT_FIREBRICK = ITEMS.register("ingot_firebrick", () -> new Item(new Item.Properties()));
+    public static final DeferredItem<Item> BALL_FIRECLAY = ITEMS.register("ball_fireclay", () -> new Item(new Item.Properties()));
     public static final DeferredItem<Item> INGOT_DURA_STEEL = ITEMS.register("ingot_dura_steel", () -> new Item(new Item.Properties()));
     public static final DeferredItem<Item> INGOT_POLYMER = ITEMS.register("ingot_polymer", () -> new Item(new Item.Properties()));
     public static final DeferredItem<Item> INGOT_BAKELITE = ITEMS.register("ingot_bakelite", () -> new Item(new Item.Properties()));
@@ -383,6 +384,9 @@ public class NtmItems {
     public static final DeferredItem<Item> MOTOR = ITEMS.register("motor", () -> new Item(new Item.Properties()));
     public static final DeferredItem<Item> CAST_PLATE_WELDED = ITEMS.register("cast_plate_welded", () -> new CastPlateItem(new Item.Properties(), true));
     public static final DeferredItem<Item> CAST_PLATE = ITEMS.register("cast_plate", () -> new CastPlateItem(new Item.Properties(), false));
+    public static final DeferredItem<Item> MOLD_BASE = ITEMS.register("mold_base", () -> new Item(new Item.Properties().stacksTo(1)));
+    public static final DeferredItem<Item> MOLD_PLATE_CAST = ITEMS.register("mold_plate_cast", () -> new Item(new Item.Properties().stacksTo(1)));
+    public static final DeferredItem<Item> SCRAPS = ITEMS.register("scraps", () -> new CopperScrapsItem(new Item.Properties().stacksTo(1)));
     public static final DeferredItem<Item> PIPES_STEEL = ITEMS.register("pipes_steel", () -> new Item(new Item.Properties()));
     public static final DeferredItem<Item> CRT_DISPLAY = ITEMS.register("crt_display", () -> new Item(new Item.Properties()));
     public static final DeferredItem<Item> RING_STARMETAL = ITEMS.register("ring_starmetal", () -> new Item(new Item.Properties()));

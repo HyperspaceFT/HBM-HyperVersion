@@ -1,0 +1,21 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "key": {
+    "I": {
+      "item": "hbmsntm:plate_polymer"
+    },
+    "W": {
+      "item": "hbmsntm:wire_red_copper"
+    }
+  },
+  "pattern": [
+    " I ",
+    "WWW",
+    " I "
+  ],
+  "result": {
+    "count": 16,
+    "id": "hbmsntm:red_cable"
+  }
+}

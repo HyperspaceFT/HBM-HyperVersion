@@ -69,7 +69,7 @@ public class PressRecipeHandler implements IRecipeCategory<PressRecipeHandler.Pr
 
     @Override
     public Component getTitle() {
-        return Component.translatable("desc.machine_press");
+        return Component.translatable("container.press");
     }
 
     @Override

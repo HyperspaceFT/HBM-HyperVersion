@@ -1,0 +1,32 @@
+{
+  "parent": "minecraft:recipes/root",
+  "criteria": {
+    "has_powder_iodine": {
+      "conditions": {
+        "items": [
+          {
+            "items": "hbmsntm:powder_iodine"
+          }
+        ]
+      },
+      "trigger": "minecraft:inventory_changed"
+    },
+    "has_the_recipe": {
+      "conditions": {
+        "recipe": "hbmsntm:powder_iodine_tiny_from_powder_iodine"
+      },
+      "trigger": "minecraft:recipe_unlocked"
+    }
+  },
+  "requirements": [
+    [
+      "has_the_recipe",
+      "has_powder_iodine"
+    ]
+  ],
+  "rewards": {
+    "recipes": [
+      "hbmsntm:powder_iodine_tiny_from_powder_iodine"
+    ]
+  }
+}

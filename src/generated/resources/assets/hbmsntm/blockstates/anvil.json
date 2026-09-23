@@ -1,0 +1,136 @@
+{
+  "variants": {
+    "facing=east,subtype=0": {
+      "model": "hbmsntm:block/anvil_iron"
+    },
+    "facing=east,subtype=1": {
+      "model": "hbmsntm:block/anvil_lead"
+    },
+    "facing=east,subtype=10": {
+      "model": "hbmsntm:block/anvil_osmiridium"
+    },
+    "facing=east,subtype=2": {
+      "model": "hbmsntm:block/anvil_steel"
+    },
+    "facing=east,subtype=3": {
+      "model": "hbmsntm:block/anvil_desh"
+    },
+    "facing=east,subtype=4": {
+      "model": "hbmsntm:block/anvil_ferrouranium"
+    },
+    "facing=east,subtype=5": {
+      "model": "hbmsntm:block/anvil_saturnite"
+    },
+    "facing=east,subtype=6": {
+      "model": "hbmsntm:block/anvil_bismuth_bronze"
+    },
+    "facing=east,subtype=7": {
+      "model": "hbmsntm:block/anvil_arsenic_bronze"
+    },
+    "facing=east,subtype=8": {
+      "model": "hbmsntm:block/anvil_ferric_schrabidate"
+    },
+    "facing=east,subtype=9": {
+      "model": "hbmsntm:block/anvil_dineutronium"
+    },
+    "facing=north,subtype=0": {
+      "model": "hbmsntm:block/anvil_iron"
+    },
+    "facing=north,subtype=1": {
+      "model": "hbmsntm:block/anvil_lead"
+    },
+    "facing=north,subtype=10": {
+      "model": "hbmsntm:block/anvil_osmiridium"
+    },
+    "facing=north,subtype=2": {
+      "model": "hbmsntm:block/anvil_steel"
+    },
+    "facing=north,subtype=3": {
+      "model": "hbmsntm:block/anvil_desh"
+    },
+    "facing=north,subtype=4": {
+      "model": "hbmsntm:block/anvil_ferrouranium"
+    },
+    "facing=north,subtype=5": {
+      "model": "hbmsntm:block/anvil_saturnite"
+    },
+    "facing=north,subtype=6": {
+      "model": "hbmsntm:block/anvil_bismuth_bronze"
+    },
+    "facing=north,subtype=7": {
+      "model": "hbmsntm:block/anvil_arsenic_bronze"
+    },
+    "facing=north,subtype=8": {
+      "model": "hbmsntm:block/anvil_ferric_schrabidate"
+    },
+    "facing=north,subtype=9": {
+      "model": "hbmsntm:block/anvil_dineutronium"
+    },
+    "facing=south,subtype=0": {
+      "model": "hbmsntm:block/anvil_iron"
+    },
+    "facing=south,subtype=1": {
+      "model": "hbmsntm:block/anvil_lead"
+    },
+    "facing=south,subtype=10": {
+      "model": "hbmsntm:block/anvil_osmiridium"
+    },
+    "facing=south,subtype=2": {
+      "model": "hbmsntm:block/anvil_steel"
+    },
+    "facing=south,subtype=3": {
+      "model": "hbmsntm:block/anvil_desh"
+    },
+    "facing=south,subtype=4": {
+      "model": "hbmsntm:block/anvil_ferrouranium"
+    },
+    "facing=south,subtype=5": {
+      "model": "hbmsntm:block/anvil_saturnite"
+    },
+    "facing=south,subtype=6": {
+      "model": "hbmsntm:block/anvil_bismuth_bronze"
+    },
+    "facing=south,subtype=7": {
+      "model": "hbmsntm:block/anvil_arsenic_bronze"
+    },
+    "facing=south,subtype=8": {
+      "model": "hbmsntm:block/anvil_ferric_schrabidate"
+    },
+    "facing=south,subtype=9": {
+      "model": "hbmsntm:block/anvil_dineutronium"
+    },
+    "facing=west,subtype=0": {
+      "model": "hbmsntm:block/anvil_iron"
+    },
+    "facing=west,subtype=1": {
+      "model": "hbmsntm:block/anvil_lead"
+    },
+    "facing=west,subtype=10": {
+      "model": "hbmsntm:block/anvil_osmiridium"
+    },
+    "facing=west,subtype=2": {
+      "model": "hbmsntm:block/anvil_steel"
+    },
+    "facing=west,subtype=3": {
+      "model": "hbmsntm:block/anvil_desh"
+    },
+    "facing=west,subtype=4": {
+      "model": "hbmsntm:block/anvil_ferrouranium"
+    },
+    "facing=west,subtype=5": {
+      "model": "hbmsntm:block/anvil_saturnite"
+    },
+    "facing=west,subtype=6": {
+      "model": "hbmsntm:block/anvil_bismuth_bronze"
+    },
+    "facing=west,subtype=7": {
+      "model": "hbmsntm:block/anvil_arsenic_bronze"
+    },
+    "facing=west,subtype=8": {
+      "model": "hbmsntm:block/anvil_ferric_schrabidate"
+    },
+    "facing=west,subtype=9": {
+      "model": "hbmsntm:block/anvil_dineutronium"
+    }
+  }
+}

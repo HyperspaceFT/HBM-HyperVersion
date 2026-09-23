@@ -1,0 +1,32 @@
+{
+  "parent": "minecraft:recipes/root",
+  "criteria": {
+    "has_ingot_unobtainium": {
+      "conditions": {
+        "items": [
+          {
+            "items": "hbmsntm:ingot_unobtainium"
+          }
+        ]
+      },
+      "trigger": "minecraft:inventory_changed"
+    },
+    "has_the_recipe": {
+      "conditions": {
+        "recipe": "hbmsntm:billet_unobtainium_from_2_ingot_unobtainium"
+      },
+      "trigger": "minecraft:recipe_unlocked"
+    }
+  },
+  "requirements": [
+    [
+      "has_the_recipe",
+      "has_ingot_unobtainium"
+    ]
+  ],
+  "rewards": {
+    "recipes": [
+      "hbmsntm:billet_unobtainium_from_2_ingot_unobtainium"
+    ]
+  }
+}

@@ -1,0 +1,21 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "key": {
+    "A": {
+      "item": "hbmsntm:ingot_lead"
+    }
+  },
+  "pattern": [
+    " A ",
+    " A ",
+    "   "
+  ],
+  "result": {
+    "components": {
+      "hbmsntm:meta": 8200
+    },
+    "count": 16,
+    "id": "hbmsntm:bolt"
+  }
+}

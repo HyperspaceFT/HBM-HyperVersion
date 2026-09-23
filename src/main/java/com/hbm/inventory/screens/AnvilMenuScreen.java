@@ -137,6 +137,11 @@ public class AnvilMenuScreen extends InfoScreen<AnvilMenu> {
             }
         }
 
+        if(this.isHovered(mouseX, mouseY, 52, 53, 18, 18)) {
+            guiGraphics.renderComponentTooltip(this.font, List.of(
+                    Component.translatable("container.anvil.construct"),
+                    Component.translatable("container.anvil.construct_many")), mouseX, mouseY);
+        }
         this.renderTooltip(guiGraphics, mouseX, mouseY);
     }
 

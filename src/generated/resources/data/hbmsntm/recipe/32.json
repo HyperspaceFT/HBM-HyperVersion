@@ -1,0 +1,21 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "key": {
+    "A": {
+      "item": "hbmsntm:plate_steel"
+    },
+    "B": {
+      "item": "hbmsntm:plate_titanium"
+    }
+  },
+  "pattern": [
+    "ABA",
+    "A A",
+    "ABA"
+  ],
+  "result": {
+    "count": 2,
+    "id": "hbmsntm:tank_steel"
+  }
+}

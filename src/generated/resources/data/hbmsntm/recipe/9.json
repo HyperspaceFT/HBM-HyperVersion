@@ -1,0 +1,21 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "key": {
+    "A": {
+      "item": "hbmsntm:plate_polymer"
+    },
+    "B": {
+      "item": "hbmsntm:coil_copper"
+    }
+  },
+  "pattern": [
+    "A A",
+    "A A",
+    "ABA"
+  ],
+  "result": {
+    "count": 1,
+    "id": "hbmsntm:machine_battery_socket"
+  }
+}

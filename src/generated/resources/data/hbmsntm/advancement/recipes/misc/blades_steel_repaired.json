@@ -1,0 +1,32 @@
+{
+  "parent": "minecraft:recipes/root",
+  "criteria": {
+    "has_blades_steel": {
+      "conditions": {
+        "items": [
+          {
+            "items": "hbmsntm:blades_steel"
+          }
+        ]
+      },
+      "trigger": "minecraft:inventory_changed"
+    },
+    "has_the_recipe": {
+      "conditions": {
+        "recipe": "hbmsntm:blades_steel_repaired"
+      },
+      "trigger": "minecraft:recipe_unlocked"
+    }
+  },
+  "requirements": [
+    [
+      "has_the_recipe",
+      "has_blades_steel"
+    ]
+  ],
+  "rewards": {
+    "recipes": [
+      "hbmsntm:blades_steel_repaired"
+    ]
+  }
+}

@@ -1,0 +1,70 @@
+{
+  "overrides": [
+    {
+      "model": "hbmsntm:item/rod_zirnox_0",
+      "predicate": {
+        "hbmsntm:item_meta": 0.0
+      }
+    },
+    {
+      "model": "hbmsntm:item/rod_zirnox_1",
+      "predicate": {
+        "hbmsntm:item_meta": 1.0
+      }
+    },
+    {
+      "model": "hbmsntm:item/rod_zirnox_2",
+      "predicate": {
+        "hbmsntm:item_meta": 2.0
+      }
+    },
+    {
+      "model": "hbmsntm:item/rod_zirnox_3",
+      "predicate": {
+        "hbmsntm:item_meta": 3.0
+      }
+    },
+    {
+      "model": "hbmsntm:item/rod_zirnox_4",
+      "predicate": {
+        "hbmsntm:item_meta": 4.0
+      }
+    },
+    {
+      "model": "hbmsntm:item/rod_zirnox_5",
+      "predicate": {
+        "hbmsntm:item_meta": 5.0
+      }
+    },
+    {
+      "model": "hbmsntm:item/rod_zirnox_6",
+      "predicate": {
+        "hbmsntm:item_meta": 6.0
+      }
+    },
+    {
+      "model": "hbmsntm:item/rod_zirnox_7",
+      "predicate": {
+        "hbmsntm:item_meta": 7.0
+      }
+    },
+    {
+      "model": "hbmsntm:item/rod_zirnox_8",
+      "predicate": {
+        "hbmsntm:item_meta": 8.0
+      }
+    },
+    {
+      "model": "hbmsntm:item/rod_zirnox_9",
+      "predicate": {
+        "hbmsntm:item_meta": 9.0
+      }
+    },
+    {
+      "model": "hbmsntm:item/rod_zirnox_10",
+      "predicate": {
+        "hbmsntm:item_meta": 10.0
+      }
+    }
+  ]
+}

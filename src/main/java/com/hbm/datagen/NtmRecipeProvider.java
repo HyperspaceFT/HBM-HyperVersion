@@ -3,6 +3,7 @@ package com.hbm.datagen;
 import com.hbm.blocks.NtmBlocks;
 import com.hbm.blocks.generic.BarbedWireBlock;
 import com.hbm.inventory.MetaHelper;
+import com.hbm.inventory.NtmTags;
 import com.hbm.inventory.fluid.Fluids;
 import com.hbm.items.BoltItem;
 import com.hbm.items.CastPlateItem;
@@ -22,6 +23,7 @@ import net.minecraft.world.level.ItemLike;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.Blocks;
 import net.neoforged.neoforge.common.crafting.DataComponentIngredient;
+import net.neoforged.neoforge.common.Tags;
 
 import java.util.concurrent.CompletableFuture;
 
@@ -33,6 +35,47 @@ public class NtmRecipeProvider extends RecipeProvider {
 
     @Override
     protected void buildRecipes(RecipeOutput recipeOutput) {
+
+        // Normal upstream fireclay routes; the brick/nether-brick shortcut belongs to optional LBSM.
+        ShapelessRecipeBuilder.shapeless(RecipeCategory.MISC, NtmItems.BALL_FIRECLAY.get(), 4)
+                .requires(Items.CLAY_BALL, 3)
+                .requires(NtmTags.Items.DUSTS_ALUMINIUM)
+                .unlockedBy("has_clay_ball", has(Items.CLAY_BALL))
+                .save(recipeOutput, ResourceLocation.fromNamespaceAndPath("hbmsntm", "fireclay_from_aluminium_powder"));
+        ShapelessRecipeBuilder.shapeless(RecipeCategory.MISC, NtmItems.BALL_FIRECLAY.get(), 4)
+                .requires(Items.CLAY_BALL, 3)
+                .requires(NtmTags.Items.ORES_ALUMINIUM)
+                .unlockedBy("has_clay_ball", has(Items.CLAY_BALL))
+                .save(recipeOutput, ResourceLocation.fromNamespaceAndPath("hbmsntm", "fireclay_from_aluminium_ore"));
+        ShapelessRecipeBuilder.shapeless(RecipeCategory.MISC, NtmItems.BALL_FIRECLAY.get(), 4)
+                .requires(Items.CLAY_BALL, 2)
+                .requires(NtmBlocks.RESOURCE_LIMESTONE.get())
+                .requires(Tags.Items.SANDS)
+                .unlockedBy("has_clay_ball", has(Items.CLAY_BALL))
+                .save(recipeOutput, ResourceLocation.fromNamespaceAndPath("hbmsntm", "fireclay_from_limestone"));
+        SimpleCookingRecipeBuilder.smelting(Ingredient.of(NtmItems.BALL_FIRECLAY.get()), RecipeCategory.MISC,
+                        NtmItems.INGOT_FIREBRICK.get(), 0.1F, 200)
+                .unlockedBy("has_fireclay", has(NtmItems.BALL_FIRECLAY.get()))
+                .save(recipeOutput, ResourceLocation.fromNamespaceAndPath("hbmsntm", "firebrick_from_smelting_fireclay"));
+
+        ShapedRecipeBuilder.shaped(RecipeCategory.MISC, NtmItems.FLUID_TANK_EMPTY.get(), 8)
+                .pattern("121")
+                .pattern("1G1")
+                .pattern("121")
+                .define('1', NtmItems.PLATE_ALUMINIUM.get())
+                .define('2', NtmItems.PLATE_IRON.get())
+                .define('G', Tags.Items.GLASS_PANES)
+                .unlockedBy("has_aluminium_plate", has(NtmItems.PLATE_ALUMINIUM.get()))
+                .save(recipeOutput, ResourceLocation.fromNamespaceAndPath("hbmsntm", "fluid_tank_empty"));
+        ShapedRecipeBuilder.shaped(RecipeCategory.MISC, NtmItems.FLUID_IDENTIFIER_MULTI.get(), 1)
+                .pattern("D")
+                .pattern("C")
+                .pattern("P")
+                .define('D', ItemTags.create(ResourceLocation.fromNamespaceAndPath("c", "dyes")))
+                .define('C', NtmItems.CIRCUIT_VACUUM_TUBE.get())
+                .define('P', NtmItems.PLATE_IRON.get())
+                .unlockedBy("has_vacuum_tube", has(NtmItems.CIRCUIT_VACUUM_TUBE.get()))
+                .save(recipeOutput, ResourceLocation.fromNamespaceAndPath("hbmsntm", "fluid_identifier_multi"));
 
         ShapedRecipeBuilder.shaped(RecipeCategory.MISC, NtmItems.EGG_BALEFIRE.get(), 1)
                 .pattern("###")
@@ -72,6 +115,21 @@ public class NtmRecipeProvider extends RecipeProvider {
                 .define('#', Items.IRON_INGOT)
                 .unlockedBy("has_iron_ingot", has(Items.IRON_INGOT))
                 .save(recipeOutput, ResourceLocation.fromNamespaceAndPath("hbmsntm", "iron_cast_plate_from_iron_ingots"));
+        ShapedRecipeBuilder.shaped(RecipeCategory.MISC, NtmBlocks.FOUNDRY_MOLD.get(), 1)
+                .pattern("B B")
+                .pattern("BSB")
+                .define('B', NtmItems.INGOT_FIREBRICK.get())
+                .define('S', Blocks.STONE_SLAB)
+                .unlockedBy("has_firebrick", has(NtmItems.INGOT_FIREBRICK.get()))
+                .save(recipeOutput, ResourceLocation.fromNamespaceAndPath("hbmsntm", "foundry_mold"));
+        ShapedRecipeBuilder.shaped(RecipeCategory.MISC, NtmItems.MOLD_BASE.get(), 1)
+                .pattern(" B ")
+                .pattern("BIB")
+                .pattern(" B ")
+                .define('B', NtmItems.INGOT_FIREBRICK.get())
+                .define('I', Items.IRON_INGOT)
+                .unlockedBy("has_firebrick", has(NtmItems.INGOT_FIREBRICK.get()))
+                .save(recipeOutput, ResourceLocation.fromNamespaceAndPath("hbmsntm", "mold_base"));
         ShapedRecipeBuilder.shaped(RecipeCategory.MISC, MetaHelper.newStack(NtmBlocks.BARBED_WIRE.asItem(), 1, BarbedWireBlock.BarbedWireType.FIRE.ordinal()))
                 .pattern("###")
                 .pattern("###")
@@ -181,7 +239,7 @@ public class NtmRecipeProvider extends RecipeProvider {
                 .pattern(" B ")
                 .pattern(" C ")
                 .define('B', NtmItems.WIRE_TUNGSTEN.get())
-                .define('A', Items.GLASS_PANE)
+                .define('A', Tags.Items.GLASS_PANES)
                 .define('C', NtmItems.PLATE_POLYMER.get())
                 .unlockedBy("has_insulator", has(NtmItems.PLATE_POLYMER.get()))
                 .save(recipeOutput, ResourceLocation.fromNamespaceAndPath("hbmsntm", "circuit_vacuum_tube_from_tungsten_wire"));
@@ -190,7 +248,7 @@ public class NtmRecipeProvider extends RecipeProvider {
                 .pattern(" B ")
                 .pattern(" C ")
                 .define('B', NtmItems.WIRE_CARBON.get())
-                .define('A', Items.GLASS_PANE)
+                .define('A', Tags.Items.GLASS_PANES)
                 .define('C', NtmItems.PLATE_POLYMER.get())
                 .unlockedBy("has_insulator", has(NtmItems.PLATE_POLYMER.get()))
                 .save(recipeOutput, ResourceLocation.fromNamespaceAndPath("hbmsntm", "circuit_vacuum_tube_from_carbon_wire"));
@@ -202,7 +260,7 @@ public class NtmRecipeProvider extends RecipeProvider {
                 .define('B', NtmItems.PLATE_IRON.get())
                 .define('C', NtmItems.COIL_COPPER.get())
                 .define('D', NtmItems.COIL_COPPER_RING.get())
-                .unlockedBy("has_insulator", has(NtmItems.PLATE_POLYMER.get()))
+                .unlockedBy("has_copper_coil", has(NtmItems.COIL_COPPER.get()))
                 .save(recipeOutput, ResourceLocation.fromNamespaceAndPath("hbmsntm", "motor_from_iron_plates"));
         ShapedRecipeBuilder.shaped(RecipeCategory.MISC, NtmItems.MOTOR.get(), 2)
                 .pattern(" A ")
@@ -212,7 +270,7 @@ public class NtmRecipeProvider extends RecipeProvider {
                 .define('B', NtmItems.PLATE_STEEL.get())
                 .define('C', NtmItems.COIL_COPPER.get())
                 .define('D', NtmItems.COIL_COPPER_RING.get())
-                .unlockedBy("has_insulator", has(NtmItems.PLATE_POLYMER.get()))
+                .unlockedBy("has_copper_coil", has(NtmItems.COIL_COPPER.get()))
                 .save(recipeOutput, ResourceLocation.fromNamespaceAndPath("hbmsntm", "motor_from_steel_plates"));
         ShapedRecipeBuilder.shaped(RecipeCategory.MISC, NtmItems.PLATE_POLYMER.get(), 16)
                 .pattern("   ")
@@ -236,11 +294,16 @@ public class NtmRecipeProvider extends RecipeProvider {
                 .unlockedBy("has_brick", has(Items.BRICK))
                 .save(recipeOutput, ResourceLocation.fromNamespaceAndPath("hbmsntm", "plate_polymer_from_bricks"));
         ShapedRecipeBuilder.shaped(RecipeCategory.MISC, NtmItems.PLATE_POLYMER.get(), 4)
+                .pattern("AA")
+                .define('A', Items.NETHER_BRICK)
+                .unlockedBy("has_nether_brick", has(Items.NETHER_BRICK))
+                .save(recipeOutput, ResourceLocation.fromNamespaceAndPath("hbmsntm", "plate_polymer_from_nether_bricks"));
+        ShapedRecipeBuilder.shaped(RecipeCategory.MISC, NtmItems.PLATE_POLYMER.get(), 4)
                 .pattern("   ")
                 .pattern("ABA")
                 .pattern("   ")
                 .define('A', Items.STRING)
-                .define('B', Items.WHITE_WOOL)
+                .define('B', ItemTags.WOOL)
                 .unlockedBy("has_string", has(Items.STRING))
                 .save(recipeOutput, ResourceLocation.fromNamespaceAndPath("hbmsntm", "plate_polymer_from_string_and_wool"));
         ShapedRecipeBuilder.shaped(RecipeCategory.MISC, NtmItems.PLATE_POLYMER.get(), 8)
@@ -340,8 +403,16 @@ public class NtmRecipeProvider extends RecipeProvider {
                 .define('B', NtmItems.COIL_COPPER.get())
                 .define('C', Items.IRON_INGOT)
                 .define('D', Items.FURNACE)
-                .unlockedBy("has_crafting_table", has(Items.CRAFTING_TABLE))
+                .unlockedBy("has_copper_coil", has(NtmItems.COIL_COPPER.get()))
                 .save(recipeOutput, ResourceLocation.fromNamespaceAndPath("hbmsntm", "8"));
+        ShapedRecipeBuilder.shaped(RecipeCategory.MISC, NtmBlocks.RED_CABLE.get(), 16)
+                .pattern(" I ")
+                .pattern("WWW")
+                .pattern(" I ")
+                .define('I', NtmItems.PLATE_POLYMER.get())
+                .define('W', NtmItems.WIRE_RED_COPPER.get())
+                .unlockedBy("has_red_copper_wire", has(NtmItems.WIRE_RED_COPPER.get()))
+                .save(recipeOutput);
         ShapedRecipeBuilder.shaped(RecipeCategory.MISC, NtmBlocks.MACHINE_BATTERY_SOCKET.get(), 1)
                 .pattern("A A")
                 .pattern("A A")
@@ -444,7 +515,7 @@ public class NtmRecipeProvider extends RecipeProvider {
                 .pattern("AAA")
                 .define('A', NtmItems.WIRE_RED_COPPER.get())
                 .define('B', Items.IRON_INGOT)
-                .unlockedBy("has_crafting_table", has(Items.CRAFTING_TABLE))
+                .unlockedBy("has_red_copper_wire", has(NtmItems.WIRE_RED_COPPER.get()))
                 .save(recipeOutput, ResourceLocation.fromNamespaceAndPath("hbmsntm", "22"));
 
         ShapedRecipeBuilder.shaped(RecipeCategory.MISC, NtmItems.COIL_COPPER.get(), 1)
@@ -453,7 +524,7 @@ public class NtmRecipeProvider extends RecipeProvider {
                 .pattern("AAA")
                 .define('A', NtmItems.WIRE_RED_COPPER.get())
                 .define('B', NtmItems.INGOT_STEEL.get())
-                .unlockedBy("has_crafting_table", has(Items.CRAFTING_TABLE))
+                .unlockedBy("has_red_copper_wire", has(NtmItems.WIRE_RED_COPPER.get()))
                 .save(recipeOutput, ResourceLocation.fromNamespaceAndPath("hbmsntm", "23"));
 
         ShapedRecipeBuilder.shaped(RecipeCategory.MISC, NtmItems.COIL_GOLD.get(), 1)
@@ -498,7 +569,7 @@ public class NtmRecipeProvider extends RecipeProvider {
                 .pattern(" A ")
                 .define('A', NtmItems.COIL_COPPER.get())
                 .define('B', NtmItems.PLATE_STEEL.get())
-                .unlockedBy("has_crafting_table", has(Items.CRAFTING_TABLE))
+                .unlockedBy("has_copper_coil", has(NtmItems.COIL_COPPER.get()))
                 .save(recipeOutput, ResourceLocation.fromNamespaceAndPath("hbmsntm", "28"));
 
         ShapedRecipeBuilder.shaped(RecipeCategory.MISC, NtmItems.COIL_COPPER_RING.get(), 2)
@@ -507,7 +578,7 @@ public class NtmRecipeProvider extends RecipeProvider {
                 .pattern(" A ")
                 .define('A', NtmItems.COIL_COPPER.get())
                 .define('B', NtmItems.PLATE_IRON.get())
-                .unlockedBy("has_crafting_table", has(Items.CRAFTING_TABLE))
+                .unlockedBy("has_copper_coil", has(NtmItems.COIL_COPPER.get()))
                 .save(recipeOutput, ResourceLocation.fromNamespaceAndPath("hbmsntm", "29"));
 
         ShapedRecipeBuilder.shaped(RecipeCategory.MISC, NtmItems.COIL_TUNGSTEN.get(), 1)
@@ -676,6 +747,13 @@ public class NtmRecipeProvider extends RecipeProvider {
                 .unlockedBy("has_crafting_table", has(Items.CRAFTING_TABLE))
                 .save(recipeOutput, ResourceLocation.fromNamespaceAndPath("hbmsntm", "47"));
 
+        ShapedRecipeBuilder.shaped(RecipeCategory.MISC, NtmItems.BLADES_STEEL.get(), 1)
+                .pattern("PBP")
+                .define('P', NtmItems.PLATE_STEEL.get())
+                .define('B', NtmItems.BLADES_STEEL.get())
+                .unlockedBy("has_blades_steel", has(NtmItems.BLADES_STEEL.get()))
+                .save(recipeOutput, ResourceLocation.fromNamespaceAndPath("hbmsntm", "blades_steel_repaired"));
+
         ShapedRecipeBuilder.shaped(RecipeCategory.MISC, NtmItems.BLADES_TITANIUM.get(), 1)
                 .pattern(" A ")
                 .pattern("ABA")
@@ -836,6 +914,16 @@ public class NtmRecipeProvider extends RecipeProvider {
                 .unlockedBy("has_crafting_table", has(Items.CRAFTING_TABLE))
                 .save(recipeOutput, ResourceLocation.fromNamespaceAndPath("hbmsntm", "65"));
 
+        // The first anvil must be craftable before any plate or steel production.
+        ShapedRecipeBuilder.shaped(RecipeCategory.MISC, NtmBlocks.ANVIL.get())
+                .pattern("III")
+                .pattern(" B ")
+                .pattern("III")
+                .define('I', Items.IRON_INGOT)
+                .define('B', Items.IRON_BLOCK)
+                .unlockedBy("has_iron_ingot", has(Items.IRON_INGOT))
+                .save(recipeOutput, ResourceLocation.fromNamespaceAndPath("hbmsntm", "anvil_iron"));
+
         ShapedRecipeBuilder.shaped(RecipeCategory.MISC, NtmBlocks.MACHINE_PRESS.get(), 1)
                 .pattern("ADA")
                 .pattern("ACA")
@@ -852,7 +940,7 @@ public class NtmRecipeProvider extends RecipeProvider {
                 .pattern("AAA")
                 .pattern("BBB")
                 .define('A', Items.BRICK)
-                .define('B', Items.STONE)
+                .define('B', Tags.Items.STONES)
                 .unlockedBy("has_crafting_table", has(Items.CRAFTING_TABLE))
                 .save(recipeOutput, ResourceLocation.fromNamespaceAndPath("hbmsntm", "67"));
 
@@ -864,6 +952,22 @@ public class NtmRecipeProvider extends RecipeProvider {
                 .define('B', Items.IRON_INGOT)
                 .unlockedBy("has_crafting_table", has(Items.CRAFTING_TABLE))
                 .save(recipeOutput, ResourceLocation.fromNamespaceAndPath("hbmsntm", "68"));
+
+        ShapedRecipeBuilder.shaped(RecipeCategory.MISC, NtmItems.STAMP_STONE_FLAT.get())
+                .pattern("BBB")
+                .pattern("SSS")
+                .define('B', Items.NETHER_BRICK)
+                .define('S', Tags.Items.STONES)
+                .unlockedBy("has_nether_brick", has(Items.NETHER_BRICK))
+                .save(recipeOutput, ResourceLocation.fromNamespaceAndPath("hbmsntm", "stamp_stone_flat_from_nether_brick"));
+
+        ShapedRecipeBuilder.shaped(RecipeCategory.MISC, NtmItems.STAMP_IRON_FLAT.get())
+                .pattern("BBB")
+                .pattern("III")
+                .define('B', Items.NETHER_BRICK)
+                .define('I', Items.IRON_INGOT)
+                .unlockedBy("has_nether_brick", has(Items.NETHER_BRICK))
+                .save(recipeOutput, ResourceLocation.fromNamespaceAndPath("hbmsntm", "stamp_iron_flat_from_nether_brick"));
 
         ShapedRecipeBuilder.shaped(RecipeCategory.MISC, NtmItems.STAMP_STEEL_FLAT.get(), 1)
                 .pattern("   ")

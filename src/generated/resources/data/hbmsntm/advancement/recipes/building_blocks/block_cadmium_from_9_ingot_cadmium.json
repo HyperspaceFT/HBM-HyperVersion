@@ -1,0 +1,32 @@
+{
+  "parent": "minecraft:recipes/root",
+  "criteria": {
+    "has_ingot_cadmium": {
+      "conditions": {
+        "items": [
+          {
+            "items": "hbmsntm:ingot_cadmium"
+          }
+        ]
+      },
+      "trigger": "minecraft:inventory_changed"
+    },
+    "has_the_recipe": {
+      "conditions": {
+        "recipe": "hbmsntm:block_cadmium_from_9_ingot_cadmium"
+      },
+      "trigger": "minecraft:recipe_unlocked"
+    }
+  },
+  "requirements": [
+    [
+      "has_the_recipe",
+      "has_ingot_cadmium"
+    ]
+  ],
+  "rewards": {
+    "recipes": [
+      "hbmsntm:block_cadmium_from_9_ingot_cadmium"
+    ]
+  }
+}

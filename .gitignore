@@ -24,3 +24,6 @@ runs
 run-data
 
 repo
+
+# Data generator's incremental cache; generated resources remain versioned.
+src/generated/resources/.cache/

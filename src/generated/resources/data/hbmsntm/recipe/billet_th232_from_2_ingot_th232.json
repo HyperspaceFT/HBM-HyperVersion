@@ -1,0 +1,16 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "key": {
+    "X": {
+      "item": "hbmsntm:ingot_th232"
+    }
+  },
+  "pattern": [
+    "XX"
+  ],
+  "result": {
+    "count": 3,
+    "id": "hbmsntm:billet_th232"
+  }
+}

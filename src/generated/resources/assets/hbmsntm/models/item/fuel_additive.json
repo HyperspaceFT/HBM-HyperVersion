@@ -1,0 +1,16 @@
+{
+  "overrides": [
+    {
+      "model": "hbmsntm:item/fuel_additive_0",
+      "predicate": {
+        "hbmsntm:item_meta": 0.0
+      }
+    },
+    {
+      "model": "hbmsntm:item/fuel_additive_1",
+      "predicate": {
+        "hbmsntm:item_meta": 1.0
+      }
+    }
+  ]
+}

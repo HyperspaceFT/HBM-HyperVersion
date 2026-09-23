@@ -1,0 +1,32 @@
+{
+  "parent": "minecraft:recipes/root",
+  "criteria": {
+    "has_powder_desh": {
+      "conditions": {
+        "items": [
+          {
+            "items": "hbmsntm:powder_desh"
+          }
+        ]
+      },
+      "trigger": "minecraft:inventory_changed"
+    },
+    "has_the_recipe": {
+      "conditions": {
+        "recipe": "hbmsntm:powder_desh_to_ingot_desh"
+      },
+      "trigger": "minecraft:recipe_unlocked"
+    }
+  },
+  "requirements": [
+    [
+      "has_the_recipe",
+      "has_powder_desh"
+    ]
+  ],
+  "rewards": {
+    "recipes": [
+      "hbmsntm:powder_desh_to_ingot_desh"
+    ]
+  }
+}

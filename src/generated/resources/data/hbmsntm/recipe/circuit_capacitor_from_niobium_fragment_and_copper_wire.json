@@ -1,0 +1,24 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "key": {
+    "A": {
+      "item": "hbmsntm:plate_polymer"
+    },
+    "B": {
+      "item": "hbmsntm:fragment_niobium"
+    },
+    "C": {
+      "item": "hbmsntm:wire_copper"
+    }
+  },
+  "pattern": [
+    " A ",
+    " B ",
+    " C "
+  ],
+  "result": {
+    "count": 1,
+    "id": "hbmsntm:circuit_capacitor"
+  }
+}

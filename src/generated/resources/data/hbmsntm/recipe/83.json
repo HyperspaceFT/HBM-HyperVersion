@@ -1,0 +1,21 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "key": {
+    "A": {
+      "item": "hbmsntm:crate_steel"
+    },
+    "B": {
+      "item": "hbmsntm:plate_desh"
+    }
+  },
+  "pattern": [
+    " B ",
+    "BAB",
+    " B "
+  ],
+  "result": {
+    "count": 1,
+    "id": "hbmsntm:crate_desh"
+  }
+}

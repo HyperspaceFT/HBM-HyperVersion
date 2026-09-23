@@ -1,0 +1,32 @@
+{
+  "parent": "minecraft:recipes/root",
+  "criteria": {
+    "has_powder_verticium": {
+      "conditions": {
+        "items": [
+          {
+            "items": "hbmsntm:powder_verticium"
+          }
+        ]
+      },
+      "trigger": "minecraft:inventory_changed"
+    },
+    "has_the_recipe": {
+      "conditions": {
+        "recipe": "hbmsntm:powder_verticium_to_ingot_verticium"
+      },
+      "trigger": "minecraft:recipe_unlocked"
+    }
+  },
+  "requirements": [
+    [
+      "has_the_recipe",
+      "has_powder_verticium"
+    ]
+  ],
+  "rewards": {
+    "recipes": [
+      "hbmsntm:powder_verticium_to_ingot_verticium"
+    ]
+  }
+}

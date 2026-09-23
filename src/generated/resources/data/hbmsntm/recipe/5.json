@@ -1,0 +1,24 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "key": {
+    "A": {
+      "item": "hbmsntm:ingot_bakelite"
+    },
+    "B": {
+      "item": "hbmsntm:crt_display"
+    },
+    "C": {
+      "item": "hbmsntm:circuit_printed_board"
+    }
+  },
+  "pattern": [
+    "AAA",
+    "BCC",
+    "AAA"
+  ],
+  "result": {
+    "count": 1,
+    "id": "hbmsntm:circuit_control_unit_casing"
+  }
+}
