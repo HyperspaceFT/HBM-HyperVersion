@@ -9,6 +9,7 @@ import com.hbm.items.BoltItem;
 import com.hbm.items.CastPlateItem;
 import com.hbm.items.NtmItems;
 import com.hbm.items.component.NtmDataComponents;
+import com.hbm.items.machine.BatteryPackItem;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.data.PackOutput;
@@ -26,6 +27,7 @@ import net.neoforged.neoforge.common.crafting.DataComponentIngredient;
 import net.neoforged.neoforge.common.Tags;
 
 import java.util.concurrent.CompletableFuture;
+import java.util.stream.Stream;
 
 public class NtmRecipeProvider extends RecipeProvider {
 
@@ -429,6 +431,27 @@ public class NtmRecipeProvider extends RecipeProvider {
                 .define('B', NtmItems.INGOT_RED_COPPER.get())
                 .unlockedBy("has_crafting_table", has(Items.CRAFTING_TABLE))
                 .save(recipeOutput, ResourceLocation.fromNamespaceAndPath("hbmsntm", "10"));
+        // Upstream starter packs; REDSTONE.block() and CU.block() were ore dictionary storage blocks.
+        ShapedRecipeBuilder.shaped(RecipeCategory.MISC, MetaHelper.newStack(NtmItems.BATTERY_PACK.get(), 1, BatteryPackItem.BatteryPackType.BATTERY_REDSTONE.ordinal()))
+                .pattern("IRI")
+                .pattern("PRP")
+                .pattern("IRI")
+                .define('I', NtmItems.PLATE_IRON.get())
+                .define('R', Tags.Items.STORAGE_BLOCKS_REDSTONE)
+                .define('P', NtmItems.PLATE_POLYMER.get())
+                .unlockedBy("has_insulator", has(NtmItems.PLATE_POLYMER.get()))
+                .save(recipeOutput, ResourceLocation.fromNamespaceAndPath("hbmsntm", "battery_pack_redstone"));
+        ShapedRecipeBuilder.shaped(RecipeCategory.MISC, MetaHelper.newStack(NtmItems.BATTERY_PACK.get(), 1, BatteryPackItem.BatteryPackType.CAPACITOR_COPPER.ordinal()))
+                .pattern("IRI")
+                .pattern("PRP")
+                .pattern("IRI")
+                .define('I', NtmItems.PLATE_STEEL.get())
+                .define('R', Ingredient.fromValues(Stream.of(
+                        new Ingredient.ItemValue(new ItemStack(NtmBlocks.BLOCK_COPPER.get())),
+                        new Ingredient.TagValue(Tags.Items.STORAGE_BLOCKS_COPPER))))
+                .define('P', NtmItems.PLATE_POLYMER.get())
+                .unlockedBy("has_insulator", has(NtmItems.PLATE_POLYMER.get()))
+                .save(recipeOutput, ResourceLocation.fromNamespaceAndPath("hbmsntm", "battery_pack_capacitor_copper"));
         ShapedRecipeBuilder.shaped(RecipeCategory.MISC, NtmItems.RING_STARMETAL.get(), 1)
                 .pattern(" A ")
                 .pattern("A A")

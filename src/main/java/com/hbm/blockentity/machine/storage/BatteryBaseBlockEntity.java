@@ -193,6 +193,7 @@ public abstract class BatteryBaseBlockEntity extends MachineBaseBlockEntity impl
             if(ordinal > ConnectionPriority.HIGH.ordinal()) ordinal = ConnectionPriority.LOW.ordinal();
             this.priority = EnumUtil.grabEnumSafely(ConnectionPriority.class, ordinal);
         }
+        if(tag.contains("low") || tag.contains("high") || tag.contains("priority")) this.setChanged();
     }
 
     @Override

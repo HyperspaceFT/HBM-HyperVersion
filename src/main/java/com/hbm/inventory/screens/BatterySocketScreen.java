@@ -77,7 +77,24 @@ public class BatterySocketScreen extends InfoScreen<BatterySocketMenu> {
 
         this.drawCustomInfoStat(guiGraphics, mouseX, mouseY, leftPos + 125, topPos + 35, 16, 16, mouseX, mouseY, priority);
 
+        // Upstream ships these keys without drawing them; the icons alone do not name the mode.
+        this.drawCustomInfoStat(guiGraphics, mouseX, mouseY, leftPos + 106, topPos + 16, 18, 18, mouseX, mouseY, modeInfo("battery.redstone.off", be.redLow));
+        this.drawCustomInfoStat(guiGraphics, mouseX, mouseY, leftPos + 106, topPos + 52, 18, 18, mouseX, mouseY, modeInfo("battery.redstone.on", be.redHigh));
+
         this.renderTooltip(guiGraphics, mouseX, mouseY);
+    }
+
+    private static List<Component> modeInfo(String redstoneKey, short mode) {
+        String lang = switch(mode) {
+            case BatterySocketBlockEntity.mode_input -> "input";
+            case BatterySocketBlockEntity.mode_buffer -> "buffer";
+            case BatterySocketBlockEntity.mode_output -> "output";
+            default -> "off";
+        };
+        return List.of(
+                Component.translatable(redstoneKey).withStyle(ChatFormatting.GRAY),
+                Component.translatable("battery.mode." + lang).withStyle(ChatFormatting.GRAY)
+        );
     }
 
     @Override

@@ -114,6 +114,17 @@ public class ProxyComboBlockEntity extends ProxyBaseBlockEntity implements IEner
     }
 
     @Override
+    public boolean allowDirectProvision() {
+        if (!this.power) return false;
+
+        if (this.getCoreObject() instanceof IEnergyReceiverMK2 rec) {
+            return rec.allowDirectProvision();
+        }
+
+        return true;
+    }
+
+    @Override
     public boolean canConnect(Direction dir) {
 
         if (this.power && this.getCoreObject() instanceof IEnergyConnectorMK2 connector) {

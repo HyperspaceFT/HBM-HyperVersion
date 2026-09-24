@@ -2180,7 +2180,7 @@ public class NtmLanguageProvider extends LanguageProvider {
 
         this.add("battery.mode.buffer", "Input/Output Mode");
         this.add("battery.mode.input", "Input Mode");
-        this.add("battery.mode.off", "OffW");
+        this.add("battery.mode.off", "Off");
         this.add("battery.mode.output", "Output Mode");
         this.add("battery.priority.high", "Charge Priority: High");
         this.add("battery.priority.high.desc", "Emergency buffers that$always need to be full");

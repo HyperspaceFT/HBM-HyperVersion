@@ -1,0 +1,32 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "key": {
+    "I": {
+      "item": "hbmsntm:plate_steel"
+    },
+    "P": {
+      "item": "hbmsntm:plate_polymer"
+    },
+    "R": [
+      {
+        "item": "hbmsntm:block_copper"
+      },
+      {
+        "tag": "c:storage_blocks/copper"
+      }
+    ]
+  },
+  "pattern": [
+    "IRI",
+    "PRP",
+    "IRI"
+  ],
+  "result": {
+    "components": {
+      "hbmsntm:meta": 6
+    },
+    "count": 1,
+    "id": "hbmsntm:battery_pack"
+  }
+}

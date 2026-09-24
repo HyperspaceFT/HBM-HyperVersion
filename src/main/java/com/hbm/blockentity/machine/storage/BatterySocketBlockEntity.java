@@ -82,8 +82,9 @@ public class BatterySocketBlockEntity extends BatteryBaseBlockEntity {
     @Override
     public boolean canTakeItemThroughFace(int index, ItemStack stack, Direction direction) {
         if(stack.getItem() instanceof IBatteryItem batteryItem) {
-            if(index == mode_input && batteryItem.getCharge(stack) == 0) return true;
-            if(index == mode_output && batteryItem.getCharge(stack) == batteryItem.getMaxCharge(stack)) return true;
+            int mode = this.getRelevantMode(false);
+            if(mode == mode_output && batteryItem.getCharge(stack) == 0) return true;
+            if(mode == mode_input && batteryItem.getCharge(stack) == batteryItem.getMaxCharge(stack)) return true;
         }
         return false;
     }
@@ -97,7 +98,17 @@ public class BatterySocketBlockEntity extends BatteryBaseBlockEntity {
     @Override
     public void setPower(long power) {
         if(slots.getFirst().isEmpty() || !(slots.getFirst().getItem() instanceof IBatteryItem batteryItem)) return;
+        long previous = batteryItem.getCharge(slots.getFirst());
         batteryItem.setCharge(slots.getFirst(), power);
+        // The charge lives in the pack's item data, so network transfers must mark the socket for saving.
+        if(previous != power) this.setChanged();
+    }
+
+    @Override
+    public boolean hasPermission(Player player) {
+        return this.level != null && !this.level.isClientSide && player.level() == this.level
+                && player.containerMenu instanceof BatterySocketMenu menu && menu.be == this
+                && this.stillValid(player);
     }
 
     public static long powerFromStack(ItemStack stack) {

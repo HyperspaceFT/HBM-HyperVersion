@@ -155,6 +155,9 @@ public class MachineWoodBurnerBlockEntity extends MachineBaseBlockEntity impleme
 
         this.powerGen += (int)(flammable.getHeatEnergy() * toBurn / 2_000L);
         this.tank.setFill(this.tank.getFill() - toBurn);
+        if(this.level.getGameTime() % 20 == 0) {
+            PollutionHandler.incrementPollution(this.level, this.worldPosition, PollutionType.SOOT, PollutionHandler.SOOT_PER_SECOND * toBurn / 2F);
+        }
     }
 
     private void processAsh() {
