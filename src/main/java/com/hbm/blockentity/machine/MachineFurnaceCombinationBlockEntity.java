@@ -200,14 +200,21 @@ public class MachineFurnaceCombinationBlockEntity extends MachineBaseBlockEntity
         }
     }
 
+    /** Upstream comboven shape: every side block of both layers of the 3x3 oven, 24 connections in total. */
     public DirPos[] getConPos() {
         BlockPos pos = this.getBlockPos();
-        return new DirPos[] {
-                new DirPos(pos.getX() + 2, pos.getY(), pos.getZ(), Direction.EAST),
-                new DirPos(pos.getX() - 2, pos.getY(), pos.getZ(), Direction.WEST),
-                new DirPos(pos.getX(), pos.getY(), pos.getZ() + 2, Direction.SOUTH),
-                new DirPos(pos.getX(), pos.getY(), pos.getZ() - 2, Direction.NORTH)
-        };
+        DirPos[] positions = new DirPos[24];
+        int i = 0;
+        for(Direction dir : Direction.Plane.HORIZONTAL) {
+            Direction rot = dir.getClockWise();
+            for(int y = 0; y <= 1; y++) {
+                for(int j = -1; j <= 1; j++) {
+                    positions[i++] = new DirPos(pos.getX() + dir.getStepX() * 2 + rot.getStepX() * j, pos.getY() + y,
+                            pos.getZ() + dir.getStepZ() * 2 + rot.getStepZ() * j, dir);
+                }
+            }
+        }
+        return positions;
     }
 
     @Override
@@ -277,6 +284,14 @@ public class MachineFurnaceCombinationBlockEntity extends MachineBaseBlockEntity
     }
 
     @Override public boolean canConnect(FluidType type, Direction dir) { return dir != null && dir.getAxis().isHorizontal(); }
+
+    @Override
+    public void useUpFluid(FluidType type, int pressure, long amount) {
+        IFluidStandardTransceiverMK2.super.useUpFluid(type, pressure, amount);
+        // Pipes drain the byproduct tank between ticks, so the tick-local fill comparison cannot see it.
+        if(amount > 0) this.setChanged();
+    }
+
     @Override public FluidTank[] getReceivingTanks() { return FluidTank.EMPTY_ARRAY; }
     @Override public FluidTank[] getSendingTanks() { return new FluidTank[] { this.tank }; }
     @Override public FluidTank[] getAllTanks() { return new FluidTank[] { this.tank }; }

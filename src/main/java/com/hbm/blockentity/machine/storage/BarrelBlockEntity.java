@@ -1,5 +1,6 @@
 package com.hbm.blockentity.machine.storage;
 
+import api.hbm.energymk2.IEnergyReceiverMK2.ConnectionPriority;
 import api.hbm.fluidmk2.FluidNode;
 import api.hbm.fluidmk2.IFluidStandardTransceiverMK2;
 import com.hbm.blockentity.IFluidCopiable;
@@ -64,8 +65,11 @@ public class BarrelBlockEntity extends MachineBaseBlockEntity implements IFluidS
         if(this.tank.setType(0, 1, this.slots)) {
             this.setChanged();
         }
-        this.tank.loadTank(this.level, 2, 3, this.slots);
-        this.tank.unloadTank(this.level, 4, 5, this.slots);
+        boolean loaded = this.tank.loadTank(this.level, 2, 3, this.slots);
+        boolean unloaded = this.tank.unloadTank(this.level, 4, 5, this.slots);
+        if(loaded || unloaded) {
+            this.setChanged();
+        }
 
         byte comp = this.getComparatorPower();
         if(comp != this.lastRedstone) {
@@ -228,6 +232,18 @@ public class BarrelBlockEntity extends MachineBaseBlockEntity implements IFluidS
         this.tank.setFill(this.tank.getFill() + (int) toTransfer);
         this.setChanged();
         return fluid - toTransfer;
+    }
+
+    @Override
+    public void useUpFluid(FluidType type, int pressure, long amount) {
+        IFluidStandardTransceiverMK2.super.useUpFluid(type, pressure, amount);
+        // Network and direct provision drain the tank between this barrel's own ticks.
+        if(amount > 0) this.setChanged();
+    }
+
+    @Override
+    public ConnectionPriority getFluidPriority() {
+        return this.mode == 1 ? ConnectionPriority.LOW : ConnectionPriority.NORMAL;
     }
 
     @Override

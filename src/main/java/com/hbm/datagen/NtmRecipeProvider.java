@@ -78,6 +78,31 @@ public class NtmRecipeProvider extends RecipeProvider {
                 .define('P', NtmItems.PLATE_IRON.get())
                 .unlockedBy("has_vacuum_tube", has(NtmItems.CIRCUIT_VACUUM_TUBE.get()))
                 .save(recipeOutput, ResourceLocation.fromNamespaceAndPath("hbmsntm", "fluid_identifier_multi"));
+        // Upstream CraftingManager: duct meta 0 (steel/aluminium) only; NEO has one duct block without the silver/colored variants.
+        ShapedRecipeBuilder.shaped(RecipeCategory.MISC, NtmBlocks.FLUID_DUCT_NEO.get(), 8)
+                .pattern("SAS")
+                .pattern("   ")
+                .pattern("SAS")
+                .define('S', NtmItems.PLATE_STEEL.get())
+                .define('A', NtmItems.PLATE_ALUMINIUM.get())
+                .unlockedBy("has_aluminium_plate", has(NtmItems.PLATE_ALUMINIUM.get()))
+                .save(recipeOutput, ResourceLocation.fromNamespaceAndPath("hbmsntm", "fluid_duct_neo"));
+        ShapedRecipeBuilder.shaped(RecipeCategory.MISC, NtmBlocks.BARREL_STEEL.get(), 1)
+                .pattern("IPI")
+                .pattern("I I")
+                .pattern("IPI")
+                .define('I', NtmItems.PLATE_STEEL.get())
+                .define('P', NtmItems.INGOT_STEEL.get())
+                .unlockedBy("has_steel_plate", has(NtmItems.PLATE_STEEL.get()))
+                .save(recipeOutput, ResourceLocation.fromNamespaceAndPath("hbmsntm", "barrel_steel"));
+        ShapedRecipeBuilder.shaped(RecipeCategory.MISC, NtmBlocks.BARREL_PLASTIC.get(), 1)
+                .pattern("IPI")
+                .pattern("I I")
+                .pattern("IPI")
+                .define('I', NtmItems.PLATE_POLYMER.get())
+                .define('P', NtmItems.PLATE_ALUMINIUM.get())
+                .unlockedBy("has_insulator", has(NtmItems.PLATE_POLYMER.get()))
+                .save(recipeOutput, ResourceLocation.fromNamespaceAndPath("hbmsntm", "barrel_plastic"));
 
         ShapedRecipeBuilder.shaped(RecipeCategory.MISC, NtmItems.EGG_BALEFIRE.get(), 1)
                 .pattern("###")

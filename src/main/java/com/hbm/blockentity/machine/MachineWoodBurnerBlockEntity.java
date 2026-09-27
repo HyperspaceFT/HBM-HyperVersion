@@ -240,7 +240,7 @@ public class MachineWoodBurnerBlockEntity extends MachineBaseBlockEntity impleme
         Direction side = facing.getClockWise();
         BlockPos base = this.worldPosition.relative(facing.getOpposite(), 2);
         return new DirPos[] {
-                new DirPos(base.getX(), base.getY(), base.getZ(), side.getOpposite()),
+                new DirPos(base.getX(), base.getY(), base.getZ(), facing.getOpposite()),
                 new DirPos(base.relative(side).getX(), base.getY(), base.relative(side).getZ(), facing.getOpposite())
         };
     }
@@ -256,8 +256,17 @@ public class MachineWoodBurnerBlockEntity extends MachineBaseBlockEntity impleme
     public boolean canConnect(FluidType type, Direction dir) {
         if(dir == null) return false;
         Direction facing = this.getBlockState().getValue(DummyableBlock.FACING);
-        return dir == facing.getOpposite() || dir == facing.getClockWise().getOpposite();
+        return dir == facing.getOpposite();
     }
+
+    @Override
+    public long transferFluid(FluidType type, int pressure, long amount) {
+        long remainder = IFluidStandardReceiverMK2.super.transferFluid(type, pressure, amount);
+        // Pipes fill the tank between ticks; an idle burner would otherwise never save that fluid.
+        if(remainder < amount) this.setChanged();
+        return remainder;
+    }
+
     @Override public FluidTank[] getAllTanks() { return new FluidTank[] { this.tank }; }
     @Override public FluidTank[] getReceivingTanks() { return new FluidTank[] { this.tank }; }
     @Override public FluidTank getTankToPaste() { return this.tank; }

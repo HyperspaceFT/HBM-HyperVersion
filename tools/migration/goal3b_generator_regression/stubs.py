@@ -15,7 +15,7 @@ public record BlockPos(int x,int y,int z) {public int getX(){return x;}public in
  public BlockPos relative(Direction d){return relative(d,1);}public BlockPos relative(Direction d,int n){return new BlockPos(x+d.dx*n,y+d.dy*n,z+d.dz*n);}public Object getCenter(){return this;}}""",
     "net/minecraft/core/Direction.java": """package net.minecraft.core;
 public enum Direction {EAST(1,0,0),WEST(-1,0,0),SOUTH(0,0,1),NORTH(0,0,-1),UP(0,1,0),DOWN(0,-1,0);
- public final int dx,dy,dz;Direction(int x,int y,int z){dx=x;dy=y;dz=z;}public int getStepX(){return dx;}public int getStepZ(){return dz;}
+ public final int dx,dy,dz;Direction(int x,int y,int z){dx=x;dy=y;dz=z;}public enum Plane implements Iterable<Direction>{HORIZONTAL;public java.util.Iterator<Direction> iterator(){return java.util.List.of(NORTH,EAST,SOUTH,WEST).iterator();}}public int getStepX(){return dx;}public int getStepZ(){return dz;}
  public Direction getOpposite(){return switch(this){case EAST->WEST;case WEST->EAST;case SOUTH->NORTH;case NORTH->SOUTH;case UP->DOWN;case DOWN->UP;};}
  public Direction getClockWise(){return switch(this){case NORTH->EAST;case EAST->SOUTH;case SOUTH->WEST;case WEST->NORTH;default->this;};}}""",
     "net/minecraft/nbt/CompoundTag.java": """package net.minecraft.nbt;import java.util.*;
@@ -88,7 +88,7 @@ public class FluidTank {private final FluidType type;private final int max;priva
     "com/hbm/items/machine/IItemFluidIdentifier.java": "package com.hbm.items.machine;public interface IItemFluidIdentifier {}",
     "api/hbm/energymk2/IBatteryItem.java": "package api.hbm.energymk2;public interface IBatteryItem {}",
     "api/hbm/energymk2/IEnergyProviderMK2.java": "package api.hbm.energymk2;import net.minecraft.core.Direction;public interface IEnergyProviderMK2 {boolean canConnect(Direction d);long getPower();void setPower(long p);long getMaxPower();}",
-    "api/hbm/fluidmk2/IFluidStandardReceiverMK2.java": "package api.hbm.fluidmk2;import com.hbm.inventory.fluid.*;import com.hbm.inventory.fluid.tank.*;import net.minecraft.core.Direction;public interface IFluidStandardReceiverMK2 {boolean canConnect(FluidType t,Direction d);FluidTank[] getAllTanks();FluidTank[] getReceivingTanks();}",
+    "api/hbm/fluidmk2/IFluidStandardReceiverMK2.java": "package api.hbm.fluidmk2;import com.hbm.inventory.fluid.*;import com.hbm.inventory.fluid.tank.*;import net.minecraft.core.Direction;public interface IFluidStandardReceiverMK2 {default long transferFluid(FluidType t,int p,long a){return a;}boolean canConnect(FluidType t,Direction d);FluidTank[] getAllTanks();FluidTank[] getReceivingTanks();}",
     "com/hbm/lib/Library.java": "package com.hbm.lib;import net.minecraft.world.item.*;import java.util.*;public class Library {public static long chargeItemsFromTE(List<ItemStack> slots,int slot,long power,long max){return power;}}",
     "com/hbm/util/fauxpointtwelve/DirPos.java": "package com.hbm.util.fauxpointtwelve;import net.minecraft.core.Direction;public record DirPos(int x,int y,int z,Direction dir){public Object makeCompat(){return this;}public Direction getDir(){return dir;}}",
     "com/hbm/util/ItemStackUtil.java": "package com.hbm.util;import net.minecraft.world.item.*;import java.util.*;public class ItemStackUtil {public static List<String> getTags(ItemStack stack){return stack.isEmpty()?List.of():stack.getItem().tags;}}",

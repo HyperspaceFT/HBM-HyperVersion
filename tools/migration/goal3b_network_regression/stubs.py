@@ -15,7 +15,7 @@ STUBS.update({
 """,
     "net/minecraft/core/Direction.java": """package net.minecraft.core;
 public enum Direction {EAST(1,0,0),WEST(-1,0,0),SOUTH(0,0,1),NORTH(0,0,-1),UP(0,1,0),DOWN(0,-1,0);
- public final int dx,dy,dz;Direction(int x,int y,int z){dx=x;dy=y;dz=z;}
+ public final int dx,dy,dz;Direction(int x,int y,int z){dx=x;dy=y;dz=z;}public enum Plane implements Iterable<Direction>{HORIZONTAL;public java.util.Iterator<Direction> iterator(){return java.util.List.of(NORTH,EAST,SOUTH,WEST).iterator();}}
  public int getStepX(){return dx;}public int getStepY(){return dy;}public int getStepZ(){return dz;}
  public Direction getOpposite(){return switch(this){case EAST->WEST;case WEST->EAST;case SOUTH->NORTH;case NORTH->SOUTH;case UP->DOWN;case DOWN->UP;};}
  public Direction getClockWise(){return switch(this){case NORTH->EAST;case EAST->SOUTH;case SOUTH->WEST;case WEST->NORTH;default->this;};}}
@@ -92,7 +92,7 @@ public class FluidTank{public static final FluidTank[] EMPTY_ARRAY=new FluidTank
  public void setType(int slot,java.util.List<net.minecraft.world.item.ItemStack> items){}public void loadTank(net.minecraft.world.level.Level l,int a,int b,java.util.List<net.minecraft.world.item.ItemStack> items){}
  public void readFromNBT(CompoundTag t,String k){}public void writeToNBT(CompoundTag t,String k){}public void serialize(RegistryFriendlyByteBuf b){}public void deserialize(RegistryFriendlyByteBuf b){}}
 """,
-    "api/hbm/fluidmk2/IFluidStandardTransceiverMK2.java": "package api.hbm.fluidmk2;import com.hbm.inventory.fluid.tank.*;public interface IFluidStandardTransceiverMK2{FluidTank[] getReceivingTanks();FluidTank[] getSendingTanks();FluidTank[] getAllTanks();}",
+    "api/hbm/fluidmk2/IFluidStandardTransceiverMK2.java": "package api.hbm.fluidmk2;import com.hbm.inventory.fluid.tank.*;public interface IFluidStandardTransceiverMK2{default void useUpFluid(com.hbm.inventory.fluid.FluidType t,int p,long a){}FluidTank[] getReceivingTanks();FluidTank[] getSendingTanks();FluidTank[] getAllTanks();}",
     "api/hbm/fluidmk2/IFluidReceiverMK2.java": "package api.hbm.fluidmk2;import com.hbm.inventory.fluid.*;import com.hbm.inventory.fluid.tank.*;public interface IFluidReceiverMK2{FluidTank[] getAllTanks();long transferFluid(FluidType t,int p,long a);long getDemand(FluidType t,int p);}",
     "api/hbm/redstoneoverradio/IRORInfo.java": "package api.hbm.redstoneoverradio;public interface IRORInfo{String[] getFunctionInfo();}",
     "api/hbm/redstoneoverradio/IRORValueProvider.java": "package api.hbm.redstoneoverradio;public interface IRORValueProvider extends IRORInfo{String provideRORValue(String n);}",
