@@ -215,6 +215,10 @@ public class NtmSoundDefinitionsProvider extends SoundDefinitionsProvider {
                 .subtitle("subtitles.block.warn_overspeed")
                 .with(sound(NuclearTechMod.withDefaultNamespace("block/warn_overspeed")))
         );
+        this.add(NtmSoundEvents.STEAM_ENGINE_OPERATE, SoundDefinition.definition()
+                .subtitle("subtitles.block.steam_engine_operate")
+                .with(sound(NuclearTechMod.withDefaultNamespace("block/steam_engine_operate")))
+        );
         this.add(NtmSoundEvents.SONAR_PING, SoundDefinition.definition()
                 .with(sound("hbmsntm:block/sonar_ping"))
         );

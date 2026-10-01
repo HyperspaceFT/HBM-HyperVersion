@@ -731,12 +731,19 @@ public class Goal8Regression {
         Item gearItem = NtmItems.GEAR_LARGE.get();
 
         List<AnvilConstructionRecipe> all = AnvilRecipes.getConstruction();
-        // Goal 9A appends the heat boiler after the Stirling entries; its own suite checks that entry.
-        int n = all.size() - 1;
-        AnvilConstructionRecipe buildVanilla = all.get(n - 5), buildNeo = all.get(n - 4);
-        AnvilConstructionRecipe withGear = all.get(n - 3), withoutGear = all.get(n - 2), gearRecycling = all.get(n - 1);
-        check(AnvilRecipes.getConstruction(n - 5) == buildVanilla && AnvilRecipes.getConstruction(n - 1) == gearRecycling && AnvilRecipes.getConstruction(n + 1) == null,
-                "the five Stirling entries directly precede the last construction index");
+        // Goal 9A appends the heat boiler after the Stirling entries; its own suite checks that entry. Goal 9B appends
+        // the steam engine after the boiler, so the Stirling entries are anchored on the boiler's index, not the list end.
+        int n = -1, boilers = 0;
+        for(int i = 0; i < all.size(); i++) {
+            if(all.get(i).output.size() == 1 && all.get(i).output.get(0).stack.is(NtmBlocks.HEAT_BOILER.asItem())) {
+                n = i;
+                boilers++;
+            }
+        }
+        AnvilConstructionRecipe buildVanilla = all.get(Math.max(n - 5, 0)), buildNeo = all.get(Math.max(n - 4, 0));
+        AnvilConstructionRecipe withGear = all.get(Math.max(n - 3, 0)), withoutGear = all.get(Math.max(n - 2, 0)), gearRecycling = all.get(Math.max(n - 1, 0));
+        check(boilers == 1 && n >= 5 && AnvilRecipes.getConstruction(n - 5) == buildVanilla && AnvilRecipes.getConstruction(n - 1) == gearRecycling,
+                "the five Stirling entries directly precede the Goal 9A boiler entry");
 
         for(AnvilConstructionRecipe build : new AnvilConstructionRecipe[] {buildVanilla, buildNeo}) {
             List<AStack> in = build.input;

@@ -104,8 +104,14 @@ def anvil_entry():
     body = between(source, "private static void registerConstruction() {", "private static void addAnvilRecipe(")
     starts = [m.start() for m in re.finditer(r"CONSTRUCTION_RECIPES\.add\(new AnvilConstructionRecipe\(", body)]
     check(len(starts) >= 6, "registerConstruction has at least six explicit entries")
-    last = body[starts[-1]:]
-    check(not re.search(r"\badd(AnvilRecipe|RecycleRecipe)\(", last), "no helper-added construction entry follows the boiler: it is the last index")
+    # Goal 9B appends the steam engine after the boiler: the boiler block is found by its output, not as the last entry,
+    # and later explicit entries are allowed (their own goals check them).
+    ends = starts[1:] + [len(body)]
+    boilers = [i for i, (a, b) in enumerate(zip(starts, ends)) if "new AnvilOutput(new ItemStack(NtmBlocks.HEAT_BOILER.asItem()))" in body[a:b]]
+    index = boilers[0] if len(boilers) == 1 else -1
+    check(index >= 5 and not re.search(r"\badd(AnvilRecipe|RecycleRecipe)\(", body[starts[index]:]),
+          "one explicit boiler entry after at least five others, and no helper-added construction entry follows it: it keeps its index")
+    last = body[starts[index]:ends[index]]
     compact = re.sub(r"\s+", " ", last)
     for part in ("new ComparableStack(NtmItems.INGOT_STEEL.get(), 4)", "new RecipesCommon.TagStack(NtmTags.Items.PLATES_COPPER, 16)",
                  "new ComparableStack(NtmItems.PLATE_POLYMER.get(), 8)", "new AnvilOutput(new ItemStack(NtmBlocks.HEAT_BOILER.asItem()))",
@@ -113,8 +119,8 @@ def anvil_entry():
         check(part in compact, f"boiler anvil entry contains {part}")
     check(compact.count("new ComparableStack(") == 2 and compact.count("TagStack(") == 1 and "MetaHelper" not in compact,
           "boiler anvil entry: three inputs, a plain output")
-    stirling = re.sub(r"\s+", " ", body[starts[-6]:starts[-5]])
-    gear = re.sub(r"\s+", " ", body[starts[-2]:starts[-1]])
+    stirling = re.sub(r"\s+", " ", body[starts[index - 5]:starts[index - 4]])
+    gear = re.sub(r"\s+", " ", body[starts[index - 1]:starts[index]])
     check("NtmBlocks.MACHINE_STIRLING.asItem()" in stirling and "OverlayType.CONSTRUCTION" in stirling
           and "new ComparableStack(NtmItems.GEAR_LARGE.get(), 1, 0)" in gear and "OverlayType.RECYCLING" in gear,
           "the five Goal 8 Stirling entries directly precede the boiler")
@@ -125,8 +131,17 @@ def anvil_entry():
           "the original recipe is tier 2 with 4 steel ingots, 16 copper plates and 8 insulator plates")
     check(source.count(BOILER_ENTRY) == 1, "the boiler entry is the exact Goal 9A block")
     baseline = git_show(f"{BASELINE_COMMIT}:src/main/java/com/hbm/inventory/recipes/anvil/AnvilRecipes.java").decode("utf-8").replace("\r\n", "\n")
-    check(source.replace(BOILER_ENTRY, "") == baseline,
-          f"without the boiler block AnvilRecipes is byte-identical to {BASELINE_COMMIT} (earlier entries unchanged)")
+    # Entries appended after the boiler by later goals (Goal 9B: the steam engine) are removed with it once they are
+    # shown to be explicit construction entries only; everything else must still match the Goal 8 file.
+    begin = source.find(BOILER_ENTRY)
+    finish = source.find("    }\n\n    private static void addAnvilRecipe(", begin)
+    later = source[begin + len(BOILER_ENTRY):finish] if begin >= 0 and finish >= 0 else None
+    # Statement-level lines (8-space indent) may only be comments, entry starts or entry ends.
+    later_ok = later is not None and not re.search(r"\badd(AnvilRecipe|RecycleRecipe)\(", later) and all(
+        line[8:].startswith(("//", "CONSTRUCTION_RECIPES.add(new AnvilConstructionRecipe(", ").set"))
+        for line in later.split("\n") if re.match(r" {8}\S", line))
+    check(later_ok and source[:begin] + source[finish:] == baseline,
+          f"without the boiler block and the explicit entries after it AnvilRecipes is byte-identical to {BASELINE_COMMIT} (earlier entries unchanged)")
 
 
 def containers():
@@ -198,7 +213,8 @@ def language(review):
         check(key in mapping and mapping[key] == entry and mapping[key]["kind"] != "deferred" and entry["target_zh"] == zh[key],
               f"zh_cn-map entry equals the review: {key}")
     check(review["reviewed_entries"][DESC_KEY]["target_en"] == DESC_EN, "the reviewed English description is the provider text")
-    check(sum(value["kind"] == "deferred" for value in mapping.values()) == 109, "deferred localization count stays 109")
+    # Later goals may only release deferred keys (Goal 9B released item.shell_steel: 109 -> 108), never add them.
+    check(sum(value["kind"] == "deferred" for value in mapping.values()) <= 109, "deferred localization count does not grow past 109")
 
 
 def ownership():

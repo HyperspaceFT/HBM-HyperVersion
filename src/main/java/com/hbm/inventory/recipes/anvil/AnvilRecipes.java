@@ -433,6 +433,18 @@ public class AnvilRecipes {
                 new AnvilOutput(new ItemStack(NtmBlocks.HEAT_BOILER.asItem()))
         ).setTier(2).setOverlay(OverlayType.CONSTRUCTION));
 
+        // The original's ComparableStack(gear_large, 1) means meta 0; NEO's two-argument form is a wildcard. No recycling entry.
+        CONSTRUCTION_RECIPES.add(new AnvilConstructionRecipe(
+                new AStack[] {
+                        new ComparableStack(NtmBlocks.REINFORCED_STONE.asItem(), 16),
+                        new RecipesCommon.TagStack(NtmTags.Items.PLATES_STEEL, 12),
+                        new ComparableStack(NtmItems.SHELL_STEEL.get(), 2),
+                        new ComparableStack(NtmItems.COIL_COPPER.get(), 4),
+                        new ComparableStack(NtmItems.GEAR_LARGE.get(), 1, 0)
+                },
+                new AnvilOutput(new ItemStack(NtmBlocks.MACHINE_STEAM_ENGINE.asItem()))
+        ).setTier(2).setOverlay(OverlayType.CONSTRUCTION));
+
     }
 
     private static void addAnvilRecipe(ItemLike input, int inputCount, ItemLike output, int outputCount, int tier) {

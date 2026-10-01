@@ -144,6 +144,7 @@ public class NtmBlockLootTableProvider extends BlockLootSubProvider {
         this.dropSelf(NtmBlocks.MOON_TURF.get());
 
         this.dropSelf(NtmBlocks.ASPHALT.get());
+        this.dropSelf(NtmBlocks.REINFORCED_STONE.get());
         this.dropSelf(NtmBlocks.ASPHALT_LIGHT.get());
 
         this.dropSelf(NtmBlocks.BRICK_CONCRETE.get());
@@ -273,6 +274,8 @@ public class NtmBlockLootTableProvider extends BlockLootSubProvider {
         this.dropSelf(NtmBlocks.MACHINE_SOLDERING_STATION.get());
         this.dropSelf(NtmBlocks.HEATER_FIREBOX.get());
         this.dropSelf(NtmBlocks.MACHINE_STIRLING.get());
+        this.dropSelf(NtmBlocks.MACHINE_STEAM_ENGINE.get());
+        this.dropSelf(NtmBlocks.MACHINE_CONDENSER.get());
         this.dropSelf(NtmBlocks.HEATER_OVEN.get());
         this.dropSelf(NtmBlocks.HEATER_OILBURNER.get());
         this.dropSelf(NtmBlocks.HEATER_ELECTRIC.get());

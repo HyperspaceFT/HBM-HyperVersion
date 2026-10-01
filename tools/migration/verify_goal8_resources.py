@@ -113,14 +113,18 @@ def anvil_entries():
     source = (JAVA / "com/hbm/inventory/recipes/anvil/AnvilRecipes.java").read_text(encoding="utf-8")
     body = between(source, "private static void registerConstruction() {", "private static void addAnvilRecipe(")
     starts = [m.start() for m in re.finditer(r"CONSTRUCTION_RECIPES\.add\(new AnvilConstructionRecipe\(", body)]
-    # Goal 9A appends the heat boiler after the Stirling entries; verify_goal9a_resources checks that entry.
-    check(len(starts) >= 6 and "new AnvilOutput(new ItemStack(NtmBlocks.HEAT_BOILER.asItem()))" in body[starts[-1]:],
-          "the last explicit entry is the Goal 9A heat boiler")
-    end = starts.pop()
+    # Goal 9A appends the heat boiler after the Stirling entries; verify_goal9a_resources checks that entry. Goal 9B
+    # appends the steam engine after the boiler, so the Stirling entries are anchored on the boiler entry, not the end.
+    boiler = "new AnvilOutput(new ItemStack(NtmBlocks.HEAT_BOILER.asItem()))"
+    blocks_end = starts[1:] + [len(body)]
+    boilers = [i for i, (a, b) in enumerate(zip(starts, blocks_end)) if boiler in body[a:b]]
+    check(len(boilers) == 1 and boilers[0] >= 5, "exactly one explicit entry is the Goal 9A heat boiler, after at least five others")
+    end = starts[boilers[0]]
+    starts = starts[:boilers[0]]
     check(len(starts) >= 5, "registerConstruction has at least five explicit entries")
     tail = body[starts[-5]:end]
     check(not re.search(r"\badd(AnvilRecipe|RecycleRecipe)\(", tail),
-          "no helper-added construction entry follows the Stirling entries: they are the last five indices")
+          "no helper-added construction entry lies between the Stirling entries and the boiler: they are the five indices before it")
     blocks = [tail[a - starts[-5]:(b - starts[-5]) if b else None] for a, b in zip(starts[-5:], starts[-4:] + [None])]
     compact = [re.sub(r"\s+", " ", block) for block in blocks]
     build = ["new RecipesCommon.TagStack(ItemTags.PLANKS, 16)", "new RecipesCommon.TagStack(NtmTags.Items.PLATES_STEEL, 6)",
@@ -192,7 +196,8 @@ def source_checks():
                   and mapping[key]["target_zh"] == zh[key] and entry == mapping[key],
                   f"bilingual key: {key}")
             check(json.dumps(entry["target_en"]) in language, f"English for {key} comes from NtmLanguageProvider")
-        check(sum(value["kind"] == "deferred" for value in mapping.values()) == 109, "deferred localization count stays 109")
+        # Later goals may only release deferred keys (Goal 9B released item.shell_steel: 109 -> 108), never add them.
+        check(sum(value["kind"] == "deferred" for value in mapping.values()) <= 109, "deferred localization count does not grow past 109")
         return review
     return None
 

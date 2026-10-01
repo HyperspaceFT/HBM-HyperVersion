@@ -226,6 +226,7 @@ public class NtmBlockTagProvider extends BlockTagsProvider {
 
                         NtmBlocks.ASPHALT.get(),
                         NtmBlocks.ASPHALT_LIGHT.get(),
+                        NtmBlocks.REINFORCED_STONE.get(),
 
                         NtmBlocks.BRICK_CONCRETE.get(),
                         NtmBlocks.BRICK_CONCRETE_MOSSY.get(),
@@ -282,6 +283,8 @@ public class NtmBlockTagProvider extends BlockTagsProvider {
                         NtmBlocks.MACHINE_INDUSTRIAL_BOILER.get(),
                         NtmBlocks.HEATER_FIREBOX.get(),
                         NtmBlocks.MACHINE_STIRLING.get(),
+                        NtmBlocks.MACHINE_STEAM_ENGINE.get(),
+                        NtmBlocks.MACHINE_CONDENSER.get(),
                         NtmBlocks.HEATER_OVEN.get(),
                         NtmBlocks.HEATER_OILBURNER.get(),
                         NtmBlocks.HEATER_ELECTRIC.get(),

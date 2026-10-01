@@ -440,6 +440,24 @@ public class NtmRecipeProvider extends RecipeProvider {
                 .define('C', Ingredient.of(NtmItems.INGOT_COPPER.get(), Items.COPPER_INGOT))
                 .unlockedBy("has_iron_plate", has(NtmItems.PLATE_IRON.get()))
                 .save(recipeOutput, ResourceLocation.fromNamespaceAndPath("hbmsntm", "gear_large"));
+        ShapedRecipeBuilder.shaped(RecipeCategory.BUILDING_BLOCKS, NtmBlocks.REINFORCED_STONE.get(), 4)
+                .pattern("FBF")
+                .pattern("BFB")
+                .pattern("FBF")
+                .define('F', Items.COBBLESTONE)
+                .define('B', Items.STONE)
+                .unlockedBy("has_cobblestone", has(Items.COBBLESTONE))
+                .save(recipeOutput);
+        // NEO has no steel ingot or iron plate tag; the copper cast plate is the META-matched cast plate.
+        ShapedRecipeBuilder.shaped(RecipeCategory.MISC, NtmBlocks.MACHINE_CONDENSER.get(), 1)
+                .pattern("SIS")
+                .pattern("ICI")
+                .pattern("SIS")
+                .define('S', NtmItems.INGOT_STEEL.get())
+                .define('I', NtmItems.PLATE_IRON.get())
+                .define('C', DataComponentIngredient.of(false, NtmDataComponents.META, CastPlateItem.Type.COPPER.ordinal(), NtmItems.CAST_PLATE.get()))
+                .unlockedBy("has_cast_plate", has(NtmItems.CAST_PLATE.get()))
+                .save(recipeOutput);
         ShapedRecipeBuilder.shaped(RecipeCategory.MISC, NtmBlocks.RED_CABLE.get(), 16)
                 .pattern(" I ")
                 .pattern("WWW")

@@ -637,6 +637,7 @@ public class NtmCreativeTabs {
 
                         output.accept(NtmBlocks.ASPHALT);
                         output.accept(NtmBlocks.ASPHALT_LIGHT);
+                        output.accept(NtmBlocks.REINFORCED_STONE);
 
                         output.accept(NtmBlocks.BRICK_CONCRETE);
                         output.accept(NtmBlocks.CONCRETE);
@@ -801,6 +802,8 @@ public class NtmCreativeTabs {
                         output.accept(NtmBlocks.HEATER_OVEN);
                         output.accept(NtmBlocks.HEATER_FIREBOX);
                         output.accept(NtmBlocks.MACHINE_STIRLING);
+                        output.accept(NtmBlocks.MACHINE_STEAM_ENGINE);
+                        output.accept(NtmBlocks.MACHINE_CONDENSER);
                         output.accept(NtmBlocks.HEATER_OILBURNER);
                         output.accept(NtmBlocks.HEATER_ELECTRIC);
                         output.accept(NtmBlocks.HEATER_HEATEX);

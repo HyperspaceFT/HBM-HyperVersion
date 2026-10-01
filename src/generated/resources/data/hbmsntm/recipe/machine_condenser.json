@@ -1,0 +1,28 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "key": {
+    "C": {
+      "type": "neoforge:components",
+      "components": {
+        "hbmsntm:meta": 5
+      },
+      "items": "hbmsntm:cast_plate"
+    },
+    "I": {
+      "item": "hbmsntm:plate_iron"
+    },
+    "S": {
+      "item": "hbmsntm:ingot_steel"
+    }
+  },
+  "pattern": [
+    "SIS",
+    "ICI",
+    "SIS"
+  ],
+  "result": {
+    "count": 1,
+    "id": "hbmsntm:machine_condenser"
+  }
+}

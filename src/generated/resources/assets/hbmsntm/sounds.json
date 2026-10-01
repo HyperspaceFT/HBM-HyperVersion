@@ -141,6 +141,12 @@
       "hbmsntm:block/squeaky_toy"
     ]
   },
+  "block.steam_engine_operate": {
+    "sounds": [
+      "hbmsntm:block/steam_engine_operate"
+    ],
+    "subtitle": "subtitles.block.steam_engine_operate"
+  },
   "block.warn_overspeed": {
     "sounds": [
       "hbmsntm:block/warn_overspeed"

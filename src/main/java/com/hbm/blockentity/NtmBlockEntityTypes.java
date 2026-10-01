@@ -73,6 +73,20 @@ public class NtmBlockEntityTypes {
                             NtmBlocks.MACHINE_STIRLING.get())
                     .build(null));
 
+    public static final Supplier<BlockEntityType<MachineSteamEngineBlockEntity>> MACHINE_STEAM_ENGINE = BLOCK_ENTITY_TYPES.register(
+            "machine_steam_engine",
+            () -> BlockEntityType.Builder.of(
+                            MachineSteamEngineBlockEntity::new,
+                            NtmBlocks.MACHINE_STEAM_ENGINE.get())
+                    .build(null));
+
+    public static final Supplier<BlockEntityType<MachineCondenserBlockEntity>> MACHINE_CONDENSER = BLOCK_ENTITY_TYPES.register(
+            "machine_condenser",
+            () -> BlockEntityType.Builder.of(
+                            MachineCondenserBlockEntity::new,
+                            NtmBlocks.MACHINE_CONDENSER.get())
+                    .build(null));
+
     public static final Supplier<BlockEntityType<HeaterOvenBlockEntity>> HEATER_OVEN = BLOCK_ENTITY_TYPES.register(
             "heater_oven",
             () -> BlockEntityType.Builder.of(

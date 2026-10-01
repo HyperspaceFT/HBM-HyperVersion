@@ -825,8 +825,17 @@ public class Goal9ARegression {
     static void anvil() {
         List<AnvilConstructionRecipe> all = AnvilRecipes.getConstruction();
         List<?> before = goal9a.head.AnvilRecipes.getConstruction();
-        int n = all.size();
-        check(n == before.size() + 1, "exactly one construction entry is added to the Goal 8 list (" + before.size() + " -> " + n + ")");
+        // Goal 9B appends the steam engine after the boiler, so the boiler is anchored on its own index (the end of
+        // the Goal 8 list) rather than on the end of the live list; later entries are checked by their own suites.
+        int boilers = 0, n = -1;
+        for(int i = 0; i < all.size(); i++) {
+            if(all.get(i).output.size() == 1 && all.get(i).output.get(0).stack.is(NtmBlocks.HEAT_BOILER.asItem())) {
+                boilers++;
+                n = i + 1;
+            }
+        }
+        check(boilers == 1 && n == before.size() + 1,
+                "exactly one boiler entry, directly after the Goal 8 list (" + before.size() + " entries; boiler at index " + (n - 1) + ", " + boilers + " found)");
         int same = 0;
         String first = null;
         for(int i = 0; i < before.size(); i++) {
@@ -839,7 +848,8 @@ public class Goal9ARegression {
                 "the Goal 8 Stirling block keeps its place directly before the boiler (n-6 .. n-2)");
 
         AnvilConstructionRecipe boiler = all.get(n - 1);
-        check(AnvilRecipes.getConstruction(n - 1) == boiler && AnvilRecipes.getConstruction(n) == null, "the boiler is the last construction index");
+        check(AnvilRecipes.getConstruction(n - 1) == boiler && AnvilRecipes.getConstruction(all.size()) == null,
+                "the boiler's construction index looks it up; the index after the last entry is empty");
         List<AStack> in = boiler.input;
         check(in.size() == 3
                         && in.get(0) instanceof ComparableStack steel && steel.item == NtmItems.INGOT_STEEL.get() && steel.stacksize == 4 && steel.meta == MetaHelper.WILDCARD_VALUE

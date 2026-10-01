@@ -824,6 +824,7 @@ public class NtmLanguageProvider extends LanguageProvider {
         this.add("container.machineArcWelder", "Arc Welder");
         this.add("subtitles.block.chemplantOperate", "Synthesizing");
         this.add("subtitles.block.warn_overspeed", "Overspeed warning");
+        this.add("subtitles.block.steam_engine_operate", "Steam engine runs");
         this.add(NtmItems.BIOMASS, "Biomass");
         this.add(NtmItems.GLYPHID_MEAT, "Glyphid Meat");
         this.add(NtmItems.PELLET_CHARGED, "Ionized Particles");
@@ -1471,6 +1472,7 @@ public class NtmLanguageProvider extends LanguageProvider {
         this.add("block.hbmsntm.obj_speedy.desc", "Increases speed by %s%%");
         this.add(NtmBlocks.ASPHALT, "Asphalt");
         this.add(NtmBlocks.ASPHALT_LIGHT, "Glowing Asphalt");
+        this.add(NtmBlocks.REINFORCED_STONE, "Dense Stone");
 
         this.add("block.hbmsntm.obj_no_spawn.desc", "Mobs cannot spawn on this block!");
         this.add(NtmBlocks.BRICK_CONCRETE, "Concrete Bricks");
@@ -1691,6 +1693,9 @@ public class NtmLanguageProvider extends LanguageProvider {
         this.add("block.hbmsntm.machine_stirling.desc", "Turns heat into energy. Requires external heat source.$Heat transfer rate: T*0.1 TU/t$Max intake: 300 TU/t$Efficiency: 50%%");
         this.add("machine_stirling.overlay.overspeed", "! ! ! OVERSPEED ! ! !");
         this.add("machine_stirling.overlay.gear_missing", "Gear missing!");
+        this.add(NtmBlocks.MACHINE_STEAM_ENGINE, "Steam Engine");
+        this.add("block.hbmsntm.machine_steam_engine.desc", "Efficiency: 85%%");
+        this.add(NtmBlocks.MACHINE_CONDENSER, "Steam Condenser");
         this.add("entity.hbmsntm.stray_cog", "Stray Cog");
         this.add("block.hbmsntm.heater_oven.desc", "Burns solid fuel to produce heat.$Accepts heat from the bottom with 50%% efficiency.");
         this.add("tile.heater_oven.desc", "Burns solid fuel to produce heat.$Accepts heat from the bottom with 50%% efficiency.");

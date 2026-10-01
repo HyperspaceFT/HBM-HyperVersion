@@ -104,7 +104,8 @@ def source_checks():
         check(key in zh and key in mapping and mapping[key]["kind"] != "deferred"
               and mapping[key]["target_zh"] == zh[key] and review["reviewed_entries"][key] == mapping[key],
               f"bilingual key: {key}")
-    check(sum(value["kind"] == "deferred" for value in mapping.values()) == 109, "deferred localization count stays 109")
+    # Later goals may only release deferred keys (Goal 9B released item.shell_steel: 109 -> 108), never add them.
+    check(sum(value["kind"] == "deferred" for value in mapping.values()) <= 109, "deferred localization count does not grow past 109")
 
 
 def generated_checks():

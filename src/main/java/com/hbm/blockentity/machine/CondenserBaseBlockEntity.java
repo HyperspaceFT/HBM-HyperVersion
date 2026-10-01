@@ -51,8 +51,10 @@ public abstract class CondenserBaseBlockEntity extends LoadedBaseBlockEntity imp
                 this.postConvert(convert);
             }
 
-            for(Direction dir : Direction.values()) this.trySubscribe(tanks[0].getTankType(), this.level, this.getBlockPos(), dir);
-            for(Direction dir : Direction.values()) this.tryProvide(tanks[1].getTankType(), this.level, this.getBlockPos(), dir);
+            // The position is the neighbour to probe (the original TilePortShapes.around); probing the own position
+            // never reached a duct.
+            for(Direction dir : Direction.values()) this.trySubscribe(tanks[0].getTankType(), this.level, this.getBlockPos().relative(dir), dir);
+            for(Direction dir : Direction.values()) this.tryProvide(tanks[1].getTankType(), this.level, this.getBlockPos().relative(dir), dir);
 
             this.networkPackNT(150);
         }

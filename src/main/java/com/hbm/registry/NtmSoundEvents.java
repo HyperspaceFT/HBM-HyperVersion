@@ -87,6 +87,7 @@ public class NtmSoundEvents {
     public static final DeferredHolder<SoundEvent, SoundEvent> CENTRIFUGE_OPERATE = reg("block.centrifuge_operate"); // BLOCKS CATEGORY
     public static final DeferredHolder<SoundEvent, SoundEvent> METAL_IMPACT = reg("block.metal_impact"); // BLOCKS CATEGORY
     public static final DeferredHolder<SoundEvent, SoundEvent> WARN_OVERSPEED = reg("block.warn_overspeed"); // BLOCKS CATEGORY
+    public static final DeferredHolder<SoundEvent, SoundEvent> STEAM_ENGINE_OPERATE = reg("block.steam_engine_operate"); // BLOCKS CATEGORY
     // DOORS
     public static final DeferredHolder<SoundEvent, SoundEvent> TRANSITION_SEAL_OPEN = reg("door.transition_seal_open");
     public static final DeferredHolder<SoundEvent, SoundEvent> ALARM6 = reg("door.alarm6");

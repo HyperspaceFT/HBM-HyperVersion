@@ -199,6 +199,8 @@ public class NtmBlocks {
     // Reinforced Blocks
     public static final DeferredBlock<Block> ASPHALT =       registerBlastInfoBlock("asphalt",       () -> new SpeedyBlock(1.5, BlockBehaviour.Properties.of().strength(15.0F, 120.0F)                                  .mapColor(MapColor.COLOR_BLACK)));
     public static final DeferredBlock<Block> ASPHALT_LIGHT = registerBlastInfoBlock("asphalt_light", () -> new SpeedyBlock(1.5, BlockBehaviour.Properties.of().strength(15.0F, 120.0F).lightLevel(state -> 15).mapColor(MapColor.SAND)));
+    // The original's rock material needs a pickaxe to drop.
+    public static final DeferredBlock<Block> REINFORCED_STONE = registerBlastInfoBlock("reinforced_stone", () -> new Block(BlockBehaviour.Properties.of().strength(15.0F, 100.0F).requiresCorrectToolForDrops().sound(SoundType.STONE).mapColor(MapColor.STONE).instrument(NoteBlockInstrument.BASEDRUM)));
     public static final DeferredBlock<Block> STEEL_SCAFFOLD = register("steel_scaffold", () -> new Block(BlockBehaviour.Properties.of().strength(1.0F, 10.0F).sound(SoundType.METAL).mapColor(MapColor.METAL)));
 
     // Bricks
@@ -314,6 +316,8 @@ public class NtmBlocks {
     public static final DeferredBlock<Block> MACHINE_INDUSTRIAL_BOILER = register("machine_industrial_boiler", () -> new MachineIndustrialBoiler(BlockBehaviour.Properties.of().noOcclusion().strength(0.6F, 10.0F).sound(SoundType.METAL).mapColor(MapColor.METAL).requiresCorrectToolForDrops()));
     public static final DeferredBlock<Block> HEATER_FIREBOX = register("heater_firebox", () -> new HeaterFireboxBlock(BlockBehaviour.Properties.of().noOcclusion().strength(0.6F, 10.0F).sound(SoundType.METAL).mapColor(MapColor.METAL).requiresCorrectToolForDrops()));
     public static final DeferredBlock<Block> MACHINE_STIRLING = register("machine_stirling", () -> new MachineStirlingBlock(BlockBehaviour.Properties.of().noOcclusion().strength(0.6F, 10.0F).sound(SoundType.METAL).mapColor(MapColor.METAL).requiresCorrectToolForDrops()));
+    public static final DeferredBlock<Block> MACHINE_STEAM_ENGINE = register("machine_steam_engine", () -> new MachineSteamEngineBlock(BlockBehaviour.Properties.of().noOcclusion().strength(0.6F, 10.0F).sound(SoundType.METAL).mapColor(MapColor.METAL).requiresCorrectToolForDrops()));
+    public static final DeferredBlock<Block> MACHINE_CONDENSER = register("machine_condenser", () -> new MachineCondenserBlock(BlockBehaviour.Properties.of().strength(0.6F, 10.0F).sound(SoundType.METAL).mapColor(MapColor.METAL).requiresCorrectToolForDrops()));
     public static final DeferredBlock<Block> HEATER_OVEN = register("heater_oven", () -> new HeaterOvenBlock(BlockBehaviour.Properties.of().noOcclusion().strength(0.6F, 10.0F).sound(SoundType.METAL).mapColor(MapColor.METAL).requiresCorrectToolForDrops()));
     public static final DeferredBlock<Block> HEATER_OILBURNER = register("heater_oilburner", () -> new HeaterOilburnerBlock(BlockBehaviour.Properties.of().noOcclusion().strength(0.6F, 10.0F).sound(SoundType.METAL).mapColor(MapColor.METAL).requiresCorrectToolForDrops()));
     public static final DeferredBlock<Block> HEATER_ELECTRIC = register("heater_electric", () -> new HeaterElectricBlock(BlockBehaviour.Properties.of().noOcclusion().strength(0.6F, 10.0F).sound(SoundType.METAL).mapColor(MapColor.METAL).requiresCorrectToolForDrops()));
