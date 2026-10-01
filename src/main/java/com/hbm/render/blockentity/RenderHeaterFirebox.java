@@ -27,11 +27,12 @@ public class RenderHeaterFirebox extends BlockEntityRendererNT<HeaterFireboxBloc
         Direction facing = be.getBlockState().getValue(DummyableBlock.FACING);
 
         RenderContext.translate(0.5F, 0.0F, 0.5F);
+        // The original angle table (RenderBoiler/RenderFirebox); the earlier NEO table was a quarter turn off.
         switch(facing) {
-            case NORTH -> RenderContext.mulPose(Axis.YP.rotationDegrees(90F));
-            case SOUTH -> RenderContext.mulPose(Axis.YP.rotationDegrees(270F));
-            case WEST -> RenderContext.mulPose(Axis.YP.rotationDegrees(180F));
-            case EAST -> RenderContext.mulPose(Axis.YP.rotationDegrees(0F));
+            case SOUTH -> RenderContext.mulPose(Axis.YP.rotationDegrees(0F));
+            case EAST -> RenderContext.mulPose(Axis.YP.rotationDegrees(90F));
+            case NORTH -> RenderContext.mulPose(Axis.YP.rotationDegrees(180F));
+            case WEST -> RenderContext.mulPose(Axis.YP.rotationDegrees(270F));
             default -> { }
         }
         RenderContext.mulPose(Axis.YP.rotationDegrees(-90F));

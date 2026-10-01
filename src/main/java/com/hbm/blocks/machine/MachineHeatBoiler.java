@@ -6,6 +6,7 @@ import com.hbm.blockentity.machine.boiler.MachineHeatBoilerBlockEntity;
 import com.hbm.blocks.DummyBlockType;
 import com.hbm.blocks.DummyableBlock;
 import com.hbm.blocks.ILookOverlay;
+import com.hbm.blocks.ITooltipProvider;
 import com.hbm.inventory.fluid.FluidType;
 import com.hbm.inventory.fluid.trait.FT_Heatable;
 import com.hbm.items.machine.IItemFluidIdentifier;
@@ -15,26 +16,33 @@ import com.hbm.util.TagsUtil;
 import com.mojang.serialization.MapCodec;
 import net.minecraft.ChatFormatting;
 import net.minecraft.core.BlockPos;
+import net.minecraft.core.Direction;
 import net.minecraft.network.chat.Component;
+import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.ItemInteractionResult;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.TooltipFlag;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.entity.BlockEntityTicker;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.level.storage.loot.LootParams;
+import net.minecraft.world.level.storage.loot.parameters.LootContextParams;
 import net.minecraft.world.phys.BlockHitResult;
+import net.minecraft.world.phys.Vec3;
 import net.neoforged.neoforge.client.event.RenderGuiEvent;
 
 import javax.annotation.Nullable;
 import java.util.ArrayList;
 import java.util.List;
 
-public class MachineHeatBoiler extends DummyableBlock implements ILookOverlay {
+public class MachineHeatBoiler extends DummyableBlock implements ILookOverlay, ITooltipProvider {
 
     public MachineHeatBoiler(Properties properties) {
         super(properties);
@@ -48,7 +56,8 @@ public class MachineHeatBoiler extends DummyableBlock implements ILookOverlay {
         DummyBlockType type = state.getValue(TYPE);
         return switch(type) {
             case CORE -> new MachineHeatBoilerBlockEntity(pos, state);
-            case EXTRA -> new ProxyComboBlockEntity(pos, state).fluid().heatSource();
+            // Fluid only, as the original: the boiler is no heat source for machines placed on it.
+            case EXTRA -> new ProxyComboBlockEntity(pos, state).fluid();
             default -> null;
         };
     }
@@ -67,6 +76,18 @@ public class MachineHeatBoiler extends DummyableBlock implements ILookOverlay {
     @Override
     public int getOffset() {
         return 1;
+    }
+
+    @Override
+    protected void fillSpace(Level level, BlockPos pos, Direction dir, int offset) {
+        super.fillSpace(level, pos, dir, offset);
+
+        // Proxies on the two side ports and the top port, matching MachineHeatBoilerBlockEntity.getConPos.
+        BlockPos core = pos.relative(dir, offset);
+        Direction rot = MachineHeatBoilerBlockEntity.getPortAxis(dir);
+        this.makeExtra(level, core.relative(rot));
+        this.makeExtra(level, core.relative(rot.getOpposite()));
+        this.makeExtra(level, core.above(3));
     }
 
     @Override
@@ -99,12 +120,12 @@ public class MachineHeatBoiler extends DummyableBlock implements ILookOverlay {
         }
 
         FluidType type = identifier.getType(level, corePos, stack);
-        boiler.tanks[0].setTankType(type);
-        boiler.setChanged();
-        player.displayClientMessage(
-                net.minecraft.network.chat.Component.translatable("block.hbmsntm.machine_boiler.changed_type_to", type.getName()).withStyle(ChatFormatting.YELLOW),
-                false
-        );
+        if(boiler.trySetInputType(type)) {
+            player.displayClientMessage(
+                    net.minecraft.network.chat.Component.translatable("block.hbmsntm.machine_boiler.changed_type_to", type.getName()).withStyle(ChatFormatting.YELLOW),
+                    false
+            );
+        }
 
         return ItemInteractionResult.SUCCESS;
     }
@@ -140,9 +161,10 @@ public class MachineHeatBoiler extends DummyableBlock implements ILookOverlay {
 
         safeRem = true;
         try {
-            for(int dx = -2; dx <= 2; dx++) {
-                for(int dy = -1; dy <= 4; dy++) {
-                    for(int dz = -2; dz <= 2; dz++) {
+            // Exactly the 3x3x4 footprint; a wider box reached into a neighbouring boiler.
+            for(int dx = -1; dx <= 1; dx++) {
+                for(int dy = 0; dy <= 3; dy++) {
+                    for(int dz = -1; dz <= 1; dz++) {
                         BlockPos target = new BlockPos(center.getX() + dx, center.getY() + dy, center.getZ() + dz);
                         if(level.getBlockState(target).getBlock() == this) {
                             level.removeBlock(target, false);
@@ -156,6 +178,38 @@ public class MachineHeatBoiler extends DummyableBlock implements ILookOverlay {
     }
 
     @Override
+    protected List<ItemStack> getDrops(BlockState state, LootParams.Builder params) {
+        BlockEntity be = params.getOptionalParameter(LootContextParams.BLOCK_ENTITY);
+
+        // Player breaks pass the core block entity; explosions pass whatever sits at the exploded part, so resolve the
+        // core from the origin like the original MachineHeatBoiler.getDrops (same approach as MachineStirlingBlock).
+        if(!(be instanceof MachineHeatBoilerBlockEntity)) {
+            Vec3 origin = params.getOptionalParameter(LootContextParams.ORIGIN);
+            ServerLevel level = params.getLevel();
+            BlockPos corePos = origin == null ? null : this.findCore(level, BlockPos.containing(origin));
+            if(corePos != null) be = level.getBlockEntity(corePos);
+        }
+
+        if(be instanceof MachineHeatBoilerBlockEntity boiler) {
+            List<ItemStack> refund = boiler.getExplodedDrops();
+            if(refund != null) {
+                // The loot table's survives_explosion condition does not see the refund; like the original's 1/size drop
+                // chance, a decaying explosion keeps each stack with chance 1/radius.
+                Float radius = params.getOptionalParameter(LootContextParams.EXPLOSION_RADIUS);
+                if(radius != null) refund.removeIf(stack -> params.getLevel().random.nextFloat() > 1F / radius);
+                return refund;
+            }
+        }
+
+        return super.getDrops(state, params);
+    }
+
+    @Override
+    public void appendHoverText(ItemStack stack, Item.TooltipContext context, List<Component> components, TooltipFlag flag) {
+        this.addStandardInfo(components);
+    }
+
+    @Override
     public void printHook(RenderGuiEvent.Pre event, Level level, BlockPos pos) {
         BlockPos corePos = this.findCore(level, pos);
         if(corePos == null) return;
@@ -163,8 +217,10 @@ public class MachineHeatBoiler extends DummyableBlock implements ILookOverlay {
         BlockEntity te = level.getBlockEntity(corePos);
         if(!(te instanceof MachineHeatBoilerBlockEntity boiler)) return;
         if(boiler.tanks == null || boiler.tanks.length < 2) return;
+        if(boiler.hasExploded) return;
 
         List<Component> text = new ArrayList<>();
+        text.add(Component.literal(String.format("%,d", boiler.heat) + " TU"));
         text.add(Component.literal("-> ").withStyle(ChatFormatting.GREEN)
                 .append(boiler.tanks[0].getTankType().getName())
                 .append(Component.literal(" " + BobMathUtil.format(boiler.tanks[0].getFill()) + "/" + BobMathUtil.format(boiler.tanks[0].getMaxFill()) + " mB").withStyle(ChatFormatting.GRAY)));

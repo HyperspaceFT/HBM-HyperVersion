@@ -29,7 +29,6 @@ import net.minecraft.world.phys.Vec3;
 
 public abstract class AbstractBoilerBlockEntity extends LoadedBaseBlockEntity implements ITickable, IFluidStandardTransceiverMK2, IFluidConnectorMK2, IOverpressurable, IHeatSource, IPersistentNBT {
 
-    protected static final int MAX_HEAT = 12_800_000;
     protected static final double DIFFUSION = 0.1D;
 
     public final FluidTank[] tanks;
@@ -50,6 +49,8 @@ public abstract class AbstractBoilerBlockEntity extends LoadedBaseBlockEntity im
     }
 
     protected abstract int getInputCapacity();
+    /** The original keeps a separate heat cap per boiler: 3,200,000 for the boiler, 12,800,000 for the industrial one. */
+    protected abstract int getMaxHeat();
     protected abstract int getOutputCapacity();
     protected abstract DirPos[] getConPos();
     protected abstract int getRenderHeight();
@@ -94,7 +95,8 @@ public abstract class AbstractBoilerBlockEntity extends LoadedBaseBlockEntity im
                 }
 
                 if(this.audio != null) {
-                    this.audio.updateVolume(this.getVolume(0.125F));
+                    // updateVolume sets the absolute volume; the original raises the 0.125 start volume to 1 here.
+                    this.audio.updateVolume(this.getVolume(1F));
                     this.audio.keepAlive();
                 }
             } else if(this.audio != null) {
@@ -102,6 +104,14 @@ public abstract class AbstractBoilerBlockEntity extends LoadedBaseBlockEntity im
                 this.audio = null;
             }
         }
+    }
+
+    /** Only fluids this boiler can heat are accepted, as in the original; anything else leaves the input tank untouched. */
+    public boolean trySetInputType(FluidType type) {
+        if(!type.hasTrait(FT_Heatable.class) || type.getTrait(FT_Heatable.class).getEfficiency(FT_Heatable.HeatingType.BOILER) <= 0) return false;
+        this.tanks[0].setTankType(type);
+        this.setChanged();
+        return true;
     }
 
     protected void setupTanks() {
@@ -152,7 +162,6 @@ public abstract class AbstractBoilerBlockEntity extends LoadedBaseBlockEntity im
         if(this.hasExploded) return;
         this.hasExploded = true;
         this.isOn = false;
-        this.heat = 0;
         this.setChanged();
     }
 
@@ -170,7 +179,6 @@ public abstract class AbstractBoilerBlockEntity extends LoadedBaseBlockEntity im
 
     protected void tryPullHeat() {
         if(this.level == null) return;
-        if(this.heat >= MAX_HEAT) return;
 
         BlockPos blockBelow = this.getBlockPos().below();
         BlockEntity con = this.level.getBlockEntity(blockBelow);
@@ -178,13 +186,18 @@ public abstract class AbstractBoilerBlockEntity extends LoadedBaseBlockEntity im
         if(con instanceof IHeatSource source) {
             int diff = source.getHeatStored() - this.heat;
 
+            // As in the original: equal heat neither pulls nor decays, and a boiler at its cap keeps its heat while
+            // the source is hotter; it only decays without a source or with a colder one.
+            if(diff == 0) return;
+
             if(diff > 0) {
                 diff = (int)Math.ceil(diff * DIFFUSION);
-                diff = Math.min(diff, MAX_HEAT - this.heat);
+                // Heat loaded above the cap pulls nothing; the clamp below then lowers it to the cap.
+                diff = Math.max(0, Math.min(diff, this.getMaxHeat() - this.heat));
                 source.useUpHeat(diff);
                 this.heat += diff;
-                if(this.heat > MAX_HEAT) {
-                    this.heat = MAX_HEAT;
+                if(this.heat > this.getMaxHeat()) {
+                    this.heat = this.getMaxHeat();
                 }
                 return;
             }

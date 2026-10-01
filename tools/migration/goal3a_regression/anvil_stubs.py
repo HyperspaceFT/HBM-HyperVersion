@@ -29,7 +29,7 @@ public class ItemStack { public static final ItemStack EMPTY=new ItemStack((Item
  public static class Codec {public void encode(RegistryFriendlyByteBuf b,ItemStack x){b.writeObject(x.copy());} public ItemStack decode(RegistryFriendlyByteBuf b){return (ItemStack)b.readObject();}} }""",
         "net/minecraft/world/item/Items.java": "package net.minecraft.world.item; public class Items {public static final Item IRON_INGOT=new Item(\"IRON_INGOT\"),GOLD_INGOT=new Item(\"GOLD_INGOT\"),COPPER_INGOT=new Item(\"COPPER_INGOT\"),BRICK=new Item(\"BRICK\");}",
         "net/minecraft/world/level/block/Blocks.java": "package net.minecraft.world.level.block; import net.minecraft.world.item.Item; public class Blocks {public static final Item STONE_BRICKS=new Item(\"STONE_BRICKS\"),FURNACE=new Item(\"FURNACE\");}",
-        "com/hbm/inventory/NtmTags.java": "package com.hbm.inventory; public class NtmTags {public static class Items {public static final Object PLATES_STEEL=new Object();}}",
+        "com/hbm/inventory/NtmTags.java": "package com.hbm.inventory; public class NtmTags {public static class Items {public static final Object PLATES_STEEL=new Object(),PLATES_COPPER=new Object();}}",
         "net/minecraft/world/entity/player/Inventory.java": """package net.minecraft.world.entity.player; import net.minecraft.core.*; import net.minecraft.world.item.*;
 public class Inventory {public final NonNullList<ItemStack> items=NonNullList.withSize(36,ItemStack.EMPTY); public int dirty; public boolean rejectAdd;
  public void setChanged(){dirty++;} public boolean add(ItemStack s){if(rejectAdd)return false;for(int i=0;i<items.size();i++)if(items.get(i).isEmpty()){items.set(i,s.copy());s.shrink(s.getCount());return true;}return false;} }""",

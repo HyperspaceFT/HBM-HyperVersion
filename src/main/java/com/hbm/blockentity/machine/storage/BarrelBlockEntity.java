@@ -183,8 +183,16 @@ public class BarrelBlockEntity extends MachineBaseBlockEntity implements IFluidS
     public boolean canPlaceItem(int slot, ItemStack stack) {
         return switch(slot) {
             case 0, 1 -> stack.getItem() instanceof IItemFluidIdentifier;
-            case 2 -> !FluidContainerRegistry.getFullContainer(stack, this.tank.getTankType()).isEmpty();
-            case 4 -> FluidContainerRegistry.getFluidContent(stack, this.tank.getTankType()) > 0;
+            // As in the original: the tank loads from full containers in slot 2 and fills empty ones in slot 4,
+            // each only within the tank's capacity.
+            case 2 -> {
+                int content = FluidContainerRegistry.getFluidContent(stack, this.tank.getTankType());
+                yield content > 0 && content <= this.tank.getMaxFill();
+            }
+            case 4 -> {
+                ItemStack full = FluidContainerRegistry.getFullContainer(stack, this.tank.getTankType());
+                yield !full.isEmpty() && FluidContainerRegistry.getFluidContent(full, this.tank.getTankType()) <= this.tank.getMaxFill();
+            }
             default -> true;
         };
     }

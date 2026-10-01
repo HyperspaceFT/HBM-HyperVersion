@@ -3,11 +3,19 @@ package com.hbm.inventory;
 import com.hbm.inventory.fluid.FluidType;
 import com.hbm.inventory.fluid.Fluids;
 import com.hbm.items.NtmItems;
+import com.hbm.items.component.NtmDataComponents;
+import net.minecraft.core.component.DataComponentType;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.Items;
+import net.minecraft.world.item.alchemy.PotionContents;
+import net.minecraft.world.item.alchemy.Potions;
 
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
+import java.util.Objects;
+import java.util.Optional;
 
 public class FluidContainerRegistry {
 
@@ -21,6 +29,11 @@ public class FluidContainerRegistry {
     }
 
     public static void register() {
+
+        // The vanilla water containers come first, as in the original. A water bottle is the potion item with a water
+        // PotionContents patch; other potions share the item, so that component is part of the match.
+        FluidContainerRegistry.registerContainer(new FluidContainer(new ItemStack(Items.WATER_BUCKET), new ItemStack(Items.BUCKET), Fluids.WATER, 1000));
+        FluidContainerRegistry.registerContainer(new FluidContainer(PotionContents.createItemStack(Items.POTION, Potions.WATER), new ItemStack(Items.GLASS_BOTTLE), Fluids.WATER, 250));
 
         FluidType[] fluids = Fluids.getAll();
         for (int i = 1; i < fluids.length; i++) {
@@ -65,7 +78,7 @@ public class FluidContainerRegistry {
         for (FluidContainer container : containerMap.get(type)) {
             int containerMeta = MetaHelper.getMeta(container.fullContainer);
 
-            if (container.fullContainer.is(sta.getItem()) && meta == containerMeta) {
+            if (container.fullContainer.is(sta.getItem()) && meta == containerMeta && matchesComponents(container.fullContainer, sta)) {
                 return container.content;
             }
         }
@@ -81,7 +94,7 @@ public class FluidContainerRegistry {
         if (!containerMap.containsKey(type)) return ItemStack.EMPTY;
 
         for (FluidContainer container : containerMap.get(type)) {
-            if (!container.emptyContainer.isEmpty() && MetaHelper.compareStacks(container.emptyContainer, sta)) {
+            if (!container.emptyContainer.isEmpty() && MetaHelper.compareStacks(container.emptyContainer, sta) && matchesComponents(container.emptyContainer, sta)) {
                 return container.fullContainer.copy();
             }
         }
@@ -93,7 +106,7 @@ public class FluidContainerRegistry {
     public static boolean isEmptyContainer(ItemStack stack) {
         if (stack.isEmpty()) return false;
         for (FluidContainer container : allContainers) {
-            if (!container.emptyContainer.isEmpty() && MetaHelper.compareStacks(container.emptyContainer, stack)) return true;
+            if (!container.emptyContainer.isEmpty() && MetaHelper.compareStacks(container.emptyContainer, stack) && matchesComponents(container.emptyContainer, stack)) return true;
         }
         return false;
     }
@@ -107,11 +120,36 @@ public class FluidContainerRegistry {
         for (FluidContainer container : allContainers) {
             int containerMeta = MetaHelper.getMeta(container.fullContainer);
 
-            if (container.fullContainer.is(sta.getItem()) && meta == containerMeta) {
+            if (container.fullContainer.is(sta.getItem()) && meta == containerMeta && matchesComponents(container.fullContainer, sta)) {
                 return container.emptyContainer.isEmpty() ? ItemStack.EMPTY : container.emptyContainer.copy();
             }
         }
 
         return ItemStack.EMPTY;
+    }
+
+    /**
+     * Removes from a converted stack the components that identified the registered container it was made from, besides
+     * META which the loader removes itself; e.g. an emptied water bottle must not keep its PotionContents.
+     */
+    public static void removeContainerIdentity(ItemStack source, ItemStack result) {
+        for (FluidContainer container : allContainers) {
+            for (ItemStack registered : new ItemStack[] { container.fullContainer, container.emptyContainer }) {
+                if (registered.isEmpty() || !MetaHelper.compareStacks(registered, source) || !matchesComponents(registered, source)) continue;
+                for (Map.Entry<DataComponentType<?>, Optional<?>> entry : registered.getComponentsPatch().entrySet()) {
+                    if (entry.getKey() != NtmDataComponents.META.get()) result.remove(entry.getKey());
+                }
+            }
+        }
+    }
+
+    /** Components a registered container carries besides META (only vanilla ones such as the water bottle) must match as well. */
+    private static boolean matchesComponents(ItemStack registered, ItemStack stack) {
+        for (Map.Entry<DataComponentType<?>, Optional<?>> entry : registered.getComponentsPatch().entrySet()) {
+            DataComponentType<?> type = entry.getKey();
+            if (type == NtmDataComponents.META.get()) continue;
+            if (entry.getValue().isPresent() ? !Objects.equals(stack.get(type), entry.getValue().get()) : stack.has(type)) return false;
+        }
+        return true;
     }
 }

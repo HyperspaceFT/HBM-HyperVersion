@@ -55,6 +55,8 @@ public class FluidLoaderStandard extends FluidLoadingHandler {
         // Removing old META also restores an ordinary empty stack instead of leaving a stale fluid ID.
         ItemStack result = input.transmuteCopy(registered.getItem(), registered.getCount());
         result.remove(NtmDataComponents.META.get());
+        // Other identifying components of the source container go too (a water bottle's PotionContents).
+        FluidContainerRegistry.removeContainerIdentity(input, result);
         result.applyComponents(registered.getComponentsPatch());
         return result;
     }

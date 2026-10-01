@@ -34,8 +34,9 @@ public class Goal5CRegression {
     private static void registryRules(){
         check(FluidContainerRegistry.allContainers.stream().filter(c->c.type==Fluids.COALCREOSOTE).count()==3,
                 "normal coal creosote has lead/ordinary/barrel registrations");
-        check(FluidContainerRegistry.allContainers.stream().filter(c->c.type==Fluids.WATER).count()==3,
-                "water has three registrations");
+        // Goal 9A registers the water bucket and the water bottle ahead of the three NTM containers.
+        check(FluidContainerRegistry.allContainers.stream().filter(c->c.type==Fluids.WATER).count()==5,
+                "water has the bucket, the bottle and three NTM registrations");
         check(FluidContainerRegistry.getFluidContent(FluidContainerRegistry.getFullContainer(new ItemStack(NtmItems.FLUID_BARREL_EMPTY.get()),Fluids.WATER),Fluids.WATER)==16_000,
                 "water barrel holds 16000 mB");
         check(FluidContainerRegistry.allContainers.stream().filter(c->c.type==Fluids.DEATH).count()==1

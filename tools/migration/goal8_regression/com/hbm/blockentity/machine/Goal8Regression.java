@@ -731,11 +731,12 @@ public class Goal8Regression {
         Item gearItem = NtmItems.GEAR_LARGE.get();
 
         List<AnvilConstructionRecipe> all = AnvilRecipes.getConstruction();
-        int n = all.size();
+        // Goal 9A appends the heat boiler after the Stirling entries; its own suite checks that entry.
+        int n = all.size() - 1;
         AnvilConstructionRecipe buildVanilla = all.get(n - 5), buildNeo = all.get(n - 4);
         AnvilConstructionRecipe withGear = all.get(n - 3), withoutGear = all.get(n - 2), gearRecycling = all.get(n - 1);
-        check(AnvilRecipes.getConstruction(n - 5) == buildVanilla && AnvilRecipes.getConstruction(n - 1) == gearRecycling && AnvilRecipes.getConstruction(n) == null,
-                "the five Stirling entries are the last five construction indices");
+        check(AnvilRecipes.getConstruction(n - 5) == buildVanilla && AnvilRecipes.getConstruction(n - 1) == gearRecycling && AnvilRecipes.getConstruction(n + 1) == null,
+                "the five Stirling entries directly precede the last construction index");
 
         for(AnvilConstructionRecipe build : new AnvilConstructionRecipe[] {buildVanilla, buildNeo}) {
             List<AStack> in = build.input;

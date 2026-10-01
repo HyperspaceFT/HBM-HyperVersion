@@ -113,8 +113,12 @@ def anvil_entries():
     source = (JAVA / "com/hbm/inventory/recipes/anvil/AnvilRecipes.java").read_text(encoding="utf-8")
     body = between(source, "private static void registerConstruction() {", "private static void addAnvilRecipe(")
     starts = [m.start() for m in re.finditer(r"CONSTRUCTION_RECIPES\.add\(new AnvilConstructionRecipe\(", body)]
+    # Goal 9A appends the heat boiler after the Stirling entries; verify_goal9a_resources checks that entry.
+    check(len(starts) >= 6 and "new AnvilOutput(new ItemStack(NtmBlocks.HEAT_BOILER.asItem()))" in body[starts[-1]:],
+          "the last explicit entry is the Goal 9A heat boiler")
+    end = starts.pop()
     check(len(starts) >= 5, "registerConstruction has at least five explicit entries")
-    tail = body[starts[-5]:]
+    tail = body[starts[-5]:end]
     check(not re.search(r"\badd(AnvilRecipe|RecycleRecipe)\(", tail),
           "no helper-added construction entry follows the Stirling entries: they are the last five indices")
     blocks = [tail[a - starts[-5]:(b - starts[-5]) if b else None] for a, b in zip(starts[-5:], starts[-4:] + [None])]

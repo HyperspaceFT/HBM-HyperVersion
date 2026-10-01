@@ -29,7 +29,7 @@ def main():
     )}
     stubs.update(make_anvil_stubs(source))
     stubs["com/hbm/inventory/NtmTags.java"] = """package com.hbm.inventory;
-public class NtmTags {public static class Items {public static final Object PLATES_STEEL=new Object();}}"""
+public class NtmTags {public static class Items {public static final Object PLATES_STEEL=new Object(),PLATES_COPPER=new Object();}}"""
     stubs["com/hbm/inventory/RecipesCommon.java"] = stubs["com/hbm/inventory/RecipesCommon.java"].replace(
         'public static class TagStack extends AStack {public TagStack(Object tag,int n){super(new Item("tag:"+tag),n);}}',
         'public static class TagStack extends AStack {private final Object tag;'

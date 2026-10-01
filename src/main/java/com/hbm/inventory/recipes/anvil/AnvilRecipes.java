@@ -423,6 +423,16 @@ public class AnvilRecipes {
                 }
         ).setTier(2).setOverlay(OverlayType.RECYCLING));
 
+        // Steel ingots by item: NEO has no steel ingot tag. The original has no recycling entry for the boiler.
+        CONSTRUCTION_RECIPES.add(new AnvilConstructionRecipe(
+                new AStack[] {
+                        new ComparableStack(NtmItems.INGOT_STEEL.get(), 4),
+                        new RecipesCommon.TagStack(NtmTags.Items.PLATES_COPPER, 16),
+                        new ComparableStack(NtmItems.PLATE_POLYMER.get(), 8)
+                },
+                new AnvilOutput(new ItemStack(NtmBlocks.HEAT_BOILER.asItem()))
+        ).setTier(2).setOverlay(OverlayType.CONSTRUCTION));
+
     }
 
     private static void addAnvilRecipe(ItemLike input, int inputCount, ItemLike output, int outputCount, int tier) {

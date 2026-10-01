@@ -1687,6 +1687,7 @@ public class NtmLanguageProvider extends LanguageProvider {
         this.add(NtmBlocks.HEATER_HEATEX, "Heat Exchanging Heater");
         this.add("block.hbmsntm.heater_firebox.desc", "Burns solid fuel to produce heat.");
         this.add("tile.heater_firebox.desc", "Burns solid fuel to produce heat.");
+        this.add("block.hbmsntm.heat_boiler.desc", "Large boiler that can boil water or heat up oil.$Requires external heat source.$Heat transfer rate: ΔT*0.1 TU/t");
         this.add("block.hbmsntm.machine_stirling.desc", "Turns heat into energy. Requires external heat source.$Heat transfer rate: T*0.1 TU/t$Max intake: 300 TU/t$Efficiency: 50%%");
         this.add("machine_stirling.overlay.overspeed", "! ! ! OVERSPEED ! ! !");
         this.add("machine_stirling.overlay.gear_missing", "Gear missing!");

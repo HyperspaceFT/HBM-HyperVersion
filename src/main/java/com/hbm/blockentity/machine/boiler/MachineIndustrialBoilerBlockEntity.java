@@ -24,6 +24,11 @@ public class MachineIndustrialBoilerBlockEntity extends AbstractBoilerBlockEntit
     }
 
     @Override
+    protected int getMaxHeat() {
+        return 12_800_000;
+    }
+
+    @Override
     protected DirPos[] getConPos() {
         BlockPos pos = this.getBlockPos();
         Direction facing = this.getBlockState().getValue(DummyableBlock.FACING);
