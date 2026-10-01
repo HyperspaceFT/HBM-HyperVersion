@@ -187,6 +187,7 @@
     "hbmsntm:heat_boiler",
     "hbmsntm:machine_industrial_boiler",
     "hbmsntm:heater_firebox",
+    "hbmsntm:machine_stirling",
     "hbmsntm:heater_oven",
     "hbmsntm:heater_oilburner",
     "hbmsntm:heater_electric",

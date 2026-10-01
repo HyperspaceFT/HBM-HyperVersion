@@ -372,6 +372,57 @@ public class AnvilRecipes {
                 new AnvilOutput(new ItemStack(NtmBlocks.MACHINE_CRUCIBLE.asItem()))
         ).setTier(2).setOverlay(OverlayType.CONSTRUCTION));
 
+        CONSTRUCTION_RECIPES.add(new AnvilConstructionRecipe(
+                new AStack[] {
+                        new RecipesCommon.TagStack(ItemTags.PLANKS, 16),
+                        new RecipesCommon.TagStack(NtmTags.Items.PLATES_STEEL, 6),
+                        new ComparableStack(Items.COPPER_INGOT, 8),
+                        new ComparableStack(NtmItems.COIL_COPPER.get(), 4),
+                        new ComparableStack(NtmItems.GEAR_LARGE.get(), 1, 0)
+                },
+                new AnvilOutput(new ItemStack(NtmBlocks.MACHINE_STIRLING.asItem()))
+        ).setTier(2).setOverlay(OverlayType.CONSTRUCTION));
+
+        CONSTRUCTION_RECIPES.add(new AnvilConstructionRecipe(
+                new AStack[] {
+                        new RecipesCommon.TagStack(ItemTags.PLANKS, 16),
+                        new RecipesCommon.TagStack(NtmTags.Items.PLATES_STEEL, 6),
+                        new ComparableStack(NtmItems.INGOT_COPPER.get(), 8),
+                        new ComparableStack(NtmItems.COIL_COPPER.get(), 4),
+                        new ComparableStack(NtmItems.GEAR_LARGE.get(), 1, 0)
+                },
+                new AnvilOutput(new ItemStack(NtmBlocks.MACHINE_STIRLING.asItem()))
+        ).setTier(2).setOverlay(OverlayType.CONSTRUCTION));
+
+        // ComparableStack(Item, int) is a meta wildcard. The explicit meta 0 keeps the gearless engine (meta 1)
+        // out of the with-gear disassembly and limits gear recycling to the plain gear. Outputs stay plain stacks.
+        CONSTRUCTION_RECIPES.add(new AnvilConstructionRecipe(
+                new ComparableStack(NtmBlocks.MACHINE_STIRLING.asItem(), 1, 0),
+                new AnvilOutput[] {
+                        new AnvilOutput(new ItemStack(NtmItems.PLATE_STEEL.get(), 6)),
+                        new AnvilOutput(new ItemStack(NtmItems.INGOT_COPPER.get(), 8)),
+                        new AnvilOutput(new ItemStack(NtmItems.COIL_COPPER.get(), 4)),
+                        new AnvilOutput(new ItemStack(NtmItems.GEAR_LARGE.get(), 1))
+                }
+        ).setTier(2).setOverlay(OverlayType.RECYCLING));
+
+        CONSTRUCTION_RECIPES.add(new AnvilConstructionRecipe(
+                new ComparableStack(NtmBlocks.MACHINE_STIRLING.asItem(), 1, 1),
+                new AnvilOutput[] {
+                        new AnvilOutput(new ItemStack(NtmItems.PLATE_STEEL.get(), 6)),
+                        new AnvilOutput(new ItemStack(NtmItems.INGOT_COPPER.get(), 8)),
+                        new AnvilOutput(new ItemStack(NtmItems.COIL_COPPER.get(), 4))
+                }
+        ).setTier(2).setOverlay(OverlayType.RECYCLING));
+
+        CONSTRUCTION_RECIPES.add(new AnvilConstructionRecipe(
+                new ComparableStack(NtmItems.GEAR_LARGE.get(), 1, 0),
+                new AnvilOutput[] {
+                        new AnvilOutput(new ItemStack(NtmItems.PLATE_IRON.get(), 8)),
+                        new AnvilOutput(new ItemStack(NtmItems.INGOT_COPPER.get(), 1))
+                }
+        ).setTier(2).setOverlay(OverlayType.RECYCLING));
+
     }
 
     private static void addAnvilRecipe(ItemLike input, int inputCount, ItemLike output, int outputCount, int tier) {

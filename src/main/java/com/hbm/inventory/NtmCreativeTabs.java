@@ -291,6 +291,7 @@ public class NtmCreativeTabs {
                         output.accept(NtmItems.COIL_MAGNETIZED_TUNGSTEN.get());
                         output.accept(NtmItems.COIL_TUNGSTEN.get());
                         output.accept(NtmItems.MOTOR.get());
+                        output.accept(NtmItems.GEAR_LARGE.get());
                         addMetaItems(output, NtmItems.CAST_PLATE_WELDED.get());
                         addMetaItems(output, NtmItems.CAST_PLATE.get());
                         output.accept(NtmItems.MOLD_BASE.get());
@@ -799,6 +800,7 @@ public class NtmCreativeTabs {
                         output.accept(NtmBlocks.MACHINE_INDUSTRIAL_BOILER);
                         output.accept(NtmBlocks.HEATER_OVEN);
                         output.accept(NtmBlocks.HEATER_FIREBOX);
+                        output.accept(NtmBlocks.MACHINE_STIRLING);
                         output.accept(NtmBlocks.HEATER_OILBURNER);
                         output.accept(NtmBlocks.HEATER_ELECTRIC);
                         output.accept(NtmBlocks.HEATER_HEATEX);

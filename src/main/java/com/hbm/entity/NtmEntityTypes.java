@@ -96,6 +96,7 @@ public class NtmEntityTypes {
 
     public static final DeferredHolder<EntityType<?>, EntityType<Shrapnel>> SHRAPNEL = ENTITY_TYPES.register("shrapnel", () -> EntityType.Builder.<Shrapnel>of(Shrapnel::new, MobCategory.MISC).sized(0.25F, 0.25F).fireImmune().build("shrapnel"));
     public static final DeferredHolder<EntityType<?>, EntityType<Rubble>> RUBBLE = ENTITY_TYPES.register("rubble", () -> EntityType.Builder.of(Rubble::new, MobCategory.MISC).sized(0.25F, 0.25F).build("rubble"));
+    public static final DeferredHolder<EntityType<?>, EntityType<StrayCog>> STRAY_COG = ENTITY_TYPES.register("stray_cog", () -> EntityType.Builder.<StrayCog>of(StrayCog::new, MobCategory.MISC).sized(1.0F, 1.0F).build("stray_cog"));
 
     public static final DeferredHolder<EntityType<?>, EntityType<Rocket>> ROCKET = ENTITY_TYPES.register("rocket", () -> EntityType.Builder.of(Rocket::new, MobCategory.MISC).sized(0.5F, 0.5F).build("rocket"));
 

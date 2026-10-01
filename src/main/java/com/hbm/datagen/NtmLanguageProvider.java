@@ -775,6 +775,7 @@ public class NtmLanguageProvider extends LanguageProvider {
         this.add(NtmItems.COIL_MAGNETIZED_TUNGSTEN, "4000K High Temperature Super Conducting Coil");
         this.add(NtmItems.COIL_TUNGSTEN, "Heating Coil");
         this.add(NtmItems.MOTOR, "Motor");
+        this.add(NtmItems.GEAR_LARGE, "Large Gear");
         this.add(NtmItems.CAST_PLATE_WELDED, "Welded Plate");
         this.add(NtmItems.CAST_PLATE, "Cast Plate");
         this.add(NtmItems.MOLD_BASE, "Blank Foundry Mold");
@@ -822,6 +823,7 @@ public class NtmLanguageProvider extends LanguageProvider {
         this.add("container.machineChemicalPlant", "Chemical Plant");
         this.add("container.machineArcWelder", "Arc Welder");
         this.add("subtitles.block.chemplantOperate", "Synthesizing");
+        this.add("subtitles.block.warn_overspeed", "Overspeed warning");
         this.add(NtmItems.BIOMASS, "Biomass");
         this.add(NtmItems.GLYPHID_MEAT, "Glyphid Meat");
         this.add(NtmItems.PELLET_CHARGED, "Ionized Particles");
@@ -1678,12 +1680,17 @@ public class NtmLanguageProvider extends LanguageProvider {
         this.add(NtmBlocks.MACHINE_CHUNGUS, "Leviathan Steam Turbine");
         this.add(NtmBlocks.MACHINE_SOLDERING_STATION, "Soldering Station");
         this.add(NtmBlocks.HEATER_FIREBOX, "Firebox");
+        this.add(NtmBlocks.MACHINE_STIRLING, "Stirling Engine");
         this.add(NtmBlocks.HEATER_OVEN, "Heating Oven");
         this.add(NtmBlocks.HEATER_OILBURNER, "Fluid Burner");
         this.add(NtmBlocks.HEATER_ELECTRIC, "Electric Heater");
         this.add(NtmBlocks.HEATER_HEATEX, "Heat Exchanging Heater");
         this.add("block.hbmsntm.heater_firebox.desc", "Burns solid fuel to produce heat.");
         this.add("tile.heater_firebox.desc", "Burns solid fuel to produce heat.");
+        this.add("block.hbmsntm.machine_stirling.desc", "Turns heat into energy. Requires external heat source.$Heat transfer rate: T*0.1 TU/t$Max intake: 300 TU/t$Efficiency: 50%%");
+        this.add("machine_stirling.overlay.overspeed", "! ! ! OVERSPEED ! ! !");
+        this.add("machine_stirling.overlay.gear_missing", "Gear missing!");
+        this.add("entity.hbmsntm.stray_cog", "Stray Cog");
         this.add("block.hbmsntm.heater_oven.desc", "Burns solid fuel to produce heat.$Accepts heat from the bottom with 50%% efficiency.");
         this.add("tile.heater_oven.desc", "Burns solid fuel to produce heat.$Accepts heat from the bottom with 50%% efficiency.");
         this.add("block.hbmsntm.heater_oilburner.desc", "Burns fluids to produce heat.$Can be configured with a screwdriver.$Can be configured with a hand drill.");

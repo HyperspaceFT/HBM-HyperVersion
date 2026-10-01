@@ -1,0 +1,21 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "key": {
+    "I": {
+      "item": "hbmsntm:plate_steel"
+    },
+    "P": {
+      "item": "hbmsntm:ingot_steel"
+    }
+  },
+  "pattern": [
+    "IPI",
+    "I I",
+    "IPI"
+  ],
+  "result": {
+    "count": 1,
+    "id": "hbmsntm:barrel_steel"
+  }
+}

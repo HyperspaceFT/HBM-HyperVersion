@@ -66,6 +66,13 @@ public class NtmBlockEntityTypes {
                             NtmBlocks.HEATER_FIREBOX.get())
                     .build(null));
 
+    public static final Supplier<BlockEntityType<MachineStirlingBlockEntity>> MACHINE_STIRLING = BLOCK_ENTITY_TYPES.register(
+            "machine_stirling",
+            () -> BlockEntityType.Builder.of(
+                            MachineStirlingBlockEntity::new,
+                            NtmBlocks.MACHINE_STIRLING.get())
+                    .build(null));
+
     public static final Supplier<BlockEntityType<HeaterOvenBlockEntity>> HEATER_OVEN = BLOCK_ENTITY_TYPES.register(
             "heater_oven",
             () -> BlockEntityType.Builder.of(

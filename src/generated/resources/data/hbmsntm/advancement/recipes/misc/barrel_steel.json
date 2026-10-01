@@ -1,0 +1,32 @@
+{
+  "parent": "minecraft:recipes/root",
+  "criteria": {
+    "has_steel_plate": {
+      "conditions": {
+        "items": [
+          {
+            "items": "hbmsntm:plate_steel"
+          }
+        ]
+      },
+      "trigger": "minecraft:inventory_changed"
+    },
+    "has_the_recipe": {
+      "conditions": {
+        "recipe": "hbmsntm:barrel_steel"
+      },
+      "trigger": "minecraft:recipe_unlocked"
+    }
+  },
+  "requirements": [
+    [
+      "has_the_recipe",
+      "has_steel_plate"
+    ]
+  ],
+  "rewards": {
+    "recipes": [
+      "hbmsntm:barrel_steel"
+    ]
+  }
+}

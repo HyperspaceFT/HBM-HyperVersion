@@ -39,7 +39,7 @@ public class Player extends LivingEntity {private final Inventory inventory=new 
  public void drop(ItemStack s,boolean random){dropped+=s.getCount();}}""",
         "net/minecraft/world/inventory/AbstractContainerMenu.java": "package net.minecraft.world.inventory; public abstract class AbstractContainerMenu {public int broadcasts; public void broadcastChanges(){broadcasts++;}}",
         "net/minecraft/resources/ResourceLocation.java": "package net.minecraft.resources; public record ResourceLocation(String namespace,String path){public static ResourceLocation fromNamespaceAndPath(String n,String p){return new ResourceLocation(n,p);}}",
-        "net/minecraft/tags/ItemTags.java": "package net.minecraft.tags; import net.minecraft.resources.ResourceLocation; public class ItemTags {public static final Object LOGS=new Object();public static Object create(ResourceLocation id){return id;}}",
+        "net/minecraft/tags/ItemTags.java": "package net.minecraft.tags; import net.minecraft.resources.ResourceLocation; public class ItemTags {public static final Object LOGS=new Object(),PLANKS=new Object();public static Object create(ResourceLocation id){return id;}}",
         "com/hbm/items/NtmItems.java": f"""package com.hbm.items; import net.minecraft.world.item.*; import net.minecraft.world.level.ItemLike; import com.hbm.inventory.RecipesCommon.*;
 public class NtmItems {{public static final Ref {items};
  public static AStack castPlateIngredient(CastPlateItem.Type type){{return castPlateIngredient(type,1);}}

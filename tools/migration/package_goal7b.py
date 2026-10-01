@@ -50,7 +50,8 @@ def main():
             path = ROOT / asset["target_path"]
             name = path.relative_to(ROOT / "src/main/resources").as_posix()
             data = path.read_bytes()
-            assert sha(data) == asset["target_sha256"] and jar.read(name) == data, name
+            # The record holds the LF form; a Windows autocrlf checkout packs barrel.obj as CRLF (see verify_goal7b_resources).
+            assert asset["target_sha256"] in {sha(data), sha(data.replace(b"\r\n", b"\n"))} and jar.read(name) == data, name
             checked.append(name)
         zh_name = "assets/hbmsntm/lang/zh_cn.json"
         assert jar.read(zh_name) == (ROOT / "src/main/resources" / zh_name).read_bytes(), zh_name

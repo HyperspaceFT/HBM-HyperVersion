@@ -141,6 +141,12 @@
       "hbmsntm:block/squeaky_toy"
     ]
   },
+  "block.warn_overspeed": {
+    "sounds": [
+      "hbmsntm:block/warn_overspeed"
+    ],
+    "subtitle": "subtitles.block.warn_overspeed"
+  },
   "crate_close": {
     "sounds": [
       "hbmsntm:block/crate_close"

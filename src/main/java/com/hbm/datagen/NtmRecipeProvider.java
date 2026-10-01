@@ -432,6 +432,14 @@ public class NtmRecipeProvider extends RecipeProvider {
                 .define('D', Items.FURNACE)
                 .unlockedBy("has_copper_coil", has(NtmItems.COIL_COPPER.get()))
                 .save(recipeOutput, ResourceLocation.fromNamespaceAndPath("hbmsntm", "8"));
+        ShapedRecipeBuilder.shaped(RecipeCategory.MISC, NtmItems.GEAR_LARGE.get(), 1)
+                .pattern("III")
+                .pattern("ICI")
+                .pattern("III")
+                .define('I', NtmItems.PLATE_IRON.get())
+                .define('C', Ingredient.of(NtmItems.INGOT_COPPER.get(), Items.COPPER_INGOT))
+                .unlockedBy("has_iron_plate", has(NtmItems.PLATE_IRON.get()))
+                .save(recipeOutput, ResourceLocation.fromNamespaceAndPath("hbmsntm", "gear_large"));
         ShapedRecipeBuilder.shaped(RecipeCategory.MISC, NtmBlocks.RED_CABLE.get(), 16)
                 .pattern(" I ")
                 .pattern("WWW")

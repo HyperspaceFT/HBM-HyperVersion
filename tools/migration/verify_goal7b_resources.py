@@ -49,6 +49,13 @@ def sha(path):
     return hashlib.sha256(path.read_bytes()).hexdigest()
 
 
+def digests(path):
+    """Raw bytes plus the LF-normalised form: the Goal 7B record was written on a Linux (LF) checkout, while a
+    Windows checkout with core.autocrlf=true materialises text assets such as barrel.obj with CRLF."""
+    data = path.read_bytes()
+    return {hashlib.sha256(data).hexdigest(), hashlib.sha256(data.replace(b"\r\n", b"\n")).hexdigest()}
+
+
 def check(condition, label):
     if not condition:
         raise AssertionError(label)
@@ -77,10 +84,11 @@ def source_checks():
     check(not ownership["imported_assets"] and len(ownership["reused_assets"]) == 6, "six reviewed retained assets; none imported")
     for asset in ownership["reused_assets"]:
         target = ROOT / asset["target_path"]
-        check(target.is_file() and sha(target) == asset["target_sha256"], f"retained target bytes: {asset['target_path']}")
+        check(target.is_file() and asset["target_sha256"] in digests(target), f"retained target bytes: {asset['target_path']}")
         source = original / asset["source_path"]
         if source.is_file():
-            check(sha(source) == asset["source_sha256"] and (sha(source) == sha(target)) == asset["identical_to_source"],
+            check(asset["source_sha256"] in digests(source)
+                  and bool(digests(source) & digests(target)) == asset["identical_to_source"],
                   f"upstream source bytes: {asset['source_path']}")
     geometry = (ROOT / "src/main/java/com/hbm/render/model/loader/NtmGeometry.java").read_text(encoding="utf-8")
     screen = (ROOT / "src/main/java/com/hbm/inventory/screens/BarrelScreen.java").read_text(encoding="utf-8")

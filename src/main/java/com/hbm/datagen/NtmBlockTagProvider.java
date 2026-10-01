@@ -281,6 +281,7 @@ public class NtmBlockTagProvider extends BlockTagsProvider {
                         NtmBlocks.HEAT_BOILER.get(),
                         NtmBlocks.MACHINE_INDUSTRIAL_BOILER.get(),
                         NtmBlocks.HEATER_FIREBOX.get(),
+                        NtmBlocks.MACHINE_STIRLING.get(),
                         NtmBlocks.HEATER_OVEN.get(),
                         NtmBlocks.HEATER_OILBURNER.get(),
                         NtmBlocks.HEATER_ELECTRIC.get(),

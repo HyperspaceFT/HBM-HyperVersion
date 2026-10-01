@@ -211,6 +211,10 @@ public class NtmSoundDefinitionsProvider extends SoundDefinitionsProvider {
         this.add(NtmSoundEvents.PRESS_OPERATE, SoundDefinition.definition()
                 .with(sound(NuclearTechMod.withDefaultNamespace("block/press_operate")))
         );
+        this.add(NtmSoundEvents.WARN_OVERSPEED, SoundDefinition.definition()
+                .subtitle("subtitles.block.warn_overspeed")
+                .with(sound(NuclearTechMod.withDefaultNamespace("block/warn_overspeed")))
+        );
         this.add(NtmSoundEvents.SONAR_PING, SoundDefinition.definition()
                 .with(sound("hbmsntm:block/sonar_ping"))
         );

@@ -1,0 +1,21 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "key": {
+    "A": {
+      "item": "hbmsntm:plate_aluminium"
+    },
+    "S": {
+      "item": "hbmsntm:plate_steel"
+    }
+  },
+  "pattern": [
+    "SAS",
+    "   ",
+    "SAS"
+  ],
+  "result": {
+    "count": 8,
+    "id": "hbmsntm:fluid_duct_neo"
+  }
+}
