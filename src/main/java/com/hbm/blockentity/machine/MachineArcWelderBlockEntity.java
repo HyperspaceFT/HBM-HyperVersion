@@ -3,6 +3,7 @@ package com.hbm.blockentity.machine;
 import api.hbm.energymk2.IBatteryItem;
 import api.hbm.energymk2.IEnergyReceiverMK2;
 import api.hbm.fluidmk2.IFluidStandardTransceiverMK2;
+import com.hbm.blockentity.IConditionalInvAccess;
 import com.hbm.blockentity.IFluidCopiable;
 import com.hbm.blockentity.IUpgradeInfoProvider;
 import com.hbm.blockentity.MachineBaseBlockEntity;
@@ -40,7 +41,7 @@ import net.minecraft.world.level.block.state.BlockState;
 import java.util.HashMap;
 import java.util.List;
 
-public class MachineArcWelderBlockEntity extends MachineBaseBlockEntity implements IEnergyReceiverMK2, IFluidStandardTransceiverMK2, IControlReceiver, IUpgradeInfoProvider, IFluidCopiable {
+public class MachineArcWelderBlockEntity extends MachineBaseBlockEntity implements IEnergyReceiverMK2, IFluidStandardTransceiverMK2, IControlReceiver, IUpgradeInfoProvider, IFluidCopiable, IConditionalInvAccess {
 
     private static final int INV_SIZE = 8;
 
@@ -174,16 +175,66 @@ public class MachineArcWelderBlockEntity extends MachineBaseBlockEntity implemen
 
     @Override
     public int[] getSlotsForFace(Direction direction) {
-        return new int[] { 0, 1, 2, 3 };
+        return new int[] { 1, 3 };
     }
 
+    /*
+     * Upstream gives each bottom proxy one input slot (TileEntityMachineArcWelder.getAccessibleSlotsFromSide), so one feeder
+     * cannot split an ingredient over two slots; with the strict recipe match that would stop the machine.
+     */
+    @Override
+    public boolean isItemValidForSlot(BlockPos pos, int slot, ItemStack stack) {
+        return slot < 3 && this.canPlaceItem(slot, stack);
+    }
+
+    @Override
+    public boolean canExtractItem(BlockPos pos, int slot, ItemStack stack, Direction direction) {
+        return slot == 3;
+    }
+
+    @Override
+    public int[] getAccessibleSlotsFromSide(BlockPos pos, Direction direction) {
+        Direction dir = this.getBlockState().getValue(DummyableBlock.FACING);
+        Direction rot = dir.getClockWise(); // upstream dir.getRotation(UP)
+        BlockPos core = this.getBlockPos();
+
+        // Red
+        if(pos.equals(core.relative(rot)) || pos.equals(core.relative(rot.getOpposite()).relative(dir.getOpposite()))) return new int[] { 0, 3 };
+        // Yellow
+        if(pos.equals(core.relative(dir.getOpposite()))) return new int[] { 1, 3 };
+        // Green
+        if(pos.equals(core.relative(rot.getOpposite())) || pos.equals(core.relative(rot).relative(dir.getOpposite()))) return new int[] { 2, 3 };
+
+        return new int[] { };
+    }
+
+    /**
+     * The connections of upstream's six bottom-layer PortDefs (TileEntityMachineArcWelder.getPorts): the core opens to the
+     * front, the four corner blocks open to the front or back and to their side, and the block behind the core opens to the back.
+     */
     public DirPos[] getConPos() {
         Direction dir = this.getBlockState().getValue(DummyableBlock.FACING);
-        Direction side = dir.getClockWise();
+        Direction rot = dir.getClockWise(); // upstream dir.getRotation(UP)
         BlockPos pos = this.getBlockPos();
+        int x = pos.getX();
+        int y = pos.getY();
+        int z = pos.getZ();
+        int dx = dir.getStepX();
+        int dz = dir.getStepZ();
+        int rx = rot.getStepX();
+        int rz = rot.getStepZ();
+
         return new DirPos[] {
-                new DirPos(pos.getX() + dir.getStepX(), pos.getY(), pos.getZ() + dir.getStepZ(), dir),
-                new DirPos(pos.getX() + side.getStepX(), pos.getY(), pos.getZ() + side.getStepZ(), side)
+                new DirPos(x + dx, y, z + dz, dir),
+                new DirPos(x + rx + dx, y, z + rz + dz, dir),
+                new DirPos(x + rx * 2, y, z + rz * 2, rot),
+                new DirPos(x - rx + dx, y, z - rz + dz, dir),
+                new DirPos(x - rx * 2, y, z - rz * 2, rot.getOpposite()),
+                new DirPos(x - dx * 2, y, z - dz * 2, dir.getOpposite()),
+                new DirPos(x - dx * 2 + rx, y, z - dz * 2 + rz, dir.getOpposite()),
+                new DirPos(x - dx + rx * 2, y, z - dz + rz * 2, rot),
+                new DirPos(x - dx * 2 - rx, y, z - dz * 2 - rz, dir.getOpposite()),
+                new DirPos(x - dx - rx * 2, y, z - dz - rz * 2, rot.getOpposite())
         };
     }
 

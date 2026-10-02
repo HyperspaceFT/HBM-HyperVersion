@@ -822,6 +822,19 @@ public class Goal9ARegression {
         return true;
     }
 
+    /**
+     * Goal 10B corrects seven Goal 8 entries in place (migration/GOAL10B.md D1 and D6): the soldering station takes 4
+     * tungsten bolts instead of 1 (original AnvilRecipes.java:387), and the titanium and steel flat stamps make their own
+     * plate/wire/circuit stamps instead of each other's (original :592-598). Every other entry must stay identical.
+     */
+    static String goal10b(String before) {
+        if(before.contains("-> 1 hbmsntm:machine_soldering_station @") && before.endsWith(" CONSTRUCTION"))
+            return before.replace("item hbmsntm:bolt x1 ", "item hbmsntm:bolt x4 ");
+        if(before.startsWith("item hbmsntm:stamp_titanium_flat x1 ")) return before.replace("hbmsntm:stamp_steel_", "hbmsntm:stamp_titanium_");
+        if(before.startsWith("item hbmsntm:stamp_steel_flat x1 ")) return before.replace("hbmsntm:stamp_titanium_", "hbmsntm:stamp_steel_");
+        return before;
+    }
+
     static void anvil() {
         List<AnvilConstructionRecipe> all = AnvilRecipes.getConstruction();
         List<?> before = goal9a.head.AnvilRecipes.getConstruction();
@@ -836,13 +849,16 @@ public class Goal9ARegression {
         }
         check(boilers == 1 && n == before.size() + 1,
                 "exactly one boiler entry, directly after the Goal 8 list (" + before.size() + " entries; boiler at index " + (n - 1) + ", " + boilers + " found)");
-        int same = 0;
+        int same = 0, corrected = 0;
         String first = null;
         for(int i = 0; i < before.size(); i++) {
-            if(describe(all.get(i)).equals(describe(before.get(i)))) same++;
-            else if(first == null) first = i + ": " + describe(all.get(i)) + " != " + describe(before.get(i));
+            String expected = goal10b(describe(before.get(i)));
+            if(!expected.equals(describe(before.get(i)))) corrected++;
+            if(describe(all.get(i)).equals(expected)) same++;
+            else if(first == null) first = i + ": " + describe(all.get(i)) + " != " + expected;
         }
-        check(same == before.size(), "every earlier entry is unchanged in content and index" + (first == null ? "" : "; first difference " + first));
+        check(same == before.size() && corrected == 7, "every earlier entry is unchanged in content and index, except the seven Goal 10B corrections ("
+                + corrected + " corrected)" + (first == null ? "" : "; first difference " + first));
         check(describe(all.get(n - 6)).contains("machine_stirling") && describe(all.get(n - 2)).contains("item hbmsntm:gear_large x1 meta 0")
                         && all.get(n - 6).getOverlay() == OverlayType.CONSTRUCTION && all.get(n - 2).getOverlay() == OverlayType.RECYCLING,
                 "the Goal 8 Stirling block keeps its place directly before the boiler (n-6 .. n-2)");

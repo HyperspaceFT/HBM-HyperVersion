@@ -84,9 +84,12 @@ public class WeightedRandom{public static class Item{public int itemWeight;publi
         "CentrifugeRecipes": "com/hbm/inventory/recipes",
         "BlastFurnaceRecipes": "com/hbm/inventory/recipes",
         "ChemicalPlantRecipes": "com/hbm/inventory/recipes",
+        # Goal 10A registers CrucibleRecipes.INSTANCE after ChemicalPlantRecipes; this loader suite only needs the
+        # name. The live crucible handler and its registration are checked by verify_goal10a.py.
+        "CrucibleRecipes": "com/hbm/inventory/recipes",
     }
     for name, path in handler_names.items():
-        singleton = "public static final " + name + " INSTANCE=new " + name + "();" if name in ("BlastFurnaceRecipes", "ChemicalPlantRecipes") else ""
+        singleton = "public static final " + name + " INSTANCE=new " + name + "();" if name in ("BlastFurnaceRecipes", "ChemicalPlantRecipes", "CrucibleRecipes") else ""
         stubs[f"{path}/{name}.java"] = f'''package com.hbm.inventory.recipes;import com.hbm.inventory.recipes.loader.*;import com.google.gson.*;import com.google.gson.stream.*;
 public class {name} extends SerializableRecipe{{{singleton}public String getFileName(){{return "{name}.json";}}public Object getRecipeObject(){{return java.util.List.of();}}
  public void readRecipe(JsonElement e){{}}public void writeRecipe(Object o,JsonWriter w){{}}public void registerDefaults(){{}}public void deleteRecipes(){{}}}}'''

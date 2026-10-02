@@ -1,6 +1,7 @@
 package com.hbm.datagen;
 
 import com.hbm.blocks.NtmBlocks;
+import com.hbm.items.CopperScrapsItem;
 import com.hbm.items.ICustomItemModelRegister;
 import com.hbm.items.NtmItems;
 import com.hbm.main.NuclearTechMod;
@@ -376,7 +377,7 @@ public class NtmItemModelProvider extends ItemModelProvider {
         this.basicItem(NtmItems.CAST_PLATE.get());
         this.basicItem(NtmItems.MOLD_BASE.get());
         this.basicItem(NtmItems.MOLD_PLATE_CAST.get());
-        this.basicItem(NtmItems.SCRAPS.get());
+        this.registerScraps();
         this.basicItem(NtmItems.PIPES_STEEL.get());
         this.basicItem(NtmItems.CRT_DISPLAY.get());
         this.basicItem(NtmItems.RING_STARMETAL.get());
@@ -922,6 +923,25 @@ public class NtmItemModelProvider extends ItemModelProvider {
         this.getBuilder(NtmBlocks.FALLOUT.getId().getPath()).parent(new ModelFile.UncheckedModelFile(modLoc("block/fallout")));
         this.getBuilder(NtmBlocks.WASTE_LOG.getId().getPath()).parent(new ModelFile.UncheckedModelFile(modLoc("block/waste_log")));
         this.getBuilder(NtmBlocks.FROZEN_LOG.getId().getPath()).parent(new ModelFile.UncheckedModelFile(modLoc("block/frozen_log")));
+    }
+
+    private void registerScraps() {
+        ItemModelBuilder builder = this.basicItem(NtmItems.SCRAPS.get());
+        for(int i = 0; i < CopperScrapsItem.MODEL_MATERIALS.size(); i++) {
+            String name = CopperScrapsItem.getModelName(CopperScrapsItem.MODEL_MATERIALS.get(i));
+            builder.override()
+                    .predicate(NuclearTechMod.withDefaultNamespace("scraps_type"), CopperScrapsItem.getModelValue(i))
+                    .model(getBuilder(name)
+                            .parent(getExistingFile(mcLoc("item/generated")))
+                            .texture("layer0", modLoc("item/" + name)))
+                    .end();
+        }
+        builder.override()
+                .predicate(NuclearTechMod.withDefaultNamespace("scraps_type"), CopperScrapsItem.LIQUID_MODEL)
+                .model(getBuilder("scraps_liquid")
+                        .parent(getExistingFile(mcLoc("item/generated")))
+                        .texture("layer0", modLoc("item/scraps_liquid")))
+                .end();
     }
 
     private void registerPolaroid() {

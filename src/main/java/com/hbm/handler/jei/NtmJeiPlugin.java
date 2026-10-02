@@ -7,6 +7,7 @@ import com.hbm.handler.jei.BoilerRecipeHandler;
 import com.hbm.handler.jei.ShredderRecipeHandler;
 import com.hbm.handler.jei.subtypes.BatterySubtypeInterpreter;
 import com.hbm.handler.jei.subtypes.MetaSubtypeInterpreter;
+import com.hbm.handler.jei.subtypes.ScrapsSubtypeInterpreter;
 import com.hbm.inventory.MetaHelper;
 import com.hbm.inventory.fluid.FluidType;
 import com.hbm.inventory.fluid.Fluids;
@@ -17,12 +18,15 @@ import com.hbm.inventory.recipes.BlastFurnaceRecipes;
 import com.hbm.inventory.recipes.ChemicalPlantRecipes;
 import com.hbm.inventory.recipes.CentrifugeRecipes;
 import com.hbm.inventory.recipes.CombinationRecipes;
+import com.hbm.inventory.recipes.CopperCastingRecipes;
+import com.hbm.inventory.recipes.CrucibleRecipes;
 import com.hbm.inventory.recipes.anvil.AnvilRecipes;
 import com.hbm.inventory.recipes.SolderingRecipes;
 import com.hbm.inventory.recipes.ShredderRecipes;
 import com.hbm.inventory.screens.AnvilMenuScreen;
 import com.hbm.inventory.screens.MachineFurnaceCombinationScreen;
 import com.hbm.inventory.screens.MachineAssemblyMachineScreen;
+import com.hbm.inventory.screens.MachineCrucibleScreen;
 import com.hbm.inventory.screens.MachineArcWelderScreen;
 import com.hbm.inventory.screens.MachineSolderingStationScreen;
 import com.hbm.items.NtmItems;
@@ -66,7 +70,10 @@ public class NtmJeiPlugin implements IModPlugin {
                 new PressRecipeHandler(guiHelper),
                 new ShredderRecipeHandler(guiHelper),
                 new RefineryRecipeHandler(guiHelper),
-                new BoilerRecipeHandler(guiHelper)
+                new BoilerRecipeHandler(guiHelper),
+                new CrucibleSmeltingRecipeHandler(guiHelper),
+                new CrucibleAlloyingRecipeHandler(guiHelper),
+                new CrucibleCastingRecipeHandler(guiHelper)
         );
     }
 
@@ -85,6 +92,9 @@ public class NtmJeiPlugin implements IModPlugin {
         registration.addRecipes(ShredderRecipeHandler.RECIPE_TYPE, ShredderRecipes.getJeiRecipes());
         registration.addRecipes(RefineryRecipeHandler.RECIPE_TYPE, RefineryRecipeHandler.getRecipes());
         registration.addRecipes(BoilerRecipeHandler.RECIPE_TYPE, BoilerRecipeHandler.getRecipes());
+        registration.addRecipes(CrucibleSmeltingRecipeHandler.RECIPE_TYPE, CopperCastingRecipes.getMeltEntries());
+        registration.addRecipes(CrucibleAlloyingRecipeHandler.RECIPE_TYPE, CrucibleRecipes.INSTANCE.recipeOrderedList);
+        registration.addRecipes(CrucibleCastingRecipeHandler.RECIPE_TYPE, CrucibleCastingRecipeHandler.getRecipes());
     }
 
     @Override
@@ -120,6 +130,11 @@ public class NtmJeiPlugin implements IModPlugin {
                 NtmBlocks.MACHINE_SHREDDER.asItem(),
                 ShredderRecipeHandler.RECIPE_TYPE
         );
+        // The electric furnace runs Minecraft's smelting recipes.
+        registration.addRecipeCatalyst(
+                NtmBlocks.MACHINE_ELECTRIC_FURNACE.asItem(),
+                mezz.jei.api.constants.RecipeTypes.SMELTING
+        );
         registration.addRecipeCatalyst(
                 NtmBlocks.MACHINE_CENTRIFUGE.asItem(),
                 CentrifugeRecipeHandler.RECIPE_TYPE
@@ -148,6 +163,19 @@ public class NtmJeiPlugin implements IModPlugin {
                 NtmBlocks.MACHINE_INDUSTRIAL_BOILER.asItem(),
                 BoilerRecipeHandler.RECIPE_TYPE
         );
+        registration.addRecipeCatalyst(
+                NtmBlocks.MACHINE_CRUCIBLE.asItem(),
+                CrucibleSmeltingRecipeHandler.RECIPE_TYPE,
+                CrucibleAlloyingRecipeHandler.RECIPE_TYPE
+        );
+        registration.addRecipeCatalyst(
+                NtmBlocks.FOUNDRY_MOLD.asItem(),
+                CrucibleCastingRecipeHandler.RECIPE_TYPE
+        );
+        registration.addRecipeCatalyst(
+                NtmItems.MOLD_PLATE_CAST.get(),
+                CrucibleCastingRecipeHandler.RECIPE_TYPE
+        );
     }
 
     @Override
@@ -163,6 +191,11 @@ public class NtmJeiPlugin implements IModPlugin {
         registration.addRecipeClickArea(MachineArcWelderScreen.class, 72, 36, 32, 13, ArcWelderRecipeHandler.RECIPE_TYPE);
         registration.addRecipeClickArea(MachineFurnaceCombinationScreen.class, 54, 61, 18, 18, FurnaceCombinationRecipeHandler.RECIPE_TYPE);
         registration.addRecipeClickArea(com.hbm.inventory.screens.MachinePressScreen.class, 79, 35, 18, 18, PressRecipeHandler.RECIPE_TYPE);
+        registration.addRecipeClickArea(com.hbm.inventory.screens.MachineElectricFurnaceScreen.class, 43, 36, 28, 12, mezz.jei.api.constants.RecipeTypes.SMELTING);
+        // No JEI recipe transfer for the crucible: alloys are only chosen in its own selector, as upstream NEI.
+        registration.addRecipeClickArea(MachineCrucibleScreen.class, MachineCrucibleScreen.ARROW_X, MachineCrucibleScreen.ARROW_Y,
+                MachineCrucibleScreen.ARROW_WIDTH, MachineCrucibleScreen.ARROW_HEIGHT,
+                CrucibleSmeltingRecipeHandler.RECIPE_TYPE, CrucibleAlloyingRecipeHandler.RECIPE_TYPE);
     }
 
     @Override
@@ -215,6 +248,7 @@ public class NtmJeiPlugin implements IModPlugin {
         }
 
         registration.registerSubtypeInterpreter(NtmItems.BATTERY_PACK.get(), BatterySubtypeInterpreter.INSTANCE);
+        registration.registerSubtypeInterpreter(NtmItems.SCRAPS.get(), ScrapsSubtypeInterpreter.INSTANCE);
     }
 
     @Override

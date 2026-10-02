@@ -40,6 +40,27 @@ CHANGED_INPUTS = {f"src/main/java/com/hbm/{name}.java" for name in (
     "blocks/machine/MachineHeatBoiler", "datagen/NtmLanguageProvider", "inventory/FluidContainerRegistry",
     "inventory/fluid/tank/FluidLoaderStandard", "inventory/recipes/anvil/AnvilRecipes",
     "render/blockentity/RenderHeatBoiler", "render/blockentity/RenderHeaterFirebox")} | {ZH}
+# Goal 10B corrects seven earlier lines in place (migration/GOAL10B.md D1: 4 tungsten bolts for the soldering station,
+# original AnvilRecipes.java:387; D6: each flat stamp makes its own plate/wire/circuit stamp, original :592-598). Each
+# live line must occur exactly once and its Goal 8 form not at all; they are put back before the byte comparison, so
+# every other line is still compared with the Goal 8 file.
+GOAL10B_LINES = (
+    ("new ComparableStack(NtmItems.BOLT.get(), 4, BoltItem.Type.TUNGSTEN.meta)",
+     "new ComparableStack(NtmItems.BOLT.get(), 1, BoltItem.Type.TUNGSTEN.meta)"),
+    *((f"addAnvilRecipe(NtmItems.STAMP_{flat}_FLAT.get(), 1, NtmItems.STAMP_{flat}_{shape}.get(), 1, 2);",
+       f"addAnvilRecipe(NtmItems.STAMP_{flat}_FLAT.get(), 1, NtmItems.STAMP_{other}_{shape}.get(), 1, 2);")
+      for shape in ("PLATE", "WIRE", "CIRCUIT") for flat, other in (("TITANIUM", "STEEL"), ("STEEL", "TITANIUM"))),
+)
+
+
+def without_goal10b(source):
+    """The source with the seven Goal 10B lines put back, and whether each live line was found once (Goal 8 form absent)."""
+    found = all(source.count(new) == 1 and source.count(old) == 0 for new, old in GOAL10B_LINES)
+    for new, old in GOAL10B_LINES:
+        source = source.replace(new, old)
+    return source, found
+
+
 # The Goal 9A anvil block as written in AnvilRecipes (comment, entry and the blank line after it).
 BOILER_ENTRY = """        // Steel ingots by item: NEO has no steel ingot tag. The original has no recycling entry for the boiler.
         CONSTRUCTION_RECIPES.add(new AnvilConstructionRecipe(
@@ -140,8 +161,10 @@ def anvil_entry():
     later_ok = later is not None and not re.search(r"\badd(AnvilRecipe|RecycleRecipe)\(", later) and all(
         line[8:].startswith(("//", "CONSTRUCTION_RECIPES.add(new AnvilConstructionRecipe(", ").set"))
         for line in later.split("\n") if re.match(r" {8}\S", line))
-    check(later_ok and source[:begin] + source[finish:] == baseline,
-          f"without the boiler block and the explicit entries after it AnvilRecipes is byte-identical to {BASELINE_COMMIT} (earlier entries unchanged)")
+    reverted, goal10b_found = without_goal10b(source[:begin] + source[finish:])
+    check(later_ok and goal10b_found and reverted == baseline,
+          f"without the boiler block and the explicit entries after it AnvilRecipes is byte-identical to {BASELINE_COMMIT} "
+          "(earlier entries unchanged apart from the seven Goal 10B line corrections)")
 
 
 def containers():

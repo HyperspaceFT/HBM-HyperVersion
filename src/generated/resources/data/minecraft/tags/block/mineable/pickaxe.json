@@ -196,6 +196,7 @@
     "hbmsntm:heater_electric",
     "hbmsntm:heater_heatex",
     "hbmsntm:machine_shredder",
+    "hbmsntm:machine_electric_furnace",
     "hbmsntm:machine_soldering_station",
     "hbmsntm:machine_well",
     "hbmsntm:machine_pumpjack",

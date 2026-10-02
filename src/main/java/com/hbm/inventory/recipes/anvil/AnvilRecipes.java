@@ -202,7 +202,7 @@ public class AnvilRecipes {
                         new ComparableStack(NtmItems.CIRCUIT_VACUUM_TUBE.get(), 2),
                         new ComparableStack(NtmItems.COIL_COPPER.get(), 4),
                         NtmItems.castPlateIngredient(CastPlateItem.Type.STEEL, 2),
-                        new ComparableStack(NtmItems.BOLT.get(), 1, BoltItem.Type.TUNGSTEN.meta)
+                        new ComparableStack(NtmItems.BOLT.get(), 4, BoltItem.Type.TUNGSTEN.meta)
                 },
                 new AnvilOutput(new ItemStack(NtmBlocks.MACHINE_SOLDERING_STATION.asItem()))
         ).setTier(2).setOverlay(OverlayType.CONSTRUCTION));
@@ -298,20 +298,20 @@ public class AnvilRecipes {
         addAnvilRecipe(NtmItems.COIL_GOLD.get(), 2, NtmItems.COIL_GOLD_RING.get(), 1, 1);
         addAnvilRecipe(NtmItems.STAMP_STONE_FLAT.get(), 1, NtmItems.STAMP_STONE_PLATE.get(), 1, 1);
         addAnvilRecipe(NtmItems.STAMP_IRON_FLAT.get(), 1, NtmItems.STAMP_IRON_PLATE.get(), 1, 1);
-        addAnvilRecipe(NtmItems.STAMP_TITANIUM_FLAT.get(), 1, NtmItems.STAMP_STEEL_PLATE.get(), 1, 2);
-        addAnvilRecipe(NtmItems.STAMP_STEEL_FLAT.get(), 1, NtmItems.STAMP_TITANIUM_PLATE.get(), 1, 2);
+        addAnvilRecipe(NtmItems.STAMP_TITANIUM_FLAT.get(), 1, NtmItems.STAMP_TITANIUM_PLATE.get(), 1, 2);
+        addAnvilRecipe(NtmItems.STAMP_STEEL_FLAT.get(), 1, NtmItems.STAMP_STEEL_PLATE.get(), 1, 2);
         addAnvilRecipe(NtmItems.STAMP_OBSIDIAN_FLAT.get(), 1, NtmItems.STAMP_OBSIDIAN_PLATE.get(), 1, 2);
         addAnvilRecipe(NtmItems.STAMP_DESH_FLAT.get(), 1, NtmItems.STAMP_DESH_PLATE.get(), 1, 3);
         addAnvilRecipe(NtmItems.STAMP_STONE_FLAT.get(), 1, NtmItems.STAMP_STONE_WIRE.get(), 1, 1);
         addAnvilRecipe(NtmItems.STAMP_IRON_FLAT.get(), 1, NtmItems.STAMP_IRON_WIRE.get(), 1, 1);
-        addAnvilRecipe(NtmItems.STAMP_TITANIUM_FLAT.get(), 1, NtmItems.STAMP_STEEL_WIRE.get(), 1, 2);
-        addAnvilRecipe(NtmItems.STAMP_STEEL_FLAT.get(), 1, NtmItems.STAMP_TITANIUM_WIRE.get(), 1, 2);
+        addAnvilRecipe(NtmItems.STAMP_TITANIUM_FLAT.get(), 1, NtmItems.STAMP_TITANIUM_WIRE.get(), 1, 2);
+        addAnvilRecipe(NtmItems.STAMP_STEEL_FLAT.get(), 1, NtmItems.STAMP_STEEL_WIRE.get(), 1, 2);
         addAnvilRecipe(NtmItems.STAMP_OBSIDIAN_FLAT.get(), 1, NtmItems.STAMP_OBSIDIAN_WIRE.get(), 1, 2);
         addAnvilRecipe(NtmItems.STAMP_DESH_FLAT.get(), 1, NtmItems.STAMP_DESH_WIRE.get(), 1, 3);
         addAnvilRecipe(NtmItems.STAMP_STONE_FLAT.get(), 1, NtmItems.STAMP_STONE_CIRCUIT.get(), 1, 1);
         addAnvilRecipe(NtmItems.STAMP_IRON_FLAT.get(), 1, NtmItems.STAMP_IRON_CIRCUIT.get(), 1, 1);
-        addAnvilRecipe(NtmItems.STAMP_TITANIUM_FLAT.get(), 1, NtmItems.STAMP_STEEL_CIRCUIT.get(), 1, 2);
-        addAnvilRecipe(NtmItems.STAMP_STEEL_FLAT.get(), 1, NtmItems.STAMP_TITANIUM_CIRCUIT.get(), 1, 2);
+        addAnvilRecipe(NtmItems.STAMP_TITANIUM_FLAT.get(), 1, NtmItems.STAMP_TITANIUM_CIRCUIT.get(), 1, 2);
+        addAnvilRecipe(NtmItems.STAMP_STEEL_FLAT.get(), 1, NtmItems.STAMP_STEEL_CIRCUIT.get(), 1, 2);
         addAnvilRecipe(NtmItems.STAMP_OBSIDIAN_FLAT.get(), 1, NtmItems.STAMP_OBSIDIAN_CIRCUIT.get(), 1, 2);
         addAnvilRecipe(NtmItems.STAMP_DESH_FLAT.get(), 1, NtmItems.STAMP_DESH_CIRCUIT.get(), 1, 3);
 
@@ -444,6 +444,34 @@ public class AnvilRecipes {
                 },
                 new AnvilOutput(new ItemStack(NtmBlocks.MACHINE_STEAM_ENGINE.asItem()))
         ).setTier(2).setOverlay(OverlayType.CONSTRUCTION));
+
+        // Heating oven, original AnvilRecipes.java:269-274 and :672-678: one construction entry per copper ingot item,
+        // as for the firebox, and the original's disassembly into firebricks and copper.
+        CONSTRUCTION_RECIPES.add(new AnvilConstructionRecipe(
+                new AStack[] {
+                        new ComparableStack(NtmItems.INGOT_FIREBRICK.get(), 16),
+                        new RecipesCommon.TagStack(NtmTags.Items.PLATES_STEEL, 4),
+                        new ComparableStack(Items.COPPER_INGOT, 8)
+                },
+                new AnvilOutput(new ItemStack(NtmBlocks.HEATER_OVEN.asItem()))
+        ).setTier(2).setOverlay(OverlayType.CONSTRUCTION));
+
+        CONSTRUCTION_RECIPES.add(new AnvilConstructionRecipe(
+                new AStack[] {
+                        new ComparableStack(NtmItems.INGOT_FIREBRICK.get(), 16),
+                        new RecipesCommon.TagStack(NtmTags.Items.PLATES_STEEL, 4),
+                        new ComparableStack(NtmItems.INGOT_COPPER.get(), 8)
+                },
+                new AnvilOutput(new ItemStack(NtmBlocks.HEATER_OVEN.asItem()))
+        ).setTier(2).setOverlay(OverlayType.CONSTRUCTION));
+
+        CONSTRUCTION_RECIPES.add(new AnvilConstructionRecipe(
+                new ComparableStack(NtmBlocks.HEATER_OVEN.get()),
+                new AnvilOutput[] {
+                        new AnvilOutput(new ItemStack(NtmItems.INGOT_FIREBRICK.get(), 16)),
+                        new AnvilOutput(new ItemStack(NtmItems.INGOT_COPPER.get(), 8))
+                }
+        ).setTier(2).setOverlay(OverlayType.RECYCLING));
 
     }
 

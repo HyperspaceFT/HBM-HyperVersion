@@ -1,0 +1,31 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "key": {
+    "B": {
+      "item": "hbmsntm:ingot_beryllium"
+    },
+    "F": {
+      "item": "minecraft:furnace"
+    },
+    "R": {
+      "item": "hbmsntm:coil_tungsten"
+    },
+    "W": {
+      "type": "neoforge:components",
+      "components": {
+        "hbmsntm:meta": 5
+      },
+      "items": "hbmsntm:cast_plate"
+    }
+  },
+  "pattern": [
+    "BBB",
+    "WFW",
+    "RRR"
+  ],
+  "result": {
+    "count": 1,
+    "id": "hbmsntm:machine_electric_furnace"
+  }
+}

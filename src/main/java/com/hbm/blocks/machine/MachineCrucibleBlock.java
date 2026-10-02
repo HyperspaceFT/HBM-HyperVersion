@@ -61,8 +61,9 @@ public class MachineCrucibleBlock extends DummyableBlock {
         BlockPos core = this.findCore(level, pos);
         if(core == null) return ItemInteractionResult.PASS_TO_DEFAULT_BLOCK_INTERACTION;
         if(!level.isClientSide && level.getBlockEntity(core) instanceof MachineCrucibleBlockEntity crucible) {
-            ItemStack scraps = crucible.takeScraps();
-            if(!player.getInventory().add(scraps)) player.drop(scraps, false);
+            for(ItemStack scraps : crucible.takeScraps()) {
+                if(!player.getInventory().add(scraps)) player.drop(scraps, false);
+            }
         }
         return ItemInteractionResult.sidedSuccess(level.isClientSide);
     }
@@ -74,7 +75,7 @@ public class MachineCrucibleBlock extends DummyableBlock {
     @Override public void onRemove(BlockState state, Level level, BlockPos pos, BlockState newState, boolean moving) {
         if(!state.is(newState.getBlock()) && !level.isClientSide
                 && level.getBlockEntity(pos) instanceof MachineCrucibleBlockEntity crucible) {
-            popResource(level, pos, crucible.takeScraps());
+            for(ItemStack scraps : crucible.takeScraps()) popResource(level, pos, scraps);
         }
         super.onRemove(state, level, pos, newState, moving);
     }

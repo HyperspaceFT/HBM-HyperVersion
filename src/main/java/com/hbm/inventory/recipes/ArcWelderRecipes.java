@@ -20,6 +20,7 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashSet;
+import java.util.Iterator;
 import java.util.List;
 
 public class ArcWelderRecipes extends SerializableRecipe {
@@ -227,21 +228,31 @@ public class ArcWelderRecipes extends SerializableRecipe {
         return null;
     }
 
+    /** Same rule as upstream getRecipe: every non-empty slot must use up a different ingredient and every ingredient must be used. */
     public static boolean matchesIngredients(ItemStack[] slots, AStack[] ingredientsIn) {
-        boolean[] used = new boolean[slots.length];
-        for(AStack ingredient : ingredientsIn) {
-            boolean matched = false;
-            for(int i = 0; i < slots.length; i++) {
-                if(used[i]) continue;
-                if(ingredient.matchesRecipe(slots[i], true) && slots[i].getCount() >= ingredient.stacksize) {
-                    used[i] = true;
-                    matched = true;
+        List<AStack> recipeList = new ArrayList<>();
+        Collections.addAll(recipeList, ingredientsIn);
+
+        for(ItemStack inputStack : slots) {
+            if(inputStack == null || inputStack.isEmpty()) continue;
+
+            boolean hasMatch = false;
+            Iterator<AStack> iterator = recipeList.iterator();
+
+            while(iterator.hasNext()) {
+                AStack recipeStack = iterator.next();
+
+                if(recipeStack.matchesRecipe(inputStack, true) && inputStack.getCount() >= recipeStack.stacksize) {
+                    hasMatch = true;
+                    iterator.remove();
                     break;
                 }
             }
-            if(!matched) return false;
+
+            if(!hasMatch) return false;
         }
-        return true;
+
+        return recipeList.isEmpty();
     }
 
     public static class ArcWelderRecipe {

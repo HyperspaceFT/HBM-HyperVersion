@@ -1,0 +1,12 @@
+{
+  "parent": "minecraft:block/cube",
+  "textures": {
+    "down": "hbmsntm:block/machine_electric_furnace_bottom",
+    "east": "hbmsntm:block/machine_electric_furnace_side",
+    "north": "hbmsntm:block/machine_electric_furnace_front_off",
+    "particle": "hbmsntm:block/machine_electric_furnace_side",
+    "south": "hbmsntm:block/machine_electric_furnace_side",
+    "up": "hbmsntm:block/machine_electric_furnace_top",
+    "west": "hbmsntm:block/machine_electric_furnace_side"
+  }
+}

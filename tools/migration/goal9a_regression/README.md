@@ -15,7 +15,7 @@ Everything the Goal 8 regression compiles (energy and fluid networks, cables, du
 - `AbstractBoilerBlockEntity`, `MachineHeatBoilerBlockEntity`, `MachineIndustrialBoilerBlockEntity`;
 - `FT_Heatable` and `IOverpressurable`.
 
-Section 8 also compiles `AnvilRecipes.java` as it was at the Goal 8 commit `1d37f11b` (read with `git show`), moved to the package `goal9a.head`, and compares every earlier construction entry with the live list.
+Section 8 also compiles `AnvilRecipes.java` as it was at the Goal 8 commit `1d37f11b` (read with `git show`), moved to the package `goal9a.head`, and compares every earlier construction entry with the live list. Goal 10B (`migration/GOAL10B.md` D1, D6) corrects seven of those entries in place: the soldering station takes 4 tungsten bolts instead of 1, and the titanium and steel flat stamps make their own plate/wire/circuit stamps. `goal10b()` in the fixture applies exactly that change to the Goal 8 descriptor before the comparison and requires exactly seven corrected entries; every other entry is still compared in content and index. `verify_goal9a_resources.py` puts the same seven source lines back (each must occur once) before its byte comparison with `1d37f11b`.
 
 ## Stand-ins
 

@@ -1,5 +1,37 @@
 {
   "parent": "minecraft:item/generated",
+  "overrides": [
+    {
+      "model": "hbmsntm:item/scraps_tungsten",
+      "predicate": {
+        "hbmsntm:scraps_type": 0.2
+      }
+    },
+    {
+      "model": "hbmsntm:item/scraps_cobalt",
+      "predicate": {
+        "hbmsntm:scraps_type": 0.4
+      }
+    },
+    {
+      "model": "hbmsntm:item/scraps_steel",
+      "predicate": {
+        "hbmsntm:scraps_type": 0.6
+      }
+    },
+    {
+      "model": "hbmsntm:item/scraps_durasteel",
+      "predicate": {
+        "hbmsntm:scraps_type": 0.8
+      }
+    },
+    {
+      "model": "hbmsntm:item/scraps_liquid",
+      "predicate": {
+        "hbmsntm:scraps_type": 1.0
+      }
+    }
+  ],
   "textures": {
     "layer0": "hbmsntm:item/scraps"
   }

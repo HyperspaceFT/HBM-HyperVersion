@@ -32,3 +32,10 @@ resource.
 priority over a local file; it does not prove that a multiplayer packet invokes
 the helper. This check does not start Minecraft, dispatch login or reload
 events, open screens, run an assembler, or test an actual client/server pair.
+
+Goal 10A registers `CrucibleRecipes.INSTANCE` in `SerializableRecipe.registerAllHandlers` after
+`ChemicalPlantRecipes`. The stand-in handler list therefore also declares a `CrucibleRecipes` singleton
+(like the blast furnace and chemical plant ones); this suite still filters every handler except the
+assembler, and its count is unchanged. The Goal 4 shredder and Goal 5B press suites inherit the
+stand-in. `verify_goal10a.py` compiles the real `CrucibleRecipes` and checks its registration and
+`hbmCrucible.json`.

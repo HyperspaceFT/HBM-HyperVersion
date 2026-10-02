@@ -65,6 +65,9 @@ public class MachineArcWelderBlock extends DummyableBlock {
         this.makeExtra(level, core.relative(side));
         this.makeExtra(level, core.relative(dir.getOpposite()));
         this.makeExtra(level, core.relative(dir.getOpposite()).relative(side));
+        // The other two bottom blocks also carry connections (MachineArcWelderBlockEntity.getConPos).
+        this.makeExtra(level, core.relative(side.getOpposite()));
+        this.makeExtra(level, core.relative(dir.getOpposite()).relative(side.getOpposite()));
         this.makeExtra(level, core.above());
         this.makeExtra(level, core.relative(side).above());
         this.makeExtra(level, core.relative(dir.getOpposite()).above());

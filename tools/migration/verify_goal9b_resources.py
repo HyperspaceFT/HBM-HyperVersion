@@ -12,6 +12,8 @@ import re
 import subprocess
 from pathlib import Path
 
+from goal10c_regression.anvil_block import without_goal10c
+
 ROOT = Path(__file__).resolve().parents[2]
 ORIGINAL = ROOT.parent / "Hbm-s-Nuclear-Tech-GIT"
 GEN = ROOT / "src/generated/resources"
@@ -69,6 +71,27 @@ CHANGED_INPUTS = {f"src/main/java/com/hbm/{name}.java" for name in (
     f"src/main/resources/assets/hbmsntm/{name}" for name in (
         "models/obj/machines/steam_engine.obj", "sounds/block/steam_engine_operate.ogg", "textures/block/condenser.png",
         "textures/block/reinforced_stone.png", "textures/models/machines/steam_engine.png")}
+# Goal 10B corrects seven earlier lines in place (migration/GOAL10B.md D1: 4 tungsten bolts for the soldering station,
+# original AnvilRecipes.java:387; D6: each flat stamp makes its own plate/wire/circuit stamp, original :592-598). Each
+# live line must occur exactly once and its Goal 8 form not at all; they are put back before the byte comparison, so
+# every other line is still compared with the Goal 8 file.
+GOAL10B_LINES = (
+    ("new ComparableStack(NtmItems.BOLT.get(), 4, BoltItem.Type.TUNGSTEN.meta)",
+     "new ComparableStack(NtmItems.BOLT.get(), 1, BoltItem.Type.TUNGSTEN.meta)"),
+    *((f"addAnvilRecipe(NtmItems.STAMP_{flat}_FLAT.get(), 1, NtmItems.STAMP_{flat}_{shape}.get(), 1, 2);",
+       f"addAnvilRecipe(NtmItems.STAMP_{flat}_FLAT.get(), 1, NtmItems.STAMP_{other}_{shape}.get(), 1, 2);")
+      for shape in ("PLATE", "WIRE", "CIRCUIT") for flat, other in (("TITANIUM", "STEEL"), ("STEEL", "TITANIUM"))),
+)
+
+
+def without_goal10b(source):
+    """The source with the seven Goal 10B lines put back, and whether each live line was found once (Goal 8 form absent)."""
+    found = all(source.count(new) == 1 and source.count(old) == 0 for new, old in GOAL10B_LINES)
+    for new, old in GOAL10B_LINES:
+        source = source.replace(new, old)
+    return source, found
+
+
 # The Goal 9A and Goal 9B anvil blocks as written in AnvilRecipes (comment, entry and the blank line after it).
 BOILER_ENTRY = """        // Steel ingots by item: NEO has no steel ingot tag. The original has no recycling entry for the boiler.
         CONSTRUCTION_RECIPES.add(new AnvilConstructionRecipe(
@@ -146,6 +169,10 @@ def between(source, start, end):
 
 def anvil_entry():
     source = text(JAVA / "com/hbm/inventory/recipes/anvil/AnvilRecipes.java")
+    # Goal 10C (migration/GOAL10C.md) appends the heating oven block after the steam engine; it must occur exactly once,
+    # directly after the engine entry and at the end of registerConstruction. It is removed before the unchanged checks.
+    source, goal10c_found = without_goal10c(source)
+    check(goal10c_found, "the Goal 10C heating oven block follows the steam engine exactly once, at the end of registerConstruction")
     body = between(source, "private static void registerConstruction() {", "private static void addAnvilRecipe(")
     starts = [m.start() for m in re.finditer(r"CONSTRUCTION_RECIPES\.add\(new AnvilConstructionRecipe\(", body)]
     last = body[starts[-1]:]
@@ -173,8 +200,10 @@ def anvil_entry():
     check(source.count(BOILER_ENTRY) == 1 and source.count(ENGINE_ENTRY) == 1 and source.index(BOILER_ENTRY) + len(BOILER_ENTRY) == source.index(ENGINE_ENTRY),
           "the boiler and steam engine entries are the exact Goal 9A and Goal 9B blocks, in that order")
     baseline = git_show(f"{BASELINE_COMMIT}:src/main/java/com/hbm/inventory/recipes/anvil/AnvilRecipes.java").decode("utf-8").replace("\r\n", "\n")
-    check(source.replace(BOILER_ENTRY + ENGINE_ENTRY, "") == baseline,
-          f"without the two blocks AnvilRecipes is byte-identical to {BASELINE_COMMIT} (earlier entries unchanged)")
+    reverted, goal10b_found = without_goal10b(source.replace(BOILER_ENTRY + ENGINE_ENTRY, ""))
+    check(goal10b_found and reverted == baseline,
+          f"without the two blocks AnvilRecipes is byte-identical to {BASELINE_COMMIT} "
+          "(earlier entries unchanged apart from the seven Goal 10B line corrections)")
 
 
 def blocks():

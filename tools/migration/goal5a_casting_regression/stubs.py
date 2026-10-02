@@ -4,6 +4,13 @@ from goal5a_processing_regression.stubs import build_stubs as heat_stubs
 from verify_goal5a_processing import SOURCE
 
 
+def _require(text, anchor):
+    """Stops the run when an inherited stand-in no longer contains the text a Goal 10A edit replaces."""
+    if anchor not in text:
+        raise SystemExit(f"Goal 5A casting stub anchor missing: {anchor[:60]}")
+    return text
+
+
 def build_stubs():
     recipe = (SOURCE / "com/hbm/inventory/recipes/CombinationRecipes.java").read_text(encoding="utf-8")
     stubs = heat_stubs(recipe)
@@ -11,8 +18,10 @@ def build_stubs():
     for path in tuple(stubs):
         if path.startswith("com/hbm/inventory/recipes/loader/"):
             del stubs[path]
+    # Goal 10A: the melt table also names the steel, tungsten, cobalt and high-speed steel items.
     items = ("BALEFIRE_AND_STEEL", "COPPER_INGOT", "INGOT_COPPER", "MOLD_BASE",
-             "MOLD_PLATE_CAST", "SCRAPS", "CAST_PLATE")
+             "MOLD_PLATE_CAST", "SCRAPS", "CAST_PLATE", "INGOT_STEEL", "INGOT_TUNGSTEN", "INGOT_COBALT",
+             "NUGGET_COBALT", "FRAGMENT_COBALT", "INGOT_DURA_STEEL")
     stubs["com/hbm/items/NtmItems.java"] = (
         "package com.hbm.items;import net.minecraft.world.item.*;"
         "public class NtmItems{public static final Ref "
@@ -20,14 +29,36 @@ def build_stubs():
         + ";public static ItemStack castPlate(com.hbm.items.CastPlateItem.Type t,int n){return new ItemStack(CAST_PLATE.get(),n).component(Integer.toString(t.meta));}"
         "public static class Ref{private final Item item;public Ref(Item i){item=i;}public Item get(){return item;}}}"
     )
-    stubs["net/minecraft/world/item/Items.java"] = "package net.minecraft.world.item;public class Items{public static final Item COAL=new Item(\"minecraft:coal\",64,1600),COPPER_INGOT=new Item(\"minecraft:copper_ingot\"),STICK=new Item(\"minecraft:stick\");}"
-    stubs["com/hbm/items/CastPlateItem.java"] = "package com.hbm.items;public class CastPlateItem{public enum Type{COPPER(5);public final int meta;Type(int n){meta=n;}}}"
+    stubs["net/minecraft/world/item/Items.java"] = "package net.minecraft.world.item;public class Items{public static final Item COAL=new Item(\"minecraft:coal\",64,1600),COPPER_INGOT=new Item(\"minecraft:copper_ingot\"),COPPER_BLOCK=new Item(\"minecraft:copper_block\"),STICK=new Item(\"minecraft:stick\");}"
+    # Goal 10A: the plate types the mold now casts, with production's META (CastPlateItem.Type ordinal, read by NtmItems.castPlate).
+    stubs["com/hbm/items/CastPlateItem.java"] = "package com.hbm.items;public class CastPlateItem{public enum Type{COPPER(5),TUNGSTEN(6),STEEL(11),DURA_STEEL(12);public final int meta;Type(int n){meta=n;}}}"
+    # Goal 10A: storage blocks in the melt table (CopperCastingRecipes calls get().asItem()).
+    stubs["com/hbm/blocks/NtmBlocks.java"] = _require(stubs["com/hbm/blocks/NtmBlocks.java"], "MACHINE_ASSEMBLY_MACHINE=new Ref(\"MACHINE_ASSEMBLY_MACHINE\")").replace(
+        "MACHINE_ASSEMBLY_MACHINE=new Ref(\"MACHINE_ASSEMBLY_MACHINE\")",
+        "MACHINE_ASSEMBLY_MACHINE=new Ref(\"MACHINE_ASSEMBLY_MACHINE\"),BLOCK_COPPER=new Ref(\"hbmsntm:block_copper\"),"
+        "BLOCK_STEEL=new Ref(\"hbmsntm:block_steel\"),BLOCK_TUNGSTEN=new Ref(\"hbmsntm:block_tungsten\"),BLOCK_DURA_STEEL=new Ref(\"hbmsntm:block_dura_steel\")")
+    # Goal 10A: the crucible looks up its selected alloy in CrucibleRecipes. This copper-only suite never selects one, so
+    # an empty registry and the recipe's shape stand in; verify_goal10a.py compiles the real CrucibleRecipe(s).
+    stubs["com/hbm/inventory/recipes/CrucibleRecipe.java"] = (
+        "package com.hbm.inventory.recipes;import com.hbm.inventory.material.*;public class CrucibleRecipe{"
+        "public Mats.MaterialStack[] input=new Mats.MaterialStack[0],output=new Mats.MaterialStack[0];public int frequency=1;"
+        "public int getInputAmount(){return 0;}public int getInputAmount(NTMMaterial m){return 0;}public boolean hasOutput(NTMMaterial m){return false;}}")
+    stubs["com/hbm/inventory/recipes/CrucibleRecipes.java"] = (
+        "package com.hbm.inventory.recipes;public class CrucibleRecipes{public static final CrucibleRecipes INSTANCE=new CrucibleRecipes();"
+        "public final java.util.HashMap<String,CrucibleRecipe> recipeNameMap=new java.util.HashMap<>();}")
     stubs["com/hbm/inventory/MetaHelper.java"] = "package com.hbm.inventory;import net.minecraft.world.item.*;public class MetaHelper{public static ItemStack newStack(Item i,int n,int meta){return new ItemStack(i,n).component(Integer.toString(meta));}}"
     stubs["com/hbm/inventory/RecipesCommon.java"] = "package com.hbm.inventory;public class RecipesCommon{public static class ComparableStack{}}"
     stubs["com/hbm/util/TagsUtil.java"] = "package com.hbm.util;import net.minecraft.nbt.CompoundTag;import net.minecraft.world.item.ItemStack;public class TagsUtil{public static void putCustomData(ItemStack s,CompoundTag t){s.customTag=t.copy();}public static CompoundTag getCustomData(ItemStack s){return s.customTag==null?new CompoundTag():s.customTag.copy();}}"
     stubs["net/minecraft/world/item/Item.java"] = stubs["net/minecraft/world/item/Item.java"].replace(
         "public class Item implements ItemLike {", "public class Item implements ItemLike {public static class Properties{public Properties stacksTo(int n){return this;}}public static class TooltipContext{}public Item(Properties p){this(\"special\");}public void appendHoverText(ItemStack s,TooltipContext c,java.util.List<net.minecraft.network.chat.Component> t,TooltipFlag f){}"
+        # Goal 10A: CopperScrapsItem overrides getName(ItemStack) to name the material.
+        "public String getDescriptionId(){return \"item.\"+id.replace(':','.');}public net.minecraft.network.chat.Component getName(ItemStack s){return net.minecraft.network.chat.Component.translatable(getDescriptionId());}"
     )
+    # Goal 10A: the crucible saves its stacks as int arrays (rec, was); an absent key reads as an empty array, as in Minecraft.
+    stubs["net/minecraft/nbt/CompoundTag.java"] = _require(stubs["net/minecraft/nbt/CompoundTag.java"], "public void putInt(String k,int v)").replace(
+        "public void putInt(String k,int v)",
+        "public void putIntArray(String k,int[] v){m.put(k,v.clone());}public int[] getIntArray(String k){return m.get(k) instanceof int[] a?a.clone():new int[0];}"
+        "public void putInt(String k,int v)")
     stubs["net/minecraft/world/item/TooltipFlag.java"] = "package net.minecraft.world.item;public class TooltipFlag{}"
     stubs["net/minecraft/world/item/ItemStack.java"] = stubs["net/minecraft/world/item/ItemStack.java"].replace(
         "private String component=\"\";", "private String component=\"\";public net.minecraft.nbt.CompoundTag customTag;public static final Codec OPTIONAL_STREAM_CODEC=new Codec();public static class Codec{public void encode(net.minecraft.network.RegistryFriendlyByteBuf b,ItemStack s){b.writeObject(s.copy());}public ItemStack decode(net.minecraft.network.RegistryFriendlyByteBuf b){return ((ItemStack)b.readObject()).copy();}}"

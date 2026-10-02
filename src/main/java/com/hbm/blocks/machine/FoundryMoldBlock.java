@@ -101,7 +101,7 @@ public class FoundryMoldBlock extends BaseEntityBlock implements IToolable, ILoo
         if(!(level.getBlockEntity(pos) instanceof FoundryMoldBlockEntity mold)) return;
         List<Component> text = new ArrayList<>();
         text.add(mold.hasMold() ? mold.getItem(0).getHoverName() : Component.translatable("casting.no_mold"));
-        if(mold.amount > 0) text.add(Component.translatable("casting.contents", mold.amount, mold.getCapacity()));
+        if(mold.amount > 0 && mold.type != null) text.add(Component.translatable("casting.contents", mold.type.getName(), mold.amount, mold.getCapacity()));
         if(mold.amount > 0 && mold.amount == mold.getCapacity()) text.add(Component.translatable("casting.cooling", mold.cooloff));
         if(!mold.getItem(1).isEmpty()) text.add(Component.translatable("casting.take_output"));
         ILookOverlay.printGeneric(event, Component.translatable(this.getDescriptionId()), 0xFF4000, 0x401000, text);

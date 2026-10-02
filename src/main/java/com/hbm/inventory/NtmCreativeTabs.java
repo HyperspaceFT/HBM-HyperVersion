@@ -3,6 +3,10 @@ package com.hbm.inventory;
 import com.hbm.blocks.NtmBlocks;
 import com.hbm.inventory.fluid.FluidType;
 import com.hbm.inventory.fluid.Fluids;
+import com.hbm.inventory.material.MaterialShapes;
+import com.hbm.inventory.material.Mats;
+import com.hbm.inventory.material.NTMMaterial;
+import com.hbm.items.CopperScrapsItem;
 import com.hbm.items.IMetaItem;
 import com.hbm.items.NtmItems;
 import com.hbm.items.food.DrinkItem.DrinkType;
@@ -296,7 +300,10 @@ public class NtmCreativeTabs {
                         addMetaItems(output, NtmItems.CAST_PLATE.get());
                         output.accept(NtmItems.MOLD_BASE.get());
                         output.accept(NtmItems.MOLD_PLATE_CAST.get());
-                        output.accept(NtmItems.SCRAPS.get());
+                        // One ingot's worth per crucible material, like upstream ItemScraps.getSubItems.
+                        for(NTMMaterial material : Mats.orderedList) {
+                            output.accept(CopperScrapsItem.create(new Mats.MaterialStack(material, MaterialShapes.INGOT.q(1))));
+                        }
                         output.accept(NtmItems.PIPES_STEEL.get());
                         output.accept(NtmItems.CRT_DISPLAY.get());
                         output.accept(NtmItems.RING_STARMETAL.get());
@@ -783,6 +790,7 @@ public class NtmCreativeTabs {
                         output.accept(NtmBlocks.MACHINE_BATTERY_REDD);
                         output.accept(NtmBlocks.MACHINE_ASSEMBLY_MACHINE);
                         output.accept(NtmBlocks.MACHINE_SHREDDER);
+                        output.accept(NtmBlocks.MACHINE_ELECTRIC_FURNACE);
                         output.accept(NtmBlocks.MACHINE_FLUID_TANK);
                         output.accept(NtmBlocks.MACHINE_CHUNGUS);
                         output.accept(NtmBlocks.MACHINE_SOLDERING_STATION);

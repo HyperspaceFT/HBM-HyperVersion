@@ -314,6 +314,7 @@ public class NtmBlockStateProvider extends BlockStateProvider {
         this.particleOnlyBlock(NtmBlocks.HEATER_ELECTRIC, modLoc("block/block_steel"));
         this.particleOnlyBlock(NtmBlocks.HEATER_HEATEX, modLoc("block/block_steel"));
         this.registerMachineShredder();
+        this.registerMachineElectricFurnace();
         this.particleOnlyBlock(NtmBlocks.MACHINE_CHUNGUS, modLoc("block/block_steel"));
         this.particleOnlyBlock(NtmBlocks.MACHINE_FLUID_TANK, modLoc("block/block_steel"));
         this.particleOnlyBlock(NtmBlocks.MACHINE_SOLDERING_STATION, modLoc("block/block_steel"));
@@ -551,6 +552,39 @@ public class NtmBlockStateProvider extends BlockStateProvider {
     private void barrelLoaderBlockItem(Block block, ResourceLocation texture) {
         this.simpleBlock(block, this.models().getBuilder(this.key(block).getPath()).customLoader(BarrelBlockModelBuilder::new).texture("texture", texture).end());
         this.entityBlockItem(block, false);
+    }
+
+    private void registerMachineElectricFurnace() {
+        Block block = NtmBlocks.MACHINE_ELECTRIC_FURNACE.get();
+
+        // Upstream textures: the front swaps between _front_off and _front_on, the other faces stay.
+        ModelFile off = this.electricFurnaceModel(this.name(block), "block/machine_electric_furnace_front_off");
+        ModelFile on = this.electricFurnaceModel(this.name(block) + "_on", "block/machine_electric_furnace_front_on");
+
+        this.getVariantBuilder(block).forAllStates(state -> {
+            int y = switch(state.getValue(com.hbm.blocks.machine.MachineElectricFurnaceBlock.FACING)) {
+                case EAST -> 90;
+                case SOUTH -> 180;
+                case WEST -> 270;
+                default -> 0;
+            };
+            ModelFile model = state.getValue(com.hbm.blocks.machine.MachineElectricFurnaceBlock.LIT) ? on : off;
+            return ConfiguredModel.builder().modelFile(model).rotationY(y).build();
+        });
+
+        this.simpleBlockItem(block, off);
+    }
+
+    private ModelFile electricFurnaceModel(String name, String front) {
+        return this.models().cube(
+                name,
+                modLoc("block/machine_electric_furnace_bottom"),
+                modLoc("block/machine_electric_furnace_top"),
+                modLoc(front),
+                modLoc("block/machine_electric_furnace_side"),
+                modLoc("block/machine_electric_furnace_side"),
+                modLoc("block/machine_electric_furnace_side")
+        ).texture("particle", modLoc("block/machine_electric_furnace_side"));
     }
 
     private void registerMachineShredder() {

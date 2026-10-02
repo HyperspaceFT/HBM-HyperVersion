@@ -458,6 +458,17 @@ public class NtmRecipeProvider extends RecipeProvider {
                 .define('C', DataComponentIngredient.of(false, NtmDataComponents.META, CastPlateItem.Type.COPPER.ordinal(), NtmItems.CAST_PLATE.get()))
                 .unlockedBy("has_cast_plate", has(NtmItems.CAST_PLATE.get()))
                 .save(recipeOutput);
+        // Upstream CraftingManager.java:230: beryllium ingots, copper cast plates, a furnace and tungsten coils.
+        ShapedRecipeBuilder.shaped(RecipeCategory.MISC, NtmBlocks.MACHINE_ELECTRIC_FURNACE.get(), 1)
+                .pattern("BBB")
+                .pattern("WFW")
+                .pattern("RRR")
+                .define('B', NtmItems.INGOT_BERYLLIUM.get())
+                .define('W', DataComponentIngredient.of(false, NtmDataComponents.META, CastPlateItem.Type.COPPER.ordinal(), NtmItems.CAST_PLATE.get()))
+                .define('F', Items.FURNACE)
+                .define('R', NtmItems.COIL_TUNGSTEN.get())
+                .unlockedBy("has_cast_plate", has(NtmItems.CAST_PLATE.get()))
+                .save(recipeOutput);
         ShapedRecipeBuilder.shaped(RecipeCategory.MISC, NtmBlocks.RED_CABLE.get(), 16)
                 .pattern(" I ")
                 .pattern("WWW")
@@ -1127,7 +1138,7 @@ public class NtmRecipeProvider extends RecipeProvider {
                 .unlockedBy("has_crafting_table", has(Items.CRAFTING_TABLE))
                 .save(recipeOutput, ResourceLocation.fromNamespaceAndPath("hbmsntm", "77"));
 
-        ShapedRecipeBuilder.shaped(RecipeCategory.MISC, NtmItems.ARC_ELECTRODE_DESH.get(), 1)
+        ShapedRecipeBuilder.shaped(RecipeCategory.MISC, NtmItems.ARC_ELECTRODE_SATURNITE.get(), 1)
                 .pattern(" A ")
                 .pattern(" B ")
                 .pattern(" A ")
@@ -1136,7 +1147,7 @@ public class NtmRecipeProvider extends RecipeProvider {
                 .unlockedBy("has_crafting_table", has(Items.CRAFTING_TABLE))
                 .save(recipeOutput, ResourceLocation.fromNamespaceAndPath("hbmsntm", "78"));
 
-        ShapedRecipeBuilder.shaped(RecipeCategory.MISC, NtmItems.ARC_ELECTRODE_SATURNITE.get(), 1)
+        ShapedRecipeBuilder.shaped(RecipeCategory.MISC, NtmItems.ARC_ELECTRODE_DESH.get(), 1)
                 .pattern(" A ")
                 .pattern(" B ")
                 .pattern(" A ")

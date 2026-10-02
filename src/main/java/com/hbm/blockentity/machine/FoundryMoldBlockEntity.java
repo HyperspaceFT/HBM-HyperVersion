@@ -19,7 +19,7 @@ import net.minecraft.world.inventory.AbstractContainerMenu;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.block.state.BlockState;
 
-/** Small cast-plate mold: three ingots, 200 ticks, reusable mold, one output at a time. */
+/** Small cast-plate mold: three ingots, 200 ticks, reusable mold, one output at a time. Accepts any material with a cast plate. */
 public class FoundryMoldBlockEntity extends MachineBaseBlockEntity {
     public int amount;
     public int cooloff = 200;
@@ -36,7 +36,8 @@ public class FoundryMoldBlockEntity extends MachineBaseBlockEntity {
     /** Returns accepted quanta without mutating the caller's material stack. */
     public int pour(Mats.MaterialStack offered) {
         if(this.level == null || this.level.isClientSide || offered == null || offered.amount <= 0
-                || offered.material != Mats.MAT_COPPER || !this.hasMold() || !this.slots.get(1).isEmpty()) return 0;
+                || CopperCastingRecipes.getPlateType(offered.material) == null || !this.hasMold()
+                || !this.slots.get(1).isEmpty()) return 0;
         if(this.amount > 0 && this.type != offered.material) return 0;
         int accepted = Math.min(offered.amount, Math.max(0, this.getCapacity() - this.amount));
         if(accepted > 0) {
@@ -51,10 +52,10 @@ public class FoundryMoldBlockEntity extends MachineBaseBlockEntity {
     public void updateEntity() {
         if(this.level == null || this.level.isClientSide) return;
         int oldCooloff = this.cooloff;
-        if(this.hasMold() && this.type == Mats.MAT_COPPER && this.amount == this.getCapacity()
+        if(this.hasMold() && CopperCastingRecipes.getPlateType(this.type) != null && this.amount == this.getCapacity()
                 && this.slots.get(1).isEmpty()) {
             if(--this.cooloff <= 0) {
-                this.slots.set(1, CopperCastingRecipes.getPlate());
+                this.slots.set(1, CopperCastingRecipes.getPlate(this.type));
                 this.amount = 0;
                 this.type = null;
                 this.cooloff = 200;
@@ -80,12 +81,18 @@ public class FoundryMoldBlockEntity extends MachineBaseBlockEntity {
     }
 
     public ItemStack takeScraps() {
-        ItemStack scraps = this.type == Mats.MAT_COPPER ? CopperScrapsItem.create(this.amount) : ItemStack.EMPTY;
+        ItemStack scraps = this.type != null ? CopperScrapsItem.create(new Mats.MaterialStack(this.type, this.amount)) : ItemStack.EMPTY;
         this.amount = 0;
         this.type = null;
         this.cooloff = 200;
         this.setChanged();
         return scraps;
+    }
+
+    /** Materials without a plate output (or unknown IDs) are dropped on load, as Goal 5A did for non-copper IDs. */
+    private static NTMMaterial castableMaterial(int id) {
+        NTMMaterial material = Mats.matById.get(id);
+        return CopperCastingRecipes.getPlateType(material) != null ? material : null;
     }
 
     @Override public boolean canPlaceItem(int slot, ItemStack stack) { return false; }
@@ -100,7 +107,7 @@ public class FoundryMoldBlockEntity extends MachineBaseBlockEntity {
     }
     @Override protected void loadAdditional(CompoundTag tag, HolderLookup.Provider registries) {
         super.loadAdditional(tag, registries);
-        this.type = tag.getInt("type") == Mats.MAT_COPPER.id ? Mats.MAT_COPPER : null;
+        this.type = castableMaterial(tag.getInt("type"));
         this.amount = this.type == null ? 0 : Math.clamp(tag.getInt("amount"), 0, CopperCastingRecipes.PLATE_QUANTA);
         this.cooloff = tag.contains("cooloff") ? Math.clamp(tag.getInt("cooloff"), 1, 200) : 200;
     }
@@ -113,7 +120,7 @@ public class FoundryMoldBlockEntity extends MachineBaseBlockEntity {
     @Override public void deserialize(RegistryFriendlyByteBuf buf) {
         super.deserialize(buf);
         this.amount = buf.readInt(); this.cooloff = buf.readInt();
-        this.type = buf.readInt() == Mats.MAT_COPPER.id ? Mats.MAT_COPPER : null;
+        this.type = castableMaterial(buf.readInt());
         this.slots.set(0, ItemStack.OPTIONAL_STREAM_CODEC.decode(buf));
         this.slots.set(1, ItemStack.OPTIONAL_STREAM_CODEC.decode(buf));
     }

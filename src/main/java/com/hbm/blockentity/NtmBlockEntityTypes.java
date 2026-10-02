@@ -122,6 +122,13 @@ public class NtmBlockEntityTypes {
                             NtmBlocks.MACHINE_SHREDDER.get())
                     .build(null));
 
+    public static final Supplier<BlockEntityType<MachineElectricFurnaceBlockEntity>> MACHINE_ELECTRIC_FURNACE = BLOCK_ENTITY_TYPES.register(
+            "machine_electric_furnace",
+            () -> BlockEntityType.Builder.of(
+                            MachineElectricFurnaceBlockEntity::new,
+                            NtmBlocks.MACHINE_ELECTRIC_FURNACE.get())
+                    .build(null));
+
     public static final Supplier<BlockEntityType<ReactorZirnoxBlockEntity>> REACTOR_ZIRNOX = BLOCK_ENTITY_TYPES.register("machine_zirnox", () -> BlockEntityType.Builder.of(ReactorZirnoxBlockEntity::new, NtmBlocks.REACTOR_ZIRNOX.get()).build(null));
     public static final Supplier<BlockEntityType<ZirnoxDestroyedBlockEntity>> ZIRNOX_DESTROYED = BLOCK_ENTITY_TYPES.register("zirnox_destroyed", () -> BlockEntityType.Builder.of(ZirnoxDestroyedBlockEntity::new, NtmBlocks.ZIRNOX_DESTROYED.get()).build(null));
 

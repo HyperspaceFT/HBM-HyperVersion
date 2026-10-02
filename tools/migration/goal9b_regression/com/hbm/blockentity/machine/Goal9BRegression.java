@@ -685,18 +685,51 @@ public class Goal9BRegression {
         return true;
     }
 
+    /**
+     * Goal 10B corrects seven Goal 8 entries in place (migration/GOAL10B.md D1 and D6): the soldering station takes 4
+     * tungsten bolts instead of 1 (original AnvilRecipes.java:387), and the titanium and steel flat stamps make their own
+     * plate/wire/circuit stamps instead of each other's (original :592-598). Every other entry must stay identical.
+     */
+    static String goal10b(String before) {
+        if(before.contains("-> 1 hbmsntm:machine_soldering_station @") && before.endsWith(" CONSTRUCTION"))
+            return before.replace("item hbmsntm:bolt x1 ", "item hbmsntm:bolt x4 ");
+        if(before.startsWith("item hbmsntm:stamp_titanium_flat x1 ")) return before.replace("hbmsntm:stamp_steel_", "hbmsntm:stamp_titanium_");
+        if(before.startsWith("item hbmsntm:stamp_steel_flat x1 ")) return before.replace("hbmsntm:stamp_titanium_", "hbmsntm:stamp_steel_");
+        return before;
+    }
+
+    /**
+     * Goal 10C (migration/GOAL10C.md) appends three heating oven entries after the steam engine (original
+     * AnvilRecipes.java:269-274 and :672-678): construction with Minecraft copper, with NEO copper, and the recycling.
+     * They are required exactly, in this order, after the Goal 9A/9B entries; the Goal 10C suite checks them in detail.
+     */
+    static final String[] GOAL10C = {
+            "item hbmsntm:ingot_firebrick x16 meta " + MetaHelper.WILDCARD_VALUE + "; tag plates/steel x4; item minecraft:copper_ingot x8 meta "
+                    + MetaHelper.WILDCARD_VALUE + "; -> 1 hbmsntm:heater_oven @1.0; tier 2--1 CONSTRUCTION",
+            "item hbmsntm:ingot_firebrick x16 meta " + MetaHelper.WILDCARD_VALUE + "; tag plates/steel x4; item hbmsntm:ingot_copper x8 meta "
+                    + MetaHelper.WILDCARD_VALUE + "; -> 1 hbmsntm:heater_oven @1.0; tier 2--1 CONSTRUCTION",
+            "item hbmsntm:heater_oven x1 meta " + MetaHelper.WILDCARD_VALUE + "; -> 16 hbmsntm:ingot_firebrick @1.0; 8 hbmsntm:ingot_copper @1.0; tier 2--1 RECYCLING",
+    };
+
     static void anvil() {
         List<AnvilConstructionRecipe> all = AnvilRecipes.getConstruction();
         List<?> before = goal9b.head.AnvilRecipes.getConstruction();
         int n = before.size();
-        check(all.size() == n + 2, "the live list is the Goal 8 list plus two entries (" + n + " -> " + all.size() + ")");
-        int same = 0;
+        check(all.size() == n + 2 + GOAL10C.length, "the live list is the Goal 8 list plus two entries, then the three Goal 10C entries ("
+                + n + " -> " + all.size() + ")");
+        boolean goal10c = true;
+        for(int k = 0; k < GOAL10C.length; k++) goal10c &= describe(all.get(n + 2 + k)).equals(GOAL10C[k]);
+        check(goal10c, "exactly the three Goal 10C heating oven entries follow the steam engine, in order");
+        int same = 0, corrected = 0;
         String first = null;
         for(int i = 0; i < n; i++) {
-            if(describe(all.get(i)).equals(describe(before.get(i)))) same++;
-            else if(first == null) first = i + ": " + describe(all.get(i)) + " != " + describe(before.get(i));
+            String expected = goal10b(describe(before.get(i)));
+            if(!expected.equals(describe(before.get(i)))) corrected++;
+            if(describe(all.get(i)).equals(expected)) same++;
+            else if(first == null) first = i + ": " + describe(all.get(i)) + " != " + expected;
         }
-        check(same == n, "every Goal 8 entry is unchanged in content and index" + (first == null ? "" : "; first difference " + first));
+        check(same == n && corrected == 7, "every Goal 8 entry is unchanged in content and index, except the seven Goal 10B corrections ("
+                + corrected + " corrected)" + (first == null ? "" : "; first difference " + first));
         AnvilConstructionRecipe boiler = all.get(n), engine = all.get(n + 1);
         check(boiler.output.size() == 1 && boiler.output.get(0).stack.is(NtmBlocks.HEAT_BOILER.asItem()) && boiler.getOverlay() == OverlayType.CONSTRUCTION,
                 "the Goal 9A boiler entry directly follows the Goal 8 list");

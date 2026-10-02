@@ -163,6 +163,7 @@ public class NuclearTechModClient {
             });
             ItemProperties.register(NtmItems.MISSILE_SOYUZ.get(), NuclearTechMod.withDefaultNamespace("item_meta"), (stack, level, entity, seed) -> MetaHelper.getMeta(stack));
             ItemProperties.register(NtmItems.POLAROID.get(), NuclearTechMod.withDefaultNamespace("polaroid_id"), (stack, level, entity, seed) -> PolaroidItem.polaroidID);
+            ItemProperties.register(NtmItems.SCRAPS.get(), NuclearTechMod.withDefaultNamespace("scraps_type"), (stack, level, entity, seed) -> CopperScrapsItem.getModelType(stack));
         });
     }
 
@@ -572,6 +573,10 @@ public class NuclearTechModClient {
                 (stack, tintIndex) -> tintIndex == 0 ? 0xFF000000 | ((CastPlateItem) stack.getItem()).getColor(stack) : 0xFFFFFFFF,
                 NtmItems.CAST_PLATE.get(),
                 NtmItems.CAST_PLATE_WELDED.get()
+        );
+        event.register(
+                (stack, tintIndex) -> tintIndex == 0 ? 0xFF000000 | CopperScrapsItem.getColor(stack) : 0xFFFFFFFF,
+                NtmItems.SCRAPS.get()
         );
         event.register(
                 (stack, tintIndex) -> tintIndex == 0 ? 0xFF000000 | ((RawIngotItem) stack.getItem()).getColor(stack) : 0xFFFFFFFF,

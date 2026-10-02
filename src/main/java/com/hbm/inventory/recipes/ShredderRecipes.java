@@ -371,6 +371,8 @@ public class ShredderRecipes extends SerializableRecipe {
         setRecipe(Blocks.QUARTZ_SLAB, new ItemStack(NtmItems.POWDER_QUARTZ.get(), 2));
         setRecipe(Blocks.OBSIDIAN, new ItemStack(NtmBlocks.GRAVEL_OBSIDIAN.get().asItem()));
         setRecipe(Blocks.ANVIL, new ItemStack(NtmItems.POWDER_IRON.get(), 31));
+        // Upstream's other ore fragments wait for their materials; Goal 10A restores the cobalt one.
+        setRecipe(new ItemStack(NtmItems.FRAGMENT_COBALT.get()), new ItemStack(NtmItems.POWDER_COBALT_TINY.get(), 1));
     }
 
     private static void registerBasaltRecipe(OreBasaltBlock.BasaltOreType type, ItemStack output) {

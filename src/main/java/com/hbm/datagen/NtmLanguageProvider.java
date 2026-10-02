@@ -748,6 +748,7 @@ public class NtmLanguageProvider extends LanguageProvider {
         this.add("hbmmat.lead", "Lead");
         this.add("hbmmat.steel", "Steel");
         this.add("hbmmat.durasteel", "High-Speed Steel");
+        this.add("hbmmat.cobalt", "Cobalt");
 
         this.add(NtmItems.CIRCUIT_PRINTED_BOARD, "Printed Circuit Board");
         this.add(NtmItems.CIRCUIT_ANALOG_BOARD, "Analog Circuit Board");
@@ -780,8 +781,9 @@ public class NtmLanguageProvider extends LanguageProvider {
         this.add(NtmItems.CAST_PLATE, "Cast Plate");
         this.add(NtmItems.MOLD_BASE, "Blank Foundry Mold");
         this.add(NtmItems.MOLD_PLATE_CAST, "Cast Plate Foundry Mold");
-        this.add(NtmItems.SCRAPS, "Copper Scraps");
-        this.add("item.hbmsntm.scraps.desc", "Recovered copper; remelt in a crucible.");
+        this.add(NtmItems.SCRAPS, "%s Scraps");
+        this.add("item.hbmsntm.scraps.generic", "Foundry Scraps");
+        this.add("item.hbmsntm.scraps.desc", "Recovered metal; remelt in a crucible.");
         this.add(NtmItems.PIPES_STEEL, "Steel Pipes");
         this.add(NtmItems.CRT_DISPLAY, "Cathode Ray Tube");
         this.add(NtmItems.RING_STARMETAL, "Starmetal Ring");
@@ -1678,6 +1680,7 @@ public class NtmLanguageProvider extends LanguageProvider {
         this.add(NtmBlocks.TRANSFORMER, "10k-20Hz Transformer");
         this.add(NtmBlocks.MACHINE_INDUSTRIAL_BOILER, "Industrial Boiler");
         this.add(NtmBlocks.MACHINE_SHREDDER, "Machine Shredder");
+        this.add(NtmBlocks.MACHINE_ELECTRIC_FURNACE, "Electric Furnace");
         this.add(NtmBlocks.MACHINE_FLUID_TANK, "Tank");
         this.add(NtmBlocks.MACHINE_CHUNGUS, "Leviathan Steam Turbine");
         this.add(NtmBlocks.MACHINE_SOLDERING_STATION, "Soldering Station");
@@ -1814,6 +1817,7 @@ public class NtmLanguageProvider extends LanguageProvider {
         this.add("container.machine_arc_welder", "Arc Welder");
         this.add("container.heat_boiler", "Boiler");
         this.add("container.machine_industrial_boiler", "Industrial Boiler");
+        this.add("container.electricFurnace", "Electric Furnace");
         this.add("container.machine_shredder", "Shredder");
         this.add("container.machine_shredder.battery_hint", "Place a supported battery in the battery slot; the machine uses 5 HE/t while running.");
         this.add("container.machine_shredder.blade_durability", "Blade durability: %s/%s");
@@ -1850,15 +1854,24 @@ public class NtmLanguageProvider extends LanguageProvider {
         this.add("container.machine_crucible.heat", "Stored heat: %s / %s TU");
         this.add("container.machine_crucible.heat_requirement", "Smelting starts above 50,000 TU; speed scales with excess heat.");
         this.add("container.machine_crucible.progress", "Smelting progress: %s / %s");
-        this.add("container.machine_crucible.copper", "Molten copper: %s / %s quanta");
         this.add("container.machine_crucible.placement", "Place the firebox directly beneath the crucible center.");
-        this.add("container.machine_crucible.pour", "Pure copper pours from the rear, up to 24 quanta/tick; 72 quanta per ingot.");
+        this.add("container.machine_crucible.recipe_stack", "Recipe stack (front spout): %s / %s quanta");
+        this.add("container.machine_crucible.waste_stack", "Waste stack (rear spout): %s / %s quanta");
+        this.add("container.machine_crucible.recipe_pour", "Inputs and product of the selected recipe. Only the product pours, up to 24 quanta/tick; clear the recipe to drain leftover inputs.");
+        this.add("container.machine_crucible.waste_pour", "Everything outside the selected recipe, up to 24 quanta/tick; 72 quanta per ingot.");
+        this.add("container.machine_crucible.amount", "%s: %s quanta");
+        this.add("container.machine_crucible.empty", "Empty");
+        this.add("container.machine_crucible.select_recipe", "Select an alloy recipe; while one is selected, materials it does not use are refused.");
+        this.add("container.machine_crucible.jei.alloying", "Crucible Alloying");
+        this.add("container.machine_crucible.jei.smelting", "Crucible Smelting");
+        this.add("container.machine_crucible.jei.casting", "Crucible Casting");
+        this.add("container.machine_crucible.jei.select_hint", "Select the recipe in the crucible's interface; it runs every %s ticks.");
         this.add("casting.no_mold", "Insert a cast plate mold before pouring.");
-        this.add("casting.contents", "Copper: %s / %s quanta");
+        this.add("casting.contents", "%s: %s / %s quanta");
         this.add("casting.cooling", "Cooling: %s ticks remaining");
         this.add("casting.take_output", "Right-click to take the cast plate.");
-        this.add("casting.scraps", "Copper: %s quanta (72 per ingot)");
-        this.add("casting.scraps.desc", "Recovered copper; remelt in a crucible.");
+        this.add("casting.scraps", "%s: %s quanta (72 per ingot)");
+        this.add("casting.scraps.desc", "Recovered metal; remelt in a crucible.");
         this.add("container.heaterFirebox.heat", "Stored heat: %s / %s TU");
         this.add("container.heaterFirebox.rate", "Heat production: %s TU/t");
         this.add("container.heaterFirebox.time", "Remaining burn time: %s s");
@@ -1917,7 +1930,7 @@ public class NtmLanguageProvider extends LanguageProvider {
         this.add("block.hbmsntm.machine_boiler.changed_type_to", "Changed type to %s");
         this.add(NtmBlocks.FURNACE_COMBINATION, "Combination Oven");
         this.add(NtmBlocks.MACHINE_CRUCIBLE, "Crucible");
-        this.add(NtmBlocks.MACHINE_CRUCIBLE, DESC, "Smelts copper with heat from directly below and pours from the rear.$Heat transfer rate: ΔT*0.25 TU/t");
+        this.add(NtmBlocks.MACHINE_CRUCIBLE, DESC, "Smelts metals with heat from directly below. The selected alloy pours from the front, everything else from the rear.$Heat transfer rate: ΔT*0.25 TU/t");
         this.add(NtmBlocks.FOUNDRY_MOLD, "Shallow Foundry Basin");
         this.add(NtmBlocks.FURNACE_COMBINATION, DESC, "A large furnace that can produce charcoal and coal coke.$Produces fluid byproducts.$Heat transfer rate: ΔT*0.25 TU/t");
 

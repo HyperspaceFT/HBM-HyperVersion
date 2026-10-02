@@ -18,6 +18,7 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashSet;
+import java.util.Iterator;
 import java.util.List;
 
 public class SolderingRecipes extends SerializableRecipe {
@@ -451,27 +452,34 @@ public class SolderingRecipes extends SerializableRecipe {
         return null;
     }
 
+    /**
+     * Upstream SerializableRecipe.matchesIngredients: every non-empty slot must use up a different ingredient
+     * and every ingredient must be used, so a stray item blocks the recipe and an empty group needs empty slots.
+     */
     public static boolean matchesIngredients(ItemStack[] stacks, AStack[] ingredients) {
-        if(ingredients == null || ingredients.length == 0) return true;
+        List<AStack> recipeList = new ArrayList<>();
+        Collections.addAll(recipeList, ingredients);
 
-        ItemStack[] remaining = new ItemStack[stacks.length];
-        for(int i = 0; i < stacks.length; i++) {
-            remaining[i] = stacks[i].copy();
-        }
+        for(ItemStack inputStack : stacks) {
+            if(inputStack == null || inputStack.isEmpty()) continue;
 
-        for(AStack ingredient : ingredients) {
-            boolean matched = false;
-            for(ItemStack stack : remaining) {
-                if(ingredient.matchesRecipe(stack, false)) {
-                    stack.shrink(ingredient.stacksize);
-                    matched = true;
+            boolean hasMatch = false;
+            Iterator<AStack> iterator = recipeList.iterator();
+
+            while(iterator.hasNext()) {
+                AStack recipeStack = iterator.next();
+
+                if(recipeStack.matchesRecipe(inputStack, true) && inputStack.getCount() >= recipeStack.stacksize) {
+                    hasMatch = true;
+                    iterator.remove();
                     break;
                 }
             }
-            if(!matched) return false;
+
+            if(!hasMatch) return false;
         }
 
-        return true;
+        return recipeList.isEmpty();
     }
 
     @Override

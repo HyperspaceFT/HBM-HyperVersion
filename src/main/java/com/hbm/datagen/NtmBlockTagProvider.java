@@ -290,6 +290,7 @@ public class NtmBlockTagProvider extends BlockTagsProvider {
                         NtmBlocks.HEATER_ELECTRIC.get(),
                         NtmBlocks.HEATER_HEATEX.get(),
                         NtmBlocks.MACHINE_SHREDDER.get(),
+                        NtmBlocks.MACHINE_ELECTRIC_FURNACE.get(),
                         NtmBlocks.MACHINE_SOLDERING_STATION.get(),
                         NtmBlocks.MACHINE_WELL.get(),
                         NtmBlocks.MACHINE_PUMPJACK.get(),
