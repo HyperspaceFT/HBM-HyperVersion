@@ -219,8 +219,13 @@ public abstract class OilDrillBaseBlockEntity extends MachineBaseBlockEntity imp
 
     public void onDrill(int y) { }
 
+    /** Lowest Y the drill reaches. The original's Y 5 counted from the bedrock floor, so it follows the world bottom. */
     public int getDrillDepth() {
-        return 6;
+        return this.getMinBuildHeight() + 5;
+    }
+
+    protected int getMinBuildHeight() {
+        return this.level == null ? 0 : this.level.getMinBuildHeight();
     }
 
     public boolean trySuck(int y) {

@@ -13,6 +13,7 @@ import subprocess
 from pathlib import Path
 
 from goal10c_regression.anvil_block import without_goal10c
+from goal11a_regression.anvil_block import without_goal11a
 
 ROOT = Path(__file__).resolve().parents[2]
 ORIGINAL = ROOT.parent / "Hbm-s-Nuclear-Tech-GIT"
@@ -169,6 +170,10 @@ def between(source, start, end):
 
 def anvil_entry():
     source = text(JAVA / "com/hbm/inventory/recipes/anvil/AnvilRecipes.java")
+    # Goal 11A (migration/GOAL11A.md) appends the fluid burner block after the Goal 10C block; it must occur exactly once,
+    # directly after the heating oven recycling entry and at the end of registerConstruction. It is removed first.
+    source, goal11a_found = without_goal11a(source)
+    check(goal11a_found, "the Goal 11A fluid burner block follows the Goal 10C block exactly once, at the end of registerConstruction")
     # Goal 10C (migration/GOAL10C.md) appends the heating oven block after the steam engine; it must occur exactly once,
     # directly after the engine entry and at the end of registerConstruction. It is removed before the unchanged checks.
     source, goal10c_found = without_goal10c(source)

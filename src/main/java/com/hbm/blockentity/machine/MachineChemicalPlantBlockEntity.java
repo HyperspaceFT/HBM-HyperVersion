@@ -14,6 +14,7 @@ import com.hbm.inventory.menus.MachineChemicalPlantMenu;
 import com.hbm.inventory.recipes.ChemicalPlantRecipes;
 import com.hbm.inventory.recipes.loader.GenericRecipe;
 import com.hbm.items.NtmItems;
+import com.hbm.items.machine.BlueprintsItem;
 import com.hbm.items.machine.MachineUpgradeItem;
 import com.hbm.items.machine.MachineUpgradeItem.UpgradeType;
 import com.hbm.lib.Library;
@@ -98,11 +99,10 @@ public class MachineChemicalPlantBlockEntity extends MachineBaseBlockEntity impl
             this.power = Library.chargeTEFromItems(this.slots, 0, this.power, this.maxPower);
             this.upgradeManager.checkSlots(this.slots, 2, 3);
 
-            if(recipe != null && recipe.inputFluid != null) {
-                for(int i = 0; i < Math.min(3, recipe.inputFluid.length); i++) {
-                    this.inputTanks[i].loadTank(this.level, 10 + i, 13 + i, this.slots);
-                }
-            }
+            // As in the original, all three container slots load whatever recipe is selected
+            this.inputTanks[0].loadTank(this.level, 10, 13, this.slots);
+            this.inputTanks[1].loadTank(this.level, 11, 14, this.slots);
+            this.inputTanks[2].loadTank(this.level, 12, 15, this.slots);
 
             this.outputTanks[0].unloadTank(this.level, 16, 19, this.slots);
             this.outputTanks[1].unloadTank(this.level, 17, 20, this.slots);
@@ -267,7 +267,8 @@ public class MachineChemicalPlantBlockEntity extends MachineBaseBlockEntity impl
 
     @Override
     public boolean canTakeItemThroughFace(int index, ItemStack stack, Direction direction) {
-        return index >= 7 && index <= 9;
+        // Original: inputs that no longer fit the selected recipe can be pulled out as well
+        return (index >= 7 && index <= 9) || this.chemicalModule.isSlotClogged(index);
     }
 
     @Override
@@ -298,7 +299,13 @@ public class MachineChemicalPlantBlockEntity extends MachineBaseBlockEntity impl
         if(tag.contains("index") && tag.contains("selection")) {
             int index = tag.getInt("index");
             if(index == 0) {
-                this.chemicalModule.recipe = tag.getString("selection");
+                String selection = tag.getString("selection");
+                // As the assembler: only a known recipe, and a pooled one only with its blueprint installed ("null" clears)
+                if(!"null".equals(selection)) {
+                    GenericRecipe recipe = ChemicalPlantRecipes.INSTANCE.recipeNameMap.get(selection);
+                    if(recipe == null || (recipe.isPooled() && !recipe.isPartOfPool(BlueprintsItem.grabPool(this.slots.get(1))))) return;
+                }
+                this.chemicalModule.recipe = selection;
                 this.setChanged();
             }
         }

@@ -473,6 +473,28 @@ public class AnvilRecipes {
                 }
         ).setTier(2).setOverlay(OverlayType.RECYCLING));
 
+        // Fluid burner, original AnvilRecipes.java:283-289: one entry per copper ingot item, as for the firebox.
+        // Titanium ingots by item: NEO has no titanium ingot tag. The original has no recycling entry.
+        CONSTRUCTION_RECIPES.add(new AnvilConstructionRecipe(
+                new AStack[] {
+                        new ComparableStack(NtmItems.TANK_STEEL.get(), 4),
+                        new ComparableStack(NtmItems.PIPE_STEEL.get(), 3),
+                        new ComparableStack(NtmItems.INGOT_TITANIUM.get(), 12),
+                        new ComparableStack(Items.COPPER_INGOT, 8)
+                },
+                new AnvilOutput(new ItemStack(NtmBlocks.HEATER_OILBURNER.asItem()))
+        ).setTier(2).setOverlay(OverlayType.CONSTRUCTION));
+
+        CONSTRUCTION_RECIPES.add(new AnvilConstructionRecipe(
+                new AStack[] {
+                        new ComparableStack(NtmItems.TANK_STEEL.get(), 4),
+                        new ComparableStack(NtmItems.PIPE_STEEL.get(), 3),
+                        new ComparableStack(NtmItems.INGOT_TITANIUM.get(), 12),
+                        new ComparableStack(NtmItems.INGOT_COPPER.get(), 8)
+                },
+                new AnvilOutput(new ItemStack(NtmBlocks.HEATER_OILBURNER.asItem()))
+        ).setTier(2).setOverlay(OverlayType.CONSTRUCTION));
+
     }
 
     private static void addAnvilRecipe(ItemLike input, int inputCount, ItemLike output, int outputCount, int tier) {

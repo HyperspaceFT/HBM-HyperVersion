@@ -65,7 +65,7 @@ public class RefineryRecipes {
         );
 
         register(
-                Fluids.HOTCRACKOIL,
+                Fluids.HOTCRACKOIL_DS,
                 new FluidStack(Fluids.NAPHTHA_DS,		crackds_frac_naph),
                 new FluidStack(Fluids.LIGHTOIL_DS,		crackds_frac_light),
                 new FluidStack(Fluids.AROMATICS,		crackds_frac_aroma),

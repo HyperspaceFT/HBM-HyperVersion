@@ -47,7 +47,7 @@ public class AssemblyMachineRecipes extends GenericRecipes<GenericRecipe> {
 
                         ));
 
-        this.register(new GenericRecipe("ass.drill_titanium").setup(200, 100).outputItems(new ItemStack(NtmItems.DRILL_TITANIUM.get(), 1))
+        this.register(new GenericRecipe("ass.drill_titanium").setup(100, 100).outputItems(new ItemStack(NtmItems.DRILL_TITANIUM.get(), 1))
                 .inputItems(
                         NtmItems.castPlateIngredient(CastPlateItem.Type.DURA_STEEL, 1),
                         new ComparableStack(NtmItems.PLATE_TITANIUM.get(), 8)
@@ -56,7 +56,7 @@ public class AssemblyMachineRecipes extends GenericRecipes<GenericRecipe> {
 
         this.register(new GenericRecipe("ass.machine_oil_derrick").setup(200, 100).outputItems(new ItemStack(NtmBlocks.MACHINE_WELL, 1))
                 .inputItems(
-                        NtmItems.castPlateIngredient(CastPlateItem.Type.COPPER, 1),
+                        NtmItems.castPlateIngredient(CastPlateItem.Type.COPPER, 2),
                         new ComparableStack(NtmItems.PLATE_STEEL.get(), 8),
                         new ComparableStack(NtmItems.PIPE_STEEL.get(), 4),
                         new ComparableStack(NtmItems.DRILL_TITANIUM.get(), 1),
@@ -250,5 +250,19 @@ public class AssemblyMachineRecipes extends GenericRecipes<GenericRecipe> {
                 .inputItems(new RecipesCommon.TagStack(NtmTags.Items.PLATES_STEEL, 8),
                         new RecipesCommon.TagStack(NtmTags.Items.PLATES_COPPER, 4),
                         new ComparableStack(NtmItems.MOTOR.get(), 2)));
+
+        // Original ass.tank (normal mode only: the expensive mode uses item_expensive, which NEO does not have)
+        this.register(new GenericRecipe("ass.tank").setup(200, 100).outputItems(new ItemStack(NtmBlocks.MACHINE_FLUID_TANK.get(), 1))
+                .inputItems(new RecipesCommon.TagStack(NtmTags.Items.PLATES_STEEL, 8),
+                        new ComparableStack(NtmItems.SHELL_STEEL.get(), 4)));
+        // Original ass.chemplant (normal mode only: the expensive mode uses item_expensive, which NEO does not have).
+        // NEO has no steel ingot or copper pipe tag, so the plain items stand in for the ore dictionary entries.
+        this.register(new GenericRecipe("ass.chemplant").setup(200, 100).outputItems(new ItemStack(NtmBlocks.MACHINE_CHEMICAL_PLANT.get(), 1))
+                .inputItems(new ComparableStack(NtmItems.INGOT_STEEL.get(), 8),
+                        new ComparableStack(NtmItems.PIPE_COPPER.get(), 2),
+                        new ComparableStack(NtmItems.PLATE_POLYMER.get(), 16),
+                        new ComparableStack(NtmItems.MOTOR.get(), 2),
+                        new ComparableStack(NtmItems.COIL_TUNGSTEN.get(), 2),
+                        new ComparableStack(NtmItems.CIRCUIT_ANALOG_BOARD.get(), 1)));
     }
 }

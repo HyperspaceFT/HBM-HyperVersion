@@ -8,6 +8,8 @@ import com.hbm.blockentity.LoadedBaseBlockEntity;
 import com.hbm.blockentity.MachineBaseBlockEntity;
 import com.hbm.blockentity.NtmBlockEntityTypes;
 import com.hbm.blocks.NtmBlocks;
+import com.hbm.handler.pollution.PollutionHandler;
+import com.hbm.handler.pollution.PollutionHandler.PollutionType;
 import com.hbm.inventory.FluidContainerRegistry;
 import com.hbm.inventory.FluidStack;
 import com.hbm.inventory.fluid.FluidType;
@@ -41,8 +43,11 @@ import java.util.List;
 
 public class MachineRefineryBlockEntity extends MachineBaseBlockEntity implements IEnergyReceiverMK2, IFluidStandardTransceiverMK2, IPersistentNBT, IOverpressurable {
 
-    public static final int MAX_SULFUR = 100;
+    /** Original TileEntityMachineRefinery.maxSulfur: one byproduct every 10 runs. */
+    public static final int MAX_SULFUR = 10;
     public static final long MAX_POWER = 1_000L;
+    /** NBT keys of the five tanks, in tank order; also read by the item tooltip. */
+    public static final String[] TANK_KEYS = { "input", "heavy", "naphtha", "light", "petroleum" };
 
     public long power;
     public int sulfur;
@@ -211,6 +216,11 @@ public class MachineRefineryBlockEntity extends MachineBaseBlockEntity implement
             }
         }
 
+        // As in the original: running refineries release five seconds' worth of soot once a second
+        if(this.level.getGameTime() % 20 == 0) {
+            PollutionHandler.incrementPollution(this.level, this.worldPosition, PollutionType.SOOT, PollutionHandler.SOOT_PER_SECOND * 5);
+        }
+
         this.power -= 5;
         return true;
     }
@@ -262,14 +272,21 @@ public class MachineRefineryBlockEntity extends MachineBaseBlockEntity implement
         return false;
     }
 
+    // Original TileEntityMachineRefinery: automation only takes the byproduct from slot 11 and inserts nothing.
+    // canPlaceItem above still governs the menu slots.
+    @Override
+    public boolean canPlaceItemThroughFace(int index, ItemStack stack, Direction direction) {
+        return false;
+    }
+
     @Override
     public boolean canTakeItemThroughFace(int index, ItemStack stack, Direction direction) {
-        return index == 2 || index == 4 || index == 6 || index == 8 || index == 10 || index == 11;
+        return index == 11;
     }
 
     @Override
     public int[] getSlotsForFace(Direction direction) {
-        return new int[] { 0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12 };
+        return new int[] { 11 };
     }
 
     @Override
@@ -306,6 +323,11 @@ public class MachineRefineryBlockEntity extends MachineBaseBlockEntity implement
 
     @Override
     public void writeNBT(CompoundTag savedTag) {
+        // As in the original, an empty and intact refinery drops a plain item that stacks with new ones
+        boolean empty = !this.hasExploded;
+        for(FluidTank tank : this.tanks) if(tank.getFill() > 0) empty = false;
+        if(empty) return;
+
         CompoundTag tag = new CompoundTag();
         tag.putLong("power", this.power);
         tag.putInt("itemOutputTimer", this.itemOutputTimer);
@@ -451,6 +473,6 @@ public class MachineRefineryBlockEntity extends MachineBaseBlockEntity implement
 
     @Override
     public AudioWrapper createAudioLoop() {
-        return AudioWrapper.getLoopedSound(NtmSoundEvents.ELECTRIC_MOTOR_LOOP.get(), SoundSource.BLOCKS, this, 0.25F, 15F, 1.0F, 20);
+        return AudioWrapper.getLoopedSound(NtmSoundEvents.BOILER.get(), SoundSource.BLOCKS, this, 0.25F, 15F, 1.0F, 20);
     }
 }

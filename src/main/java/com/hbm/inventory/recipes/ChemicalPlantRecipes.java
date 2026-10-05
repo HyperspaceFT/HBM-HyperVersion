@@ -173,8 +173,8 @@ public class ChemicalPlantRecipes extends GenericRecipes<GenericRecipe> {
                 .outputItems(new ItemStack(NtmItems.INGOT_DESH.get())));
         this.register(new GenericRecipe("chem.polymer").setupNamed(100, 100L)
                 .inputItems(new ComparableStack(NtmItems.POWDER_COAL.get(), 2), new ComparableStack(NtmItems.FLUORITE.get()))
-                .inputFluids(new FluidStack(Fluids.PETROLEUM, 500))
-                .outputItems(new ItemStack(NtmItems.INGOT_POLYMER.get(), 1)));
+                .inputFluids(new FluidStack(Fluids.PETROLEUM, 1_000))
+                .outputItems(new ItemStack(NtmItems.INGOT_POLYMER.get(), 4)));
         this.register(new GenericRecipe("chem.bakelite").setupNamed(100, 100L)
                 .inputFluids(new FluidStack(Fluids.AROMATICS, 500), new FluidStack(Fluids.PETROLEUM, 500))
                 .outputItems(new ItemStack(NtmItems.INGOT_BAKELITE.get())));

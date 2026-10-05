@@ -66,7 +66,7 @@ public class MachineFrackingTowerBlockEntity extends OilDrillBaseBlockEntity {
 
     @Override
     public int getDrillDepth() {
-        return 0;
+        return this.getMinBuildHeight();
     }
 
     @Override

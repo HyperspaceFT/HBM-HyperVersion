@@ -113,15 +113,28 @@ public class Goal10BAnvilRegression {
         };
     }
 
+    /**
+     * Goal 11A (migration/GOAL11A.md) appends two fluid burner entries after the Goal 10C entries (original
+     * AnvilRecipes.java:283-289): construction with Minecraft copper and with NEO copper, no recycling entry. They are
+     * required exactly, in this order, at the end of the list; the Goal 11A suite checks them in detail.
+     */
+    static final String[] GOAL11A = {
+            "ComparableStack TANK_STEEL x4 meta -1; ComparableStack PIPE_STEEL x3 meta -1; ComparableStack INGOT_TITANIUM x12 meta -1; ComparableStack COPPER_INGOT x8 meta -1; -> HEATER_OILBURNER x1 meta 0 @1.0; tier 2--1 CONSTRUCTION",
+            "ComparableStack TANK_STEEL x4 meta -1; ComparableStack PIPE_STEEL x3 meta -1; ComparableStack INGOT_TITANIUM x12 meta -1; ComparableStack INGOT_COPPER x8 meta -1; -> HEATER_OILBURNER x1 meta 0 @1.0; tier 2--1 CONSTRUCTION",
+    };
+
     static void anvil() {
         List<AnvilConstructionRecipe> live = AnvilRecipes.getConstruction();
         List<?> head = goal10b.head.AnvilRecipes.getConstruction();
         String[] appended = goal10c();
-        check(live.size() == head.size() + appended.length && live.size() > 0, "the committed construction entries, then the three Goal 10C entries ("
-                + head.size() + " -> " + live.size() + ")");
+        check(live.size() == head.size() + appended.length + GOAL11A.length && live.size() > 0, "the committed construction entries, then the three Goal 10C entries"
+                + " and the two Goal 11A entries (" + head.size() + " -> " + live.size() + ")");
         boolean goal10c = true;
         for(int k = 0; k < appended.length; k++) goal10c &= describe(live.get(head.size() + k)).equals(appended[k]);
         check(goal10c, "exactly the three Goal 10C heating oven entries follow the committed list, in order");
+        boolean goal11a = true;
+        for(int k = 0; k < GOAL11A.length; k++) goal11a &= describe(live.get(head.size() + appended.length + k)).equals(GOAL11A[k]);
+        check(goal11a, "exactly the two Goal 11A fluid burner entries follow the Goal 10C entries, in order, at the end of the list");
         List<Integer> corrected = new ArrayList<>();
         int same = 0;
         String first = null;

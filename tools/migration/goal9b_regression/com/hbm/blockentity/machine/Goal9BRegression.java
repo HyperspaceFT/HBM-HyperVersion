@@ -711,15 +711,32 @@ public class Goal9BRegression {
             "item hbmsntm:heater_oven x1 meta " + MetaHelper.WILDCARD_VALUE + "; -> 16 hbmsntm:ingot_firebrick @1.0; 8 hbmsntm:ingot_copper @1.0; tier 2--1 RECYCLING",
     };
 
+    /**
+     * Goal 11A (migration/GOAL11A.md) appends two fluid burner entries after the Goal 10C entries (original
+     * AnvilRecipes.java:283-289): construction with Minecraft copper and with NEO copper, no recycling entry. They are
+     * required exactly, in this order, at the end of the list; the Goal 11A suite checks them in detail.
+     */
+    static final String[] GOAL11A = {
+            "item hbmsntm:tank_steel x4 meta " + MetaHelper.WILDCARD_VALUE + "; item hbmsntm:pipe_steel x3 meta " + MetaHelper.WILDCARD_VALUE
+                    + "; item hbmsntm:ingot_titanium x12 meta " + MetaHelper.WILDCARD_VALUE + "; item minecraft:copper_ingot x8 meta "
+                    + MetaHelper.WILDCARD_VALUE + "; -> 1 hbmsntm:heater_oilburner @1.0; tier 2--1 CONSTRUCTION",
+            "item hbmsntm:tank_steel x4 meta " + MetaHelper.WILDCARD_VALUE + "; item hbmsntm:pipe_steel x3 meta " + MetaHelper.WILDCARD_VALUE
+                    + "; item hbmsntm:ingot_titanium x12 meta " + MetaHelper.WILDCARD_VALUE + "; item hbmsntm:ingot_copper x8 meta "
+                    + MetaHelper.WILDCARD_VALUE + "; -> 1 hbmsntm:heater_oilburner @1.0; tier 2--1 CONSTRUCTION",
+    };
+
     static void anvil() {
         List<AnvilConstructionRecipe> all = AnvilRecipes.getConstruction();
         List<?> before = goal9b.head.AnvilRecipes.getConstruction();
         int n = before.size();
-        check(all.size() == n + 2 + GOAL10C.length, "the live list is the Goal 8 list plus two entries, then the three Goal 10C entries ("
-                + n + " -> " + all.size() + ")");
+        check(all.size() == n + 2 + GOAL10C.length + GOAL11A.length, "the live list is the Goal 8 list plus two entries, then the three Goal 10C entries"
+                + " and the two Goal 11A entries (" + n + " -> " + all.size() + ")");
         boolean goal10c = true;
         for(int k = 0; k < GOAL10C.length; k++) goal10c &= describe(all.get(n + 2 + k)).equals(GOAL10C[k]);
         check(goal10c, "exactly the three Goal 10C heating oven entries follow the steam engine, in order");
+        boolean goal11a = true;
+        for(int k = 0; k < GOAL11A.length; k++) goal11a &= describe(all.get(n + 2 + GOAL10C.length + k)).equals(GOAL11A[k]);
+        check(goal11a, "exactly the two Goal 11A fluid burner entries follow the Goal 10C entries, in order, at the end of the list");
         int same = 0, corrected = 0;
         String first = null;
         for(int i = 0; i < n; i++) {

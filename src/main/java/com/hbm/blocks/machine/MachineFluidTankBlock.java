@@ -101,6 +101,9 @@ public class MachineFluidTankBlock extends DummyableBlock implements IToolable, 
         BlockPos corePos = this.findCore(level, pos);
         if(corePos == null) return InteractionResult.FAIL;
 
+        // As in the original: a broken tank opens no menu and takes no identifier until it is repaired
+        if(level.getBlockEntity(corePos) instanceof MachineFluidTankBlockEntity tank && tank.hasExploded) return InteractionResult.FAIL;
+
         if (!player.isShiftKeyDown()) {
             BlockEntity blockentity = level.getBlockEntity(corePos);
             if(blockentity instanceof MenuProvider be) player.openMenu(new SimpleMenuProvider(be, be.getDisplayName()), pos);
@@ -150,6 +153,20 @@ public class MachineFluidTankBlock extends DummyableBlock implements IToolable, 
         } else {
             level.setBlock(corePos, Blocks.AIR.defaultBlockState(), 3);
         }
+    }
+
+    // Original MachineFluidTank: the core and the extra blocks give the fill level to comparators, the plain parts give 0
+    @Override
+    protected boolean hasAnalogOutputSignal(BlockState state) {
+        return true;
+    }
+
+    @Override
+    protected int getAnalogOutputSignal(BlockState state, Level level, BlockPos pos) {
+        if(state.getValue(TYPE) == DummyBlockType.DUMMY) return 0;
+        BlockPos corePos = this.findCore(level, pos);
+        if(corePos == null) return 0;
+        return level.getBlockEntity(corePos) instanceof MachineFluidTankBlockEntity tank ? tank.getComparatorPower() : 0;
     }
 
     @Override

@@ -46,7 +46,10 @@ public class HeaterOilburnerBlock extends AbstractHeaterBlock implements IToolti
         DummyBlockType type = state.getValue(TYPE);
         return switch(type) {
             case CORE -> new HeaterOilburnerBlockEntity(pos, state);
-            case EXTRA -> new ProxyComboBlockEntity(pos, state).fluid();
+            // Original HeaterOilburner: the extra above the core is a heat source, the four side extras take fluid
+            case EXTRA -> state.getValue(FACING).getAxis() == Direction.Axis.Y
+                    ? new ProxyComboBlockEntity(pos, state).heatSource()
+                    : new ProxyComboBlockEntity(pos, state).fluid();
             default -> null;
         };
     }
@@ -123,7 +126,7 @@ public class HeaterOilburnerBlock extends AbstractHeaterBlock implements IToolti
 
     @Override
     public boolean onScrew(Level level, Player player, BlockPos pos, Direction direction, ToolType tool) {
-        if(tool != ToolType.SCREWDRIVER && tool != ToolType.HAND_DRILL) {
+        if(tool != ToolType.SCREWDRIVER) {
             return false;
         }
 
@@ -135,11 +138,7 @@ public class HeaterOilburnerBlock extends AbstractHeaterBlock implements IToolti
         BlockEntity te = level.getBlockEntity(corePos);
         if(!(te instanceof HeaterOilburnerBlockEntity heater)) return false;
 
-        if(tool == ToolType.SCREWDRIVER) {
-            heater.toggleSettingUp();
-        } else {
-            heater.toggleSettingDown();
-        }
+        heater.toggleSetting();
         heater.setChanged();
         return true;
     }

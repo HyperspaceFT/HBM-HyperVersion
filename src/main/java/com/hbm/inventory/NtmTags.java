@@ -1,12 +1,14 @@
 package com.hbm.inventory;
 
 import com.hbm.main.NuclearTechMod;
+import net.minecraft.core.registries.Registries;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.tags.BlockTags;
 import net.minecraft.tags.ItemTags;
 import net.minecraft.tags.TagKey;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.level.block.Block;
+import net.minecraft.world.level.levelgen.structure.Structure;
 
 
 // Basically new ore dict and its vanilla
@@ -22,6 +24,11 @@ public class NtmTags {
         private static TagKey<Block> crateTag(String name) {
             return BlockTags.create(NuclearTechMod.withDefaultNamespace(name));
         }
+    }
+
+    public static class Structures {
+        /** Structures whose chunks an oil bubble skips, see OilBubbleFeature. Data packs may append to it. */
+        public static final TagKey<Structure> OIL_BUBBLE_AVOID = TagKey.create(Registries.STRUCTURE, NuclearTechMod.withDefaultNamespace("oil_bubble_avoid"));
     }
 
     public static class Items {

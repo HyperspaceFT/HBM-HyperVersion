@@ -5,6 +5,7 @@ import com.hbm.inventory.fluid.tank.FluidTank;
 import com.hbm.inventory.recipes.ChemicalPlantRecipes;
 import com.hbm.inventory.recipes.loader.GenericRecipe;
 import com.hbm.inventory.recipes.loader.GenericRecipes;
+import com.hbm.items.machine.BlueprintsItem;
 import net.minecraft.core.NonNullList;
 import net.minecraft.world.item.ItemStack;
 
@@ -21,6 +22,20 @@ public class ModuleMachineChemicalPlant extends ModuleMachineBase {
     @Override
     public GenericRecipes<GenericRecipe> getRecipeSet() {
         return ChemicalPlantRecipes.INSTANCE;
+    }
+
+    @Override
+    public void update(double speed, double power, boolean extraCondition, ItemStack blueprint) {
+        // Original ModuleMachineBase.update: a pooled recipe is dropped as soon as its blueprint is missing
+        GenericRecipe selected = this.getRecipe();
+        if(selected != null && selected.isPooled() && !selected.isPartOfPool(BlueprintsItem.grabPool(blueprint))) {
+            this.recipe = "null";
+            this.progress = 0D;
+            this.didProcess = false;
+            this.markDirty = true;
+            return;
+        }
+        super.update(speed, power, extraCondition, blueprint);
     }
 
     public ModuleMachineChemicalPlant itemInput(int a, int b, int c) {

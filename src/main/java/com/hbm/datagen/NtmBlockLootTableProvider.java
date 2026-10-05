@@ -45,8 +45,8 @@ public class NtmBlockLootTableProvider extends BlockLootSubProvider {
         this.dropSelf(NtmBlocks.SAND_RED_OILY.get());
         this.dropSelf(NtmBlocks.DIRT_DEAD.get());
         this.dropSelf(NtmBlocks.OIL_SPILL.get());
-        this.dropSelf(NtmBlocks.ORE_OIL.get());
-        this.dropSelf(NtmBlocks.ORE_OIL.get());
+        // Original BlockOre: oil rock drops crude tar and refuses silk touch
+        this.add(NtmBlocks.ORE_OIL.get(), block -> this.oreDropNoSilk(block, NtmItems.OIL_TAR_CRUDE.get()));
         this.dropSelf(NtmBlocks.ORE_OIL_EMPTY.get());
         this.dropSelf(NtmBlocks.ORE_OIL_SAND.get());
         this.dropSelf(NtmBlocks.ORE_BEDROCK_OIL.get());
@@ -405,6 +405,14 @@ public class NtmBlockLootTableProvider extends BlockLootSubProvider {
                 .apply(SetItemCountFunction.setCount(UniformGenerator.between(min, max)))
                 .apply(ApplyBonusCount.addOreBonusCount(
                         this.registries.lookupOrThrow(Registries.ENCHANTMENT).getOrThrow(Enchantments.FORTUNE))));
+    }
+
+    private LootTable.Builder oreDropNoSilk(Block block, Item item) {
+        return LootTable.lootTable().withPool(LootPool.lootPool()
+                .setRolls(ConstantValue.exactly(1))
+                .add(this.applyExplosionDecay(block, LootItem.lootTableItem(item)
+                        .apply(ApplyBonusCount.addOreBonusCount(
+                                this.registries.lookupOrThrow(Registries.ENCHANTMENT).getOrThrow(Enchantments.FORTUNE))))));
     }
 
     private LootTable.Builder oreDropNoFortune(Block block, Item item) {

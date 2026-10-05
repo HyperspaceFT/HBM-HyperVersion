@@ -3,12 +3,15 @@ package com.hbm.blockentity.machine.heater;
 import api.hbm.fluidmk2.IFluidStandardTransceiverMK2;
 import com.hbm.blockentity.IFluidCopiable;
 import com.hbm.blockentity.NtmBlockEntityTypes;
+import com.hbm.handler.pollution.PollutionHandler;
+import com.hbm.handler.pollution.PollutionHandler.PollutionType;
 import com.hbm.interfaces.IControlReceiver;
 import com.hbm.inventory.FluidContainerRegistry;
 import com.hbm.inventory.fluid.FluidType;
 import com.hbm.inventory.fluid.Fluids;
 import com.hbm.inventory.fluid.tank.FluidTank;
 import com.hbm.inventory.fluid.trait.FT_Flammable;
+import com.hbm.inventory.fluid.trait.FT_Polluting;
 import com.hbm.inventory.menus.HeaterOilburnerMenu;
 import com.hbm.items.machine.IItemFluidIdentifier;
 import com.hbm.items.machine.InfiniteFluidItem;
@@ -24,12 +27,16 @@ import net.minecraft.world.inventory.AbstractContainerMenu;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.block.state.BlockState;
 
+import java.util.Map;
+
 public class HeaterOilburnerBlockEntity extends AbstractHeaterMachineBlockEntity implements IFluidStandardTransceiverMK2, IControlReceiver, IFluidCopiable {
 
     public static final int maxHeatEnergy = 100_000;
+    /** Burn rate in mB/t, cycled 1-10 with a screwdriver as in the original. */
+    public static final int MAX_SETTING = 10;
 
     public final FluidTank tank = new FluidTank(Fluids.HEATINGOIL, 16_000);
-    public boolean isOn = true;
+    public boolean isOn = false;
     public int setting = 1;
 
     public HeaterOilburnerBlockEntity(BlockPos pos, BlockState state) {
@@ -59,10 +66,12 @@ public class HeaterOilburnerBlockEntity extends AbstractHeaterMachineBlockEntity
     public void updateEntity() {
         if(this.level == null || this.level.isClientSide) return;
 
+        int prevFill = this.tank.getFill();
+        int prevHeat = this.heatEnergy;
+        FluidType prevType = this.tank.getTankType();
+
         this.tank.loadTank(this.level, 0, 1, this.slots);
-        if(this.tank.setType(2, this.slots)) {
-            this.setChanged();
-        }
+        this.tank.setType(2, this.slots);
 
         for(DirPos pos : this.getConPos()) {
             this.trySubscribe(this.tank.getTankType(), this.level, pos);
@@ -77,8 +86,14 @@ public class HeaterOilburnerBlockEntity extends AbstractHeaterMachineBlockEntity
                 if(toBurn > 0) {
                     this.tank.setFill(this.tank.getFill() - toBurn);
                     this.heatEnergy += (int) (trait.getHeatEnergy() / 1000L) * toBurn;
-                    shouldCool = false;
+
+                    if(this.level.getGameTime() % 5 == 0) {
+                        this.pollute(this.tank.getTankType());
+                    }
                 }
+
+                // As in the original, a burner that is on with a flammable type keeps its heat even while the tank is empty
+                shouldCool = false;
             }
         }
 
@@ -90,18 +105,30 @@ public class HeaterOilburnerBlockEntity extends AbstractHeaterMachineBlockEntity
             this.heatEnergy = Math.max(this.heatEnergy - Math.max(this.heatEnergy / 1000, 1), 0);
         }
 
+        if(this.tank.getFill() != prevFill || this.heatEnergy != prevHeat || this.tank.getTankType() != prevType) {
+            this.setChanged();
+        }
+
         this.networkPackNT(25);
     }
 
-    public void toggleSettingUp() {
-        this.setting++;
-        if(this.setting > 100) this.setting = 1;
-        this.setChanged();
+    /**
+     * The original (TileEntityMachinePolluting) ignores the burned amount: per call and burn pollution type it puts
+     * ceil(value * 100) mB into a 100 mB smoke tank, and once that is full, with no outlet attached, releases the
+     * overflow / 100 into the world. NEO has no smoke tank or outlet, so this emits that steady-state overflow directly.
+     */
+    private void pollute(FluidType type) {
+        FT_Polluting trait = type.getTrait(FT_Polluting.class);
+        if(trait == null) return;
+
+        for(Map.Entry<PollutionType, Float> entry : trait.burnMap.entrySet()) {
+            PollutionHandler.incrementPollution(this.level, this.worldPosition, entry.getKey(), (float) Math.ceil(entry.getValue() * 100F) / 100F);
+        }
     }
 
-    public void toggleSettingDown() {
-        this.setting--;
-        if(this.setting < 1) this.setting = 100;
+    public void toggleSetting() {
+        this.setting++;
+        if(this.setting > MAX_SETTING) this.setting = 1;
         this.setChanged();
     }
 
@@ -145,6 +172,14 @@ public class HeaterOilburnerBlockEntity extends AbstractHeaterMachineBlockEntity
     }
 
     @Override
+    public long transferFluid(FluidType type, int pressure, long amount) {
+        long remainder = IFluidStandardTransceiverMK2.super.transferFluid(type, pressure, amount);
+        // Pipes fill the tank between ticks; a burner that is off would otherwise never save that fluid.
+        if(remainder < amount) this.setChanged();
+        return remainder;
+    }
+
+    @Override
     public boolean hasPermission(Player player) {
         return player.distanceToSqr(this.getBlockPos().getX() + 0.5, this.getBlockPos().getY() + 0.5, this.getBlockPos().getZ() + 0.5) <= 256.0D;
     }
@@ -153,9 +188,6 @@ public class HeaterOilburnerBlockEntity extends AbstractHeaterMachineBlockEntity
     public void receiveControl(CompoundTag tag) {
         if(tag.contains("toggle")) {
             this.isOn = !this.isOn;
-        }
-        if(tag.contains("setting")) {
-            this.setting = Math.clamp(tag.getInt("setting"), 1, 100);
         }
         this.setChanged();
     }
@@ -171,8 +203,9 @@ public class HeaterOilburnerBlockEntity extends AbstractHeaterMachineBlockEntity
     @Override
     public void pasteSettings(CompoundTag tag, int index, net.minecraft.world.level.Level level, Player player, BlockPos pos) {
         IFluidCopiable.super.pasteSettings(tag, index, level, player, pos);
-        if(tag.contains("setting")) this.setting = Math.clamp(tag.getInt("setting"), 1, 100);
+        if(tag.contains("setting")) this.setting = Math.clamp(tag.getInt("setting"), 1, MAX_SETTING);
         if(tag.contains("isOn")) this.isOn = tag.getBoolean("isOn");
+        this.setChanged();
     }
 
     @Override
@@ -196,7 +229,8 @@ public class HeaterOilburnerBlockEntity extends AbstractHeaterMachineBlockEntity
         super.loadAdditional(tag, registries);
         this.tank.readFromNBT(tag, "tank");
         this.isOn = tag.getBoolean("isOn");
-        this.setting = tag.getInt("setting");
+        // Earlier NEO versions allowed up to 100
+        this.setting = Math.clamp(tag.getInt("setting"), 1, MAX_SETTING);
     }
 
     @Override

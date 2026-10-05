@@ -185,6 +185,8 @@ public class ShredderRecipes extends SerializableRecipe {
     private static void registerMaterialRecipes() {
         registerIfAbsent(new ItemStack(NtmBlocks.ORE_RARE.get()), new ItemStack(NtmItems.POWDER_DESH_MIX.get(), 1));
         registerIfAbsent(new ItemStack(NtmBlocks.ORE_RARE_DEEPSLATE.get()), new ItemStack(NtmItems.POWDER_DESH_MIX.get(), 1));
+        // Original: the chunk that a normally mined rare earth ore drops
+        registerIfAbsent(new ItemStack(NtmItems.RARE_EARTH_ORE_CHUNK.get()), new ItemStack(NtmItems.POWDER_DESH_MIX.get(), 1));
         registerIfAbsent(new ItemStack(NtmBlocks.BLOCK_ACTINIUM.get()), new ItemStack(NtmItems.POWDER_ACTINIUM.get(), 9));
         registerIfAbsent(new ItemStack(NtmBlocks.BLOCK_ALUMINIUM.get()), new ItemStack(NtmItems.POWDER_ALUMINIUM.get(), 9));
         registerIfAbsent(new ItemStack(NtmBlocks.BLOCK_ASBESTOS.get()), new ItemStack(NtmItems.POWDER_ASBESTOS.get(), 9));

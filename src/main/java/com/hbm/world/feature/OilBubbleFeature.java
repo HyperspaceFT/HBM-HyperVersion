@@ -1,26 +1,36 @@
 package com.hbm.world.feature;
 
 import com.hbm.blocks.NtmBlocks;
+import com.hbm.inventory.NtmTags;
 import com.hbm.main.NuclearTechMod;
 import com.mojang.serialization.Codec;
+import it.unimi.dsi.fastutil.longs.LongSet;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.core.Holder;
+import net.minecraft.core.Registry;
+import net.minecraft.core.SectionPos;
+import net.minecraft.core.registries.Registries;
 import net.minecraft.tags.BiomeTags;
 import net.minecraft.tags.BlockTags;
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.level.WorldGenLevel;
 import net.minecraft.world.level.biome.Biome;
 import net.minecraft.world.level.block.Blocks;
+import net.minecraft.world.level.chunk.ChunkAccess;
 import net.minecraft.world.level.levelgen.Heightmap;
 import net.minecraft.world.level.levelgen.feature.Feature;
 import net.minecraft.world.level.levelgen.feature.FeaturePlaceContext;
 import net.minecraft.world.level.levelgen.feature.configurations.NoneFeatureConfiguration;
+import net.minecraft.world.level.levelgen.structure.Structure;
+
+import java.util.Map;
 
 public class OilBubbleFeature extends Feature<NoneFeatureConfiguration> {
 
-    private static final int BUBBLE_MIN_RADIUS = 10;
-    private static final int BUBBLE_RADIUS_VARIATION = 7;
+    // Original MapGenBubble with setSize(8, 16): radius 8-15
+    private static final int BUBBLE_MIN_RADIUS = 8;
+    private static final int BUBBLE_RADIUS_VARIATION = 8;
     private static final int BUBBLE_BASE_SPAWN_RATE = 100;
     private static final int HOT_DRY_SPAWN_DIVISOR = 3;
 
@@ -40,6 +50,14 @@ public class OilBubbleFeature extends Feature<NoneFeatureConfiguration> {
         }
 
         int radius = BUBBLE_MIN_RADIUS + random.nextInt(BUBBLE_RADIUS_VARIATION);
+
+        // NEO adaptation: bubbles now sit at trial chamber depth, and oil rock replacing a chamber's walls ruins it.
+        // A bubble over a chunk that references such a structure is skipped. Skip only: no retry and nothing carried
+        // over to other chunks, so the result depends on the seed alone and not on the chunk generation order.
+        if(touchesAvoidedStructure(level, origin, radius)) {
+            return false;
+        }
+
         spawnOil(level, origin.getX(), origin.getY(), origin.getZ(), radius);
         addSurfaceSpot(level, random, origin.getX(), origin.getZ());
 
@@ -62,9 +80,36 @@ public class OilBubbleFeature extends Feature<NoneFeatureConfiguration> {
         return Math.max(spawnRate, 1);
     }
 
+    /**
+     * Whether a chunk under the bubble's horizontal extent references a structure tagged {@link NtmTags.Structures#OIL_BUBBLE_AVOID}.
+     * The extent is the placement loop's +-radius, a little wider than the oblate bubble itself, and references cover a
+     * structure's whole bounding box, so this is coarser than the blocks actually involved. With the
+     * origin inside the generating chunk and a radius below 16, the extent stays within that chunk and its direct
+     * neighbours: the feature's own generation region, whose chunks already carry their structure references. Nothing
+     * outside the region is read and the server's structure manager is not used.
+     */
+    static boolean touchesAvoidedStructure(WorldGenLevel level, BlockPos origin, int radius) {
+        Registry<Structure> structures = level.registryAccess().registryOrThrow(Registries.STRUCTURE);
+        int minChunkX = SectionPos.blockToSectionCoord(origin.getX() - radius);
+        int maxChunkX = SectionPos.blockToSectionCoord(origin.getX() + radius - 1);
+        int minChunkZ = SectionPos.blockToSectionCoord(origin.getZ() - radius);
+        int maxChunkZ = SectionPos.blockToSectionCoord(origin.getZ() + radius - 1);
+
+        for(int chunkX = minChunkX; chunkX <= maxChunkX; chunkX++) {
+            for(int chunkZ = minChunkZ; chunkZ <= maxChunkZ; chunkZ++) {
+                ChunkAccess chunk = level.getChunk(chunkX, chunkZ);
+                for(Map.Entry<Structure, LongSet> reference : chunk.getAllReferences().entrySet()) {
+                    if(reference.getValue().isEmpty()) continue;
+                    if(structures.wrapAsHolder(reference.getKey()).is(NtmTags.Structures.OIL_BUBBLE_AVOID)) return true;
+                }
+            }
+        }
+
+        return false;
+    }
+
     private void spawnOil(WorldGenLevel level, int x, int y, int z, int radius) {
         int r2 = radius * radius;
-        int r22 = r2 / 2;
         BlockPos.MutableBlockPos pos = new BlockPos.MutableBlockPos();
 
         for(int xx = -radius; xx < radius; xx++) {
@@ -76,9 +121,12 @@ public class OilBubbleFeature extends Feature<NoneFeatureConfiguration> {
                 for(int zz = -radius; zz < radius; zz++) {
                     int zPos = zz + z;
                     int distSq = yy2 + zz * zz;
-                    if(distSq < r22) {
+                    // Original: distSq < r * r / 2 in doubles; an int r2 / 2 would drop a shell for odd radii
+                    if(distSq * 2 < r2) {
                         pos.set(xPos, yPos, zPos);
-                        if(level.getBlockState(pos).is(Blocks.STONE)) {
+                        // The original replaced Blocks.stone, 1.7.10's only base stone; deepslate, tuff and the
+                        // stone variants are its 1.21 counterparts. Ores, dirt and structure blocks stay.
+                        if(level.getBlockState(pos).is(BlockTags.BASE_STONE_OVERWORLD)) {
                             level.setBlock(pos, NtmBlocks.ORE_OIL.get().defaultBlockState(), 3);
                         }
                     }

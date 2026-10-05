@@ -100,14 +100,17 @@ public class MachineOilWellBlockEntity extends OilDrillBaseBlockEntity {
         }
     }
 
+    // Original TilePortShapes.horizontal: the core connects to +X, -X, +Z, -Z and below.
+    // The legs stand on the core layer's corners, so the corner positions are not connection points.
     @Override
     public DirPos[] getConPos() {
         BlockPos pos = this.getBlockPos();
         return new DirPos[] {
                 new DirPos(pos.offset(1, 0, 0), Direction.EAST),
                 new DirPos(pos.offset(-1, 0, 0), Direction.WEST),
-                new DirPos(pos.offset(1, 0, 1), Direction.SOUTH),
-                new DirPos(pos.offset(1, 0, -1), Direction.NORTH)
+                new DirPos(pos.offset(0, 0, 1), Direction.SOUTH),
+                new DirPos(pos.offset(0, 0, -1), Direction.NORTH),
+                new DirPos(pos.offset(0, -1, 0), Direction.DOWN)
         };
     }
 
