@@ -188,10 +188,23 @@ public class Goal10ARecipeRegression {
         check(fragments == 1, "the shredder template has one cobalt fragment entry: " + fragments);
     }
 
+    /** Goal 11D: the production writer names a fluid by its internal name (the stand-in's "FLUID"), not by its language key
+     * ("fluid"), as the original SerializableRecipe.java:424 writes getName(). */
+    private static void fluidName() {
+        java.io.StringWriter text = new java.io.StringWriter();
+        try(com.google.gson.stream.JsonWriter writer = new com.google.gson.stream.JsonWriter(text)) {
+            SerializableRecipe.writeFluidStack(new com.hbm.inventory.FluidStack(com.hbm.inventory.fluid.Fluids.NONE, 1_000), writer);
+        } catch(IOException e) {
+            throw new UncheckedIOException(e);
+        }
+        check(text.toString().equals("[\"FLUID\",1000]"), "writeFluidStack writes the internal name: " + text);
+    }
+
     public static void main(String[] args) {
         config = Path.of(args[0]);
         run("5b. alloy recipe registration and hbmCrucible.json", Goal10ARecipeRegression::crucibleRecipes);
         run("11. shredder", Goal10ARecipeRegression::shredder);
+        run("11d. fluid name in the writer", Goal10ARecipeRegression::fluidName);
         System.out.println("Goal 10A recipe checks: " + checks + " passed" + (failures.isEmpty() ? "" : "; " + failures.size() + " section(s) failed"));
         if(!failures.isEmpty()) throw new AssertionError(failures.size() + " section(s) failed: " + failures);
     }

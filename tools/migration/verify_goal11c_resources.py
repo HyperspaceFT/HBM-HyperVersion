@@ -14,6 +14,12 @@ build/migration/goal11c/source-check.json or generated-check.json (the latter is
 
 The older resource scripts (verify_goal11b_resources.py, verify_goal11a_resources.py, verify_goal10c_resources.py) import
 the Goal 11C constants and goal11c_delta() below to read the post-Goal 11B state; this module imports none of them.
+
+Goal 11D (build/migration/goal11d/production.diff) changes one further input after Goal 11C, SerializableRecipe.java, and
+no generated file. The Goal 11C checks are kept unchanged and run against the post-Goal 11C state: the pre-Goal 11D stamp
+(build/migration/goal11d/stamp-before-g11d.json, the stamp of git 1e29ad29) as the current stamp, and for the input Goal 11D
+changes, its bytes at 1e29ad29. goal11d_delta() (from verify_goal11d_resources.py) then checks that post-Goal 11C -> now is
+exactly the Goal 11D set. Only the Goal 11D constants and helpers are imported from that module.
 """
 
 import argparse
@@ -21,6 +27,9 @@ import hashlib
 import json
 import zipfile
 from pathlib import Path
+
+from verify_goal11d_resources import (BEFORE_STAMP as POST_STAMP, CHANGED_INPUTS as GOAL11D_INPUTS, goal11d_delta,
+                                      post_goal11c_bytes)
 
 ROOT = Path(__file__).resolve().parents[2]
 ORIGINAL_ROOT = ROOT.parent / "Hbm-s-Nuclear-Tech-GIT"
@@ -107,6 +116,14 @@ def base_input(name):
     raise KeyError(name)
 
 
+def post_goal11c_input(name):
+    """A generation input's stamp hash after Goal 11C: its bytes at git 1e29ad29 for the Goal 11D input, else the file on
+    disk; None if it does not exist there."""
+    if name in GOAL11D_INPUTS:
+        return text_hash(name, post_goal11c_bytes(name))
+    return stamp_hash(ROOT / name) if (ROOT / name).is_file() else None
+
+
 def goal11b_release(names):
     """Entries of the Goal 11B release JAR (checked against its delivered SHA-256 first)."""
     if sha(GOAL11B_JAR.read_bytes()) != GOAL11B_SHA256:
@@ -127,7 +144,8 @@ def lang(path):
 def goal11c_delta(check):
     """Post-Goal 11B -> now is exactly the Goal 11C set (no generated file, the 7 inputs). `check` is the caller's own
     check function, so an older resource script counts these checks as its own (3 checks)."""
-    post_stamp, stamp = read(BEFORE_STAMP), read(GEN / ".migration-stamp.json")
+    # The post-Goal 11C stamp (the module docstring); Goal 11D changes no generated file, so the tree on disk is post-Goal 11C.
+    post_stamp, stamp = read(BEFORE_STAMP), read(POST_STAMP)
     now = generated_tree()
     check(post_stamp["generated"] == now == stamp["generated"] and not MODIFIED,
           "since Goal 11B no generated file was added, removed or changed (the post-Goal 11B and current stamps list the tree on disk)")
@@ -148,9 +166,10 @@ def generated():
     check(len(before) == BEFORE_COUNT and len(now) == BEFORE_COUNT, f"generated files: {BEFORE_COUNT} before Goal 11C, {len(now)} now")
     check(modified == MODIFIED and not added and not removed,
           f"no generated file is modified, added or removed: {modified} / {added} / {removed}")
-    stamp = read(GEN / ".migration-stamp.json")
+    # The post-Goal 11C stamp and inputs (the module docstring).
+    stamp = read(POST_STAMP)
     check(stamp["generated"] == now, "the current .migration-stamp.json lists exactly the generated files on disk")
-    stale = sorted(name for name, digest in stamp["inputs"].items() if not (ROOT / name).is_file() or stamp_hash(ROOT / name) != digest)
+    stale = sorted(name for name, digest in stamp["inputs"].items() if post_goal11c_input(name) != digest)
     check(not stale, f"the stamp's generation inputs match the source files (runData ran after the last source change): {stale[:5]}")
     changed = sorted(name for name in set(stamp["inputs"]) | set(before_stamp["inputs"]) if stamp["inputs"].get(name) != before_stamp["inputs"].get(name))
     check(changed == CHANGED_INPUTS, f"the generation inputs changed since the pre-Goal 11C stamp are exactly the {len(CHANGED_INPUTS)} Goal 11C files: {changed}")
@@ -231,6 +250,7 @@ def main():
     parser.add_argument("--source-only", action="store_true", help="skip the JAR inspection (before the build)")
     args = parser.parse_args()
     report = generated()
+    goal11d_delta(check)
     if not args.source_only:
         jar()
     OUT.mkdir(parents=True, exist_ok=True)

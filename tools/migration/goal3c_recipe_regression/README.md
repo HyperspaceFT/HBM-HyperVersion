@@ -39,3 +39,8 @@ Goal 10A registers `CrucibleRecipes.INSTANCE` in `SerializableRecipe.registerAll
 assembler, and its count is unchanged. The Goal 4 shredder and Goal 5B press suites inherit the
 stand-in. `verify_goal10a.py` compiles the real `CrucibleRecipes` and checks its registration and
 `hbmCrucible.json`.
+
+Goal 11D (`build/migration/goal11d/production.diff`) makes the production `SerializableRecipe.writeFluidStack` call
+`getInternalName()`; the `FluidType` stand-in now declares it as `FLUID` (its language key stays `fluid`), and one added
+check requires every fluid of the written `_hbmAssemblyMachine.json` template to be `FLUID`. The Goal 4 shredder suite,
+which inherits the stand-in, gains one check that `writeFluidStack` writes `["FLUID",1000]`.

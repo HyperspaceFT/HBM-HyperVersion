@@ -1,6 +1,6 @@
 {
     "version": 1,
-    "inputFingerprint": "d8881303607504f4fcdeb5ff92869da60ca7aa3c30b5dfac2cdd6a130d83a1da",
+    "inputFingerprint": "242894c744cf800d49d83b3d6f630d1360753416e01971e251e1aafed71664be",
     "inputs": {
         "build.gradle": "fc9aba251a432d85bc90e117d8c1d9d1c7850c536c31a25faeb4363161acb362",
         "gradle.lockfile": "0478907ac82156ef766d2570f4604b2ad98c067f5b838155f518c7374662d0a5",
@@ -540,7 +540,7 @@
         "src/main/java/com/hbm/inventory/recipes/anvil/AnvilSmithingRenameRecipe.java": "37d1ae1ee188eb0fab6526dc131bc35e91297df51ef152fda243b7cf721940f0",
         "src/main/java/com/hbm/inventory/recipes/loader/GenericRecipe.java": "c5e29bf506f83477675b00e1a85781ac53cbdbab085c0ed4433f7c85b42de966",
         "src/main/java/com/hbm/inventory/recipes/loader/GenericRecipes.java": "7e67ff261a49eceef3536ed301ba7d8be00de53c5864d2c77d2f2a846aa66650",
-        "src/main/java/com/hbm/inventory/recipes/loader/SerializableRecipe.java": "66a060c4b6626bde569b8974191264bd20284d93e9f2565007e296af389fe53e",
+        "src/main/java/com/hbm/inventory/recipes/loader/SerializableRecipe.java": "430f544d1d1cdd4111b2280adb509e626ba4927cd3fcdeb8ba6bfa77a8bdbcae",
         "src/main/java/com/hbm/inventory/screens/AnvilMenuScreen.java": "ec5fde04ea83ee1ed918d3bb235a6c50f20d12539e094f2da7d137feb0d1b927",
         "src/main/java/com/hbm/inventory/screens/AnvilScreen.java": "86d7bd6feb057e43cd033aac9f8d42f546a7cd1b34c637a24b6ac97ac0c92564",
         "src/main/java/com/hbm/inventory/screens/BarrelScreen.java": "90c660503a4c17978f157f1e4a7090656235f1e2d117e90f3dcd568fe5bb556d",

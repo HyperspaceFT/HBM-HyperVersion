@@ -24,6 +24,11 @@ the inputs Goal 11C changes that Goal 11A and 11B did not are read from the git-
 build/migration/goal11c/base-g11b/, goal11b_delta() compares the post-Goal 11B state (the pre-Goal 11C stamp
 build/migration/goal11c/stamp-before-g11c.json) instead of the current one, and goal11c_delta() (from
 verify_goal11c_resources.py) checks that post-Goal 11B -> now is exactly the Goal 11C set.
+
+Goal 11D (build/migration/goal11d/production.diff) changes one further input after Goal 11C, SerializableRecipe.java,
+which Goal 11A, 11B and 11C left as after Goal 10C; the checks above are kept unchanged and read that input as committed
+at 1e29ad29 (post_goal11c_bytes() from verify_goal11d_resources.py), and goal11d_delta() checks that post-Goal 11C -> now
+is exactly the Goal 11D set.
 """
 
 import argparse
@@ -38,6 +43,7 @@ from verify_goal11b_resources import (BEFORE_STAMP as POST_GOAL11A_STAMP, CHANGE
                                       MODIFIED as GOAL11B_GENERATED, base_input as post_goal11a_input_path, post_goal11b_tree)
 from verify_goal11c_resources import (BEFORE_STAMP as POST_GOAL11B_STAMP, CHANGED_INPUTS as GOAL11C_INPUTS,
                                       base_input as post_goal11b_input_path, goal11c_delta)
+from verify_goal11d_resources import CHANGED_INPUTS as GOAL11D_INPUTS, goal11d_delta, post_goal11c_bytes
 
 ROOT = Path(__file__).resolve().parents[2]
 ORIGINAL_ROOT = ROOT.parent / "Hbm-s-Nuclear-Tech-GIT"
@@ -175,6 +181,9 @@ def post_goal10c_input(name):
     # The other inputs Goal 11C changes: Goal 11A and 11B left them as after Goal 10C (base-g11b).
     if name in GOAL11C_INPUTS:
         return stamp_hash(post_goal11b_input_path(name))
+    # The input Goal 11D changes: Goal 11A, 11B and 11C left it as after Goal 10C (git 1e29ad29).
+    if name in GOAL11D_INPUTS:
+        return text_hash(name, post_goal11c_bytes(name))
     return stamp_hash(ROOT / name) if (ROOT / name).is_file() else None
 
 
@@ -293,6 +302,7 @@ def main():
     goal11a_delta()
     goal11b_delta()
     goal11c_delta(check)
+    goal11d_delta(check)
     if not args.source_only:
         jar()
     OUT.mkdir(parents=True, exist_ok=True)

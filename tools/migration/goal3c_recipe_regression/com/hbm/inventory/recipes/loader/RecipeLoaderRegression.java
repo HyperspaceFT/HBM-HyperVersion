@@ -109,6 +109,17 @@ public class RecipeLoaderRegression {
         int defaultCount = singleton.recipeOrderedList.size();
         check(defaultCount > 1, "default assembler catalog has multiple entries");
         var template = new Gson().fromJson(Files.readString(underscore), JsonObject.class);
+        // Goal 11D: the production writer names each fluid of the template by its internal name (the stand-in's "FLUID"),
+        // not by its language key ("fluid"), as the original SerializableRecipe.java:424 writes getName().
+        java.util.List<String> fluidNames = new java.util.ArrayList<>();
+        for (var entry : template.getAsJsonArray("recipes")) {
+            JsonObject recipe = entry.getAsJsonObject();
+            for (String key : new String[] {"inputFluid", "outputFluid"}) {
+                if (recipe.has(key)) for (var fluid : recipe.getAsJsonArray(key)) fluidNames.add(fluid.getAsJsonArray().get(0).getAsString());
+            }
+        }
+        check(!fluidNames.isEmpty() && fluidNames.stream().allMatch("FLUID"::equals),
+                "Goal 11D: every fluid of the template is written by its internal name: " + fluidNames);
         var shredderJson = onlyShredder(template, 100);
         Files.writeString(output.resolve("ass-shredder-from-production-writer.json"),
                 new Gson().toJson(shredderJson), StandardCharsets.UTF_8);

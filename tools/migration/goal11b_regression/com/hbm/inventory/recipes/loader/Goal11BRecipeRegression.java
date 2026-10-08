@@ -140,6 +140,12 @@ public class Goal11BRecipeRegression {
         List<String> changed = new ArrayList<>();
         for(String name : baseNames) if(!live.get(name).equals(base.get(name))) changed.add(name);
         check(changed.isEmpty(), "no post-Goal 11A recipe changes: " + changed);
+        // Goal 11D: the production writer names each fluid of the catalog by its internal name (the stand-in's "FLUID"), not
+        // by its language key ("fluid"), as the original SerializableRecipe.java:424 writes getName().
+        List<String> fluidNames = new ArrayList<>();
+        for(JsonObject entry : live.values()) for(String key : List.of("inputFluid", "outputFluid"))
+            if(entry.has(key)) for(JsonElement fluid : entry.getAsJsonArray(key)) fluidNames.add(fluid.getAsJsonArray().get(0).getAsString());
+        check(!fluidNames.isEmpty() && fluidNames.stream().allMatch("FLUID"::equals), "Goal 11D: every fluid of the catalog is written by its internal name: " + fluidNames);
 
         Files.createDirectories(output);
         var gson = new GsonBuilder().setPrettyPrinting().create();

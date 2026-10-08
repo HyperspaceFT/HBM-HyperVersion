@@ -156,6 +156,12 @@ public class Goal11ARecipeRegression {
         check(oldPlate.get(2).getAsInt() == 1, "8a209c35 had one copper cast plate");
         oldPlate.set(2, new com.google.gson.JsonPrimitive(2));
         check(oldDerrick.equals(derrick), "the derrick recipe differs from 8a209c35 only in the copper cast plate count (1 -> 2)");
+        // Goal 11D: the production writer names each fluid of the catalog by its internal name (the stand-in's "FLUID"), not
+        // by its language key ("fluid"), as the original SerializableRecipe.java:424 writes getName().
+        List<String> fluidNames = new ArrayList<>();
+        for(JsonObject recipe : live.values()) for(String key : List.of("inputFluid", "outputFluid"))
+            if(recipe.has(key)) for(JsonElement fluid : recipe.getAsJsonArray(key)) fluidNames.add(fluid.getAsJsonArray().get(0).getAsString());
+        check(!fluidNames.isEmpty() && fluidNames.stream().allMatch("FLUID"::equals), "Goal 11D: every fluid of the catalog is written by its internal name: " + fluidNames);
 
         Files.createDirectories(output);
         var gson = new GsonBuilder().setPrettyPrinting().create();

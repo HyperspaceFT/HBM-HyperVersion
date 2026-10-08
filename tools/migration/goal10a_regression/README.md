@@ -58,6 +58,7 @@ Recipe world:
 
 5b. `registerAllHandlers` adds `CrucibleRecipes.INSTANCE` once, right after `ChemicalPlantRecipes`, nine handlers; with only the crucible handler, `initialize()` registers the defaults and writes `_hbmCrucible.json` (name, frequency, icon, `[materialName, amount]` arrays, nothing else); the enabled file reads back to the same recipe; unknown materials (input or output), amounts <= 0, frequency < 1 and empty input/output are skipped with one warning each while a usable entry loads; a missing `frequency` or a non-array input throws.
 11. Shredder: the real table maps `fragment_cobalt` to one `powder_cobalt_tiny`, and the exported template has that entry once.
+11d. Fluid name in the writer (Goal 11D, `build/migration/goal11d/production.diff`): the production `SerializableRecipe.writeFluidStack` now calls `getInternalName()`, which the inherited Goal 3C `FluidType` stand-in declares as `FLUID` (its language key stays `fluid`); one check requires `["FLUID",1000]`.
 
 ## Not covered
 

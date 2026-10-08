@@ -23,6 +23,11 @@ build/migration/goal11c/base-g11b/ (generation inputs, zh_cn-map.json). Goal 11C
 class of the Goal 11B source Goal 11C changed cannot be compared with a post-Goal 11B build (there is none); it must lack
 the Goal 11C literal that the current build's class holds. goal11c_delta() (from verify_goal11c_resources.py) then checks
 that post-Goal 11B -> now is exactly the Goal 11C set. Only the Goal 11C constants are imported from that module.
+
+Goal 11D (build/migration/goal11d/production.diff) changes one further input after Goal 11C, SerializableRecipe.java,
+which Goal 11B and 11C left as it was; the checks above are kept unchanged and read that input as committed at 1e29ad29
+(post_goal11c_bytes() from verify_goal11d_resources.py), and goal11d_delta() checks that post-Goal 11C -> now is exactly
+the Goal 11D set.
 """
 
 import argparse
@@ -33,6 +38,7 @@ from pathlib import Path
 
 from verify_goal11c_resources import (BEFORE_STAMP as POST_STAMP, CHANGED_INPUTS as GOAL11C_INPUTS, GOAL11B_JAR, GOAL11B_SHA256,
                                       MODIFIED as GOAL11C_GENERATED, ZH_MAP_NAME, base_input as post_goal11b_path, goal11c_delta)
+from verify_goal11d_resources import CHANGED_INPUTS as GOAL11D_INPUTS, goal11d_delta, post_goal11c_bytes
 
 ROOT = Path(__file__).resolve().parents[2]
 ORIGINAL_ROOT = ROOT.parent / "Hbm-s-Nuclear-Tech-GIT"
@@ -145,9 +151,12 @@ def post_goal11b_tree():
 
 
 def post_goal11b_input(name):
-    """A generation input's stamp hash after Goal 11B: its base-g11b copy for the Goal 11C inputs, else the file on disk."""
+    """A generation input's stamp hash after Goal 11B: its base-g11b copy for the Goal 11C inputs, its 1e29ad29 bytes for the
+    Goal 11D input (Goal 11B and 11C left it as it was), else the file on disk."""
     if name in GOAL11C_INPUTS:
         return stamp_hash(post_goal11b_path(name))
+    if name in GOAL11D_INPUTS:
+        return text_hash(name, post_goal11c_bytes(name))
     return stamp_hash(ROOT / name) if (ROOT / name).is_file() else None
 
 
@@ -264,6 +273,7 @@ def main():
     args = parser.parse_args()
     report = generated()
     goal11c_delta(check)
+    goal11d_delta(check)
     if not args.source_only:
         jar()
     OUT.mkdir(parents=True, exist_ok=True)

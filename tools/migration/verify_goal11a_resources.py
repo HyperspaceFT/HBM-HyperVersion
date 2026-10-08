@@ -23,6 +23,11 @@ the inputs Goal 11C changes that Goal 11B did not are read from the git-free pos
 build/migration/goal11c/base-g11b/ (Goal 11A and 11B left them as they were), goal11b_delta() compares the post-Goal 11B
 state (the pre-Goal 11C stamp build/migration/goal11c/stamp-before-g11c.json) instead of the current one, and
 goal11c_delta() (from verify_goal11c_resources.py) checks that post-Goal 11B -> now is exactly the Goal 11C set.
+
+Goal 11D (build/migration/goal11d/production.diff) changes one further input after Goal 11C, SerializableRecipe.java,
+which Goal 11A, 11B and 11C left as it was; the checks above are kept unchanged and read that input as committed at
+1e29ad29 (post_goal11c_bytes() from verify_goal11d_resources.py), and goal11d_delta() checks that post-Goal 11C -> now is
+exactly the Goal 11D set.
 """
 
 import argparse
@@ -36,6 +41,7 @@ from verify_goal11b_resources import (BASE as POST_BASE, BEFORE_STAMP as POST_ST
                                       GOAL11A_JAR, GOAL11A_SHA256, MODIFIED as GOAL11B_GENERATED, base_input, post_goal11b_tree)
 from verify_goal11c_resources import (BEFORE_STAMP as POST_GOAL11B_STAMP, CHANGED_INPUTS as GOAL11C_INPUTS,
                                       base_input as post_goal11b_path, goal11c_delta)
+from verify_goal11d_resources import CHANGED_INPUTS as GOAL11D_INPUTS, goal11d_delta, post_goal11c_bytes
 
 ROOT = Path(__file__).resolve().parents[2]
 ORIGINAL_ROOT = ROOT.parent / "Hbm-s-Nuclear-Tech-GIT"
@@ -161,11 +167,14 @@ def post_goal11a_tree():
 
 def post_goal11a_input(name):
     """A generation input's stamp hash after Goal 11A: its base-g11a copy for the Goal 11B inputs, the base-g11b copy for
-    the other inputs Goal 11C changes (Goal 11B left them as after Goal 11A), else the file on disk."""
+    the other inputs Goal 11C changes (Goal 11B left them as after Goal 11A), the 1e29ad29 bytes for the Goal 11D input
+    (Goal 11A, 11B and 11C left it as it was), else the file on disk."""
     if name in GOAL11B_INPUTS:
         return stamp_hash(base_input(name))
     if name in GOAL11C_INPUTS:
         return stamp_hash(post_goal11b_path(name))
+    if name in GOAL11D_INPUTS:
+        return text_hash(name, post_goal11c_bytes(name))
     return stamp_hash(ROOT / name) if (ROOT / name).is_file() else None
 
 
@@ -322,6 +331,7 @@ def main():
     report = generated()
     goal11b_delta()
     goal11c_delta(check)
+    goal11d_delta(check)
     if not args.source_only:
         jar()
     OUT.mkdir(parents=True, exist_ok=True)

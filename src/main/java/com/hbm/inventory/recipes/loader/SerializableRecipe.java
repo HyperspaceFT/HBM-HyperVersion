@@ -386,7 +386,7 @@ public abstract class SerializableRecipe {
     public static void writeFluidStack(FluidStack stack, JsonWriter writer) throws IOException {
         writer.beginArray();
         writer.setIndent("");
-        writer.value(stack.type.getUnlocalizedName());	//fluid type
+        writer.value(stack.type.getInternalName());	//fluid type
         writer.value(stack.fill);			            //amount in mB
         if(stack.pressure != 0) writer.value(stack.pressure);
         writer.endArray();

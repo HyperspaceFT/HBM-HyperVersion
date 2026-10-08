@@ -97,6 +97,24 @@ public class Goal11CRecipeRegression {
         return a;
     }
 
+    /**
+     * Goal 11D: the expected export with every fluid named by its internal name instead of its language key
+     * (hbmfluid.petroleum -> PETROLEUM; the language key is "hbmfluid." + the lower-case internal name, original
+     * FluidType.java:61-63), as SerializableRecipe.writeFluidStack writes since Goal 11D (original SerializableRecipe.java:424).
+     */
+    static JsonObject goal11d(JsonObject withKeys) {
+        JsonObject out = withKeys.deepCopy();
+        for(String key : List.of("inputFluid", "outputFluid")) {
+            if(!out.has(key)) continue;
+            for(JsonElement e : out.getAsJsonArray(key)) {
+                JsonArray stack = e.getAsJsonArray();
+                String name = stack.get(0).getAsString();
+                if(name.startsWith("hbmfluid.")) stack.set(0, new JsonPrimitive(name.substring("hbmfluid.".length()).toUpperCase(java.util.Locale.ROOT)));
+            }
+        }
+        return out;
+    }
+
     static JsonArray single(String id, int count) {
         JsonArray stack = new JsonArray();
         stack.add(id);
@@ -173,10 +191,11 @@ public class Goal11CRecipeRegression {
         polymer.addProperty("duration", 100);
         polymer.addProperty("power", 100);
         polymer.addProperty("named", true);
-        check(polymer.equals(live.get("chem.polymer")),
+        // The post-Goal 11C export above names the fluid by its language key; since Goal 11D the writer names it PETROLEUM.
+        check(goal11d(polymer).equals(live.get("chem.polymer")),
                 "chem.polymer: 2 coal powder + 1 fluorite + 1,000 mB petroleum gas -> 4 polymer ingots, 100 ticks, 100 HE/t, named "
                         + "(original ChemicalPlantRecipes.java:209-212): " + live.get("chem.polymer"));
-        JsonObject old = polymer.deepCopy();
+        JsonObject old = goal11d(polymer);
         old.getAsJsonArray("inputFluid").get(0).getAsJsonArray().set(1, new JsonPrimitive(500));
         old.add("outputItem", single("hbmsntm:ingot_polymer", 1));
         check(old.equals(base.get("chem.polymer")),
@@ -192,9 +211,16 @@ public class Goal11CRecipeRegression {
         desh.addProperty("duration", 100);
         desh.addProperty("power", 100);
         desh.addProperty("named", true);
-        check(desh.equals(live.get("chem.desh")) && !ChemicalPlantRecipes.INSTANCE.recipeNameMap.get("chem.desh").isPooled(),
+        check(goal11d(desh).equals(live.get("chem.desh")) && !ChemicalPlantRecipes.INSTANCE.recipeNameMap.get("chem.desh").isPooled(),
                 "chem.desh (unchanged): 1 desh blend + 200 mB light oil + 200 mB mercury -> 1 desh ingot, 100 ticks, 100 HE/t, not pooled "
                         + "(original ChemicalPlantRecipes.java:196-201, without the LBSM simple-chemistry branch): " + live.get("chem.desh"));
+        JsonArray petroleum = array(fluid("PETROLEUM", 1000));
+        JsonArray deshFluids = array(fluid("LIGHTOIL", 200), fluid("MERCURY", 200));
+        check(live.get("chem.polymer").getAsJsonArray("inputFluid").equals(petroleum) && live.get("chem.desh").getAsJsonArray("inputFluid").equals(deshFluids)
+                        && !polymer.getAsJsonArray("inputFluid").equals(petroleum),
+                "Goal 11D: the export names the fluids by their internal names, PETROLEUM and LIGHTOIL, MERCURY (the post-Goal 11C export: "
+                        + "hbmfluid.petroleum, hbmfluid.lightoil, hbmfluid.mercury): " + live.get("chem.polymer").get("inputFluid") + ", "
+                        + live.get("chem.desh").get("inputFluid"));
 
         check(liveNames.equals(baseNames), "every chemical plant recipe keeps its name and order (" + liveNames.size() + " recipes)");
         List<String> changed = new ArrayList<>();

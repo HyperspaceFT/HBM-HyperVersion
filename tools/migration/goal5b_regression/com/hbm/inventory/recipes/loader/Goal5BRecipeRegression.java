@@ -94,6 +94,11 @@ public class Goal5BRecipeRegression {
         SerializableRecipe.clearReceivedRecipes();
         check(PressRecipes.getOutput(new ItemStack(NtmItems.COKE_COAL.get(),2),stamp(StampType.FLAT)).getCount()==3
                 &&Files.readString(active).equals(custom),"clearing sync restores active custom recipe");
+        // Goal 11D: the production writer names a fluid by its internal name (the stand-in's "FLUID"), not by its language
+        // key ("fluid"), as the original SerializableRecipe.java:424 writes getName().
+        StringWriter fluidJson=new StringWriter();JsonWriter fluidWriter=new JsonWriter(fluidJson);
+        SerializableRecipe.writeFluidStack(new com.hbm.inventory.FluidStack(com.hbm.inventory.fluid.Fluids.NONE,1_000),fluidWriter);fluidWriter.close();
+        check(fluidJson.toString().equals("[\"FLUID\",1000]"),"Goal 11D: writeFluidStack writes the internal name: "+fluidJson);
         System.out.println("Goal 5B recipe checks: "+checks+"; artifact="+artifact);
     }
 }

@@ -2,8 +2,9 @@
 
 * the recipe world (recipe_stubs): the Goal 11B recipe world (the Goal 11A/3C loader world with real Gson and the production
   SerializableRecipe, GenericRecipes, GenericRecipe) extended so the production ChemicalPlantRecipes compiles next to
-  AssemblyMachineRecipes: every fluid the sources name is a FluidType with its own name and id (the writer's
-  getUnlocalizedName is "hbmfluid." + the lower-case name, as the production FluidType), vanilla Items and Blocks are
+  AssemblyMachineRecipes: every fluid the sources name is a FluidType with its own name and id (getUnlocalizedName is
+  "hbmfluid." + the lower-case name, as the production FluidType; the writer wrote it until Goal 11D and writes
+  getInternalName, the name itself, since), vanilla Items and Blocks are
   generated from the names the sources use ("minecraft:" ids), MetaHelper keeps the meta of a stack (as the Goal 3C
   processing world does), ItemTags.SAND, ResourceLocation.withDefaultNamespace, a one-argument TagStack and the item enums
   the chemical plant recipes name (stand-in constants; their meta is the stand-in ordinal, the same for the live table and

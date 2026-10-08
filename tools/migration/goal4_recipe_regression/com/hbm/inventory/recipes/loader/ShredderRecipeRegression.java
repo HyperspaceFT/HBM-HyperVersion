@@ -127,6 +127,15 @@ public class ShredderRecipeRegression {
             throw new AssertionError("explicit empty output was replaced");
         }
         checks++;
+
+        // Goal 11D: the production writer names a fluid by its internal name (the stand-in's "FLUID"), not by its language
+        // key ("fluid"), as the original SerializableRecipe.java:424 writes getName().
+        java.io.StringWriter fluidJson = new java.io.StringWriter();
+        com.google.gson.stream.JsonWriter fluidWriter = new com.google.gson.stream.JsonWriter(fluidJson);
+        SerializableRecipe.writeFluidStack(new com.hbm.inventory.FluidStack(com.hbm.inventory.fluid.Fluids.NONE, 1_000), fluidWriter);
+        fluidWriter.close();
+        if(!fluidJson.toString().equals("[\"FLUID\",1000]")) throw new AssertionError("Goal 11D: writeFluidStack writes the internal name: " + fluidJson);
+        checks++;
         System.out.println("PASS " + checks + " production recipe assertions");
     }
 }
