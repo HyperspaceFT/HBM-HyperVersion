@@ -207,6 +207,7 @@ public class NtmItemModelProvider extends ItemModelProvider {
         this.basicItem(NtmItems.POWDER_ASH_MISC.get());
 
         this.basicItem(NtmItems.FRAGMENT_NIOBIUM.get());
+        this.basicItem(NtmItems.FRAGMENT_COLTAN.get());
         this.basicItem(NtmItems.FRAGMENT_COBALT.get());
         this.basicItem(NtmItems.FRAGMENT_NEODYMIUM.get());
         this.basicItem(NtmItems.FRAGMENT_CERIUM.get());
@@ -730,6 +731,7 @@ public class NtmItemModelProvider extends ItemModelProvider {
         this.basicItem(NtmItems.DOSIMETER.get());
         this.basicItem(NtmItems.GEIGER_COUNTER.get());
         this.basicCustomLayerItem(NtmItems.OIL_DETECTOR.get(), "oil_detector");
+        this.registerColtanCompass();
         this.basicItem(NtmItems.DIGAMMA_DIAGNOSTIC.get());
         this.handheldItem(NtmItems.METEOR_REMOTE.get());
         this.basicItem(NtmItems.METEOR_CHARM.get());
@@ -953,6 +955,35 @@ public class NtmItemModelProvider extends ItemModelProvider {
                     .model(getBuilder("polaroid_" + i)
                             .parent(getExistingFile(mcLoc("item/generated")))
                             .texture("layer0", modLoc("item/polaroid_" + i)))
+                    .end();
+        }
+    }
+
+    /**
+     * The original coltass.png is a 32-frame strip animated by TextureCompass; its frames are split into
+     * coltan_tool_00 ... _31 and selected like the vanilla compass: frame 16 points straight ahead and is the base model,
+     * each other frame covers 1/32 of a turn centred on (frame - 16) / 32. The 33 thresholds are vanilla compass.json's,
+     * the last one wrapping back to the base model.
+     */
+    private void registerColtanCompass() {
+        ItemModelBuilder builder = this.getBuilder("coltan_tool")
+                .parent(getExistingFile(mcLoc("item/generated")))
+                .texture("layer0", modLoc("item/coltan_tool_16"));
+        for(int i = 0; i <= 32; i++) {
+            float angle = i == 0 ? 0.0F : i / 32.0F - 1.0F / 64.0F;
+            int frame = (i + 16) % 32;
+            ModelFile model;
+            if(frame == 16) {
+                model = builder;
+            } else {
+                String name = String.format("coltan_tool_%02d", frame);
+                model = getBuilder(name)
+                        .parent(getExistingFile(mcLoc("item/generated")))
+                        .texture("layer0", modLoc("item/" + name));
+            }
+            builder.override()
+                    .predicate(NuclearTechMod.withDefaultNamespace("angle"), angle)
+                    .model(model)
                     .end();
         }
     }

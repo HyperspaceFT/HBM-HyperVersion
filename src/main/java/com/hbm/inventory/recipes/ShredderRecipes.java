@@ -131,6 +131,7 @@ public class ShredderRecipes extends SerializableRecipe {
             case "beryllium" -> output(new ItemStack(NtmItems.POWDER_BERYLLIUM.get()));
             case "asbestos" -> output(new ItemStack(NtmItems.POWDER_ASBESTOS.get()));
             case "cobalt" -> output(new ItemStack(NtmItems.POWDER_COBALT.get()));
+            case "coltan" -> output(new ItemStack(NtmItems.POWDER_COLTAN_ORE.get()));
             case "sulfur" -> output(new ItemStack(NtmItems.SULFUR.get()));
             case "cinnabar" -> output(new ItemStack(NtmItems.CINNABAR.get()));
             case "fluorite" -> output(new ItemStack(NtmItems.FLUORITE.get()));
@@ -195,6 +196,7 @@ public class ShredderRecipes extends SerializableRecipe {
         registerIfAbsent(new ItemStack(NtmBlocks.BLOCK_BISMUTH.get()), new ItemStack(NtmItems.POWDER_BISMUTH.get(), 9));
         registerIfAbsent(new ItemStack(NtmBlocks.BLOCK_CADMIUM.get()), new ItemStack(NtmItems.POWDER_CADMIUM.get(), 9));
         registerIfAbsent(new ItemStack(NtmBlocks.BLOCK_CDALLOY.get()), new ItemStack(NtmItems.POWDER_CDALLOY.get(), 9));
+        registerIfAbsent(new ItemStack(NtmBlocks.BLOCK_COLTAN.get()), new ItemStack(NtmItems.POWDER_COLTAN_ORE.get(), 9));
         registerIfAbsent(new ItemStack(NtmBlocks.BLOCK_COMBINE_STEEL.get()), new ItemStack(NtmItems.POWDER_COMBINE_STEEL.get(), 9));
         registerIfAbsent(new ItemStack(NtmBlocks.BLOCK_COPPER.get()), new ItemStack(NtmItems.POWDER_COPPER.get(), 9));
         registerIfAbsent(new ItemStack(NtmBlocks.BLOCK_DESH.get()), new ItemStack(NtmItems.POWDER_DESH.get(), 9));
@@ -266,6 +268,8 @@ public class ShredderRecipes extends SerializableRecipe {
         registerIfAbsent(new ItemStack(NtmItems.INGOT_CERIUM.get()), new ItemStack(NtmItems.POWDER_CERIUM.get(), 1));
         registerIfAbsent(new ItemStack(NtmItems.INGOT_CO60.get()), new ItemStack(NtmItems.POWDER_CO60.get(), 1));
         registerIfAbsent(new ItemStack(NtmItems.INGOT_COBALT.get()), new ItemStack(NtmItems.POWDER_COBALT.get(), 1));
+        // Original: the coltan fragment is coltan's ingot form (OreDictManager COLTAN.ingot), the crushed ore its dust
+        registerIfAbsent(new ItemStack(NtmItems.FRAGMENT_COLTAN.get()), new ItemStack(NtmItems.POWDER_COLTAN_ORE.get(), 1));
         registerIfAbsent(new ItemStack(NtmItems.INGOT_COMBINE_STEEL.get()), new ItemStack(NtmItems.POWDER_COMBINE_STEEL.get(), 1));
         registerIfAbsent(new ItemStack(NtmItems.INGOT_COPPER.get()), new ItemStack(NtmItems.POWDER_COPPER.get(), 1));
         registerIfAbsent(new ItemStack(Items.COPPER_INGOT), new ItemStack(NtmItems.POWDER_COPPER.get(), 1));
@@ -374,6 +378,7 @@ public class ShredderRecipes extends SerializableRecipe {
         setRecipe(Blocks.OBSIDIAN, new ItemStack(NtmBlocks.GRAVEL_OBSIDIAN.get().asItem()));
         setRecipe(Blocks.ANVIL, new ItemStack(NtmItems.POWDER_IRON.get(), 31));
         // Upstream's other ore fragments wait for their materials; Goal 10A restores the cobalt one.
+        // Goal 12B's coltan fragment is a material recipe (registerMaterialRecipes), as upstream treats it as an ingot.
         setRecipe(new ItemStack(NtmItems.FRAGMENT_COBALT.get()), new ItemStack(NtmItems.POWDER_COBALT_TINY.get(), 1));
     }
 

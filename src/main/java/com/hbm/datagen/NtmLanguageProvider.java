@@ -653,6 +653,7 @@ public class NtmLanguageProvider extends LanguageProvider {
         this.add(NtmItems.POWDER_ASH_COAL, "Coal Ashes");
         this.add(NtmItems.POWDER_ASH_MISC, "Miscellaneous Ashes");
         this.add(NtmItems.FRAGMENT_NIOBIUM, "Niobium Fragment");
+        this.add(NtmItems.FRAGMENT_COLTAN, "Coltan");
         this.add(NtmItems.FRAGMENT_NEODYMIUM, "Niobium Neodymium");
         this.add(NtmItems.FRAGMENT_COBALT, "Cobalt Fragment");
         this.add(NtmItems.FRAGMENT_CERIUM, "Cerium Fragment");
@@ -1111,6 +1112,8 @@ public class NtmLanguageProvider extends LanguageProvider {
         this.add("geiger.title.dosimeter", "===== ☢ DOSIMETER ☢ =====");
         this.add(NtmItems.DOSIMETER, "Dosimeter");
         this.add(NtmItems.OIL_DETECTOR, "Oil Reservoir Detector");
+        this.add(NtmItems.COLTAN_TOOL, "Coltass");
+        this.add("item.hbmsntm.coltan_tool.desc", "Points towards the coltan deposit.$The deposit is a large area where coltan ore spawns like standard ore,$it's not one large blob of ore on that exact location.");
         this.add(NtmItems.METEOR_REMOTE, "Meteorite Remote");
         this.add(NtmItems.METEOR_CHARM, "Meteor Charm");
         this.add(NtmItems.PROTECTION_CHARM, "Charm of Protection");
@@ -1564,6 +1567,7 @@ public class NtmLanguageProvider extends LanguageProvider {
         this.add(NtmBlocks.ORE_FLUORITE_DEEPSLATE, "Deepslate Fluorite Ore");
         this.add(NtmBlocks.ORE_RARE, "Rare Ore");
         this.add(NtmBlocks.ORE_RARE_DEEPSLATE, "Deepslate Rare Ore");
+        this.add(NtmBlocks.ORE_COLTAN, "Coltan Ore");
         this.add(NtmBlocks.ORE_SULFUR, "Sulfur Ore");
         this.add(NtmBlocks.ORE_SULFUR_DEEPSLATE, "Deepslate Sulfur Ore");
         this.add(NtmBlocks.ORE_LIGNITE, "Lignite Ore");
@@ -1725,6 +1729,7 @@ public class NtmLanguageProvider extends LanguageProvider {
         this.add(NtmBlocks.MACHINE_PUMPJACK, "Pumpjack");
         this.add(NtmBlocks.MACHINE_FRACKING_TOWER, "Hydraulic Fracking Tower");
         this.add(NtmBlocks.MACHINE_REFINERY, "Oil Refinery");
+        this.add(NtmBlocks.MACHINE_CATALYTIC_CRACKER, "Catalytic Cracking Tower");
         this.add(NtmBlocks.ORE_METEOR_IRON, "Meteor Iron Ore");
         this.add(NtmBlocks.ORE_METEOR_COBALT, "Meteor Cobalt Ore");
         this.add(NtmBlocks.ORE_METEOR_ALUMINIUM, "Meteor Aluminium Ore");

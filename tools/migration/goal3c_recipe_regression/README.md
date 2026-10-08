@@ -44,3 +44,5 @@ Goal 11D (`build/migration/goal11d/production.diff`) makes the production `Seria
 `getInternalName()`; the `FluidType` stand-in now declares it as `FLUID` (its language key stays `fluid`), and one added
 check requires every fluid of the written `_hbmAssemblyMachine.json` template to be `FLUID`. The Goal 4 shredder suite,
 which inherits the stand-in, gains one check that `writeFluidStack` writes `["FLUID",1000]`.
+
+Goal 12B (`build/migration/goal12b/production.diff`) registers `CrackingRecipes` in `SerializableRecipe.registerAllHandlers`; the stand-ins gain a name-only `CrackingRecipes` handler (as for `CrucibleRecipes`), so every world built on these stubs compiles the production `SerializableRecipe` again; no check changes.

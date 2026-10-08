@@ -25,6 +25,8 @@ import java.util.Map;
  * every other recipe keeps its name, order and content.
  * Goal 11C (migration/GOAL11C.md D1) appends exactly ass.chemplant after ass.tank (original AssemblyMachineRecipes.java:264-265,
  * normal mode); one added check requires exactly that entry there with the original's inputs.
+ * Goal 12B (migration/GOAL12B.md) appends exactly ass.crackingtower after ass.chemplant (original
+ * AssemblyMachineRecipes.java:316-317, normal mode); one more added check requires exactly that entry there.
  */
 public class Goal11BRecipeRegression {
     private static int checks;
@@ -109,7 +111,9 @@ public class Goal11BRecipeRegression {
         List<String> baseNames = new ArrayList<>(base.keySet());
         // Goal 11C (migration/GOAL11C.md D1): exactly ass.chemplant follows ass.tank; it is checked by the added check below.
         List<String> goal11c = List.of("ass.chemplant");
-        check(liveNames.size() == baseNames.size() + 1 + goal11c.size() && liveNames.get(baseNames.size()).equals("ass.tank"),
+        // Goal 12B (migration/GOAL12B.md): exactly ass.crackingtower follows ass.chemplant; one added check below.
+        List<String> goal12b = List.of("ass.crackingtower");
+        check(liveNames.size() == baseNames.size() + 1 + goal11c.size() + goal12b.size() && liveNames.get(baseNames.size()).equals("ass.tank"),
                 "exactly one recipe is added, at the end before the Goal 11C entry (" + baseNames.size() + " -> " + liveNames.size() + ", "
                         + liveNames.subList(Math.min(baseNames.size(), liveNames.size()), liveNames.size()) + ")");
         JsonObject chemplant = new JsonObject();
@@ -132,10 +136,33 @@ public class Goal11BRecipeRegression {
         chemplant.add("outputItem", chemOut);
         chemplant.addProperty("duration", 200);
         chemplant.addProperty("power", 100);
-        check(liveNames.subList(Math.min(baseNames.size() + 1, liveNames.size()), liveNames.size()).equals(goal11c) && chemplant.equals(live.get("ass.chemplant")),
+        check(liveNames.subList(Math.min(baseNames.size() + 1, liveNames.size()), Math.max(liveNames.size() - goal12b.size(), 0)).equals(goal11c)
+                        && chemplant.equals(live.get("ass.chemplant")),
                 "Goal 11C entries are exactly these, after ass.tank: " + goal11c + " = ass.chemplant 200 ticks, 100 HE/t, 8 steel ingots, 2 copper pipes, "
                         + "16 polymer plates, 2 motors, 2 tungsten coils, 1 analog circuit board -> 1 chemical plant (original "
                         + "AssemblyMachineRecipes.java:264-265): " + live.get("ass.chemplant"));
+        JsonObject cracker = new JsonObject();
+        cracker.addProperty("name", "ass.crackingtower");
+        JsonArray crackIn = new JsonArray();
+        crackIn.add(item("hbmsntm:steel_scaffold", 16, wildcard));
+        crackIn.add(item("hbmsntm:shell_steel", 6, wildcard));
+        crackIn.add(item("hbmsntm:ingot_desh", 12, wildcard));
+        crackIn.add(item("hbmsntm:ingot_niobium", 4, wildcard));
+        cracker.add("inputItem", crackIn);
+        JsonArray crackSingle = new JsonArray();
+        crackSingle.add("single");
+        JsonArray crackStack = new JsonArray();
+        crackStack.add("hbmsntm:machine_catalytic_cracker");
+        crackSingle.add(crackStack);
+        JsonArray crackOut = new JsonArray();
+        crackOut.add(crackSingle);
+        cracker.add("outputItem", crackOut);
+        cracker.addProperty("duration", 200);
+        cracker.addProperty("power", 100);
+        check(liveNames.subList(Math.max(liveNames.size() - goal12b.size(), 0), liveNames.size()).equals(goal12b) && cracker.equals(live.get("ass.crackingtower")),
+                "Goal 12B entries are exactly these, after ass.chemplant: " + goal12b + " = ass.crackingtower 200 ticks, 100 HE/t, 16 steel scaffolds, "
+                        + "6 steel shells, 12 desh ingots, 4 niobium ingots -> 1 catalytic cracking tower (original AssemblyMachineRecipes.java:316-317): "
+                        + live.get("ass.crackingtower"));
         check(liveNames.subList(0, baseNames.size()).equals(baseNames), "every post-Goal 11A recipe keeps its name and order");
         List<String> changed = new ArrayList<>();
         for(String name : baseNames) if(!live.get(name).equals(base.get(name))) changed.add(name);

@@ -28,6 +28,8 @@ import java.util.Map;
  * comparison accepts exactly that entry at the end and checks it, everything else is compared as before.
  * Goal 11C (migration/GOAL11C.md D1) appends exactly ass.chemplant after ass.tank (original AssemblyMachineRecipes.java:264-265,
  * normal mode); one added check requires exactly that entry there with the original's inputs.
+ * Goal 12B (migration/GOAL12B.md) appends exactly ass.crackingtower after ass.chemplant (original
+ * AssemblyMachineRecipes.java:316-317, normal mode); one more added check requires exactly that entry there.
  */
 public class Goal11ARecipeRegression {
     private static int checks;
@@ -125,10 +127,12 @@ public class Goal11ARecipeRegression {
         // Goal 11C (migration/GOAL11C.md D1): exactly ass.chemplant follows ass.tank; it is checked by the added check below.
         List<String> goal11b = List.of("ass.tank");
         List<String> goal11c = List.of("ass.chemplant");
+        // Goal 12B (migration/GOAL12B.md): exactly ass.crackingtower follows ass.chemplant; one added check below.
+        List<String> goal12b = List.of("ass.crackingtower");
         List<String> liveNames = new ArrayList<>(live.keySet());
         JsonObject tank = expected("ass.tank", "hbmsntm:machine_fluid_tank", 200,
                 tag("c:plates/steel", 8), item("hbmsntm:shell_steel", 4, wildcard));
-        check(liveNames.size() == head.size() + goal11b.size() + goal11c.size()
+        check(liveNames.size() == head.size() + goal11b.size() + goal11c.size() + goal12b.size()
                         && liveNames.subList(head.size(), head.size() + goal11b.size()).equals(goal11b)
                         && tank.equals(live.get("ass.tank")),
                 "Goal 11B entries are exactly these, appended at the end: " + goal11b + " = ass.tank 200 ticks, 100 HE/t, 8 steel plates "
@@ -137,11 +141,19 @@ public class Goal11ARecipeRegression {
         JsonObject chemplant = expected("ass.chemplant", "hbmsntm:machine_chemical_plant", 200,
                 item("hbmsntm:ingot_steel", 8, wildcard), item("hbmsntm:pipe_copper", 2, wildcard), item("hbmsntm:plate_polymer", 16, wildcard),
                 item("hbmsntm:motor", 2, wildcard), item("hbmsntm:coil_tungsten", 2, wildcard), item("hbmsntm:circuit_analog_board", 1, wildcard));
-        check(liveNames.subList(Math.min(head.size() + goal11b.size(), liveNames.size()), liveNames.size()).equals(goal11c)
+        check(liveNames.subList(Math.min(head.size() + goal11b.size(), liveNames.size()), Math.max(liveNames.size() - goal12b.size(), 0)).equals(goal11c)
                         && chemplant.equals(live.get("ass.chemplant")),
                 "Goal 11C entries are exactly these, after the Goal 11B entry: " + goal11c + " = ass.chemplant 200 ticks, 100 HE/t, 8 steel ingots, "
                         + "2 copper pipes, 16 polymer plates, 2 motors, 2 tungsten coils, 1 analog circuit board -> 1 chemical plant "
                         + "(original AssemblyMachineRecipes.java:264-265): " + live.get("ass.chemplant"));
+        JsonObject cracker = expected("ass.crackingtower", "hbmsntm:machine_catalytic_cracker", 200,
+                item("hbmsntm:steel_scaffold", 16, wildcard), item("hbmsntm:shell_steel", 6, wildcard), item("hbmsntm:ingot_desh", 12, wildcard),
+                item("hbmsntm:ingot_niobium", 4, wildcard));
+        check(liveNames.subList(Math.max(liveNames.size() - goal12b.size(), 0), liveNames.size()).equals(goal12b)
+                        && cracker.equals(live.get("ass.crackingtower")),
+                "Goal 12B entries are exactly these, after the Goal 11C entry: " + goal12b + " = ass.crackingtower 200 ticks, 100 HE/t, 16 steel scaffolds, "
+                        + "6 steel shells, 12 desh ingots, 4 niobium ingots -> 1 catalytic cracking tower (original AssemblyMachineRecipes.java:316-317): "
+                        + live.get("ass.crackingtower"));
         check(liveNames.subList(0, head.size()).equals(new ArrayList<>(head.keySet())),
                 "the catalog keeps every recipe name and its order (" + head.size() + " recipes before the Goal 11B entry)");
         List<String> changed = new ArrayList<>();

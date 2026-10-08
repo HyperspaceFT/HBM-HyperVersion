@@ -36,6 +36,12 @@ with the e476f5c1 bytes of the files it changes, the e476f5c1 bytes of the Goal 
 Goal 11A release JAR, and the release class of a Goal 11A source Goal 12A changes (and Goal 11B did not) must lack the Goal
 12A literal that the current build's class holds. goal12a_delta() then checks that post-Goal 11D -> now is exactly the Goal
 12A set.
+
+Goal 12B (build/migration/goal12b/production.diff) changes, among others, the Goal 11A sources NtmPlacedFeatures, NtmBlocks,
+NtmBlockLootTableProvider and NtmLanguageProvider again; the Goal 12A helpers read the post-Goal 12A state from
+verify_goal12b_resources.py, and the release class of a Goal 11A source Goal 12B changes (and neither Goal 11B nor 12A did)
+must lack the Goal 12B literal (GOAL12B_LITERALS) that the current build's class holds. goal12a_delta() ends with
+goal12b_delta() (3 more checks).
 """
 
 import argparse
@@ -52,6 +58,7 @@ from verify_goal11c_resources import (BEFORE_STAMP as POST_GOAL11B_STAMP, CHANGE
 from verify_goal11d_resources import CHANGED_INPUTS as GOAL11D_INPUTS, goal11d_delta, post_goal11c_bytes
 from verify_goal12a_resources import (CHANGED_JAVA as GOAL12A_JAVA, GOAL12A_LITERALS, goal12a_delta, post_goal11d_generated,
                                       post_goal11d_input, post_goal11d_tree)
+from verify_goal12b_resources import CHANGED_JAVA as GOAL12B_JAVA, GOAL12B_LITERALS
 
 ROOT = Path(__file__).resolve().parents[2]
 ORIGINAL_ROOT = ROOT.parent / "Hbm-s-Nuclear-Tech-GIT"
@@ -334,6 +341,11 @@ def jar():
             elif source in GOAL12A_JAVA:
                 # Changed again by Goal 12A: the release class must lack the Goal 12A literal the current build's class holds.
                 literal = GOAL12A_LITERALS[name]
+                check(name in names and literal not in archive.read(name) and literal in (classes / name).read_bytes(),
+                      f"JAR {name} == the compiled class (post-Goal 11A: without {literal.decode()}, which the current build adds)")
+            elif source in GOAL12B_JAVA:
+                # Changed again by Goal 12B: the release class must lack the Goal 12B literal the current build's class holds.
+                literal = GOAL12B_LITERALS[name]
                 check(name in names and literal not in archive.read(name) and literal in (classes / name).read_bytes(),
                       f"JAR {name} == the compiled class (post-Goal 11A: without {literal.decode()}, which the current build adds)")
             else:

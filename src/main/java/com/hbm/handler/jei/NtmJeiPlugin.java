@@ -70,6 +70,7 @@ public class NtmJeiPlugin implements IModPlugin {
                 new PressRecipeHandler(guiHelper),
                 new ShredderRecipeHandler(guiHelper),
                 new RefineryRecipeHandler(guiHelper),
+                new CrackingRecipeHandler(guiHelper),
                 new BoilerRecipeHandler(guiHelper),
                 new CrucibleSmeltingRecipeHandler(guiHelper),
                 new CrucibleAlloyingRecipeHandler(guiHelper),
@@ -91,6 +92,7 @@ public class NtmJeiPlugin implements IModPlugin {
         registration.addRecipes(PressRecipeHandler.RECIPE_TYPE, PressRecipeHandler.getRecipes());
         registration.addRecipes(ShredderRecipeHandler.RECIPE_TYPE, ShredderRecipes.getJeiRecipes());
         registration.addRecipes(RefineryRecipeHandler.RECIPE_TYPE, RefineryRecipeHandler.getRecipes());
+        registration.addRecipes(CrackingRecipeHandler.RECIPE_TYPE, CrackingRecipeHandler.getRecipes());
         registration.addRecipes(BoilerRecipeHandler.RECIPE_TYPE, BoilerRecipeHandler.getRecipes());
         registration.addRecipes(CrucibleSmeltingRecipeHandler.RECIPE_TYPE, CopperCastingRecipes.getMeltEntries());
         registration.addRecipes(CrucibleAlloyingRecipeHandler.RECIPE_TYPE, CrucibleRecipes.INSTANCE.recipeOrderedList);
@@ -154,6 +156,10 @@ public class NtmJeiPlugin implements IModPlugin {
         registration.addRecipeCatalyst(
                 NtmBlocks.MACHINE_REFINERY.asItem(),
                 RefineryRecipeHandler.RECIPE_TYPE
+        );
+        registration.addRecipeCatalyst(
+                NtmBlocks.MACHINE_CATALYTIC_CRACKER.asItem(),
+                CrackingRecipeHandler.RECIPE_TYPE
         );
         registration.addRecipeCatalyst(
                 NtmBlocks.HEAT_BOILER.asItem(),

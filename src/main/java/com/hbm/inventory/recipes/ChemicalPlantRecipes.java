@@ -233,8 +233,9 @@ public class ChemicalPlantRecipes extends GenericRecipes<GenericRecipe> {
                 .inputItems(new ComparableStack(NtmItems.POWDER_IRON.get()))
                 .inputFluids(new FluidStack(Fluids.SCHRABIDIC, 250))
                 .outputItems(new ItemStack(NtmItems.POWDER_SCHRABIDATE.get())));
+        // Original ChemicalPlantRecipes.java:312: COLTAN.dust() is the crushed coltan ore, not the purified tantalite it yields
         this.register(new GenericRecipe("chem.coltancleaning").setupNamed(60, 100L)
-                .inputItems(new ComparableStack(NtmItems.POWDER_COLTAN.get(), 2), new ComparableStack(NtmItems.POWDER_COAL.get()))
+                .inputItems(new ComparableStack(NtmItems.POWDER_COLTAN_ORE.get(), 2), new ComparableStack(NtmItems.POWDER_COAL.get()))
                 .inputFluids(new FluidStack(Fluids.PEROXIDE, 250), new FluidStack(Fluids.HYDROGEN, 500))
                 .outputItems(new ItemStack(NtmItems.POWDER_COLTAN.get()), new ItemStack(NtmItems.POWDER_NIOBIUM.get()), new ItemStack(NtmItems.DUST.get()))
                 .outputFluids(new FluidStack(Fluids.WATER, 500)));

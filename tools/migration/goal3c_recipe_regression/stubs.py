@@ -84,6 +84,9 @@ public class WeightedRandom{public static class Item{public int itemWeight;publi
         "PressRecipes": "com/hbm/inventory/recipes",
         "ShredderRecipes": "com/hbm/inventory/recipes",
         "CentrifugeRecipes": "com/hbm/inventory/recipes",
+        # Goal 12B registers CrackingRecipes after CentrifugeRecipes; as for the crucible, this suite only needs the name.
+        # The live cracking handler and its registration are checked by verify_goal12b.py.
+        "CrackingRecipes": "com/hbm/inventory/recipes",
         "BlastFurnaceRecipes": "com/hbm/inventory/recipes",
         "ChemicalPlantRecipes": "com/hbm/inventory/recipes",
         # Goal 10A registers CrucibleRecipes.INSTANCE after ChemicalPlantRecipes; this loader suite only needs the

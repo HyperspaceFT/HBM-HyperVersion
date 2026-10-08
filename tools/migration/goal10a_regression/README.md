@@ -66,3 +66,5 @@ Recipe world:
 - `MachineCrucibleBlock`/`FoundryMoldBlock` interactions (shovel, break, mold insertion by hand, look overlays) and hopper transfers; the placement rules they use are compiled.
 - Original behaviours the plan leaves out (D6, D9, D10): other crucible recipes, plates/powders/ores in the crucible, contact damage, soot, molten metal rendering and other casting devices.
 - `SerializableRecipe.readRecipeFile` leaves its `FileReader` open; on Windows the enabled `hbmCrucible.json` therefore cannot be deleted while the JVM runs, so section 5b restores the defaults through the handler instead of deleting the file (pre-existing behaviour, not a Goal 10A change).
+
+Goal 12B (`build/migration/goal12b/production.diff`) registers `CrackingRecipes` after `CentrifugeRecipes`; section 5b now requires the nine Goal 10A handlers plus exactly one `CrackingRecipes` (ten), every other check unchanged.

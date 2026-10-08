@@ -5,6 +5,7 @@ import com.hbm.blockentity.machine.*;
 import com.hbm.blockentity.machine.boiler.MachineHeatBoilerBlockEntity;
 import com.hbm.blockentity.machine.boiler.MachineIndustrialBoilerBlockEntity;
 import com.hbm.blockentity.machine.heater.*;
+import com.hbm.blockentity.machine.oil.MachineCatalyticCrackerBlockEntity;
 import com.hbm.blockentity.machine.oil.MachineFrackingTowerBlockEntity;
 import com.hbm.blockentity.machine.oil.MachineOilWellBlockEntity;
 import com.hbm.blockentity.machine.oil.MachinePumpjackBlockEntity;
@@ -151,6 +152,13 @@ public class NtmBlockEntityTypes {
             () -> BlockEntityType.Builder.of(
                             MachineRefineryBlockEntity::new,
                             NtmBlocks.MACHINE_REFINERY.get())
+                    .build(null));
+
+    public static final Supplier<BlockEntityType<MachineCatalyticCrackerBlockEntity>> MACHINE_CATALYTIC_CRACKER = BLOCK_ENTITY_TYPES.register(
+            "machine_catalytic_cracker",
+            () -> BlockEntityType.Builder.of(
+                            MachineCatalyticCrackerBlockEntity::new,
+                            NtmBlocks.MACHINE_CATALYTIC_CRACKER.get())
                     .build(null));
 
     public static final Supplier<BlockEntityType<MachineFurnaceCombinationBlockEntity>> FURNACE_COMBINATION = BLOCK_ENTITY_TYPES.register(

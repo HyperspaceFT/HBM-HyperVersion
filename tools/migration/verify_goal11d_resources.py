@@ -24,6 +24,12 @@ compared with the post-Goal 11D files once exactly the Goal 12A additions are ta
 pickaxe tag, and the Goal 11D JAR delta (only the SerializableRecipe classes against the Goal 11C release) is checked on the
 delivered Goal 11D release, whose SerializableRecipe classes the current build reproduces. goal12a_delta() from that module
 then checks that post-Goal 11D -> now is exactly the Goal 12A set.
+
+Goal 12B (build/migration/goal12b/production.diff) changes SerializableRecipe.java again (the CrackingRecipes import and
+registration) and retires 4 generated files. The post-Goal 11D SerializableRecipe.java is the e476f5c1 file; in full mode the
+JAR is read through post_goal12a_archive (verify_goal12b_resources.py), and the delivered Goal 11D SerializableRecipe classes
+must be the ones of the Goal 12A release while only the current build's class holds the Goal 12B literal CrackingRecipes.
+goal12a_delta() ends with goal12b_delta() (3 more checks).
 """
 
 import argparse
@@ -35,6 +41,7 @@ from pathlib import Path
 
 from verify_goal12a_resources import (GOAL11D_JAR, goal11d_release, goal12a_delta, post_goal11d_bytes, post_goal11d_generated,
                                       post_goal11d_input, post_goal11d_stamp, post_goal11d_tree, same_as_post_goal11d)
+from verify_goal12b_resources import GOAL12B_LITERALS, goal12a_release, post_goal12a_archive
 
 ROOT = Path(__file__).resolve().parents[2]
 GEN = ROOT / "src/generated/resources"
@@ -157,8 +164,10 @@ def generated():
     # The pre-Goal 11D stamp is the delivered post-Goal 11C one, and its SerializableRecipe entry is the 1e29ad29 source.
     check(BEFORE_STAMP.read_bytes() == post_goal11c_bytes(STAMP), "stamp-before-g11d.json is byte for byte the stamp of git 1e29ad29")
     source = CHANGED_JAVA[0]
+    # Goal 12B changes the work tree file again (two lines); the post-Goal 11D file is the one committed at e476f5c1.
     check(before_stamp["inputs"][source] == text_hash(source, post_goal11c_bytes(source)) and stamp["inputs"][source] == post_goal11d_input(source)
-          == stamp_hash(ROOT / source), "the pre-Goal 11D stamp hashes the 1e29ad29 SerializableRecipe.java, the post-Goal 11D stamp the work tree file")
+          == text_hash(source, post_goal11d_bytes(source)), "the pre-Goal 11D stamp hashes the 1e29ad29 SerializableRecipe.java, the post-Goal 11D stamp "
+          "the e476f5c1 file (the work tree file until Goal 12B)")
 
     # Languages and the Chinese map: unchanged against 1e29ad29 and the Goal 11C release (the post-Goal 11D files: e476f5c1).
     release = goal11c_release([EN, ZH])
@@ -190,7 +199,8 @@ def jar():
     prefixes = [name.removeprefix("src/main/java/").removesuffix(".java") for name in CHANGED_JAVA]
     goal11c_release([])
     goal11d_release([])
-    with zipfile.ZipFile(JAR) as archive, zipfile.ZipFile(GOAL11C_JAR) as release, zipfile.ZipFile(GOAL11D_JAR) as delivered:
+    # Goal 12B: the JAR read as its post-Goal 12A state (the 4 retired files from the Goal 12A release).
+    with post_goal12a_archive(JAR) as archive, zipfile.ZipFile(GOAL11C_JAR) as release, zipfile.ZipFile(GOAL11D_JAR) as delivered:
         names = archive.namelist()
         check(len(names) == len(set(names)), "the JAR has no duplicate paths")
         different = [name for name in stamp["generated"] if name not in names or not same_as_post_goal11d(name, archive.read(name), post_goal11d_generated(name))]
@@ -204,9 +214,15 @@ def jar():
                               if is_class_of(p.relative_to(classes).as_posix(), [prefix]))
             check(prefix + ".class" in matching and matching == compiled and all(archive.read(name) == (classes / name).read_bytes() for name in matching),
                   f"JAR {prefix}.class (and its {len(matching) - 1} nested classes) == the compiled classes")
-            check(all(archive.read(name) == delivered.read(name) for name in matching)
-                  and sorted(n for n in delivered.namelist() if is_class_of(n, [prefix])) == matching,
-                  f"JAR {prefix}.class (and its nested classes) == the delivered Goal 11D release (Goal 12A does not change it)")
+            # Goal 12B changes SerializableRecipe again (the CrackingRecipes registration): the Goal 12A release, which Goal 12A
+            # did not change it for, must hold the delivered Goal 11D classes, and only the current build the Goal 12B literal.
+            post12a = goal12a_release(matching)
+            literal = GOAL12B_LITERALS[prefix + ".class"]
+            check(all(post12a[name] == delivered.read(name) for name in matching)
+                  and sorted(n for n in delivered.namelist() if is_class_of(n, [prefix])) == matching
+                  and literal in archive.read(prefix + ".class") and literal not in delivered.read(prefix + ".class"),
+                  f"JAR {prefix}.class (and its nested classes) == the delivered Goal 11D release in the Goal 12A release (Goal 12A does not "
+                  f"change it); the current build adds the Goal 12B literal {literal.decode()}")
             new, old = archive.read(prefix + ".class"), release.read(prefix + ".class")
             check(NEW_CALL in new and OLD_CALL not in new and OLD_CALL in old and NEW_CALL not in old,
                   f"JAR {prefix}.class calls {NEW_CALL.decode()} and no longer {OLD_CALL.decode()} (the Goal 11C release class: the reverse)")

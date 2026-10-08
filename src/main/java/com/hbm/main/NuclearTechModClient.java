@@ -19,7 +19,9 @@ import com.hbm.inventory.fluid.FluidType;
 import com.hbm.inventory.fluid.Fluids;
 import com.hbm.inventory.screens.LoadingScreenRendererNT;
 import com.hbm.items.*;
+import com.hbm.items.component.NtmDataComponents;
 import com.hbm.items.special.PolaroidItem;
+import com.hbm.items.tools.ColtanCompassItem;
 import com.hbm.items.tools.GeigerCounterItem;
 import com.hbm.items.weapon.sedna.GunBaseNTItem;
 import com.hbm.items.weapon.sedna.factory.GunFactoryClient;
@@ -71,9 +73,11 @@ import net.minecraft.client.player.LocalPlayer;
 import net.minecraft.client.renderer.GameRenderer;
 import net.minecraft.client.renderer.ItemBlockRenderTypes;
 import net.minecraft.client.renderer.RenderType;
+import net.minecraft.client.renderer.item.CompassItemPropertyFunction;
 import net.minecraft.client.renderer.item.ItemProperties;
 import net.minecraft.client.renderer.texture.TextureAtlas;
 import net.minecraft.core.BlockPos;
+import net.minecraft.core.GlobalPos;
 import net.minecraft.core.Holder;
 import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.nbt.CompoundTag;
@@ -164,6 +168,10 @@ public class NuclearTechModClient {
             ItemProperties.register(NtmItems.MISSILE_SOYUZ.get(), NuclearTechMod.withDefaultNamespace("item_meta"), (stack, level, entity, seed) -> MetaHelper.getMeta(stack));
             ItemProperties.register(NtmItems.POLAROID.get(), NuclearTechMod.withDefaultNamespace("polaroid_id"), (stack, level, entity, seed) -> PolaroidItem.polaroidID);
             ItemProperties.register(NtmItems.SCRAPS.get(), NuclearTechMod.withDefaultNamespace("scraps_type"), (stack, level, entity, seed) -> CopperScrapsItem.getModelType(stack));
+            // Original TextureColtass: points at the stored deposit centre in the overworld, spins randomly elsewhere or
+            // before the server has stored a centre. Vanilla's compass function gives the same wobble and dimension check.
+            ItemProperties.register(NtmItems.COLTAN_TOOL.get(), NuclearTechMod.withDefaultNamespace("angle"), new CompassItemPropertyFunction((level, stack, entity) ->
+                    ColtanCompassItem.hasTarget(stack) ? GlobalPos.of(Level.OVERWORLD, new BlockPos(stack.getOrDefault(NtmDataComponents.COLTAN_X, 0), 0, stack.getOrDefault(NtmDataComponents.COLTAN_Z, 0))) : null));
         });
     }
 

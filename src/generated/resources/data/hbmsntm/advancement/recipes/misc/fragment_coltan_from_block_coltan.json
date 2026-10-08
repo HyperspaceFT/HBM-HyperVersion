@@ -1,11 +1,11 @@
 {
   "parent": "minecraft:recipes/root",
   "criteria": {
-    "has_powder_coltan": {
+    "has_block_coltan": {
       "conditions": {
         "items": [
           {
-            "items": "hbmsntm:powder_coltan"
+            "items": "hbmsntm:block_coltan"
           }
         ]
       },
@@ -13,7 +13,7 @@
     },
     "has_the_recipe": {
       "conditions": {
-        "recipe": "hbmsntm:block_coltan_from_9_powder_coltan"
+        "recipe": "hbmsntm:fragment_coltan_from_block_coltan"
       },
       "trigger": "minecraft:recipe_unlocked"
     }
@@ -21,12 +21,12 @@
   "requirements": [
     [
       "has_the_recipe",
-      "has_powder_coltan"
+      "has_block_coltan"
     ]
   ],
   "rewards": {
     "recipes": [
-      "hbmsntm:block_coltan_from_9_powder_coltan"
+      "hbmsntm:fragment_coltan_from_block_coltan"
     ]
   }
 }

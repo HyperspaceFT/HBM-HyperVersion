@@ -166,6 +166,7 @@ public class NtmCreativeTabs {
                         output.accept(NtmItems.NUCLEAR_WASTE.get());
                         output.accept(NtmItems.NUCLEAR_WASTE_VITRIFIED.get());
                         output.accept(NtmItems.FRAGMENT_NIOBIUM.get());
+                        output.accept(NtmItems.FRAGMENT_COLTAN.get());
                         output.accept(NtmItems.FRAGMENT_NEODYMIUM.get());
                         output.accept(NtmItems.FRAGMENT_COBALT.get());
                         output.accept(NtmItems.FRAGMENT_CERIUM.get());
@@ -748,6 +749,7 @@ public class NtmCreativeTabs {
                         output.accept(NtmBlocks.ORE_METEOR_RARE);
                         output.accept(NtmBlocks.ORE_RARE);
                         output.accept(NtmBlocks.ORE_RARE_DEEPSLATE);
+                        output.accept(NtmBlocks.ORE_COLTAN);
                         output.accept(NtmBlocks.ORE_SULFUR);
                         output.accept(NtmBlocks.ORE_SULFUR_DEEPSLATE);
                         output.accept(NtmBlocks.ORE_LIGNITE);
@@ -799,6 +801,7 @@ public class NtmCreativeTabs {
                         output.accept(NtmBlocks.MACHINE_PUMPJACK);
                         output.accept(NtmBlocks.MACHINE_FRACKING_TOWER);
                         output.accept(NtmBlocks.MACHINE_REFINERY);
+                        output.accept(NtmBlocks.MACHINE_CATALYTIC_CRACKER);
                         output.accept(NtmBlocks.FURNACE_COMBINATION);
                         output.accept(NtmBlocks.MACHINE_CRUCIBLE);
                         output.accept(NtmBlocks.FOUNDRY_MOLD);
@@ -1032,6 +1035,7 @@ public class NtmCreativeTabs {
                         output.accept(NtmItems.DOSIMETER);
                         output.accept(NtmItems.GEIGER_COUNTER);
                         output.accept(NtmItems.OIL_DETECTOR);
+                        output.accept(NtmItems.COLTAN_TOOL);
                         output.accept(NtmItems.DIGAMMA_DIAGNOSTIC);
                         output.accept(NtmItems.METEOR_REMOTE);
                         output.accept(NtmItems.METEOR_CHARM);

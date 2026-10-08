@@ -51,7 +51,11 @@ FLUID_TYPE = "com/hbm/inventory/fluid/FluidType.java"
 WRITER_LINE = 389
 OLD_LINE = "        writer.value(stack.type.getUnlocalizedName());\t//fluid type"
 NEW_LINE = "        writer.value(stack.type.getInternalName());\t//fluid type"
-TEMPLATES = {"chemical plant": "_hbmChemicalPlant.json", "assembly machine": "_hbmAssemblyMachine.json",
+# Goal 12B (build/migration/goal12b/production.diff) adds exactly these two lines to SerializableRecipe.java (the
+# CrackingRecipes import and its registration after CentrifugeRecipes); section 5 takes them out before its comparisons.
+GOAL12B_LINES = ("import com.hbm.inventory.recipes.CrackingRecipes;", "        recipeHandlers.add(new CrackingRecipes());")
+CRACKING = "com/hbm/inventory/recipes/CrackingRecipes.java"
+TEMPLATES = {"chemical plant":"_hbmChemicalPlant.json", "assembly machine": "_hbmAssemblyMachine.json",
              "soldering station": "_hbmSoldering.json", "arc welder": "_hbmArcWelder.json"}
 
 
@@ -101,9 +105,14 @@ def callers(check):
             if "writeFluidStack(" in line and "public static void writeFluidStack(" not in line:
                 found.append((rel, number))
     files = sorted({rel for rel, _ in found})
-    check(files == sorted([GENERIC_RECIPES, SOLDERING, ARC_WELDER]),
-          f"writeFluidStack is called only from GenericRecipes, SolderingRecipes and ArcWelderRecipes, all compiled here: {found}")
-    check(len(found) == 4, f"4 call sites (GenericRecipes inputFluid and outputFluid, one each in the soldering and arc welder tables): {found}")
+    # Goal 12B's CrackingRecipes.writeRecipe writes its two outputs with writeFluidStack; that table is not compiled here,
+    # verify_goal12b.py section 9 writes and reads its template with the production writer.
+    check(files == sorted([GENERIC_RECIPES, SOLDERING, ARC_WELDER, CRACKING]),
+          f"writeFluidStack is called only from GenericRecipes, SolderingRecipes and ArcWelderRecipes, all compiled here, and Goal 12B's "
+          f"CrackingRecipes (verify_goal12b.py): {found}")
+    check(len(found) == 6 and sum(rel == CRACKING for rel, _ in found) == 2,
+          f"4 call sites (GenericRecipes inputFluid and outputFluid, one each in the soldering and arc welder tables) and Goal 12B's 2 "
+          f"(the cracking outputs): {found}")
     generic = (SOURCE / GENERIC_RECIPES).read_text(encoding="utf-8")
     users = sorted(p.relative_to(SOURCE).as_posix() for p in SOURCE.rglob("*.java")
                    if re.search(r"extends GenericRecipes<", p.read_text(encoding="utf-8", errors="replace")))
@@ -220,6 +229,9 @@ def production_diff(check):
     data = (SOURCE / SERIALIZABLE).read_bytes()
     check(data.count(b"\n") == data.count(b"\r\n") > 0, "SerializableRecipe.java keeps CRLF line ends throughout")
     live, base = lines(data), lines(base_bytes("src/main/java/" + SERIALIZABLE))
+    # Goal 12B: the two added lines (GOAL12B_LINES), each exactly once, are taken out; everything below compares the rest.
+    check(all(live.count(line) == 1 for line in GOAL12B_LINES), f"Goal 12B: SerializableRecipe.java holds each of its two added lines once: {GOAL12B_LINES}")
+    live = [line for line in live if line not in GOAL12B_LINES]
     differing = [i + 1 for i in range(max(len(live), len(base))) if (live[i] if i < len(live) else None) != (base[i] if i < len(base) else None)]
     check(len(live) == len(base) and differing == [WRITER_LINE], f"SerializableRecipe.java differs from 1e29ad29 in exactly line {WRITER_LINE}: {differing[:10]}")
     check(base[WRITER_LINE - 1] == OLD_LINE and live[WRITER_LINE - 1] == NEW_LINE,
@@ -233,8 +245,13 @@ def production_diff(check):
           f"between 1e29ad29 and the Goal 11D commit {GOAL11D_COMMIT[:8]} no other file under src/main/java or src/main/resources changed (git diff: {changed})")
     worktree = git("diff", "--name-only", GOAL11D_COMMIT, "--", "src/main/java/" + SERIALIZABLE).decode("utf-8").split()
     committed = git("show", f"{GOAL11D_COMMIT}:src/main/java/{SERIALIZABLE}")
-    check(not worktree and (ROOT / "src/main/java" / SERIALIZABLE).read_bytes().replace(b"\r\n", b"\n") == committed,
-          f"the working copy of SerializableRecipe.java is byte-identical to {GOAL11D_COMMIT[:8]} (modulo the CRLF checkout): {worktree}")
+    # Goal 12B changes the working copy by exactly its two lines (git now lists the file); without them it is the commit.
+    working = (ROOT / "src/main/java" / SERIALIZABLE).read_bytes().replace(b"\r\n", b"\n")
+    for line in GOAL12B_LINES:
+        working = working.replace(line.encode("utf-8") + b"\n", b"", 1) if working.count(line.encode("utf-8") + b"\n") == 1 else b""
+    check(worktree == ["src/main/java/" + SERIALIZABLE] and working == committed,
+          f"the working copy of SerializableRecipe.java without the two Goal 12B lines is byte-identical to {GOAL11D_COMMIT[:8]} "
+          f"(modulo the CRLF checkout): {worktree}")
 
 
 def main():

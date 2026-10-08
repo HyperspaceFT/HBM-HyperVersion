@@ -264,5 +264,13 @@ public class AssemblyMachineRecipes extends GenericRecipes<GenericRecipe> {
                         new ComparableStack(NtmItems.MOTOR.get(), 2),
                         new ComparableStack(NtmItems.COIL_TUNGSTEN.get(), 2),
                         new ComparableStack(NtmItems.CIRCUIT_ANALOG_BOARD.get(), 1)));
+        // Original ass.crackingtower (AssemblyMachineRecipes.java:316-319), normal mode only: no setPools528, since NEO
+        // has no blueprint source in survival, and no inputItemsEx, since NEO has no item_expensive.
+        // NEO has no steel shell, desh ingot or niobium ingot tag, so the plain items stand in for the ore dictionary entries.
+        this.register(new GenericRecipe("ass.crackingtower").setup(200, 100).outputItems(new ItemStack(NtmBlocks.MACHINE_CATALYTIC_CRACKER.get(), 1))
+                .inputItems(new ComparableStack(NtmBlocks.STEEL_SCAFFOLD.get(), 16),
+                        new ComparableStack(NtmItems.SHELL_STEEL.get(), 6),
+                        new ComparableStack(NtmItems.INGOT_DESH.get(), 12),
+                        new ComparableStack(NtmItems.INGOT_NIOBIUM.get(), 4)));
     }
 }

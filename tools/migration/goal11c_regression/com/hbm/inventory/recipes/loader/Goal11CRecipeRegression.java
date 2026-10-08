@@ -29,6 +29,8 @@ import java.util.Map;
  * 1 analog circuit -> 1 chemical plant, no blueprint pool; ChemicalPlantRecipes.java:209-212 chem.polymer: 2 coal powder,
  * 1 fluorite, 1,000 mB petroleum gas -> 4 polymer ingots, 100 ticks, 100 HE/t; :196-201 chem.desh: 1 desh blend,
  * 200 mB light oil, 200 mB mercury -> 1 desh ingot, 100 ticks, 100 HE/t.
+ * Goal 12B (migration/GOAL12B.md) appends ass.crackingtower after ass.chemplant and changes the chem.coltancleaning input
+ * (B1); sections 1 and 4 accept exactly these and check them, everything else is compared as before.
  */
 public class Goal11CRecipeRegression {
     private static int checks;
@@ -166,9 +168,13 @@ public class Goal11CRecipeRegression {
         GenericRecipe recipe = AssemblyMachineRecipes.INSTANCE.recipeNameMap.get("ass.chemplant");
         check(recipe != null && !recipe.isPooled() && recipe.getPools() == null && !live.get("ass.chemplant").has("blueprintpool"),
                 "ass.chemplant is not pooled (no blueprint needed, as the original registers it without setPools)");
-        check(liveNames.size() == baseNames.size() + 1 && liveNames.get(liveNames.size() - 1).equals("ass.chemplant")
-                        && liveNames.get(liveNames.size() - 2).equals("ass.tank"),
-                "exactly one recipe is added, ass.chemplant, last and directly after ass.tank (" + baseNames.size() + " -> " + liveNames.size() + ")");
+        // Goal 12B (migration/GOAL12B.md) appends exactly ass.crackingtower after ass.chemplant; verify_goal12b.py checks its content.
+        List<String> goal12b = List.of("ass.crackingtower");
+        check(liveNames.size() == baseNames.size() + 1 + goal12b.size() && liveNames.get(liveNames.size() - 1 - goal12b.size()).equals("ass.chemplant")
+                        && liveNames.get(liveNames.size() - 2 - goal12b.size()).equals("ass.tank")
+                        && liveNames.subList(liveNames.size() - goal12b.size(), liveNames.size()).equals(goal12b),
+                "exactly one recipe is added, ass.chemplant, last before the Goal 12B entry " + goal12b + " and directly after ass.tank ("
+                        + baseNames.size() + " -> " + liveNames.size() + ")");
         check(liveNames.subList(0, baseNames.size()).equals(baseNames), "every post-Goal 11B recipe keeps its name and order");
         List<String> changed = new ArrayList<>();
         for(String name : baseNames) if(!live.get(name).equals(base.get(name))) changed.add(name);
@@ -225,7 +231,16 @@ public class Goal11CRecipeRegression {
         check(liveNames.equals(baseNames), "every chemical plant recipe keeps its name and order (" + liveNames.size() + " recipes)");
         List<String> changed = new ArrayList<>();
         for(String name : baseNames) if(!live.get(name).equals(base.get(name))) changed.add(name);
-        check(changed.equals(List.of("chem.polymer")), "only chem.polymer differs from the post-Goal 11B table (compiled base-g11b copy): " + changed);
+        // Goal 12B (migration/GOAL12B.md B1) changes the chem.coltancleaning input from purified tantalite to crushed coltan ore;
+        // the added check below requires that to be its only difference.
+        check(changed.equals(List.of("chem.polymer", "chem.coltancleaning")),
+                "only chem.polymer (and Goal 12B's chem.coltancleaning) differ from the post-Goal 11B table (compiled base-g11b copy): " + changed);
+        JsonObject cleaning = base.get("chem.coltancleaning").deepCopy();
+        JsonArray firstInput = cleaning.getAsJsonArray("inputItem").get(0).getAsJsonArray();
+        check(firstInput.get(1).getAsString().equals("hbmsntm:powder_coltan"), "the post-Goal 11B chem.coltancleaning took hbmsntm:powder_coltan first: " + firstInput);
+        firstInput.set(1, new JsonPrimitive("hbmsntm:powder_coltan_ore"));
+        check(cleaning.equals(live.get("chem.coltancleaning")),
+                "Goal 12B: chem.coltancleaning differs only in its first input, powder_coltan -> powder_coltan_ore: " + live.get("chem.coltancleaning"));
         List<String> pooled = new ArrayList<>();
         for(GenericRecipe r : ChemicalPlantRecipes.INSTANCE.recipeOrderedList) if(r.isPooled()) pooled.add(r.getInternalName() + "=" + String.join(":", r.getPools()));
         info("pooled chemical plant recipes: " + pooled);

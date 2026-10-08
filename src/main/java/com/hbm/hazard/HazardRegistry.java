@@ -183,6 +183,7 @@ public class HazardRegistry {
         registerBreedingRodRadiation(BreedingRodType.URANIUM, u);
 
         HazardSystem.register(block(BRICK_ASBESTOS), makeData(ASBESTOS, 1F));
+        HazardSystem.register(item(POWDER_COLTAN_ORE), makeData(ASBESTOS, 3F));
 
         //nuke parts
         HazardSystem.register(item(LITTLE_BOY_PROPELLANT), makeData(EXPLOSIVE, 2F));

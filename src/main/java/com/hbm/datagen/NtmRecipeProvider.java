@@ -1010,6 +1010,24 @@ public class NtmRecipeProvider extends RecipeProvider {
                 .define('D', NtmItems.CIRCUIT_ANALOG_BOARD.get())
                 .unlockedBy("has_crafting_table", has(Items.CRAFTING_TABLE))
                 .save(recipeOutput, ResourceLocation.fromNamespaceAndPath("hbmsntm", "65"));
+        // Coltass, original ToolRecipes.java:120: copper ingot (either copper, as for gear_large), cinnabar, compass.
+        ShapedRecipeBuilder.shaped(RecipeCategory.TOOLS, NtmItems.COLTAN_TOOL.get(), 1)
+                .pattern("ACA")
+                .pattern("CXC")
+                .pattern("ACA")
+                .define('A', Ingredient.of(NtmItems.INGOT_COPPER.get(), Items.COPPER_INGOT))
+                .define('C', NtmItems.CINNABAR.get())
+                .define('X', Items.COMPASS)
+                .unlockedBy("has_cinnabar", has(NtmItems.CINNABAR.get()))
+                .save(recipeOutput, ResourceLocation.fromNamespaceAndPath("hbmsntm", "coltan_tool"));
+        // Steel scaffold, original CraftingManager.java:462. The four dyed variants are not ported (Goal 12B D6e).
+        ShapedRecipeBuilder.shaped(RecipeCategory.BUILDING_BLOCKS, NtmBlocks.STEEL_SCAFFOLD.get(), 8)
+                .pattern("SSS")
+                .pattern(" S ")
+                .pattern("SSS")
+                .define('S', NtmItems.INGOT_STEEL.get())
+                .unlockedBy("has_steel_ingot", has(NtmItems.INGOT_STEEL.get()))
+                .save(recipeOutput, ResourceLocation.fromNamespaceAndPath("hbmsntm", "steel_scaffold"));
 
         // The first anvil must be craftable before any plate or steel production.
         ShapedRecipeBuilder.shaped(RecipeCategory.MISC, NtmBlocks.ANVIL.get())
@@ -1506,7 +1524,8 @@ public class NtmRecipeProvider extends RecipeProvider {
         addMaterialBlockRecipe(recipeOutput, NtmBlocks.BLOCK_BISMUTH.get(), NtmItems.INGOT_BISMUTH.get());
         addMaterialBlockRecipe(recipeOutput, NtmBlocks.BLOCK_CADMIUM.get(), NtmItems.INGOT_CADMIUM.get());
         addMaterialBlockRecipe(recipeOutput, NtmBlocks.BLOCK_CDALLOY.get(), NtmItems.INGOT_CDALLOY.get());
-        addMaterialBlockRecipe(recipeOutput, NtmBlocks.BLOCK_COLTAN.get(), NtmItems.POWDER_COLTAN.get());
+        // Original MineralRecipes.java:47: the coltan block pairs with the ore fragment, not purified tantalite
+        addMaterialBlockRecipe(recipeOutput, NtmBlocks.BLOCK_COLTAN.get(), NtmItems.FRAGMENT_COLTAN.get());
         addMaterialBlockRecipe(recipeOutput, NtmBlocks.BLOCK_COMBINE_STEEL.get(), NtmItems.INGOT_COMBINE_STEEL.get());
         addMaterialBlockRecipe(recipeOutput, NtmBlocks.BLOCK_COPPER.get(), NtmItems.INGOT_COPPER.get());
         addMaterialBlockRecipe(recipeOutput, NtmBlocks.BLOCK_DESH.get(), NtmItems.INGOT_DESH.get());

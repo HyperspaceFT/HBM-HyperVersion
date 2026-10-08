@@ -1,0 +1,29 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "equipment",
+  "key": {
+    "A": [
+      {
+        "item": "hbmsntm:ingot_copper"
+      },
+      {
+        "item": "minecraft:copper_ingot"
+      }
+    ],
+    "C": {
+      "item": "hbmsntm:cinnabar"
+    },
+    "X": {
+      "item": "minecraft:compass"
+    }
+  },
+  "pattern": [
+    "ACA",
+    "CXC",
+    "ACA"
+  ],
+  "result": {
+    "count": 1,
+    "id": "hbmsntm:coltan_tool"
+  }
+}

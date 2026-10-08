@@ -18,6 +18,8 @@ import java.util.List;
  * ShredderRecipes.java:208, the RARE ore chunk -> 1 desh blend), the custom hbmShredder.json precedence through the
  * production SerializableRecipe loader, and every other default entry against the post-Goal 11B table
  * (goal11c.base.ShredderRecipes, the base-g11b copy compiled in the same world).
+ * Goal 12B adds the coltan fragment and block entries; the table comparison takes exactly those out (one added check
+ * requires them).
  */
 public class Goal11CShredderRegression {
     private static int checks;
@@ -87,8 +89,17 @@ public class Goal11CShredderRegression {
         for(int i = 0; i < base.size(); i++) if(base.get(i).startsWith(NtmBlocks.ORE_RARE_DEEPSLATE.get().id + ":")) deepslate = i;
         check(deepslate >= 0, "the post-Goal 11B table has the ore_rare_deepslate entry");
         expected.add(deepslate + 1, added);
+        // Goal 12B (migration/GOAL12B.md) adds the coltan fragment and block entries (and the raw ore entry, which this world's
+        // block registry, built from the names its sources use, does not reach); they are taken out here and the added check
+        // below requires exactly these two (verify_goal12b.py section 2 checks all three in detail).
+        List<String> coltan = new ArrayList<>();
+        for(String e : live) if(e.startsWith("hbmsntm:ore_coltan:") || e.startsWith("hbmsntm:fragment_coltan:") || e.startsWith("hbmsntm:block_coltan:")) coltan.add(e);
+        live.removeAll(coltan);
+        check(coltan.size() == 2 && coltan.stream().anyMatch(e -> e.startsWith("hbmsntm:block_coltan:") && e.contains(" -> hbmsntm:powder_coltan_ore x9:"))
+                        && coltan.stream().anyMatch(e -> e.startsWith("hbmsntm:fragment_coltan:") && e.contains(" -> hbmsntm:powder_coltan_ore x1:")),
+                "Goal 12B: exactly the block_coltan (9) and fragment_coltan (1) entries are added, to crushed coltan ore: " + coltan);
         check(live.equals(expected), "the default table is the post-Goal 11B table (" + base.size() + " entries) with exactly the chunk entry "
-                + "inserted after ore_rare_deepslate (" + live.size() + " entries); first difference at "
+                + "inserted after ore_rare_deepslate (" + live.size() + " entries without the Goal 12B entries); first difference at "
                 + firstDifference(live, expected));
 
         // The production loader: a custom hbmShredder.json entry for the chunk wins over the default (registerIfAbsent).

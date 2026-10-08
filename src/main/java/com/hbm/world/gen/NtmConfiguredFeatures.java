@@ -14,6 +14,8 @@ public class NtmConfiguredFeatures {
 
     public static final ResourceKey<ConfiguredFeature<?, ?>> OIL_BUBBLE = registerKey("oil_bubble");
 
+    public static final ResourceKey<ConfiguredFeature<?, ?>> COLTAN_DEPOSIT = registerKey("coltan_deposit");
+
     public static final ResourceKey<ConfiguredFeature<?, ?>> BEDROCK_OIL = registerKey("bedrock_oil");
 
     public static final ResourceKey<ConfiguredFeature<?, ?>> LANDMINE = registerKey("landmine");
@@ -23,6 +25,8 @@ public class NtmConfiguredFeatures {
     public static void bootstrap(BootstrapContext<ConfiguredFeature<?, ?>> context) {
 
         register(context, OIL_BUBBLE, NtmFeatures.OIL_BUBBLE.get(), NoneFeatureConfiguration.INSTANCE);
+
+        register(context, COLTAN_DEPOSIT, NtmFeatures.COLTAN_DEPOSIT.get(), NoneFeatureConfiguration.INSTANCE);
 
         register(context, BEDROCK_OIL, NtmFeatures.BEDROCK_OIL.get(), NoneFeatureConfiguration.INSTANCE);
 

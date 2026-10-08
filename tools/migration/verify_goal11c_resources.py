@@ -26,6 +26,10 @@ for Goal 11D, the checks are kept and read the post-Goal 11D state from verify_g
 without the Goal 12A additions and with the e476f5c1 bytes of the files it changes, the e476f5c1 bytes of the Goal 12A
 inputs, zh_cn.json and zh_cn-map.json, and in full mode the JAR entries once exactly the Goal 12A additions are taken out
 (same_as_post_goal11d); goal12a_delta() then checks that post-Goal 11D -> now is exactly the Goal 12A set.
+
+Goal 12B (build/migration/goal12b/production.diff) retires 4 generated files; the Goal 12A helpers read the post-Goal 12A
+state from verify_goal12b_resources.py, and in full mode the JAR is read through post_goal12a_archive (the retired files from
+the Goal 12A release); goal12a_delta() ends with goal12b_delta() (3 more checks).
 """
 
 import argparse
@@ -38,6 +42,7 @@ from verify_goal11d_resources import (BEFORE_STAMP as POST_STAMP, CHANGED_INPUTS
                                       post_goal11c_bytes)
 from verify_goal12a_resources import (goal12a_delta, post_goal11d_bytes, post_goal11d_generated, post_goal11d_input,
                                       post_goal11d_stamp, post_goal11d_tree, same_as_post_goal11d)
+from verify_goal12b_resources import post_goal12a_archive
 
 ROOT = Path(__file__).resolve().parents[2]
 ORIGINAL_ROOT = ROOT.parent / "Hbm-s-Nuclear-Tech-GIT"
@@ -240,7 +245,8 @@ def jar():
     # The JAR is a Goal 12A build: compared with the post-Goal 11D stamp and files (module docstring).
     stamp = post_goal11d_stamp()
     prefixes = [name.removeprefix("src/main/java/").removesuffix(".java") for name in CHANGED_JAVA]
-    with zipfile.ZipFile(JAR) as archive:
+    # Goal 12B: the JAR read as its post-Goal 12A state (the 4 retired files from the Goal 12A release).
+    with post_goal12a_archive(JAR) as archive:
         names = archive.namelist()
         check(len(names) == len(set(names)), "the JAR has no duplicate paths")
         different = [name for name in stamp["generated"] if name not in names or not same_as_post_goal11d(name, archive.read(name), post_goal11d_generated(name))]

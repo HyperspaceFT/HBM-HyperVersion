@@ -178,6 +178,7 @@ public class NtmItems {
     public static final DeferredItem<Item> NUGGET_AU198 = registerNugget("nugget_au198");
     public static final DeferredItem<Item> NUGGET_RA226 = registerNugget("nugget_ra226");
     public static final DeferredItem<Item> FRAGMENT_NIOBIUM = ITEMS.register("fragment_niobium", () -> new Item(new Item.Properties()));
+    public static final DeferredItem<Item> FRAGMENT_COLTAN = ITEMS.register("fragment_coltan", () -> new Item(new Item.Properties()));
     public static final DeferredItem<Item> FRAGMENT_NEODYMIUM = ITEMS.register("fragment_neodymium", () -> new Item(new Item.Properties()));
     public static final DeferredItem<Item> FRAGMENT_COBALT = ITEMS.register("fragment_cobalt", () -> new Item(new Item.Properties()));
     public static final DeferredItem<Item> FRAGMENT_CERIUM = ITEMS.register("fragment_cerium", () -> new Item(new Item.Properties()));
@@ -633,6 +634,7 @@ public class NtmItems {
     public static final DeferredItem<Item> DOSIMETER = ITEMS.register("dosimeter", () -> new DosimeterItem(new Item.Properties().stacksTo(1)));
     public static final DeferredItem<Item> GEIGER_COUNTER = ITEMS.register("geiger_counter", () -> new GeigerCounterItem(new Item.Properties().stacksTo(1)));
     public static final DeferredItem<Item> OIL_DETECTOR = ITEMS.register("oil_detector", () -> new OilDetectorItem(new Item.Properties().stacksTo(1)));
+    public static final DeferredItem<Item> COLTAN_TOOL = ITEMS.register("coltan_tool", () -> new ColtanCompassItem(new Item.Properties().stacksTo(1)));
     public static final DeferredItem<Item> DIGAMMA_DIAGNOSTIC = ITEMS.register("digamma_diagnostic", () -> new DigammaDiagnosticItem(new Item.Properties().stacksTo(1)));
     public static final DeferredItem<Item> METEOR_REMOTE = ITEMS.register("meteor_remote", () -> new MeteorRemoteItem(new Item.Properties()));
     public static final DeferredItem<Item> METEOR_CHARM = ITEMS.register("meteor_charm", () -> new ModCharmItem(new Item.Properties(), true));

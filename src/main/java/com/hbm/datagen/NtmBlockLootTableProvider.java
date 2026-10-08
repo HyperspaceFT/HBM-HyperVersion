@@ -92,6 +92,8 @@ public class NtmBlockLootTableProvider extends BlockLootSubProvider {
         this.dropSelf(NtmBlocks.ORE_NETHER_PLUTONIUM.get());
         this.dropSelf(NtmBlocks.ORE_NETHER_SCHRABIDIUM.get());
         this.dropSelf(NtmBlocks.ORE_TIKITE.get());
+        // Original BlockOre: one coltan fragment with the ore fortune bonus; silk touch keeps the ore
+        this.add(NtmBlocks.ORE_COLTAN.get(), block -> this.oreDrop(block, NtmItems.FRAGMENT_COLTAN.get()));
         this.dropSelf(NtmBlocks.ORE_GNEISS_URANIUM.get());
         this.dropSelf(NtmBlocks.ORE_GNEISS_URANIUM_SCORCHED.get());
         this.dropSelf(NtmBlocks.ORE_GNEISS_SCHRABIDIUM.get());
@@ -285,6 +287,7 @@ public class NtmBlockLootTableProvider extends BlockLootSubProvider {
         this.dropSelf(NtmBlocks.MACHINE_PUMPJACK.get());
         this.dropSelf(NtmBlocks.MACHINE_FRACKING_TOWER.get());
         this.dropSelf(NtmBlocks.MACHINE_REFINERY.get());
+        this.dropSelf(NtmBlocks.MACHINE_CATALYTIC_CRACKER.get());
         this.dropSelf(NtmBlocks.MACHINE_BLAST_FURNACE.get());
         this.dropSelf(NtmBlocks.MACHINE_WOOD_BURNER.get());
         this.dropSelf(NtmBlocks.MACHINE_CENTRIFUGE.get());

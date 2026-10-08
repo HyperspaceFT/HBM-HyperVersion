@@ -97,6 +97,7 @@ public class NtmBlockStateProvider extends BlockStateProvider {
         this.simpleCubeAllBlock(NtmBlocks.ORE_NETHER_URANIUM_SCORCHED);
         this.simpleCubeAllBlock(NtmBlocks.ORE_NETHER_SCHRABIDIUM);
         this.simpleCubeAllBlock(NtmBlocks.ORE_TIKITE);
+        this.simpleCubeAllBlock(NtmBlocks.ORE_COLTAN);
         this.simpleCubeAllBlock(NtmBlocks.ORE_GNEISS_URANIUM);
         this.simpleCubeAllBlock(NtmBlocks.ORE_GNEISS_URANIUM_SCORCHED);
         this.simpleCubeAllBlock(NtmBlocks.ORE_NETHER_PLUTONIUM);
@@ -320,6 +321,7 @@ public class NtmBlockStateProvider extends BlockStateProvider {
         this.particleOnlyBlock(NtmBlocks.MACHINE_FLUID_TANK, modLoc("block/block_steel"));
         this.particleOnlyBlock(NtmBlocks.MACHINE_SOLDERING_STATION, modLoc("block/block_steel"));
         this.particleOnlyBlock(NtmBlocks.MACHINE_REFINERY, modLoc("block/block_steel"));
+        this.particleOnlyBlock(NtmBlocks.MACHINE_CATALYTIC_CRACKER, modLoc("block/block_steel"));
         this.particleOnlyBlock(NtmBlocks.FURNACE_COMBINATION, modLoc("block/block_steel"));
         this.particleOnlyBlock(NtmBlocks.MACHINE_CRUCIBLE, modLoc("block/block_steel"));
         this.registerFoundryMold();

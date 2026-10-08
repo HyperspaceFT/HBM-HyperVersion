@@ -18,6 +18,8 @@ public class NtmBiomeModifiers {
 
     public static final ResourceKey<BiomeModifier> ADD_OIL_BUBBLE = registerKey("add_oil_bubble");
 
+    public static final ResourceKey<BiomeModifier> ADD_COLTAN_DEPOSIT = registerKey("add_coltan_deposit");
+
     public static final ResourceKey<BiomeModifier> ADD_BEDROCK_OIL = registerKey("add_bedrock_oil");
 
     public static final ResourceKey<BiomeModifier> ADD_LANDMINE = registerKey("add_landmine");
@@ -29,6 +31,7 @@ public class NtmBiomeModifiers {
         HolderGetter<Biome> biomes = context.lookup(Registries.BIOME);
 
         context.register(ADD_OIL_BUBBLE, new AddFeaturesBiomeModifier(biomes.getOrThrow(BiomeTags.IS_OVERWORLD), HolderSet.direct(placedFeatures.getOrThrow(NtmPlacedFeatures.OIL_BUBBLE_PLACED)), GenerationStep.Decoration.UNDERGROUND_ORES));
+        context.register(ADD_COLTAN_DEPOSIT, new AddFeaturesBiomeModifier(biomes.getOrThrow(BiomeTags.IS_OVERWORLD), HolderSet.direct(placedFeatures.getOrThrow(NtmPlacedFeatures.COLTAN_DEPOSIT_PLACED)), GenerationStep.Decoration.UNDERGROUND_ORES));
         context.register(ADD_BEDROCK_OIL, new AddFeaturesBiomeModifier(biomes.getOrThrow(BiomeTags.IS_OVERWORLD), HolderSet.direct(placedFeatures.getOrThrow(NtmPlacedFeatures.BEDROCK_OIL_PLACED)), GenerationStep.Decoration.UNDERGROUND_ORES));
         context.register(ADD_LANDMINE, new AddFeaturesBiomeModifier(biomes.getOrThrow(BiomeTags.IS_OVERWORLD), HolderSet.direct(placedFeatures.getOrThrow(NtmPlacedFeatures.LANDMINE_PLACED)), GenerationStep.Decoration.UNDERGROUND_DECORATION));
 
