@@ -375,6 +375,20 @@ public class Goal10CRegression {
                     + "; item hbmsntm:ingot_copper x8 meta " + W + "; -> 1 hbmsntm:heater_oilburner @1.0; tier 2--1 CONSTRUCTION",
     };
 
+    /**
+     * Goal 12A (migration/GOAL12A.md) appends four entries after the Goal 11A entries: the industrial boiler with Minecraft
+     * and with NEO copper (original AnvilRecipes.java:399-404), the electric pump (:253-260) and the desh motor (:215-217).
+     * They are required exactly, in this order, at the end of the list; the Goal 12A suite checks them in detail.
+     */
+    static final String[] GOAL12A = {
+            "item hbmsntm:cast_plate x8 meta 11; item minecraft:copper_ingot x8 meta " + W + "; tag ntm:ingots_plastic x4; -> 1 hbmsntm:machine_industrial_boiler @1.0; tier 3--1 CONSTRUCTION",
+            "item hbmsntm:cast_plate x8 meta 11; item hbmsntm:ingot_copper x8 meta " + W + "; tag ntm:ingots_plastic x4; -> 1 hbmsntm:machine_industrial_boiler @1.0; tier 3--1 CONSTRUCTION",
+            "item stone_bricks x8 meta " + W + "; tag plates/steel x16; item hbmsntm:pipe_lead x4 meta " + W + "; item hbmsntm:motor x2 meta " + W
+                    + "; item hbmsntm:circuit_vacuum_tube x4 meta " + W + "; -> 1 hbmsntm:pump_electric @1.0; tier 3--1 CONSTRUCTION",
+            "item hbmsntm:motor x1 meta " + W + "; tag ntm:ingots_plastic x2; item hbmsntm:ingot_desh x2 meta " + W + "; item hbmsntm:wire_dense x1 meta 7900; "
+                    + "-> 1 hbmsntm:motor_desh @1.0; tier 3--1 CONSTRUCTION",
+    };
+
     static boolean accepts(AnvilConstructionRecipe recipe, ItemStack... offered) {
         for(AStack input : recipe.input) {
             boolean found = false;
@@ -392,8 +406,8 @@ public class Goal10CRegression {
         List<AnvilConstructionRecipe> live = AnvilRecipes.getConstruction();
         List<?> head = goal10c.head.AnvilRecipes.getConstruction();
         int n = head.size();
-        check(n > 0 && live.size() == n + 3 + GOAL11A.length, "the live list is the ee8f8d06 list plus exactly three entries, then the two Goal 11A entries ("
-                + n + " -> " + live.size() + ")");
+        check(n > 0 && live.size() == n + 3 + GOAL11A.length + GOAL12A.length, "the live list is the ee8f8d06 list plus exactly three entries, then the two Goal 11A"
+                + " entries and the four Goal 12A entries (" + n + " -> " + live.size() + ")");
         int same = 0, corrected = 0;
         String first = null;
         for(int i = 0; i < n; i++) {
@@ -411,8 +425,11 @@ public class Goal10CRegression {
         boolean goal11a = true;
         for(int k = 0; k < GOAL11A.length; k++) goal11a &= describe(live.get(n + 3 + k)).equals(GOAL11A[k]);
         check(goal11a, "exactly the two Goal 11A fluid burner entries follow the recycling entry, in order");
-        check(AnvilRecipes.getConstruction(n + 2) == live.get(n + 2) && AnvilRecipes.getConstruction(n + 3 + GOAL11A.length) == null,
-                "the recycling entry is the last Goal 10C entry; only the Goal 11A entries follow it and the index after them is empty");
+        List<String> tail = new ArrayList<>();
+        for(int k = 0; k < GOAL12A.length; k++) tail.add(describe(live.get(n + 3 + GOAL11A.length + k)));
+        check(tail.equals(List.of(GOAL12A)), "exactly the four Goal 12A entries (industrial boiler x2, electric pump, desh motor) follow the Goal 11A entries, in order: " + tail);
+        check(AnvilRecipes.getConstruction(n + 2) == live.get(n + 2) && AnvilRecipes.getConstruction(n + 3 + GOAL11A.length + GOAL12A.length) == null,
+                "the recycling entry is the last Goal 10C entry; only the Goal 11A and Goal 12A entries follow it and the index after them is empty");
 
         AnvilConstructionRecipe vanilla = live.get(n), neo = live.get(n + 1), recycling = live.get(n + 2);
         Item oven = NtmBlocks.HEATER_OVEN.asItem(), firebrick = NtmItems.INGOT_FIREBRICK.get(), copper = NtmItems.INGOT_COPPER.get();

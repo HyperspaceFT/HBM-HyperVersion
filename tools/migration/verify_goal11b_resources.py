@@ -28,6 +28,13 @@ Goal 11D (build/migration/goal11d/production.diff) changes one further input aft
 which Goal 11B and 11C left as it was; the checks above are kept unchanged and read that input as committed at 1e29ad29
 (post_goal11c_bytes() from verify_goal11d_resources.py), and goal11d_delta() checks that post-Goal 11C -> now is exactly
 the Goal 11D set.
+
+Goal 12A (build/migration/goal12a/production.diff) changes generated files, languages and further inputs after Goal 11D,
+among them one Goal 11B source (NtmLanguageProvider). The checks are kept and read the post-Goal 11D state from
+verify_goal12a_resources.py (the generated tree without the Goal 12A additions and with the e476f5c1 bytes of the files it
+changes, the e476f5c1 bytes of the Goal 12A inputs); the full mode still inspects the Goal 11B release JAR, and the release
+class of the Goal 11B source Goal 12A changes must lack the Goal 12A literal that the current build's class holds (as for
+Goal 11C). goal12a_delta() then checks that post-Goal 11D -> now is exactly the Goal 12A set.
 """
 
 import argparse
@@ -39,6 +46,8 @@ from pathlib import Path
 from verify_goal11c_resources import (BEFORE_STAMP as POST_STAMP, CHANGED_INPUTS as GOAL11C_INPUTS, GOAL11B_JAR, GOAL11B_SHA256,
                                       MODIFIED as GOAL11C_GENERATED, ZH_MAP_NAME, base_input as post_goal11b_path, goal11c_delta)
 from verify_goal11d_resources import CHANGED_INPUTS as GOAL11D_INPUTS, goal11d_delta, post_goal11c_bytes
+from verify_goal12a_resources import (CHANGED_JAVA as GOAL12A_JAVA, GOAL12A_LITERALS, goal12a_delta, post_goal11d_generated,
+                                      post_goal11d_input, post_goal11d_tree)
 
 ROOT = Path(__file__).resolve().parents[2]
 ORIGINAL_ROOT = ROOT.parent / "Hbm-s-Nuclear-Tech-GIT"
@@ -140,11 +149,12 @@ def goal11b_jar(names):
 
 def post_goal11b_bytes(name):
     """A generated file after Goal 11B: the Goal 11B release's bytes for the files Goal 11C changes (none), else the file on disk."""
-    return goal11b_jar([name])[name] if name in GOAL11C_GENERATED else (GEN / name).read_bytes()
+    return goal11b_jar([name])[name] if name in GOAL11C_GENERATED else post_goal11d_generated(name)
 
 
 def post_goal11b_tree():
-    tree = generated_tree()
+    # Goal 12A: the post-Goal 11D tree (module docstring), unchanged by Goal 11C and 11D.
+    tree = post_goal11d_tree()
     for name in GOAL11C_GENERATED:
         tree[name] = text_hash(name, post_goal11b_bytes(name))
     return tree
@@ -157,7 +167,8 @@ def post_goal11b_input(name):
         return stamp_hash(post_goal11b_path(name))
     if name in GOAL11D_INPUTS:
         return text_hash(name, post_goal11c_bytes(name))
-    return stamp_hash(ROOT / name) if (ROOT / name).is_file() else None
+    # Goal 12A: every other input as it was after Goal 11D (module docstring).
+    return post_goal11d_input(name)
 
 
 def generated():
@@ -262,6 +273,13 @@ def jar():
                       and literal in (classes / (prefix + ".class")).read_bytes(),
                       f"JAR {prefix}.class == the compiled class (post-Goal 11B: without {literal.decode()}, which the current build adds)")
                 continue
+            if "src/main/java/" + prefix + ".java" in GOAL12A_JAVA:
+                # Changed again by Goal 12A: as for Goal 11C, the release class must lack the Goal 12A literal the current build holds.
+                literal = GOAL12A_LITERALS[prefix + ".class"]
+                check(prefix + ".class" in matching and matching == compiled and literal not in archive.read(prefix + ".class")
+                      and literal in (classes / (prefix + ".class")).read_bytes(),
+                      f"JAR {prefix}.class == the compiled class (post-Goal 11B: without {literal.decode()}, which the current build adds)")
+                continue
             check(prefix + ".class" in matching and matching == compiled and all(archive.read(name) == (classes / name).read_bytes() for name in matching),
                   f"JAR {prefix}.class (and its {len(matching) - 1} nested classes) == the compiled classes")
         check(not any(name.startswith(("tools/", "migration/")) or ".migration-stamp" in name for name in names), "no verification content in the JAR")
@@ -274,6 +292,7 @@ def main():
     report = generated()
     goal11c_delta(check)
     goal11d_delta(check)
+    goal12a_delta(check)
     if not args.source_only:
         jar()
     OUT.mkdir(parents=True, exist_ok=True)

@@ -29,6 +29,12 @@ Goal 11D (build/migration/goal11d/production.diff) changes one further input aft
 which Goal 11A, 11B and 11C left as after Goal 10C; the checks above are kept unchanged and read that input as committed
 at 1e29ad29 (post_goal11c_bytes() from verify_goal11d_resources.py), and goal11d_delta() checks that post-Goal 11C -> now
 is exactly the Goal 11D set.
+
+Goal 12A (build/migration/goal12a/production.diff) changes generated files (among them en_us.json and the pickaxe tag),
+languages and further inputs after Goal 11D. The checks are kept and read the post-Goal 11D state from
+verify_goal12a_resources.py: the generated tree without the Goal 12A additions and with the e476f5c1 bytes of the files it
+changes, and the e476f5c1 bytes of the Goal 12A inputs; the full mode still inspects the Goal 10C release JAR, whose classes
+Goal 12A does not change. goal12a_delta() then checks that post-Goal 11D -> now is exactly the Goal 12A set.
 """
 
 import argparse
@@ -44,6 +50,7 @@ from verify_goal11b_resources import (BEFORE_STAMP as POST_GOAL11A_STAMP, CHANGE
 from verify_goal11c_resources import (BEFORE_STAMP as POST_GOAL11B_STAMP, CHANGED_INPUTS as GOAL11C_INPUTS,
                                       base_input as post_goal11b_input_path, goal11c_delta)
 from verify_goal11d_resources import CHANGED_INPUTS as GOAL11D_INPUTS, goal11d_delta, post_goal11c_bytes
+from verify_goal12a_resources import goal12a_delta, post_goal11d_generated, post_goal11d_input, post_goal11d_tree
 
 ROOT = Path(__file__).resolve().parents[2]
 ORIGINAL_ROOT = ROOT.parent / "Hbm-s-Nuclear-Tech-GIT"
@@ -159,11 +166,12 @@ def goal10c_release():
 
 def post_goal10c_bytes(name):
     """A generated file after Goal 10C: the Goal 10C release's bytes for the files Goal 11A changes, else the file on disk."""
-    return goal10c_release()[name] if name in GOAL11A_GENERATED else (GEN / name).read_bytes()
+    return goal10c_release()[name] if name in GOAL11A_GENERATED else post_goal11d_generated(name)
 
 
 def post_goal10c_tree():
-    tree = generated_tree()
+    # Goal 12A: the post-Goal 11D tree (module docstring); Goal 11B, 11C and 11D left the Goal 11A files' trees as they were.
+    tree = post_goal11d_tree()
     for name in GOAL11A_GENERATED:
         tree[name] = text_hash(name, post_goal10c_bytes(name))
     return tree
@@ -184,7 +192,8 @@ def post_goal10c_input(name):
     # The input Goal 11D changes: Goal 11A, 11B and 11C left it as after Goal 10C (git 1e29ad29).
     if name in GOAL11D_INPUTS:
         return text_hash(name, post_goal11c_bytes(name))
-    return stamp_hash(ROOT / name) if (ROOT / name).is_file() else None
+    # Goal 12A: every other input as it was after Goal 11D (module docstring).
+    return post_goal11d_input(name)
 
 
 def assets():
@@ -244,7 +253,7 @@ def generated():
     check(entries["block.hbmsntm.machine_electric_furnace"].get("source_key") == "tile.machine_electric_furnace_off.name"
           and entries["container.electricFurnace"].get("source_key") == "container.electricFurnace",
           "zh_cn-map: the original keys tile.machine_electric_furnace_off.name and container.electricFurnace")
-    pick_before, pick_now = json.loads(old_pick)["values"], read(GEN / PICKAXE)["values"]
+    pick_before, pick_now = json.loads(old_pick)["values"], json.loads(post_goal11d_generated(PICKAXE))["values"]
     check(sorted(pick_now) == sorted(pick_before + [FURNACE]), "the pickaxe tag gains exactly the furnace")
     return {"generated_added": ADDED, "generated_modified": MODIFIED, "changed_inputs": CHANGED_INPUTS}
 
@@ -303,6 +312,7 @@ def main():
     goal11b_delta()
     goal11c_delta(check)
     goal11d_delta(check)
+    goal12a_delta(check)
     if not args.source_only:
         jar()
     OUT.mkdir(parents=True, exist_ok=True)

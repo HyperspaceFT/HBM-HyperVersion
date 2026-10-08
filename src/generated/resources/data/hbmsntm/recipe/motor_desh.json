@@ -1,0 +1,31 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "key": {
+    "C": {
+      "type": "neoforge:components",
+      "components": {
+        "hbmsntm:meta": 7900
+      },
+      "items": "hbmsntm:wire_dense"
+    },
+    "D": {
+      "item": "hbmsntm:ingot_desh"
+    },
+    "M": {
+      "item": "hbmsntm:motor"
+    },
+    "P": {
+      "tag": "ntm:ingots_plastic"
+    }
+  },
+  "pattern": [
+    "PCP",
+    "DMD",
+    "PCP"
+  ],
+  "result": {
+    "count": 1,
+    "id": "hbmsntm:motor_desh"
+  }
+}

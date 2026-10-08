@@ -28,6 +28,14 @@ Goal 11D (build/migration/goal11d/production.diff) changes one further input aft
 which Goal 11A, 11B and 11C left as it was; the checks above are kept unchanged and read that input as committed at
 1e29ad29 (post_goal11c_bytes() from verify_goal11d_resources.py), and goal11d_delta() checks that post-Goal 11C -> now is
 exactly the Goal 11D set.
+
+Goal 12A (build/migration/goal12a/production.diff) changes generated files, languages and further inputs after Goal 11D,
+among them four Goal 11A sources (NtmBlocks, NtmBlockLootTableProvider, NtmLanguageProvider, AnvilRecipes). The checks are
+kept and read the post-Goal 11D state from verify_goal12a_resources.py (the generated tree without the Goal 12A additions and
+with the e476f5c1 bytes of the files it changes, the e476f5c1 bytes of the Goal 12A inputs); the full mode still inspects the
+Goal 11A release JAR, and the release class of a Goal 11A source Goal 12A changes (and Goal 11B did not) must lack the Goal
+12A literal that the current build's class holds. goal12a_delta() then checks that post-Goal 11D -> now is exactly the Goal
+12A set.
 """
 
 import argparse
@@ -42,6 +50,8 @@ from verify_goal11b_resources import (BASE as POST_BASE, BEFORE_STAMP as POST_ST
 from verify_goal11c_resources import (BEFORE_STAMP as POST_GOAL11B_STAMP, CHANGED_INPUTS as GOAL11C_INPUTS,
                                       base_input as post_goal11b_path, goal11c_delta)
 from verify_goal11d_resources import CHANGED_INPUTS as GOAL11D_INPUTS, goal11d_delta, post_goal11c_bytes
+from verify_goal12a_resources import (CHANGED_JAVA as GOAL12A_JAVA, GOAL12A_LITERALS, goal12a_delta, post_goal11d_generated,
+                                      post_goal11d_input, post_goal11d_tree)
 
 ROOT = Path(__file__).resolve().parents[2]
 ORIGINAL_ROOT = ROOT.parent / "Hbm-s-Nuclear-Tech-GIT"
@@ -155,11 +165,12 @@ def goal11a_release():
 
 def post_goal11a_bytes(name):
     """A generated file after Goal 11A: the Goal 11A release's bytes for the files Goal 11B changes, else the file on disk."""
-    return goal11a_release()[name] if name in GOAL11B_GENERATED else (GEN / name).read_bytes()
+    return goal11a_release()[name] if name in GOAL11B_GENERATED else post_goal11d_generated(name)
 
 
 def post_goal11a_tree():
-    tree = generated_tree()
+    # Goal 12A: the post-Goal 11D tree (module docstring), which Goal 11C and 11D did not change.
+    tree = post_goal11d_tree()
     for name in GOAL11B_GENERATED:
         tree[name] = text_hash(name, post_goal11a_bytes(name))
     return tree
@@ -175,7 +186,8 @@ def post_goal11a_input(name):
         return stamp_hash(post_goal11b_path(name))
     if name in GOAL11D_INPUTS:
         return text_hash(name, post_goal11c_bytes(name))
-    return stamp_hash(ROOT / name) if (ROOT / name).is_file() else None
+    # Goal 12A: every other input as it was after Goal 11D (module docstring).
+    return post_goal11d_input(name)
 
 
 def generated():
@@ -319,6 +331,11 @@ def jar():
                 literal = GOAL11B_LITERALS[name]
                 check(name in names and literal not in archive.read(name) and literal in (classes / name).read_bytes(),
                       f"JAR {name} == the compiled class (post-Goal 11A: without {literal.decode()}, which the current build adds)")
+            elif source in GOAL12A_JAVA:
+                # Changed again by Goal 12A: the release class must lack the Goal 12A literal the current build's class holds.
+                literal = GOAL12A_LITERALS[name]
+                check(name in names and literal not in archive.read(name) and literal in (classes / name).read_bytes(),
+                      f"JAR {name} == the compiled class (post-Goal 11A: without {literal.decode()}, which the current build adds)")
             else:
                 check(name in names and archive.read(name) == (classes / name).read_bytes(), f"JAR {name} == the compiled class")
         check(not any(name.startswith(("tools/", "migration/")) or ".migration-stamp" in name for name in names), "no verification content in the JAR")
@@ -332,6 +349,7 @@ def main():
     goal11b_delta()
     goal11c_delta(check)
     goal11d_delta(check)
+    goal12a_delta(check)
     if not args.source_only:
         jar()
     OUT.mkdir(parents=True, exist_ok=True)

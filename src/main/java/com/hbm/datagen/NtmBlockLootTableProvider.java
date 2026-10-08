@@ -275,6 +275,7 @@ public class NtmBlockLootTableProvider extends BlockLootSubProvider {
         this.dropSelf(NtmBlocks.HEATER_FIREBOX.get());
         this.dropSelf(NtmBlocks.MACHINE_STIRLING.get());
         this.dropSelf(NtmBlocks.MACHINE_STEAM_ENGINE.get());
+        this.dropSelf(NtmBlocks.PUMP_ELECTRIC.get());
         this.dropSelf(NtmBlocks.MACHINE_CONDENSER.get());
         this.dropSelf(NtmBlocks.HEATER_OVEN.get());
         this.dropSelf(NtmBlocks.HEATER_OILBURNER.get());

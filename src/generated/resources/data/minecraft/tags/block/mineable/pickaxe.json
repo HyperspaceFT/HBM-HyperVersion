@@ -190,6 +190,7 @@
     "hbmsntm:heater_firebox",
     "hbmsntm:machine_stirling",
     "hbmsntm:machine_steam_engine",
+    "hbmsntm:pump_electric",
     "hbmsntm:machine_condenser",
     "hbmsntm:heater_oven",
     "hbmsntm:heater_oilburner",

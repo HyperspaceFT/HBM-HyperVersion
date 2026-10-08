@@ -504,7 +504,8 @@ public class SolderingRecipes extends SerializableRecipe {
         int duration = obj.get("duration").getAsInt();
         long consumption = obj.get("consumption").getAsLong();
 
-        recipes.add(new SolderingRecipe(output, duration, consumption, fluid, toppings, pcb, solder));
+        // The constructor registers the recipe, as for addRecipe; the original's readRecipe adds it because its constructor does not.
+        new SolderingRecipe(output, duration, consumption, fluid, toppings, pcb, solder);
     }
 
     @Override

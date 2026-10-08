@@ -33,6 +33,7 @@ public class NtmItemTagProvider extends ItemTagsProvider {
     private static final TagKey<Item> BALLS_HE = ItemTags.create(ResourceLocation.fromNamespaceAndPath("ntm", "balls_he"));
     private static final TagKey<Item> BARS_HARD_PLASTIC = ItemTags.create(ResourceLocation.fromNamespaceAndPath("ntm", "bars_hard_plastic"));
     private static final TagKey<Item> POWDERS_PLASTIC = ItemTags.create(ResourceLocation.fromNamespaceAndPath("ntm", "powders_plastic"));
+    private static final TagKey<Item> INGOTS_PLASTIC = ItemTags.create(ResourceLocation.fromNamespaceAndPath("ntm", "ingots_plastic"));
     private static final TagKey<Item> ANY_RUBBERS = ItemTags.create(ResourceLocation.fromNamespaceAndPath("ntm", "any_rubbers"));
     private static final TagKey<Item> ANY_TARS = ItemTags.create(ResourceLocation.fromNamespaceAndPath("ntm", "any_tars"));
 
@@ -221,6 +222,12 @@ public class NtmItemTagProvider extends ItemTagsProvider {
         this.tag(POWDERS_PLASTIC).add(
                 NtmItems.POWDER_POLYMER.get(),
                 NtmItems.POWDER_BAKELITE.get()
+        );
+
+        // The original's ANY_PLASTIC.ingot() (OreDictManager): polymer and bakelite ingots.
+        this.tag(INGOTS_PLASTIC).add(
+                NtmItems.INGOT_POLYMER.get(),
+                NtmItems.INGOT_BAKELITE.get()
         );
 
         this.tag(ANY_RUBBERS).add(

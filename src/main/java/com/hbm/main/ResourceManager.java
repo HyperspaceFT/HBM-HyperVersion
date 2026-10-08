@@ -63,6 +63,7 @@ public class ResourceManager {
     public static final ResourceLocation HEATER_FIREBOX_TEX = NuclearTechMod.withDefaultNamespace("textures/models/machines/firebox.png");
     public static final ResourceLocation STIRLING_TEX = NuclearTechMod.withDefaultNamespace("textures/models/machines/stirling.png");
     public static final ResourceLocation STEAM_ENGINE_TEX = NuclearTechMod.withDefaultNamespace("textures/models/machines/steam_engine.png");
+    public static final ResourceLocation PUMP_ELECTRIC_TEX = NuclearTechMod.withDefaultNamespace("textures/models/machines/pump_electric.png");
     public static final ResourceLocation HEATER_OVEN_TEX = NuclearTechMod.withDefaultNamespace("textures/models/machines/heating_oven.png");
     public static final ResourceLocation HEATER_OILBURNER_TEX = NuclearTechMod.withDefaultNamespace("textures/models/machines/oilburner.png");
     public static final ResourceLocation HEATER_ELECTRIC_TEX = NuclearTechMod.withDefaultNamespace("textures/models/machines/electric_heater.png");
@@ -304,6 +305,7 @@ public class ResourceManager {
     public static IModelCustom heater_firebox;
     public static IModelCustom stirling;
     public static IModelCustom steam_engine;
+    public static IModelCustom pump;
     public static IModelCustom heater_oven;
     public static IModelCustom heater_oilburner;
     public static IModelCustom heater_electric;
@@ -442,6 +444,7 @@ public class ResourceManager {
         heater_firebox = new HFRWavefrontObject("models/obj/machines/firebox.obj").asVBO();
         stirling = new HFRWavefrontObject("models/obj/machines/stirling.obj").asVBO();
         steam_engine = new HFRWavefrontObject("models/obj/machines/steam_engine.obj").asVBO();
+        pump = new HFRWavefrontObject("models/obj/machines/pump.obj").asVBO();
         heater_oven = new HFRWavefrontObject("models/obj/machines/heating_oven.obj").asVBO();
         heater_oilburner = new HFRWavefrontObject("models/obj/machines/oilburner.obj").asVBO();
         heater_electric = new HFRWavefrontObject("models/obj/machines/electric_heater.obj").asVBO();

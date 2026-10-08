@@ -80,6 +80,13 @@ public class NtmBlockEntityTypes {
                             NtmBlocks.MACHINE_STEAM_ENGINE.get())
                     .build(null));
 
+    public static final Supplier<BlockEntityType<MachinePumpElectricBlockEntity>> PUMP_ELECTRIC = BLOCK_ENTITY_TYPES.register(
+            "pump_electric",
+            () -> BlockEntityType.Builder.of(
+                            MachinePumpElectricBlockEntity::new,
+                            NtmBlocks.PUMP_ELECTRIC.get())
+                    .build(null));
+
     public static final Supplier<BlockEntityType<MachineCondenserBlockEntity>> MACHINE_CONDENSER = BLOCK_ENTITY_TYPES.register(
             "machine_condenser",
             () -> BlockEntityType.Builder.of(

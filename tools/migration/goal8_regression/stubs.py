@@ -189,6 +189,10 @@ def build_stubs(source):
     stubs["com/hbm/blocks/NtmBlocks.java"] = _require(blocks, anchor, "NtmBlocks").replace(anchor, anchor + extra)
     stubs["com/hbm/items/BoltItem.java"] = (
         "package com.hbm.items;public class BoltItem{public enum Type{TUNGSTEN(1),STEEL(2);public final int meta;Type(int n){meta=n;}}}")
+    # Goal 12A: the desh motor entry names WireDenseItem.Type.GOLD.meta; the production constants and metas, as Goal 10B.
+    from goal10b_regression.stubs import meta_enum
+    stubs["com/hbm/items/WireDenseItem.java"] = meta_enum(
+        (source / "com/hbm/items/WireDenseItem.java").read_text(encoding="utf-8"), "com.hbm.items", "WireDenseItem", "WireDenseItem")
     stubs["com/hbm/blocks/machine/NTMAnvilBlock.java"] = (
         "package com.hbm.blocks.machine;public class NTMAnvilBlock{public enum Variant{IRON,LEAD,STEEL,DESH,FERROURANIUM,SATURNITE,"
         "BISMUTH_BRONZE,ARSENIC_BRONZE,FERRIC_SCHRABIDATE,DINEUTRONIUM,OSMIRIDIUM}}")

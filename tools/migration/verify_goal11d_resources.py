@@ -14,6 +14,16 @@ writes build/migration/goal11d/source-check.json or generated-check.json (the la
 The older resource scripts (verify_goal11c_resources.py, verify_goal11b_resources.py, verify_goal11a_resources.py,
 verify_goal10c_resources.py) import the Goal 11D constants, post_goal11c_bytes() and goal11d_delta() below to read the
 post-Goal 11C state; this module imports none of them.
+
+Goal 12A (build/migration/goal12a/production.diff) adds 8 generated files, changes en_us.json, the pickaxe tag, zh_cn.json,
+zh_cn-map.json and 24 generation inputs. The Goal 11D checks are kept and run against the post-Goal 11D state read from
+verify_goal12a_resources.py: its pre-Goal 12A stamp (build/migration/goal12a/stamp-before-g12a.json, the stamp of git
+e476f5c1) as the current stamp, the generated tree without the Goal 12A additions and with the e476f5c1 bytes of the files
+Goal 12A changes, and the e476f5c1 bytes of the Goal 12A inputs. In full mode the JAR is a Goal 12A build: its entries are
+compared with the post-Goal 11D files once exactly the Goal 12A additions are taken out of en_us.json, zh_cn.json and the
+pickaxe tag, and the Goal 11D JAR delta (only the SerializableRecipe classes against the Goal 11C release) is checked on the
+delivered Goal 11D release, whose SerializableRecipe classes the current build reproduces. goal12a_delta() from that module
+then checks that post-Goal 11D -> now is exactly the Goal 12A set.
 """
 
 import argparse
@@ -22,6 +32,9 @@ import json
 import subprocess
 import zipfile
 from pathlib import Path
+
+from verify_goal12a_resources import (GOAL11D_JAR, goal11d_release, goal12a_delta, post_goal11d_bytes, post_goal11d_generated,
+                                      post_goal11d_input, post_goal11d_stamp, post_goal11d_tree, same_as_post_goal11d)
 
 ROOT = Path(__file__).resolve().parents[2]
 GEN = ROOT / "src/generated/resources"
@@ -107,32 +120,34 @@ def goal11c_release(names):
 def goal11d_delta(check):
     """Post-Goal 11C -> now is exactly the Goal 11D set (no generated file, the one input). `check` is the caller's own
     check function, so an older resource script counts these checks as its own (3 checks)."""
-    post_stamp, stamp = read(BEFORE_STAMP), read(GEN / ".migration-stamp.json")
-    now = generated_tree()
+    # The post-Goal 11D stamp and tree (Goal 12A: see the module docstring).
+    post_stamp, stamp = read(BEFORE_STAMP), post_goal11d_stamp()
+    now = post_goal11d_tree()
     check(post_stamp["generated"] == now == stamp["generated"] and not MODIFIED,
-          "since Goal 11C no generated file was added, removed or changed (the post-Goal 11C and current stamps list the tree on disk)")
+          "since Goal 11C no generated file was added, removed or changed (the post-Goal 11C and post-Goal 11D stamps list the post-Goal 11D tree)")
     changed = sorted(name for name in set(stamp["inputs"]) | set(post_stamp["inputs"]) if stamp["inputs"].get(name) != post_stamp["inputs"].get(name))
     check(changed == CHANGED_INPUTS, f"since Goal 11C exactly the {len(CHANGED_INPUTS)} Goal 11D generation input changed: {changed}")
     release = goal11c_release([EN, ZH])
-    check(BEFORE_STAMP.read_bytes() == post_goal11c_bytes(STAMP) and release[EN] == (GEN / EN).read_bytes()
-          and text_hash(ZH, release[ZH]) == post_stamp["inputs"]["src/main/resources/" + ZH] == stamp_hash(MAIN / ZH),
-          "the pre-Goal 11D stamp is the one of git 1e29ad29; the Goal 11C release's en_us.json and zh_cn.json are the current files")
+    check(BEFORE_STAMP.read_bytes() == post_goal11c_bytes(STAMP) and release[EN] == post_goal11d_generated(EN)
+          and text_hash(ZH, release[ZH]) == post_stamp["inputs"]["src/main/resources/" + ZH] == post_goal11d_input("src/main/resources/" + ZH),
+          "the pre-Goal 11D stamp is the one of git 1e29ad29; the Goal 11C release's en_us.json and zh_cn.json are the post-Goal 11D files")
 
 
 def generated():
     before_stamp = read(BEFORE_STAMP)
     before = before_stamp["generated"]
-    now = generated_tree()
+    # The post-Goal 11D tree, stamp and inputs (Goal 12A: see the module docstring).
+    now = post_goal11d_tree()
     added = sorted(set(now) - set(before))
     removed = sorted(set(before) - set(now))
     modified = sorted(name for name in set(now) & set(before) if now[name] != before[name])
-    check(len(before) == BEFORE_COUNT and len(now) == BEFORE_COUNT, f"generated files: {BEFORE_COUNT} before Goal 11D, {len(now)} now")
+    check(len(before) == BEFORE_COUNT and len(now) == BEFORE_COUNT, f"generated files: {BEFORE_COUNT} before Goal 11D, {len(now)} after Goal 11D")
     check(modified == MODIFIED and not added and not removed,
           f"no generated file is modified, added or removed: {modified} / {added} / {removed}")
-    stamp = read(GEN / ".migration-stamp.json")
-    check(stamp["generated"] == now, "the current .migration-stamp.json lists exactly the generated files on disk")
-    stale = sorted(name for name, digest in stamp["inputs"].items() if not (ROOT / name).is_file() or stamp_hash(ROOT / name) != digest)
-    check(not stale, f"the stamp's generation inputs match the source files (runData ran after the last source change): {stale[:5]}")
+    stamp = post_goal11d_stamp()
+    check(stamp["generated"] == now, "the post-Goal 11D .migration-stamp.json lists exactly the post-Goal 11D generated files")
+    stale = sorted(name for name, digest in stamp["inputs"].items() if post_goal11d_input(name) != digest)
+    check(not stale, f"the post-Goal 11D stamp's generation inputs match the post-Goal 11D source files: {stale[:5]}")
     changed = sorted(name for name in set(stamp["inputs"]) | set(before_stamp["inputs"]) if stamp["inputs"].get(name) != before_stamp["inputs"].get(name))
     check(changed == CHANGED_INPUTS, f"the generation inputs changed since the pre-Goal 11D stamp are exactly the Goal 11D file: {changed}")
     check(stamp["generatedFingerprint"] == before_stamp["generatedFingerprint"] and stamp["inputFingerprint"] != before_stamp["inputFingerprint"]
@@ -142,19 +157,22 @@ def generated():
     # The pre-Goal 11D stamp is the delivered post-Goal 11C one, and its SerializableRecipe entry is the 1e29ad29 source.
     check(BEFORE_STAMP.read_bytes() == post_goal11c_bytes(STAMP), "stamp-before-g11d.json is byte for byte the stamp of git 1e29ad29")
     source = CHANGED_JAVA[0]
-    check(before_stamp["inputs"][source] == text_hash(source, post_goal11c_bytes(source)) and stamp["inputs"][source] == stamp_hash(ROOT / source),
-          "the pre-Goal 11D stamp hashes the 1e29ad29 SerializableRecipe.java, the current stamp the work tree file")
+    check(before_stamp["inputs"][source] == text_hash(source, post_goal11c_bytes(source)) and stamp["inputs"][source] == post_goal11d_input(source)
+          == stamp_hash(ROOT / source), "the pre-Goal 11D stamp hashes the 1e29ad29 SerializableRecipe.java, the post-Goal 11D stamp the work tree file")
 
-    # Languages and the Chinese map: unchanged against 1e29ad29 and the Goal 11C release.
+    # Languages and the Chinese map: unchanged against 1e29ad29 and the Goal 11C release (the post-Goal 11D files: e476f5c1).
     release = goal11c_release([EN, ZH])
-    en_now, zh_now = read(GEN / EN), read(MAIN / ZH)
-    check((GEN / EN).read_bytes() == post_goal11c_bytes("src/generated/resources/" + EN) == release[EN] and len(en_now) == EN_COUNT,
+    en_bytes, zh_bytes = post_goal11d_generated(EN), post_goal11d_bytes("src/main/resources/" + ZH)
+    en_now, zh_now = json.loads(en_bytes), json.loads(zh_bytes)
+    check(en_bytes == post_goal11c_bytes("src/generated/resources/" + EN) == release[EN] and len(en_now) == EN_COUNT,
           f"en_us.json unchanged against 1e29ad29 and the Goal 11C release ({len(en_now)} keys, expected {EN_COUNT})")
     zh_base = post_goal11c_bytes("src/main/resources/" + ZH)
-    check(text_hash(ZH, (MAIN / ZH).read_bytes()) == text_hash(ZH, zh_base) and (MAIN / ZH).read_bytes() == release[ZH]
+    # The Goal 11D zh_cn.json is read from git (LF) and compared modulo line ends; byte for byte, the delivered Goal 11D
+    # release holds the same zh_cn.json as the Goal 11C release.
+    check(text_hash(ZH, zh_bytes) == text_hash(ZH, zh_base) == text_hash(ZH, release[ZH]) and goal11d_release([ZH])[ZH] == release[ZH]
           and zh_now == json.loads(zh_base) and len(zh_now) == ZH_COUNT,
           f"zh_cn.json unchanged against 1e29ad29 (modulo line ends) and the Goal 11C release ({len(zh_now)} keys, expected {ZH_COUNT})")
-    check(text_hash(ZH_MAP_NAME, (ROOT / ZH_MAP_NAME).read_bytes()) == text_hash(ZH_MAP_NAME, post_goal11c_bytes(ZH_MAP_NAME)),
+    check(text_hash(ZH_MAP_NAME, post_goal11d_bytes(ZH_MAP_NAME)) == text_hash(ZH_MAP_NAME, post_goal11c_bytes(ZH_MAP_NAME)),
           "zh_cn-map.json unchanged against 1e29ad29 (Goal 11D adds no player-facing text)")
     return {"generated_modified": MODIFIED, "changed_inputs": CHANGED_INPUTS,
             "key_counts": {"en": len(en_now), "zh": len(zh_now)}}
@@ -166,31 +184,38 @@ def is_class_of(name, prefixes):
 
 def jar():
     classes = ROOT / "build/classes/java/main"
-    stamp = read(GEN / ".migration-stamp.json")
+    # The JAR is a Goal 12A build (module docstring): it is compared with the post-Goal 11D stamp and files, and the Goal 11D
+    # delta to the Goal 11C release is checked on the delivered Goal 11D release.
+    stamp = post_goal11d_stamp()
     prefixes = [name.removeprefix("src/main/java/").removesuffix(".java") for name in CHANGED_JAVA]
     goal11c_release([])
-    with zipfile.ZipFile(JAR) as archive, zipfile.ZipFile(GOAL11C_JAR) as release:
+    goal11d_release([])
+    with zipfile.ZipFile(JAR) as archive, zipfile.ZipFile(GOAL11C_JAR) as release, zipfile.ZipFile(GOAL11D_JAR) as delivered:
         names = archive.namelist()
         check(len(names) == len(set(names)), "the JAR has no duplicate paths")
-        different = [name for name in stamp["generated"] if name not in names or archive.read(name) != (GEN / name).read_bytes()]
-        check(not different, f"every one of the {len(stamp['generated'])} generated files is in the JAR byte for byte: {different[:5]}")
-        check(archive.read(EN) == (GEN / EN).read_bytes(), "JAR en_us.json == the generated file")
-        check(archive.read(ZH) == (MAIN / ZH).read_bytes(), "JAR zh_cn.json == the source")
+        different = [name for name in stamp["generated"] if name not in names or not same_as_post_goal11d(name, archive.read(name), post_goal11d_generated(name))]
+        check(not different, f"every one of the {len(stamp['generated'])} post-Goal 11D generated files is in the JAR byte for byte "
+                             f"(en_us.json and the pickaxe tag once exactly the Goal 12A additions are taken out): {different[:5]}")
+        check(same_as_post_goal11d(EN, archive.read(EN), post_goal11d_generated(EN)), "JAR en_us.json == the generated file (without the 6 Goal 12A keys)")
+        check(same_as_post_goal11d(ZH, archive.read(ZH), post_goal11d_bytes("src/main/resources/" + ZH)), "JAR zh_cn.json == the source (without the 6 Goal 12A keys)")
         for prefix in prefixes:
             matching = sorted(name for name in names if is_class_of(name, [prefix]))
             compiled = sorted(p.relative_to(classes).as_posix() for p in (classes / prefix).parent.glob(Path(prefix).name + "*.class")
                               if is_class_of(p.relative_to(classes).as_posix(), [prefix]))
             check(prefix + ".class" in matching and matching == compiled and all(archive.read(name) == (classes / name).read_bytes() for name in matching),
                   f"JAR {prefix}.class (and its {len(matching) - 1} nested classes) == the compiled classes")
+            check(all(archive.read(name) == delivered.read(name) for name in matching)
+                  and sorted(n for n in delivered.namelist() if is_class_of(n, [prefix])) == matching,
+                  f"JAR {prefix}.class (and its nested classes) == the delivered Goal 11D release (Goal 12A does not change it)")
             new, old = archive.read(prefix + ".class"), release.read(prefix + ".class")
             check(NEW_CALL in new and OLD_CALL not in new and OLD_CALL in old and NEW_CALL not in old,
                   f"JAR {prefix}.class calls {NEW_CALL.decode()} and no longer {OLD_CALL.decode()} (the Goal 11C release class: the reverse)")
-        old_names, new_names = set(release.namelist()), set(names)
+        old_names, new_names = set(release.namelist()), set(delivered.namelist())
         added, removed = sorted(new_names - old_names), sorted(old_names - new_names)
-        modified = sorted(name for name in old_names & new_names if release.read(name) != archive.read(name))
-        check(not added and not removed, f"no entry added or removed against the Goal 11C release: {added} / {removed}")
+        modified = sorted(name for name in old_names & new_names if release.read(name) != delivered.read(name))
+        check(not added and not removed, f"no entry of the delivered Goal 11D release is added or removed against the Goal 11C release: {added} / {removed}")
         check(modified and all(is_class_of(name, prefixes) for name in modified) and prefixes[0] + ".class" in modified,
-              f"of all {len(names)} entries only the SerializableRecipe classes differ from the Goal 11C release: {modified}")
+              f"of all {len(new_names)} entries of the Goal 11D release only the SerializableRecipe classes differ from the Goal 11C release: {modified}")
         check(not any(name.startswith(("tools/", "migration/")) or ".migration-stamp" in name for name in names), "no verification content in the JAR")
     return {"goal11c_delta": {"added": added, "removed": removed, "modified": modified}}
 
@@ -200,6 +225,7 @@ def main():
     parser.add_argument("--source-only", action="store_true", help="skip the JAR inspection (before the build)")
     args = parser.parse_args()
     report = generated()
+    goal12a_delta(check)
     if not args.source_only:
         report.update(jar())
     OUT.mkdir(parents=True, exist_ok=True)

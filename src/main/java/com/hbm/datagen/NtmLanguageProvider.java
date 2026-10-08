@@ -776,6 +776,7 @@ public class NtmLanguageProvider extends LanguageProvider {
         this.add(NtmItems.COIL_MAGNETIZED_TUNGSTEN, "4000K High Temperature Super Conducting Coil");
         this.add(NtmItems.COIL_TUNGSTEN, "Heating Coil");
         this.add(NtmItems.MOTOR, "Motor");
+        this.add(NtmItems.MOTOR_DESH, "Desh Motor");
         this.add(NtmItems.GEAR_LARGE, "Large Gear");
         this.add(NtmItems.CAST_PLATE_WELDED, "Welded Plate");
         this.add(NtmItems.CAST_PLATE, "Cast Plate");
@@ -1693,11 +1694,16 @@ public class NtmLanguageProvider extends LanguageProvider {
         this.add("block.hbmsntm.heater_firebox.desc", "Burns solid fuel to produce heat.");
         this.add("tile.heater_firebox.desc", "Burns solid fuel to produce heat.");
         this.add("block.hbmsntm.heat_boiler.desc", "Large boiler that can boil water or heat up oil.$Requires external heat source.$Heat transfer rate: ΔT*0.1 TU/t");
+        this.add("block.hbmsntm.machine_industrial_boiler.desc", "Large boiler that can boil water or heat up oil.$Requires external heat source.$Heat transfer rate: ΔT*0.1 TU/t$Cannot explode");
         this.add("block.hbmsntm.machine_stirling.desc", "Turns heat into energy. Requires external heat source.$Heat transfer rate: T*0.1 TU/t$Max intake: 300 TU/t$Efficiency: 50%%");
         this.add("machine_stirling.overlay.overspeed", "! ! ! OVERSPEED ! ! !");
+        this.add("pump_electric.overlay.altitude", "! ! ! ALTITUDE ! ! !");
+        this.add("pump_electric.overlay.no_valid_ground", "! ! ! NO VALID GROUND ! ! !");
         this.add("machine_stirling.overlay.gear_missing", "Gear missing!");
         this.add(NtmBlocks.MACHINE_STEAM_ENGINE, "Steam Engine");
         this.add("block.hbmsntm.machine_steam_engine.desc", "Efficiency: 85%%");
+        this.add(NtmBlocks.PUMP_ELECTRIC, "Electric Groundwater Pump");
+        this.add("block.hbmsntm.pump_electric.desc", "Uses electricity to pump up groundwater$Generates up to 10,000mB/t$Needs to be placed below Y:70");
         this.add(NtmBlocks.MACHINE_CONDENSER, "Steam Condenser");
         this.add("entity.hbmsntm.stray_cog", "Stray Cog");
         this.add("block.hbmsntm.heater_oven.desc", "Burns solid fuel to produce heat.$Accepts heat from the bottom with 50%% efficiency.");

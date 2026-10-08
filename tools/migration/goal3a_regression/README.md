@@ -16,3 +16,5 @@ The existing Goal 2 harness remains the regression for steel, plates, and invent
 & 'C:\Users\显卡超频和烤机测试\.cache\codex-runtimes\codex-primary-runtime\dependencies\python\python.exe' -B tools/migration/verify_goal2.py
 & 'C:\Users\显卡超频和烤机测试\.cache\codex-runtimes\codex-primary-runtime\dependencies\python\python.exe' -B tools/migration/verify_goal2_menus.py
 ```
+
+Goal 12A (`migration/GOAL12A.md`, `build/migration/goal12a/production.diff`) names `WireDenseItem.Type.GOLD.meta` in `AnvilRecipes` (the desh motor entry); `anvil_stubs.py` adds a `WireDenseItem` stand-in with the constants the anvil source names and the ordinal as a stand-in meta, so the Goal 3A, 5A acquisition and 5A casting anvil worlds compile again. No assertion changed.

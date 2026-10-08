@@ -889,11 +889,33 @@ public class Goal11ARegression {
                     + "; -> 1 hbmsntm:heater_oilburner @1.0; tier 2--1 CONSTRUCTION",
     };
 
+    /**
+     * Goal 12A (migration/GOAL12A.md) appends four entries after the fluid burner entries: the industrial boiler with
+     * Minecraft and with NEO copper (original AnvilRecipes.java:399-404), the electric pump (:253-260) and the desh motor
+     * (:215-217). They are required exactly, in this order, at the end of the list; the Goal 12A suite checks them in detail.
+     */
+    static final String[] GOAL12A = {
+            "item hbmsntm:cast_plate x8 meta 11; item minecraft:copper_ingot x8 meta " + MetaHelper.WILDCARD_VALUE
+                    + "; tag ntm:ingots_plastic x4; -> 1 hbmsntm:machine_industrial_boiler @1.0; tier 3--1 CONSTRUCTION",
+            "item hbmsntm:cast_plate x8 meta 11; item hbmsntm:ingot_copper x8 meta " + MetaHelper.WILDCARD_VALUE
+                    + "; tag ntm:ingots_plastic x4; -> 1 hbmsntm:machine_industrial_boiler @1.0; tier 3--1 CONSTRUCTION",
+            "item stone_bricks x8 meta " + MetaHelper.WILDCARD_VALUE + "; tag plates/steel x16; item hbmsntm:pipe_lead x4 meta " + MetaHelper.WILDCARD_VALUE
+                    + "; item hbmsntm:motor x2 meta " + MetaHelper.WILDCARD_VALUE + "; item hbmsntm:circuit_vacuum_tube x4 meta " + MetaHelper.WILDCARD_VALUE
+                    + "; -> 1 hbmsntm:pump_electric @1.0; tier 3--1 CONSTRUCTION",
+            "item hbmsntm:motor x1 meta " + MetaHelper.WILDCARD_VALUE + "; tag ntm:ingots_plastic x2; item hbmsntm:ingot_desh x2 meta " + MetaHelper.WILDCARD_VALUE
+                    + "; item hbmsntm:wire_dense x1 meta 7900; -> 1 hbmsntm:motor_desh @1.0; tier 3--1 CONSTRUCTION",
+    };
+
     static void burnerAnvil() {
         List<AnvilConstructionRecipe> all = AnvilRecipes.getConstruction();
         List<?> before = goal11a.head.AnvilRecipes.getConstruction();
         int n = before.size();
-        check(all.size() == n + 2, "the live construction list is the 8a209c35 list plus exactly two entries (" + n + " -> " + all.size() + ")");
+        check(all.size() == n + 2 + GOAL12A.length, "the live construction list is the 8a209c35 list plus exactly two entries, then the four Goal 12A entries ("
+                + n + " -> " + all.size() + ")");
+        List<String> tail = new ArrayList<>();
+        for(int k = 0; k < GOAL12A.length; k++) tail.add(describe(all.get(n + 2 + k)));
+        check(tail.equals(List.of(GOAL12A)), "exactly the four Goal 12A entries (industrial boiler x2, electric pump, desh motor) follow the two fluid burner entries,"
+                + " in order, at the end of the list: " + tail);
         int same = 0;
         String first = null;
         for(int i = 0; i < n; i++) {
@@ -902,7 +924,7 @@ public class Goal11ARegression {
         }
         check(same == n, "every committed entry is unchanged in content and index" + (first == null ? "" : "; first difference " + first));
         check(describe(all.get(n)).equals(GOAL11A[0]) && describe(all.get(n + 1)).equals(GOAL11A[1]),
-                "the two new entries at the end (original AnvilRecipes.java:283-289): 4 steel tanks, 3 steel pipes, 12 titanium ingots, 8 Minecraft / NEO copper ingots "
+                "the two new entries after the committed list (original AnvilRecipes.java:283-289): 4 steel tanks, 3 steel pipes, 12 titanium ingots, 8 Minecraft / NEO copper ingots "
                         + "-> one plain fluid burner, tier 2 and up, construction overlay: " + describe(all.get(n)) + " | " + describe(all.get(n + 1)));
         AnvilConstructionRecipe vanilla = all.get(n), neo = all.get(n + 1);
         check(vanilla.isTierValid(2) && vanilla.isTierValid(3) && !vanilla.isTierValid(1) && vanilla.getOverlay() == OverlayType.CONSTRUCTION

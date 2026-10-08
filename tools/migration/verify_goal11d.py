@@ -42,6 +42,8 @@ OUTPUT = ROOT / "build/migration/goal11d/regression"
 RECIPE_REFERENCE = ROOT / "build/migration/goal11d/recipe-reference"
 # The delivered post-Goal 11C commit (Goal 11A-11C committed; Goal 11D is the only uncommitted work).
 BASE_COMMIT = "1e29ad29b75108b57f22ba246458d7db2abc6a62"
+# The Goal 11D commit (Goal 12A builds on it uncommitted); section 5 compares the two commits.
+GOAL11D_COMMIT = "e476f5c1cc75e3679177fa997d7104c581a0491a"
 PRODUCTION = (SERIALIZABLE, GENERIC_RECIPES, GENERIC_RECIPE) + TABLES
 FLUIDS = "com/hbm/inventory/fluid/Fluids.java"
 FLUID_TYPE = "com/hbm/inventory/fluid/FluidType.java"
@@ -222,11 +224,17 @@ def production_diff(check):
     check(len(live) == len(base) and differing == [WRITER_LINE], f"SerializableRecipe.java differs from 1e29ad29 in exactly line {WRITER_LINE}: {differing[:10]}")
     check(base[WRITER_LINE - 1] == OLD_LINE and live[WRITER_LINE - 1] == NEW_LINE,
           f"line {WRITER_LINE}: getUnlocalizedName() -> getInternalName(), comment and whitespace kept: {live[WRITER_LINE - 1]!r}")
-    # The real tree (a mutation run's SOURCE copy is checked through the line above).
-    changed = git("diff", "--name-only", BASE_COMMIT, "--", "src/main/java", "src/main/resources").decode("utf-8").split()
-    untracked = git("ls-files", "--others", "--exclude-standard", "--", "src/main/java", "src/main/resources").decode("utf-8").split()
-    check(changed == ["src/main/java/" + SERIALIZABLE] and not untracked,
-          f"no other file under src/main/java or src/main/resources differs from 1e29ad29 (git diff: {changed}; untracked: {untracked})")
+    # The real tree (a mutation run's SOURCE copy is checked through the line above). Goal 12A (migration/GOAL12A.md) changes
+    # further files on top of the Goal 11D commit, so the Goal 11D set is checked between the commits: 1e29ad29 -> e476f5c1
+    # (Goal 11D) changes exactly SerializableRecipe.java under src/main/java and src/main/resources, and the working copy
+    # of SerializableRecipe.java is still the e476f5c1 file (git sees no difference; the blob is the CRLF checkout with LF).
+    changed = git("diff", "--name-only", BASE_COMMIT, GOAL11D_COMMIT, "--", "src/main/java", "src/main/resources").decode("utf-8").split()
+    check(changed == ["src/main/java/" + SERIALIZABLE],
+          f"between 1e29ad29 and the Goal 11D commit {GOAL11D_COMMIT[:8]} no other file under src/main/java or src/main/resources changed (git diff: {changed})")
+    worktree = git("diff", "--name-only", GOAL11D_COMMIT, "--", "src/main/java/" + SERIALIZABLE).decode("utf-8").split()
+    committed = git("show", f"{GOAL11D_COMMIT}:src/main/java/{SERIALIZABLE}")
+    check(not worktree and (ROOT / "src/main/java" / SERIALIZABLE).read_bytes().replace(b"\r\n", b"\n") == committed,
+          f"the working copy of SerializableRecipe.java is byte-identical to {GOAL11D_COMMIT[:8]} (modulo the CRLF checkout): {worktree}")
 
 
 def main():

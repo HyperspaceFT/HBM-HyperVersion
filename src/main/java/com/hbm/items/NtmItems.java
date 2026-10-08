@@ -382,6 +382,7 @@ public class NtmItems {
     public static final DeferredItem<Item> COIL_MAGNETIZED_TUNGSTEN = ITEMS.register("coil_magnetized_tungsten", () -> new Item(new Item.Properties()));
     public static final DeferredItem<Item> COIL_TUNGSTEN = ITEMS.register("coil_tungsten", () -> new Item(new Item.Properties()));
     public static final DeferredItem<Item> MOTOR = ITEMS.register("motor", () -> new Item(new Item.Properties()));
+    public static final DeferredItem<Item> MOTOR_DESH = ITEMS.register("motor_desh", () -> new Item(new Item.Properties()));
     public static final DeferredItem<Item> GEAR_LARGE = ITEMS.register("gear_large", () -> new Item(new Item.Properties()));
     public static final DeferredItem<Item> CAST_PLATE_WELDED = ITEMS.register("cast_plate_welded", () -> new CastPlateItem(new Item.Properties(), true));
     public static final DeferredItem<Item> CAST_PLATE = ITEMS.register("cast_plate", () -> new CastPlateItem(new Item.Properties(), false));

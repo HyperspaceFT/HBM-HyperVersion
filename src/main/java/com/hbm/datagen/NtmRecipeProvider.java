@@ -8,6 +8,7 @@ import com.hbm.inventory.fluid.Fluids;
 import com.hbm.items.BoltItem;
 import com.hbm.items.CastPlateItem;
 import com.hbm.items.NtmItems;
+import com.hbm.items.WireDenseItem;
 import com.hbm.items.component.NtmDataComponents;
 import com.hbm.items.machine.BatteryPackItem;
 import net.minecraft.core.registries.BuiltInRegistries;
@@ -171,6 +172,17 @@ public class NtmRecipeProvider extends RecipeProvider {
                 .define('#', DataComponentIngredient.of(false, NtmDataComponents.META, BarbedWireBlock.BarbedWireType.FIRE.ordinal(), NtmBlocks.BARBED_WIRE.asItem()))
                 .unlockedBy("has_flaming_barbed_wire", has(NtmBlocks.BARBED_WIRE.asItem()))
                 .save(recipeOutput, ResourceLocation.fromNamespaceAndPath("hbmsntm", "tungsten_bolt_from_flaming_barbed_wire"));
+        // Desh motor, original CraftingManager.java:174: any plastic ingot, gold dense wire only, desh ingot, motor.
+        ShapedRecipeBuilder.shaped(RecipeCategory.MISC, NtmItems.MOTOR_DESH.get(), 1)
+                .pattern("PCP")
+                .pattern("DMD")
+                .pattern("PCP")
+                .define('P', ItemTags.create(ResourceLocation.fromNamespaceAndPath("ntm", "ingots_plastic")))
+                .define('C', DataComponentIngredient.of(false, NtmDataComponents.META, WireDenseItem.Type.GOLD.meta, NtmItems.WIRE_DENSE.get()))
+                .define('D', NtmItems.INGOT_DESH.get())
+                .define('M', NtmItems.MOTOR.get())
+                .unlockedBy("has_motor", has(NtmItems.MOTOR.get()))
+                .save(recipeOutput, ResourceLocation.fromNamespaceAndPath("hbmsntm", "motor_desh"));
         ShapedRecipeBuilder.shaped(RecipeCategory.MISC, NtmItems.UPGRADE_TEMPLATE.get(), 1)
                 .pattern("ACA")
                 .pattern("BDB")

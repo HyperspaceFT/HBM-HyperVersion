@@ -64,3 +64,5 @@ Python (in `verify_goal10b.py`):
 - Proxies: the welder's `ProxyComboBlockEntity` flags are read from `newBlockEntity`; hopper or pipe access through a proxy is not exercised, and NEO's per-face slot access (every face 0-3) is not compared with the original's per-block slots.
 - Upgrades (speed, power, overdrive) in the machines' upgrade slots, battery charging from slot 7/4, fluid identifiers and fluid recipes, the soldering station's collision prevention, NBT save/load and sync of both machines.
 - The recipe JSON path (`hbmSoldering.json`, `hbmArcWelder.json`).
+
+Goal 12A (`migration/GOAL12A.md`, `build/migration/goal12a/production.diff`) appends four construction entries after the Goal 11A entries (industrial boiler with Minecraft and NEO copper, electric pump, desh motor) and imports `WireDenseItem`; the anvil section requires the four entries exactly, in order, at the end of the list (`goal12a()`, 1 more check), `stubs.py` gives the anvil world the production `WireDenseItem` metas, and `verify_goal10b_resources.py` first requires and removes the exact Goal 12A block and import (`goal12a_regression/anvil_block.py`, 1 more check).

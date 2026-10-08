@@ -231,8 +231,9 @@ public class Goal11DRecipeRegression {
             List<?> raw = new ArrayList<>(table.recipes().get());
             List<Object> read = collapsed(raw);
             if(raw.size() != read.size()) {
-                // NEO SolderingRecipes.readRecipe adds the recipe its SolderingRecipe constructor already added (pre-existing,
-                // not Goal 11D; the original constructor does not add itself). Each recipe is the same object twice in a row.
+                // NEO SolderingRecipes.readRecipe added the recipe its SolderingRecipe constructor already added (pre-existing,
+                // not Goal 11D; the original constructor does not add itself), so each recipe was the same object twice in a row.
+                // Fixed in Goal 12A (migration/GOAL12A.md part 4): readRecipe no longer adds, so this branch no longer prints.
                 info(table.label() + ": a read-back recipe list holds every recipe twice in a row (" + raw.size() + " entries for "
                         + read.size() + " recipes; SolderingRecipes.readRecipe and the SolderingRecipe constructor both add it)");
             }

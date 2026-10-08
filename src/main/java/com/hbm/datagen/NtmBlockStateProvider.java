@@ -307,6 +307,7 @@ public class NtmBlockStateProvider extends BlockStateProvider {
         this.particleOnlyBlock(NtmBlocks.HEATER_FIREBOX, modLoc("block/block_steel"));
         this.particleOnlyBlock(NtmBlocks.MACHINE_STIRLING, modLoc("block/block_steel"));
         this.particleOnlyBlock(NtmBlocks.MACHINE_STEAM_ENGINE, modLoc("block/block_steel"));
+        this.particleOnlyBlock(NtmBlocks.PUMP_ELECTRIC, modLoc("block/block_steel"));
         // The original texture name is "condenser".
         this.simpleBlockWithItem(NtmBlocks.MACHINE_CONDENSER, this.models().cubeAll(name(NtmBlocks.MACHINE_CONDENSER), modLoc("block/condenser")));
         this.particleOnlyBlock(NtmBlocks.HEATER_OVEN, modLoc("block/block_steel"));

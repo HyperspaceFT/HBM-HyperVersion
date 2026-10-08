@@ -10,6 +10,7 @@ import com.hbm.inventory.RecipesCommon.ComparableStack;
 import com.hbm.items.BoltItem;
 import com.hbm.items.CastPlateItem;
 import com.hbm.items.NtmItems;
+import com.hbm.items.WireDenseItem;
 import com.hbm.util.InventoryUtil;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.tags.ItemTags;
@@ -494,6 +495,49 @@ public class AnvilRecipes {
                 },
                 new AnvilOutput(new ItemStack(NtmBlocks.HEATER_OILBURNER.asItem()))
         ).setTier(2).setOverlay(OverlayType.CONSTRUCTION));
+
+        // Industrial boiler, original AnvilRecipes.java:399-404: one entry per copper ingot item, as for the firebox.
+        // Any plastic ingot through ntm:ingots_plastic (the original's ANY_PLASTIC.ingot()). No recycling entry.
+        CONSTRUCTION_RECIPES.add(new AnvilConstructionRecipe(
+                new AStack[] {
+                        NtmItems.castPlateIngredient(CastPlateItem.Type.STEEL, 8),
+                        new ComparableStack(Items.COPPER_INGOT, 8),
+                        new RecipesCommon.TagStack(ItemTags.create(ResourceLocation.fromNamespaceAndPath("ntm", "ingots_plastic")), 4)
+                },
+                new AnvilOutput(new ItemStack(NtmBlocks.MACHINE_INDUSTRIAL_BOILER.asItem()))
+        ).setTier(3).setOverlay(OverlayType.CONSTRUCTION));
+
+        CONSTRUCTION_RECIPES.add(new AnvilConstructionRecipe(
+                new AStack[] {
+                        NtmItems.castPlateIngredient(CastPlateItem.Type.STEEL, 8),
+                        new ComparableStack(NtmItems.INGOT_COPPER.get(), 8),
+                        new RecipesCommon.TagStack(ItemTags.create(ResourceLocation.fromNamespaceAndPath("ntm", "ingots_plastic")), 4)
+                },
+                new AnvilOutput(new ItemStack(NtmBlocks.MACHINE_INDUSTRIAL_BOILER.asItem()))
+        ).setTier(3).setOverlay(OverlayType.CONSTRUCTION));
+
+        // Electric groundwater pump, original AnvilRecipes.java:253-260.
+        CONSTRUCTION_RECIPES.add(new AnvilConstructionRecipe(
+                new AStack[] {
+                        new ComparableStack(Blocks.STONE_BRICKS, 8),
+                        new RecipesCommon.TagStack(NtmTags.Items.PLATES_STEEL, 16),
+                        new ComparableStack(NtmItems.PIPE_LEAD.get(), 4),
+                        new ComparableStack(NtmItems.MOTOR.get(), 2),
+                        new ComparableStack(NtmItems.CIRCUIT_VACUUM_TUBE.get(), 4)
+                },
+                new AnvilOutput(new ItemStack(NtmBlocks.PUMP_ELECTRIC.asItem()))
+        ).setTier(3).setOverlay(OverlayType.CONSTRUCTION));
+
+        // Desh motor, original AnvilRecipes.java:215-217; the dense wire is limited to gold as GOLD.wireDense().
+        CONSTRUCTION_RECIPES.add(new AnvilConstructionRecipe(
+                new AStack[] {
+                        new ComparableStack(NtmItems.MOTOR.get()),
+                        new RecipesCommon.TagStack(ItemTags.create(ResourceLocation.fromNamespaceAndPath("ntm", "ingots_plastic")), 2),
+                        new ComparableStack(NtmItems.INGOT_DESH.get(), 2),
+                        new ComparableStack(NtmItems.WIRE_DENSE.get(), 1, WireDenseItem.Type.GOLD.meta)
+                },
+                new AnvilOutput(new ItemStack(NtmItems.MOTOR_DESH.get(), 1))
+        ).setTier(3).setOverlay(OverlayType.CONSTRUCTION));
 
     }
 

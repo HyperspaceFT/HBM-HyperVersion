@@ -89,6 +89,9 @@ def build_anvil_stubs(source, head_anvil):
         (source / "com/hbm/items/CastPlateItem.java").read_text(encoding="utf-8"), "com.hbm.items", "CastPlateItem", "CastPlateItem")
     stubs["com/hbm/items/BoltItem.java"] = meta_enum(
         (source / "com/hbm/items/BoltItem.java").read_text(encoding="utf-8"), "com.hbm.items", "BoltItem", "BoltItem")
+    # Goal 12A: the desh motor's gold dense wire with its production meta (the Goal 3A stand-in uses the ordinal).
+    stubs["com/hbm/items/WireDenseItem.java"] = meta_enum(
+        (source / "com/hbm/items/WireDenseItem.java").read_text(encoding="utf-8"), "com.hbm.items", "WireDenseItem", "WireDenseItem")
     # Production NtmItems.java castPlateIngredient: the cast_plate item with META = the type's ordinal.
     _replace(stubs, "com/hbm/items/NtmItems.java",
              'public static AStack castPlateIngredient(CastPlateItem.Type type,int count){return new ComparableStack(new Item("cast_plate_"+type),count);}',

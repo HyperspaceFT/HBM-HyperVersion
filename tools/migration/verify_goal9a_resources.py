@@ -11,6 +11,7 @@ import json
 import re
 import subprocess
 from pathlib import Path
+from goal12a_regression.anvil_block import without_goal12a
 
 ROOT = Path(__file__).resolve().parents[2]
 ORIGINAL = ROOT.parent / "Hbm-s-Nuclear-Tech-GIT"
@@ -122,6 +123,10 @@ def between(source, start, end):
 
 def anvil_entry():
     source = text(JAVA / "com/hbm/inventory/recipes/anvil/AnvilRecipes.java")
+    # Goal 12A (migration/GOAL12A.md) appends its block after the Goal 11A fluid burner entries and imports WireDenseItem;
+    # both must occur exactly once where Goal 12A put them and are removed first (goal12a_regression/anvil_block.py).
+    source, goal12a_found = without_goal12a(source)
+    check(goal12a_found, "the Goal 12A block follows the Goal 11A block exactly once, at the end of registerConstruction, with its one import")
     body = between(source, "private static void registerConstruction() {", "private static void addAnvilRecipe(")
     starts = [m.start() for m in re.finditer(r"CONSTRUCTION_RECIPES\.add\(new AnvilConstructionRecipe\(", body)]
     check(len(starts) >= 6, "registerConstruction has at least six explicit entries")

@@ -20,6 +20,12 @@ no generated file. The Goal 11C checks are kept unchanged and run against the po
 (build/migration/goal11d/stamp-before-g11d.json, the stamp of git 1e29ad29) as the current stamp, and for the input Goal 11D
 changes, its bytes at 1e29ad29. goal11d_delta() (from verify_goal11d_resources.py) then checks that post-Goal 11C -> now is
 exactly the Goal 11D set. Only the Goal 11D constants and helpers are imported from that module.
+
+Goal 12A (build/migration/goal12a/production.diff) changes generated files, languages and further inputs after Goal 11D. As
+for Goal 11D, the checks are kept and read the post-Goal 11D state from verify_goal12a_resources.py: the generated tree
+without the Goal 12A additions and with the e476f5c1 bytes of the files it changes, the e476f5c1 bytes of the Goal 12A
+inputs, zh_cn.json and zh_cn-map.json, and in full mode the JAR entries once exactly the Goal 12A additions are taken out
+(same_as_post_goal11d); goal12a_delta() then checks that post-Goal 11D -> now is exactly the Goal 12A set.
 """
 
 import argparse
@@ -30,6 +36,8 @@ from pathlib import Path
 
 from verify_goal11d_resources import (BEFORE_STAMP as POST_STAMP, CHANGED_INPUTS as GOAL11D_INPUTS, goal11d_delta,
                                       post_goal11c_bytes)
+from verify_goal12a_resources import (goal12a_delta, post_goal11d_bytes, post_goal11d_generated, post_goal11d_input,
+                                      post_goal11d_stamp, post_goal11d_tree, same_as_post_goal11d)
 
 ROOT = Path(__file__).resolve().parents[2]
 ORIGINAL_ROOT = ROOT.parent / "Hbm-s-Nuclear-Tech-GIT"
@@ -121,7 +129,8 @@ def post_goal11c_input(name):
     disk; None if it does not exist there."""
     if name in GOAL11D_INPUTS:
         return text_hash(name, post_goal11c_bytes(name))
-    return stamp_hash(ROOT / name) if (ROOT / name).is_file() else None
+    # Goal 12A: every other input as it was after Goal 11D (module docstring).
+    return post_goal11d_input(name)
 
 
 def goal11b_release(names):
@@ -146,7 +155,7 @@ def goal11c_delta(check):
     check function, so an older resource script counts these checks as its own (3 checks)."""
     # The post-Goal 11C stamp (the module docstring); Goal 11D changes no generated file, so the tree on disk is post-Goal 11C.
     post_stamp, stamp = read(BEFORE_STAMP), read(POST_STAMP)
-    now = generated_tree()
+    now = post_goal11d_tree()
     check(post_stamp["generated"] == now == stamp["generated"] and not MODIFIED,
           "since Goal 11B no generated file was added, removed or changed (the post-Goal 11B and current stamps list the tree on disk)")
     changed = sorted(name for name in set(stamp["inputs"]) | set(post_stamp["inputs"]) if stamp["inputs"].get(name) != post_stamp["inputs"].get(name))
@@ -159,11 +168,12 @@ def goal11c_delta(check):
 def generated():
     before_stamp = read(BEFORE_STAMP)
     before = before_stamp["generated"]
-    now = generated_tree()
+    # The post-Goal 11D tree (Goal 12A: module docstring).
+    now = post_goal11d_tree()
     added = sorted(set(now) - set(before))
     removed = sorted(set(before) - set(now))
     modified = sorted(name for name in set(now) & set(before) if now[name] != before[name])
-    check(len(before) == BEFORE_COUNT and len(now) == BEFORE_COUNT, f"generated files: {BEFORE_COUNT} before Goal 11C, {len(now)} now")
+    check(len(before) == BEFORE_COUNT and len(now) == BEFORE_COUNT, f"generated files: {BEFORE_COUNT} before Goal 11C, {len(now)} after Goal 11D")
     check(modified == MODIFIED and not added and not removed,
           f"no generated file is modified, added or removed: {modified} / {added} / {removed}")
     # The post-Goal 11C stamp and inputs (the module docstring).
@@ -190,8 +200,8 @@ def generated():
           "the Goal 11B release's zh_cn.json is the pre-Goal 11C source (LF-normalised, as the stamp)")
 
     # Languages: English unchanged, exactly one Chinese value changed.
-    en_before, en_now = json.loads(release[EN]), read(GEN / EN)
-    zh_before, zh_now = json.loads(release[ZH]), read(MAIN / ZH)
+    en_before, en_now = json.loads(release[EN]), json.loads(post_goal11d_generated(EN))
+    zh_before, zh_now = json.loads(release[ZH]), json.loads(post_goal11d_bytes("src/main/resources/" + ZH))
     check(en_now == en_before and len(en_now) == EN_COUNT, f"en_us.json unchanged ({len(en_now)} keys, expected {EN_COUNT})")
     zh_changed = sorted(k for k in set(zh_before) & set(zh_now) if zh_before[k] != zh_now[k])
     check(set(zh_now) == set(zh_before) and zh_changed == [KEY] and len(zh_now) == ZH_COUNT,
@@ -204,7 +214,7 @@ def generated():
     check(KEY not in lang(ORIGINAL_ZH), "the original zh_CN.lang has no chem.desh (the name is a local translation)")
 
     # Chinese mapping: only the chem.desh entry's target_zh changed.
-    mapping, base_mapping = read(ZH_MAP), read(base_input(ZH_MAP_NAME))
+    mapping, base_mapping = json.loads(post_goal11d_bytes(ZH_MAP_NAME)), read(base_input(ZH_MAP_NAME))
     entries, base_entries = mapping["entries"], base_mapping["entries"]
     changed_entries = sorted(k for k in set(entries) | set(base_entries) if entries.get(k) != base_entries.get(k))
     check(changed_entries == [KEY] and {k: v for k, v in mapping.items() if k != "entries"} == {k: v for k, v in base_mapping.items() if k != "entries"},
@@ -227,15 +237,17 @@ def is_class_of(name, prefixes):
 
 def jar():
     classes = ROOT / "build/classes/java/main"
-    stamp = read(GEN / ".migration-stamp.json")
+    # The JAR is a Goal 12A build: compared with the post-Goal 11D stamp and files (module docstring).
+    stamp = post_goal11d_stamp()
     prefixes = [name.removeprefix("src/main/java/").removesuffix(".java") for name in CHANGED_JAVA]
     with zipfile.ZipFile(JAR) as archive:
         names = archive.namelist()
         check(len(names) == len(set(names)), "the JAR has no duplicate paths")
-        different = [name for name in stamp["generated"] if name not in names or archive.read(name) != (GEN / name).read_bytes()]
-        check(not different, f"every one of the {len(stamp['generated'])} generated files is in the JAR byte for byte: {different[:5]}")
-        check(archive.read(EN) == (GEN / EN).read_bytes(), "JAR en_us.json == the generated file")
-        check(archive.read(ZH) == (MAIN / ZH).read_bytes(), "JAR zh_cn.json == the source")
+        different = [name for name in stamp["generated"] if name not in names or not same_as_post_goal11d(name, archive.read(name), post_goal11d_generated(name))]
+        check(not different, f"every one of the {len(stamp['generated'])} post-Goal 11D generated files is in the JAR byte for byte "
+                             f"(en_us.json and the pickaxe tag once exactly the Goal 12A additions are taken out): {different[:5]}")
+        check(same_as_post_goal11d(EN, archive.read(EN), post_goal11d_generated(EN)), "JAR en_us.json == the generated file (without the 6 Goal 12A keys)")
+        check(same_as_post_goal11d(ZH, archive.read(ZH), post_goal11d_bytes("src/main/resources/" + ZH)), "JAR zh_cn.json == the source (without the 6 Goal 12A keys)")
         for prefix in prefixes:
             matching = sorted(name for name in names if is_class_of(name, [prefix]))
             compiled = sorted(p.relative_to(classes).as_posix() for p in (classes / prefix).parent.glob(Path(prefix).name + "*.class")
@@ -251,6 +263,7 @@ def main():
     args = parser.parse_args()
     report = generated()
     goal11d_delta(check)
+    goal12a_delta(check)
     if not args.source_only:
         jar()
     OUT.mkdir(parents=True, exist_ok=True)

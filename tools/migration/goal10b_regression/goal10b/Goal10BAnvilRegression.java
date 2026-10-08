@@ -123,18 +123,43 @@ public class Goal10BAnvilRegression {
             "ComparableStack TANK_STEEL x4 meta -1; ComparableStack PIPE_STEEL x3 meta -1; ComparableStack INGOT_TITANIUM x12 meta -1; ComparableStack INGOT_COPPER x8 meta -1; -> HEATER_OILBURNER x1 meta 0 @1.0; tier 2--1 CONSTRUCTION",
     };
 
+    /**
+     * Goal 12A (migration/GOAL12A.md) appends four entries after the Goal 11A entries: the industrial boiler with Minecraft
+     * and with NEO copper (original AnvilRecipes.java:399-404), the electric pump (:253-260) and the desh motor (:215-217).
+     * They are required exactly, in this order, at the end of the list; the Goal 12A suite checks them in detail. The tag
+     * inputs are described through astack() of the same tag, as for the Goal 10C entries.
+     */
+    static String[] goal12a() {
+        Object plastic = net.minecraft.tags.ItemTags.create(net.minecraft.resources.ResourceLocation.fromNamespaceAndPath("ntm", "ingots_plastic"));
+        String four = astack(new RecipesCommon.TagStack(plastic, 4)), two = astack(new RecipesCommon.TagStack(plastic, 2));
+        String plates = astack(new RecipesCommon.TagStack(NtmTags.Items.PLATES_STEEL, 16));
+        int steel = CastPlateItem.Type.STEEL.ordinal();
+        return new String[] {
+                "ComparableStack CAST_PLATE x8 meta " + steel + "; ComparableStack COPPER_INGOT x8 meta -1; " + four + "; -> MACHINE_INDUSTRIAL_BOILER x1 meta 0 @1.0; tier 3--1 CONSTRUCTION",
+                "ComparableStack CAST_PLATE x8 meta " + steel + "; ComparableStack INGOT_COPPER x8 meta -1; " + four + "; -> MACHINE_INDUSTRIAL_BOILER x1 meta 0 @1.0; tier 3--1 CONSTRUCTION",
+                "ComparableStack STONE_BRICKS x8 meta -1; " + plates + "; ComparableStack PIPE_LEAD x4 meta -1; ComparableStack MOTOR x2 meta -1; "
+                        + "ComparableStack CIRCUIT_VACUUM_TUBE x4 meta -1; -> PUMP_ELECTRIC x1 meta 0 @1.0; tier 3--1 CONSTRUCTION",
+                "ComparableStack MOTOR x1 meta -1; " + two + "; ComparableStack INGOT_DESH x2 meta -1; ComparableStack WIRE_DENSE x1 meta 7900; -> MOTOR_DESH x1 meta 0 @1.0; tier 3--1 CONSTRUCTION",
+        };
+    }
+
     static void anvil() {
         List<AnvilConstructionRecipe> live = AnvilRecipes.getConstruction();
         List<?> head = goal10b.head.AnvilRecipes.getConstruction();
         String[] appended = goal10c();
-        check(live.size() == head.size() + appended.length + GOAL11A.length && live.size() > 0, "the committed construction entries, then the three Goal 10C entries"
-                + " and the two Goal 11A entries (" + head.size() + " -> " + live.size() + ")");
+        String[] goal12aEntries = goal12a();
+        check(live.size() == head.size() + appended.length + GOAL11A.length + goal12aEntries.length && live.size() > 0, "the committed construction entries, then the three"
+                + " Goal 10C entries, the two Goal 11A entries and the four Goal 12A entries (" + head.size() + " -> " + live.size() + ")");
         boolean goal10c = true;
         for(int k = 0; k < appended.length; k++) goal10c &= describe(live.get(head.size() + k)).equals(appended[k]);
         check(goal10c, "exactly the three Goal 10C heating oven entries follow the committed list, in order");
         boolean goal11a = true;
         for(int k = 0; k < GOAL11A.length; k++) goal11a &= describe(live.get(head.size() + appended.length + k)).equals(GOAL11A[k]);
-        check(goal11a, "exactly the two Goal 11A fluid burner entries follow the Goal 10C entries, in order, at the end of the list");
+        check(goal11a, "exactly the two Goal 11A fluid burner entries follow the Goal 10C entries, in order");
+        List<String> tail = new ArrayList<>();
+        for(int k = 0; k < goal12aEntries.length; k++) tail.add(describe(live.get(head.size() + appended.length + GOAL11A.length + k)));
+        check(tail.equals(List.of(goal12aEntries)), "exactly the four Goal 12A entries (industrial boiler x2, electric pump, desh motor) follow the Goal 11A entries,"
+                + " in order, at the end of the list: " + tail);
         List<Integer> corrected = new ArrayList<>();
         int same = 0;
         String first = null;
