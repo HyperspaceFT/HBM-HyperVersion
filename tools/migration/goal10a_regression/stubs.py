@@ -95,6 +95,8 @@ def _generic_recipe_services(stubs):
         "public static FluidStack[] readFluidArray(JsonArray a){return new FluidStack[0];}public static void writeFluidStack(FluidStack s,JsonWriter w)throws IOException{}}")
     stubs["com/hbm/config/NtmConfig.java"] = (
         "package com.hbm.config;public class NtmConfig{public static final Common COMMON=new Common();"
+        # Goal 13A: AssemblyMachineRecipes reads NtmConfig.enable528().
+        "public static boolean enable528(){return COMMON.ENABLE_528.get();}"
         "public static class Common{public final Flag ENABLE_528=new Flag(),ENABLE_EXPENSIVE_MODE=new Flag();}"
         "public static class Flag{public boolean get(){return false;}}}")
     stubs["com/hbm/inventory/RecipesCommon.java"] = (

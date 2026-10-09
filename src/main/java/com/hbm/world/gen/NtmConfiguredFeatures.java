@@ -22,6 +22,8 @@ public class NtmConfiguredFeatures {
 
     public static final ResourceKey<ConfiguredFeature<?, ?>> CRASHED_BOMB = registerKey("crashed_bomb");
 
+    public static final ResourceKey<ConfiguredFeature<?, ?>> BLUEPRINT_CHEST = registerKey("blueprint_chest");
+
     public static void bootstrap(BootstrapContext<ConfiguredFeature<?, ?>> context) {
 
         register(context, OIL_BUBBLE, NtmFeatures.OIL_BUBBLE.get(), NoneFeatureConfiguration.INSTANCE);
@@ -33,6 +35,8 @@ public class NtmConfiguredFeatures {
         register(context, LANDMINE, NtmFeatures.LANDMINE.get(), NoneFeatureConfiguration.INSTANCE);
 
         register(context, CRASHED_BOMB, NtmFeatures.CRASHED_BOMB.get(), NoneFeatureConfiguration.INSTANCE);
+
+        register(context, BLUEPRINT_CHEST, NtmFeatures.BLUEPRINT_CHEST.get(), NoneFeatureConfiguration.INSTANCE);
     }
 
     public static ResourceKey<ConfiguredFeature<?, ?>> registerKey(String path) {

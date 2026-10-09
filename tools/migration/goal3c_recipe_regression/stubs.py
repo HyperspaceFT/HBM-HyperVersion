@@ -21,6 +21,8 @@ def make_stubs(assembly_source):
         "com/hbm/main/NuclearTechMod.java": '''package com.hbm.main;import java.io.File;public class NuclearTechMod{
  public static File configDir;public static final Log LOGGER=new Log();public static class Log{public void info(String s,Object... args){}public void error(String s,Object... args){}}}''',
         "com/hbm/config/NtmConfig.java": '''package com.hbm.config;public class NtmConfig{public static final Common COMMON=new Common();
+ // Goal 13A: AssemblyMachineRecipes reads NtmConfig.enable528() (the alt..circuit block is registered only outside 528 mode).
+ public static boolean enable528(){return COMMON.ENABLE_528.get();}
  public static class Common{public final Flag ENABLE_528=new Flag(false),ENABLE_EXPENSIVE_MODE=new Flag(false);}
  public static class Flag{private boolean value;public Flag(boolean v){value=v;}public boolean get(){return value;}public void set(boolean v){value=v;}}}''',
         "api/hbm/recipe/IRecipeRegisterListener.java": "package api.hbm.recipe;public interface IRecipeRegisterListener{void onRecipeLoad(String name);}",
@@ -87,6 +89,9 @@ public class WeightedRandom{public static class Item{public int itemWeight;publi
         # Goal 12B registers CrackingRecipes after CentrifugeRecipes; as for the crucible, this suite only needs the name.
         # The live cracking handler and its registration are checked by verify_goal12b.py.
         "CrackingRecipes": "com/hbm/inventory/recipes",
+        # Goal 13B registers ArcFurnaceRecipes after CrackingRecipes; again only the name is needed here. The live arc furnace table and its
+        # registration are checked by verify_goal13b.py (goal13b_regression/stubs.py drops this stand-in and compiles the production class).
+        "ArcFurnaceRecipes": "com/hbm/inventory/recipes",
         "BlastFurnaceRecipes": "com/hbm/inventory/recipes",
         "ChemicalPlantRecipes": "com/hbm/inventory/recipes",
         # Goal 10A registers CrucibleRecipes.INSTANCE after ChemicalPlantRecipes; this loader suite only needs the

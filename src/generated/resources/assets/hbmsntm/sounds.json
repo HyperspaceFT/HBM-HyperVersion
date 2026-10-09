@@ -80,6 +80,11 @@
       "hbmsntm:block/debris3"
     ]
   },
+  "block.electric_hum": {
+    "sounds": [
+      "hbmsntm:block/electric_hum"
+    ]
+  },
   "block.fensu_hum": {
     "sounds": [
       "hbmsntm:block/fensu_hum"

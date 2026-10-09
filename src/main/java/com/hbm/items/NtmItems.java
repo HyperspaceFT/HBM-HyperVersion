@@ -314,6 +314,7 @@ public class NtmItems {
     public static final DeferredItem<Item> BILLET_BALEFIRE_GOLD = ITEMS.register("billet_balefire_gold", () -> new Item(new Item.Properties()));
     public static final DeferredItem<Item> BILLET_FLASHLEAD = ITEMS.register("billet_flashlead", () -> new Item(new Item.Properties()));
     public static final DeferredItem<Item> BILLET_NUCLEAR_WASTE = ITEMS.register("billet_nuclear_waste", () -> new Item(new Item.Properties()));
+    public static final DeferredItem<Item> BILLET_SILICON = ITEMS.register("billet_silicon", () -> new Item(new Item.Properties()));
 
     // Integridients & parts
     public static final DeferredItem<Item> PLATE_IRON = ITEMS.register("plate_iron", () -> new Item(new Item.Properties()));
@@ -451,10 +452,12 @@ public class NtmItems {
     public static final DeferredItem<Item> WARHEAD_MIRV = ITEMS.register("warhead_mirv", () -> new Item(new Item.Properties()));
     public static final DeferredItem<Item> WARHEAD_VOLCANO = ITEMS.register("warhead_volcano", () -> new Item(new Item.Properties()));
     public static final DeferredItem<Item> NEUTRON_REFLECTOR = ITEMS.register("neutron_reflector", () -> new Item(new Item.Properties()));
-    public static final DeferredItem<Item> ARC_ELECTRODE_GRAPHITE = ITEMS.register("arc_electrode_graphite", () -> new Item(new Item.Properties()));
-    public static final DeferredItem<Item> ARC_ELECTRODE_LANTHANIUM = ITEMS.register("arc_electrode_lanthanium", () -> new Item(new Item.Properties()));
-    public static final DeferredItem<Item> ARC_ELECTRODE_DESH = ITEMS.register("arc_electrode_desh", () -> new Item(new Item.Properties()));
-    public static final DeferredItem<Item> ARC_ELECTRODE_SATURNITE = ITEMS.register("arc_electrode_saturnite", () -> new Item(new Item.Properties()));
+    // Maximum uses and burnt forms as the original ItemArcElectrode (EnumElectrodeType, setMaxStackSize(1)); the burnt
+    // items stay plain, the original ItemArcElectrodeBurnt keeps the default stack size.
+    public static final DeferredItem<Item> ARC_ELECTRODE_GRAPHITE = ITEMS.register("arc_electrode_graphite", () -> new ArcElectrodeItem(new Item.Properties().stacksTo(1), 10, NtmItems.ARC_ELECTRODE_GRAPHITE_BURNT));
+    public static final DeferredItem<Item> ARC_ELECTRODE_LANTHANIUM = ITEMS.register("arc_electrode_lanthanium", () -> new ArcElectrodeItem(new Item.Properties().stacksTo(1), 100, NtmItems.ARC_ELECTRODE_LANTHANIUM_BURNT));
+    public static final DeferredItem<Item> ARC_ELECTRODE_DESH = ITEMS.register("arc_electrode_desh", () -> new ArcElectrodeItem(new Item.Properties().stacksTo(1), 500, NtmItems.ARC_ELECTRODE_DESH_BURNT));
+    public static final DeferredItem<Item> ARC_ELECTRODE_SATURNITE = ITEMS.register("arc_electrode_saturnite", () -> new ArcElectrodeItem(new Item.Properties().stacksTo(1), 1500, NtmItems.ARC_ELECTRODE_SATURNITE_BURNT));
     public static final DeferredItem<Item> ARC_ELECTRODE_GRAPHITE_BURNT = ITEMS.register("arc_electrode_graphite_burnt", () -> new Item(new Item.Properties()));
     public static final DeferredItem<Item> ARC_ELECTRODE_LANTHANIUM_BURNT = ITEMS.register("arc_electrode_lanthanium_burnt", () -> new Item(new Item.Properties()));
     public static final DeferredItem<Item> ARC_ELECTRODE_DESH_BURNT = ITEMS.register("arc_electrode_desh_burnt", () -> new Item(new Item.Properties()));
@@ -533,6 +536,7 @@ public class NtmItems {
 
     // Folders
     public static final DeferredItem<Item> BLUEPRINTS = ITEMS.register("blueprints", () -> new BlueprintsItem(new Item.Properties()));
+    public static final DeferredItem<Item> BLUEPRINT_FOLDER = ITEMS.register("blueprint_folder", () -> new BlueprintFolderItem(new Item.Properties().stacksTo(1)));
 
     // Hydraulic Press Stamps
     public static final DeferredItem<Item> STAMP_STONE_FLAT = ITEMS.register("stamp_stone_flat", () -> new StampItem(32, StampType.FLAT));

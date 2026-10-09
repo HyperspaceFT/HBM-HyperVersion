@@ -318,6 +318,12 @@ public class ShredderRecipes extends SerializableRecipe {
         registerIfAbsent(new ItemStack(NtmItems.PLATE_SCHRABIDIUM.get()), new ItemStack(NtmItems.POWDER_SCHRABIDIUM.get(), 1));
         registerIfAbsent(new ItemStack(NtmItems.PLATE_STEEL.get()), new ItemStack(NtmItems.POWDER_STEEL.get(), 1));
         registerIfAbsent(new ItemStack(NtmItems.PLATE_TITANIUM.get()), new ItemStack(NtmItems.POWDER_TITANIUM.get(), 1));
+
+        // Concrete chain, original ShredderRecipes.java:153-154, 175, 210.
+        registerIfAbsent(new ItemStack(NtmBlocks.CONCRETE.get()), new ItemStack(Blocks.GRAVEL, 1));
+        registerIfAbsent(new ItemStack(NtmBlocks.CONCRETE_SMOOTH.get()), new ItemStack(Blocks.GRAVEL, 1));
+        registerIfAbsent(new ItemStack(NtmBlocks.RESOURCE_LIMESTONE.get()), new ItemStack(NtmItems.POWDER_LIMESTONE.get(), 4));
+        registerIfAbsent(new ItemStack(NtmBlocks.BLOCK_SLAG.get()), new ItemStack(NtmItems.POWDER_CEMENT.get(), 4));
     }
 
     private static void registerIfAbsent(ItemStack input, ItemStack output) {

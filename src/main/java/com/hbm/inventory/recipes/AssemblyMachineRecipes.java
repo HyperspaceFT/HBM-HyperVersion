@@ -1,6 +1,7 @@
 package com.hbm.inventory.recipes;
 
 import com.hbm.blocks.NtmBlocks;
+import com.hbm.config.NtmConfig;
 import com.hbm.inventory.FluidStack;
 import com.hbm.inventory.MetaHelper;
 import com.hbm.inventory.NtmTags;
@@ -265,12 +266,55 @@ public class AssemblyMachineRecipes extends GenericRecipes<GenericRecipe> {
                         new ComparableStack(NtmItems.COIL_TUNGSTEN.get(), 2),
                         new ComparableStack(NtmItems.CIRCUIT_ANALOG_BOARD.get(), 1)));
         // Original ass.crackingtower (AssemblyMachineRecipes.java:316-319), normal mode only: no setPools528, since NEO
-        // has no blueprint source in survival, and no inputItemsEx, since NEO has no item_expensive.
+        // has no blueprint source in survival for 528. pools (Goal 13A's booklets and blueprint chests only give alt. and
+        // discover. pools), and no inputItemsEx, since NEO has no item_expensive.
         // NEO has no steel shell, desh ingot or niobium ingot tag, so the plain items stand in for the ore dictionary entries.
         this.register(new GenericRecipe("ass.crackingtower").setup(200, 100).outputItems(new ItemStack(NtmBlocks.MACHINE_CATALYTIC_CRACKER.get(), 1))
                 .inputItems(new ComparableStack(NtmBlocks.STEEL_SCAFFOLD.get(), 16),
                         new ComparableStack(NtmItems.SHELL_STEEL.get(), 6),
                         new ComparableStack(NtmItems.INGOT_DESH.get(), 12),
                         new ComparableStack(NtmItems.INGOT_NIOBIUM.get(), 4)));
+
+        // Original crafting parts and alternates of the alt..circuit pool (AssemblyMachineRecipes.java:126-148), registered only outside 528
+        // mode like the original's block, in the original order. The pool name keeps the original's double dot.
+        // NEO has no iron plate, fine wire, niobium ingot or Cs-137 powder tag, and ntm:any_rubbers also holds bio rubber,
+        // which the original's rubber ingot entry does not, so the plain items stand in for the ore dictionary entries;
+        // any plastic ingot is ntm:ingots_plastic.
+        if(!NtmConfig.enable528()) {
+            // Original ass.chip (AssemblyMachineRecipes.java:127-128); circuit SILICON is the printed silicon wafer.
+            // ass.chipBismoid, ass.chipQuantum and ass.atomicClock (:129-134) are deferred with their inputs (GOAL13B B4).
+            this.register(new GenericRecipe("ass.chip").setup(50, 250).outputItems(new ItemStack(NtmItems.CIRCUIT_MICROCHIP.get(), 1))
+                    .inputItems(new ComparableStack(NtmItems.PLATE_POLYMER.get(), 1),
+                            new ComparableStack(NtmItems.CIRCUIT_PRINTED_SILICON_WAFER.get(), 1),
+                            new ComparableStack(NtmItems.WIRE_GOLD.get(), 1)));
+
+            this.register(new GenericRecipe("ass.analogAlt").setupNamed(200, 250L).outputItems(new ItemStack(NtmItems.CIRCUIT_ANALOG_BOARD.get(), 1))
+                    .inputItems(new ComparableStack(NtmItems.CIRCUIT_PRINTED_BOARD.get(), 4),
+                            new RecipesCommon.TagStack(ItemTags.create(ResourceLocation.fromNamespaceAndPath("ntm", "ingots_plastic")), 4),
+                            new ComparableStack(NtmItems.WIRE_TUNGSTEN.get(), 8),
+                            new ComparableStack(NtmItems.INGOT_NIOBIUM.get(), 1))
+                    .setPools("alt..circuit"));
+            this.register(new GenericRecipe("ass.factorioChip").setupNamed(300, 20_000L).outputItems(new ItemStack(NtmItems.CIRCUIT_INTEGRATED_BOARD.get(), 1))
+                    .inputItems(new ComparableStack(NtmItems.INGOT_RUBBER.get(), 2),
+                            new ComparableStack(NtmItems.PLATE_IRON.get(), 4),
+                            new ComparableStack(NtmItems.WIRE_COPPER.get(), 8))
+                    .setPools("alt..circuit"));
+            this.register(new GenericRecipe("ass.atomicClockAlt").setupNamed(300, 20_000L).outputItems(new ItemStack(NtmItems.CIRCUIT_ATOMIC_CLOCK.get(), 4))
+                    .inputItems(new RecipesCommon.TagStack(ItemTags.create(ResourceLocation.fromNamespaceAndPath("ntm", "ingots_plastic")), 4),
+                            new ComparableStack(NtmItems.CIRCUIT_MICROCHIP.get(), 3),
+                            new ComparableStack(NtmItems.POWDER_CS137.get(), 1))
+                    .setPools("alt..circuit"));
+        }
+
+        // Original ass.arcfurnace (AssemblyMachineRecipes.java:286-288), registered in every mode: the original keeps it
+        // outside the !enable528 block, although GOAL13B B4 lists it with that block. No inputItemsEx, since NEO has no
+        // item_expensive; the steel cast plate stands in for STEEL.plateCast().
+        this.register(new GenericRecipe("ass.arcfurnace").setup(200, 100).outputItems(new ItemStack(NtmBlocks.MACHINE_ARC_FURNACE.get(), 1))
+                .inputItems(new RecipesCommon.TagStack(ItemTags.create(ResourceLocation.fromNamespaceAndPath("ntm", "any_concrete")), 12),
+                        new RecipesCommon.TagStack(ItemTags.create(ResourceLocation.fromNamespaceAndPath("ntm", "ingots_plastic")), 8),
+                        new ComparableStack(NtmItems.INGOT_FIREBRICK.get(), 16),
+                        NtmItems.castPlateIngredient(CastPlateItem.Type.STEEL, 8),
+                        new ComparableStack(NtmBlocks.TRANSFORMER.get(), 1),
+                        new ComparableStack(NtmItems.CIRCUIT_ANALOG_BOARD.get(), 1)));
     }
 }

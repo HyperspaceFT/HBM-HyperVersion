@@ -52,6 +52,7 @@ public class ResourceManager {
     public static final ResourceLocation REFINERY_TEX = NuclearTechMod.withDefaultNamespace("textures/models/machines/refinery.png");
     // Original cracking_tower_tex; it points at catalytic_cracker.png, not the unused cracking_tower.png.
     public static final ResourceLocation CATALYTIC_CRACKER_TEX = NuclearTechMod.withDefaultNamespace("textures/models/machines/catalytic_cracker.png");
+    public static final ResourceLocation ARC_FURNACE_TEX = NuclearTechMod.withDefaultNamespace("textures/models/machines/arc_furnace.png");
     public static final ResourceLocation FURNACE_COMBINATION_TEX = NuclearTechMod.withDefaultNamespace("textures/models/machines/combination_oven.png");
     public static final ResourceLocation MACHINE_CRUCIBLE_TEX = NuclearTechMod.withDefaultNamespace("textures/models/machines/crucible_heat.png");
     public static final ResourceLocation MACHINE_CRUCIBLE_LAVA_TEX = NuclearTechMod.withDefaultNamespace("textures/models/machines/lava.png");
@@ -296,6 +297,7 @@ public class ResourceManager {
     public static IModelCustom fracking_tower;
     public static IModelCustom refinery;
     public static IModelCustom catalytic_cracker;
+    public static IModelCustom arc_furnace;
     public static IModelCustom furnace_combination;
     public static IModelCustom machine_crucible;
     public static IModelCustom blast_furnace;
@@ -436,6 +438,7 @@ public class ResourceManager {
         fracking_tower = new HFRWavefrontObject("models/obj/machines/fracking_tower.obj").asVBO();
         refinery = new HFRWavefrontObject("models/obj/machines/refinery.obj").asVBO();
         catalytic_cracker = new HFRWavefrontObject("models/obj/machines/catalytic_cracker.obj").asVBO();
+        arc_furnace = new HFRWavefrontObject("models/obj/machines/arc_furnace.obj").asVBO();
         furnace_combination = new HFRWavefrontObject("models/obj/machines/combination_oven.obj").asVBO();
         machine_crucible = new HFRWavefrontObject("models/obj/machines/crucible.obj").asVBO();
         blast_furnace = new HFRWavefrontObject("models/obj/machines/blast_furnace.obj").asVBO();

@@ -421,6 +421,7 @@ public class NtmCreativeTabs {
                         output.accept(NtmItems.NUGGET_DINEUTRONIUM.get());
                         output.accept(NtmItems.NUGGET_NIOBIUM.get());
                         output.accept(NtmItems.NUGGET_SILICON.get());
+                        output.accept(NtmItems.BILLET_SILICON.get());
                         output.accept(NtmItems.NUGGET_ACTINIUM.get());
                         output.accept(NtmItems.NUGGET_COBALT.get());
                         output.accept(NtmItems.NUGGET_CO60.get());
@@ -488,6 +489,7 @@ public class NtmCreativeTabs {
                     .title(Component.translatable("itemGroup.control"))
                     .displayItems((itemDisplayParameters, output) -> {
                         addMetaItems(output, NtmItems.BLUEPRINTS.get());
+                        addMetaItems(output, NtmItems.BLUEPRINT_FOLDER.get());
 
                         output.accept(NtmItems.STAMP_STONE_FLAT);
                         output.accept(NtmItems.STAMP_STONE_PLATE);
@@ -802,6 +804,7 @@ public class NtmCreativeTabs {
                         output.accept(NtmBlocks.MACHINE_FRACKING_TOWER);
                         output.accept(NtmBlocks.MACHINE_REFINERY);
                         output.accept(NtmBlocks.MACHINE_CATALYTIC_CRACKER);
+                        output.accept(NtmBlocks.MACHINE_ARC_FURNACE);
                         output.accept(NtmBlocks.FURNACE_COMBINATION);
                         output.accept(NtmBlocks.MACHINE_CRUCIBLE);
                         output.accept(NtmBlocks.FOUNDRY_MOLD);

@@ -57,7 +57,8 @@ public class NtmDataGenerators {
 
         // Server things
         LootTableProvider.SubProviderEntry blockLootTableSubProvider = new LootTableProvider.SubProviderEntry(NtmBlockLootTableProvider::new, LootContextParamSets.BLOCK);
-        generator.addProvider(event.includeServer(), (DataProvider.Factory<LootTableProvider>) lootTableOutput -> new LootTableProvider(lootTableOutput, Collections.emptySet(), List.of(blockLootTableSubProvider), generatedLookup));
+        LootTableProvider.SubProviderEntry chestLootTableSubProvider = new LootTableProvider.SubProviderEntry(NtmChestLootTableProvider::new, LootContextParamSets.CHEST);
+        generator.addProvider(event.includeServer(), (DataProvider.Factory<LootTableProvider>) lootTableOutput -> new LootTableProvider(lootTableOutput, Collections.emptySet(), List.of(blockLootTableSubProvider, chestLootTableSubProvider), generatedLookup));
 
         BlockTagsProvider blockTagsProvider = new NtmBlockTagProvider(output, generatedLookup, helper);
         generator.addProvider(event.includeServer(), blockTagsProvider);

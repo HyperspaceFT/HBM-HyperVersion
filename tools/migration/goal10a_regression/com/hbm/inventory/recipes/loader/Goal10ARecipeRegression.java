@@ -92,8 +92,10 @@ public class Goal10ARecipeRegression {
         check(chemical >= 0 && handlers.indexOf(CrucibleRecipes.INSTANCE) == chemical + 1,
                 "CrucibleRecipes follows ChemicalPlantRecipes in the handler list");
         // Goal 12B adds CrackingRecipes (after CentrifugeRecipes): the nine handlers of Goal 10A plus exactly that one.
-        check(handlers.size() == 10 && handlers.stream().filter(h -> h instanceof com.hbm.inventory.recipes.CrackingRecipes).count() == 1,
-                "nine recipe handlers plus Goal 12B's CrackingRecipes once: " + handlers.size());
+        // Goal 13B adds ArcFurnaceRecipes (after CrackingRecipes): one more handler, exactly once (the added check below).
+        check(handlers.size() == 11 && handlers.stream().filter(h -> h instanceof com.hbm.inventory.recipes.CrackingRecipes).count() == 1
+                        && handlers.stream().filter(h -> h instanceof com.hbm.inventory.recipes.ArcFurnaceRecipes).count() == 1,
+                "nine recipe handlers plus Goal 12B's CrackingRecipes once and Goal 13B's ArcFurnaceRecipes once: " + handlers.size());
 
         // Only the crucible handler touches the scratch config from here on.
         handlers.removeIf(h -> h != CrucibleRecipes.INSTANCE);

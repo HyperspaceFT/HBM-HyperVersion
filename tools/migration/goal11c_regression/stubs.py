@@ -149,7 +149,11 @@ def generic_recipe(source):
             "public class GenericRecipe{protected final String name;public String nameWrapper;public AStack[] inputItem;public FluidStack[] inputFluid;"
             "public IOutput[] outputItem;public FluidStack[] outputFluid;public int duration;public long power;protected ItemStack icon;"
             "public boolean writeIcon=false;public boolean customLocalization=false;protected String[] blueprintPools=null;public String autoSwitchGroup=null;\n"
-            "public GenericRecipe(String name){this.name=name;}\n// Production GenericRecipe.java bodies:\n" + "\n".join(bodies) + "\n"
+            "public GenericRecipe(String name){this.name=name;}\n"
+            # Production GenericRecipe.getName() for a named recipe (Goal 13A); an unnamed recipe's icon display name is not modelled and answers a literal.
+            "public net.minecraft.network.chat.Component getName(){return customLocalization?net.minecraft.network.chat.Component.translatable(this.name)"
+            ":net.minecraft.network.chat.Component.literal(\"icon:\"+this.name);}\n"
+            "// Production GenericRecipe.java bodies:\n" + "\n".join(bodies) + "\n"
             "public GenericRecipe setPools(String... pools){this.blueprintPools=pools;for(String pool:pools)GenericRecipes.addToPool(pool,this);return this;}\n"
             "public GenericRecipe inputItems(AStack... input){this.inputItem=input;return this;}\n"
             # A single output with chance 1 and weight 0, as the production ChanceOutput from outputItems(ItemStack...).
@@ -163,7 +167,10 @@ GENERIC_RECIPES = """package com.hbm.inventory.recipes.loader;import java.util.*
 public abstract class GenericRecipes<T extends GenericRecipe> {public final Map<String,T> recipeNameMap=new HashMap<>();public final List<T> recipeOrderedList=new ArrayList<>();public final Map<String,List<GenericRecipe>> autoSwitchGroups=new HashMap<>();
  public static final String POOL_PREFIX_ALT="alt.",POOL_PREFIX_DISCOVER="discover.",POOL_PREFIX_SECRET="secret.",POOL_PREFIX_528="528.";
  public static HashMap<String,List<String>> blueprintPools=new HashMap<>();
- public static void addToPool(String pool,GenericRecipe recipe){List<String> list=blueprintPools.computeIfAbsent(pool,k->new ArrayList<>());list.add(recipe.getInternalName());}
+ // Production GenericRecipes.java:48-67 and :77-80 (the pool registry the blueprint hover text reads; Goal 13A):
+ public static HashMap<String,GenericRecipe> pooledBlueprints=new HashMap<>();
+ public static void addToPool(String pool,GenericRecipe recipe){List<String> list=blueprintPools.computeIfAbsent(pool,k->new ArrayList<>());list.add(recipe.getInternalName());pooledBlueprints.put(recipe.getInternalName(),recipe);}
+ public static void clearPools(){blueprintPools.clear();pooledBlueprints.clear();}
  public void addToGroup(String group,GenericRecipe recipe){autoSwitchGroups.computeIfAbsent(group,k->new ArrayList<>()).add(recipe);}
  public interface IOutput{boolean possibleMultiOutput();net.minecraft.world.item.ItemStack getSingle();net.minecraft.world.item.ItemStack collapse();java.util.List<net.minecraft.world.item.ItemStack> getAllPossibilities();}
  public void register(T recipe){if(recipeNameMap.putIfAbsent(recipe.getInternalName(),recipe)!=null)throw new IllegalStateException("duplicate "+recipe.getInternalName());recipeOrderedList.add(recipe);}
@@ -213,6 +220,19 @@ def build_stubs(source, extra_sources=(), vanilla_tags_source="", sources_jar=No
     _replace(stubs, "com/hbm/blockentity/NtmBlockEntityTypes.java", "BATTERY_SOCKET=new Ref()", "BATTERY_SOCKET=new Ref(),MACHINE_CHEMICAL_PLANT=new Ref()")
     _replace(stubs, "com/hbm/inventory/NtmMenuTypes.java", "BATTERY_SOCKET=new Ref()", "BATTERY_SOCKET=new Ref(),MACHINE_CHEMICAL_PLANT=new Ref()")
     _replace(stubs, "com/hbm/registry/NtmSoundEvents.java", "BOILER=new Ref()", "BOILER=new Ref(),CHEMICAL_PLANT_OPERATE=new Ref()")
+    # Goal 13A: BlueprintsItem.use reads Player.getAbilities().instabuild and answers InteractionResultHolder.consume/success.
+    stubs["net/minecraft/world/entity/player/Abilities.java"] = (
+        "package net.minecraft.world.entity.player;/** Only instabuild (creative mode) is modelled. */public class Abilities{public boolean instabuild;}")
+    _replace(stubs, "net/minecraft/world/entity/player/Player.java", "public net.minecraft.util.RandomSource getRandom(){return random;}",
+             "public net.minecraft.util.RandomSource getRandom(){return random;}"
+             "private final Abilities abilities=new Abilities();public Abilities getAbilities(){abilities.instabuild=creative;return abilities;}")
+    stubs["net/minecraft/world/InteractionResultHolder.java"] = (
+        "package net.minecraft.world;/** Only the result and the value are modelled (the sided result of 1.21.1). */public class InteractionResultHolder<T>{"
+        "public enum Kind{SUCCESS,CONSUME,PASS,FAIL}public final Kind kind;public final T value;private InteractionResultHolder(Kind k,T v){kind=k;value=v;}"
+        "public static <T> InteractionResultHolder<T> pass(T v){return new InteractionResultHolder<>(Kind.PASS,v);}"
+        "public static <T> InteractionResultHolder<T> consume(T v){return new InteractionResultHolder<>(Kind.CONSUME,v);}"
+        "public static <T> InteractionResultHolder<T> success(T v){return new InteractionResultHolder<>(Kind.SUCCESS,v);}"
+        "public static <T> InteractionResultHolder<T> fail(T v){return new InteractionResultHolder<>(Kind.FAIL,v);}}")
     # The blueprint registry item is a production BlueprintsItem (grabPool compares with NtmItems.BLUEPRINTS.get(), the
     # menu routes by instanceof BlueprintsItem).
     items = stubs["com/hbm/items/NtmItems.java"]

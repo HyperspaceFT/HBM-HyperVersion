@@ -263,6 +263,11 @@ public class NtmLanguageProvider extends LanguageProvider {
         this.add(NtmItems.PLATE_FUEL_U235, "HEU-235 Plate Fuel");
         this.add(NtmItems.PLATE_KEVLAR, "Kevlar Sheet");
 
+        // Named assembly recipes of the alt..circuit blueprint pool (original en_US.lang:188-190)
+        this.add("ass.analogAlt", "Simple Analog Circuit");
+        this.add("ass.factorioChip", "Minimalist Circuits");
+        this.add("ass.atomicClockAlt", "Caesium Atomic Clock");
+
         this.add("chem.co2", "Carbon Dioxide");
         this.add("chem.ethanol", "Ethanol");
         this.add("chem.biofuel", "Biofuel Transesterification");
@@ -761,7 +766,7 @@ public class NtmLanguageProvider extends LanguageProvider {
         this.add(NtmItems.CIRCUIT_TANTALIUM_CAPACITOR, "Tantalium Capacitor");
         this.add(NtmItems.CIRCUIT_CAPACITOR_BOARD, "Capacitor Board");
         this.add(NtmItems.CIRCUIT_PRINTED_SILICON_WAFER, "Printed Silicon Wafer");
-        this.add(NtmItems.CIRCUIT_MICROCHIP, "Microschip");
+        this.add(NtmItems.CIRCUIT_MICROCHIP, "Microchip");
         this.add(NtmItems.CIRCUIT_VACUUM_TUBE, "Vacuum Tube");
         this.add(NtmItems.CIRCUIT_CONTROL_UNIT_CASING, "Control Unit Casing");
         this.add(NtmItems.CIRCUIT_CONTROL_UNIT, "Control Unit");
@@ -873,6 +878,9 @@ public class NtmLanguageProvider extends LanguageProvider {
         this.add(NtmItems.ARC_ELECTRODE_LANTHANIUM_BURNT, "Molten Lanthanium Electrode");
         this.add(NtmItems.ARC_ELECTRODE_DESH_BURNT, "Molten Desh Electrode");
         this.add(NtmItems.ARC_ELECTRODE_SATURNITE_BURNT, "Molten Saturnite Electrode");
+        // Goal 13B: the original electrode only shows a durability bar; NEO adds a wear line (local text)
+        this.add("item.hbmsntm.arc_electrode.wear", "Wear: %s / %s");
+        this.add("item.hbmsntm.billet_silicon", "Silicon Wafer");
 
         this.add(NtmItems.WIRE_DENSE, "Dense %s Wire");
         this.add("hbmmat.gold", "Gold");
@@ -1007,6 +1015,10 @@ public class NtmLanguageProvider extends LanguageProvider {
         this.add(NtmItems.BATTERY_CREATIVE, "Infinite Battery");
 
         this.add(NtmItems.BLUEPRINTS, "Blueprints");
+        // Original ItemBlueprints hardcodes the two copy lines (ItemBlueprints.java:107-110); NEO gives them keys
+        this.add("item.hbmsntm.blueprints.copy", "Right-click to copy (requires paper)");
+        this.add("item.hbmsntm.blueprints.no_copy", "Cannot be copied!");
+        this.add("item.hbmsntm.blueprint_folder", "Blueprint Booklet");
 
         this.add(NtmItems.STAMP_STONE_FLAT, "Flat Stamp (Stone)");
         this.add(NtmItems.STAMP_STONE_PLATE, "Plate Stamp (Stone)");
@@ -1716,6 +1728,8 @@ public class NtmLanguageProvider extends LanguageProvider {
         this.add("tile.heater_oilburner.desc", "Burns fluids to produce heat.$Can be configured with a screwdriver.");
         this.add("block.hbmsntm.heater_heatex.desc", "Produces heat from hot fluids.");
         this.add("tile.heater_heatex.desc", "Produces heat from hot fluids.");
+        this.add("block.hbmsntm.heater_electric.desc", "Uses energy to produce heat.$Accepts heat from the bottom with 85%% efficiency.$Can be configured with a screwdriver.");
+        this.add("tile.heater_electric.desc", "Uses energy to produce heat.$Accepts heat from the bottom with 85%% efficiency.$Can be configured with a screwdriver.");
         this.add("block.hbmsntm.machine_wood_burner.desc", "Generates 100HE/t when burning items$Collects ashes$Can burn fluids at 50%% efficiency at 40mB/s");
         this.add("tile.machine_wood_burner.desc", "Generates 100HE/t when burning items$Collects ashes$Can burn fluids at 50%% efficiency at 40mB/s");
         this.add("tile.machine_wood_burner.name", "Wood-Burning Generator");
@@ -1826,6 +1840,8 @@ public class NtmLanguageProvider extends LanguageProvider {
         this.add("container.anvil", "Anvil");
         this.add("container.machine_soldering_station", "Soldering Station");
         this.add("container.machine_arc_welder", "Arc Welder");
+        this.add("block.hbmsntm.machine_arc_furnace", "Electric Arc Furnace");
+        this.add("container.machine_arc_furnace", "Arc Furnace");
         this.add("container.heat_boiler", "Boiler");
         this.add("container.machine_industrial_boiler", "Industrial Boiler");
         this.add("container.electricFurnace", "Electric Furnace");

@@ -8,12 +8,15 @@ import com.hbm.blockentity.NtmBlockEntityTypes;
 import com.hbm.blocks.DummyableBlock;
 import com.hbm.interfaces.ICopiable;
 import com.hbm.interfaces.IControlReceiver;
+import com.hbm.registry.NtmSoundEvents;
+import com.hbm.sound.AudioWrapper;
 import com.hbm.util.fauxpointtwelve.DirPos;
 import io.netty.buffer.ByteBuf;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.RegistryFriendlyByteBuf;
+import net.minecraft.sounds.SoundSource;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
@@ -25,7 +28,10 @@ public class HeaterElectricBlockEntity extends LoadedBaseBlockEntity implements 
     public long power;
     public int heatEnergy;
     public boolean isOn;
-    public int setting = 1;
+    // Original default is 0 (off until configured with a screwdriver); existing machines keep their saved setting.
+    public int setting = 0;
+
+    private AudioWrapper audio;
 
     private AABB bb;
 
@@ -54,6 +60,51 @@ public class HeaterElectricBlockEntity extends LoadedBaseBlockEntity implements 
             }
 
             this.networkPackNT(25);
+        } else {
+            // Original: hum loop while isOn, stopped on the first tick it is off (TileEntityHeaterElectric:70-88); the
+            // heater has no audioTime tail like the boilers.
+            if(this.isOn) {
+                if(this.audio == null) {
+                    this.audio = this.createAudioLoop();
+                    if(this.audio != null) {
+                        this.audio.startSound();
+                    }
+                } else if(!this.audio.isPlaying()) {
+                    this.audio = this.rebootAudio(this.audio);
+                }
+
+                if(this.audio != null) {
+                    // updateVolume sets the absolute volume; the original does the same, raising the 0.25 start volume to 1 (0.1 when muffled).
+                    this.audio.updateVolume(this.getVolume(1F));
+                    this.audio.keepAlive();
+                }
+            } else if(this.audio != null) {
+                this.audio.stopSound();
+                this.audio = null;
+            }
+        }
+    }
+
+    @Override
+    public AudioWrapper createAudioLoop() {
+        return AudioWrapper.getLoopedSound(NtmSoundEvents.ELECTRIC_HUM_LOOP.get(), SoundSource.BLOCKS, this, 0.25F, 7.5F, 1.0F, 20);
+    }
+
+    @Override
+    public void onChunkUnloaded() {
+        super.onChunkUnloaded();
+        if(this.audio != null) {
+            this.audio.stopSound();
+            this.audio = null;
+        }
+    }
+
+    @Override
+    public void setRemoved() {
+        super.setRemoved();
+        if(this.audio != null) {
+            this.audio.stopSound();
+            this.audio = null;
         }
     }
 
@@ -108,6 +159,8 @@ public class HeaterElectricBlockEntity extends LoadedBaseBlockEntity implements 
 
     @Override
     public void useUpHeat(int heat) {
+        // Ignore non-positive amounts, as AbstractHeaterMachineBlockEntity does; a negative value would otherwise add heat (GOAL9A F2).
+        if(heat <= 0) return;
         this.heatEnergy = Math.max(0, this.heatEnergy - heat);
         this.setChanged();
     }

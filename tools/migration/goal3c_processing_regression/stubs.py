@@ -78,6 +78,8 @@ public class FluidTank{public static final FluidTank[] EMPTY_ARRAY=new FluidTank
  public void setType(int slot,java.util.List<net.minecraft.world.item.ItemStack> items){}public void loadTank(net.minecraft.world.level.Level l,int a,int b,java.util.List<net.minecraft.world.item.ItemStack> items){}
  public void readFromNBT(CompoundTag t,String k){fill=t.getInt(k);}public void writeToNBT(CompoundTag t,String k){t.putInt(k,fill);}
  public void serialize(RegistryFriendlyByteBuf b){b.writeInt(fill);}public void deserialize(RegistryFriendlyByteBuf b){fill=b.readInt();}}""",
+        # Goal 13A: AssemblyMachineRecipes reads NtmConfig.enable528() (the alt..circuit block); this world runs in normal mode.
+        "com/hbm/config/NtmConfig.java": "package com.hbm.config;public class NtmConfig{public static boolean enable528(){return false;}}",
         "com/hbm/inventory/recipes/loader/GenericRecipes.java": """package com.hbm.inventory.recipes.loader;import java.util.*;
 public abstract class GenericRecipes<T extends GenericRecipe> {public final Map<String,T> recipeNameMap=new HashMap<>();public final List<T> recipeOrderedList=new ArrayList<>();public final Map<String,List<GenericRecipe>> autoSwitchGroups=new HashMap<>();
  public interface IOutput{boolean possibleMultiOutput();net.minecraft.world.item.ItemStack getSingle();net.minecraft.world.item.ItemStack collapse();java.util.List<net.minecraft.world.item.ItemStack> getAllPossibilities();}
@@ -88,6 +90,8 @@ public abstract class GenericRecipes<T extends GenericRecipe> {public final Map<
 public class GenericRecipe{private final String name;private String pool;public AStack[] inputItem;public FluidStack[] inputFluid;public IOutput[] outputItem;public FluidStack[] outputFluid;public int duration;public long power;public String autoSwitchGroup;
  public GenericRecipe(String n){name=n;}public String getInternalName(){return name;}public boolean isPooled(){return pool!=null;}public boolean isPartOfPool(String p){return pool!=null&&pool.equals(p);}public GenericRecipe setPools(String p){pool=p;return this;}
  public GenericRecipe setup(int d,long p){duration=d;power=p;return this;}public GenericRecipe setIcon(ItemStack i){return this;}
+ // Goal 13A: the alt..circuit recipes of AssemblyMachineRecipes are named (setupNamed).
+ public GenericRecipe setupNamed(int d,long p){duration=d;power=p;return this;}
  public GenericRecipe inputItems(AStack... a){inputItem=a;return this;}public GenericRecipe inputFluids(FluidStack... a){inputFluid=a;return this;}
  public GenericRecipe outputFluids(FluidStack... a){outputFluid=a;return this;}
  public GenericRecipe outputItems(ItemStack... stacks){outputItem=new IOutput[stacks.length];for(int i=0;i<stacks.length;i++)outputItem[i]=new Single(stacks[i]);return this;}

@@ -1,0 +1,26 @@
+{
+  "parent": "minecraft:item/generated",
+  "overrides": [
+    {
+      "model": "hbmsntm:item/blueprints_discover",
+      "predicate": {
+        "hbmsntm:blueprint_type": 1.0
+      }
+    },
+    {
+      "model": "hbmsntm:item/blueprints_secret",
+      "predicate": {
+        "hbmsntm:blueprint_type": 2.0
+      }
+    },
+    {
+      "model": "hbmsntm:item/blueprints_528",
+      "predicate": {
+        "hbmsntm:blueprint_type": 3.0
+      }
+    }
+  ],
+  "textures": {
+    "layer0": "hbmsntm:item/blueprints"
+  }
+}

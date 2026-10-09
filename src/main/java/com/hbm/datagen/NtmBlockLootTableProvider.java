@@ -3,6 +3,7 @@ package com.hbm.datagen;
 import com.hbm.blocks.NtmBlocks;
 import com.hbm.blocks.generic.OreBasaltBlock;
 import com.hbm.items.NtmItems;
+import com.hbm.items.machine.BlueprintFolderItem;
 import net.minecraft.advancements.critereon.StatePropertiesPredicate;
 import net.minecraft.core.Holder;
 import net.minecraft.core.HolderLookup;
@@ -288,6 +289,7 @@ public class NtmBlockLootTableProvider extends BlockLootSubProvider {
         this.dropSelf(NtmBlocks.MACHINE_FRACKING_TOWER.get());
         this.dropSelf(NtmBlocks.MACHINE_REFINERY.get());
         this.dropSelf(NtmBlocks.MACHINE_CATALYTIC_CRACKER.get());
+        this.dropSelf(NtmBlocks.MACHINE_ARC_FURNACE.get());
         this.dropSelf(NtmBlocks.MACHINE_BLAST_FURNACE.get());
         this.dropSelf(NtmBlocks.MACHINE_WOOD_BURNER.get());
         this.dropSelf(NtmBlocks.MACHINE_CENTRIFUGE.get());
@@ -426,7 +428,8 @@ public class NtmBlockLootTableProvider extends BlockLootSubProvider {
     private LootTable.Builder meteorTreasureDrop(Block block) {
         return LootTable.lootTable()
                 .withPool(LootPool.lootPool()
-                        .setRolls(ConstantValue.exactly(1))
+                        // Original BlockMeteoriteTreasure.getDrops: 1 + rand.nextInt(3) draws
+                        .setRolls(UniformGenerator.between(1, 3))
                         .add(LootItem.lootTableItem(NtmItems.COBALT_PICKAXE.get()).setWeight(10))
                         .add(LootItem.lootTableItem(NtmItems.INGOT_ZIRCONIUM.get()).setWeight(10).apply(SetItemCountFunction.setCount(UniformGenerator.between(1, 16))))
                         .add(LootItem.lootTableItem(NtmItems.INGOT_NIOBIUM.get()).setWeight(10).apply(SetItemCountFunction.setCount(UniformGenerator.between(1, 16))))
@@ -438,6 +441,8 @@ public class NtmBlockLootTableProvider extends BlockLootSubProvider {
                         .add(LootItem.lootTableItem(NtmItems.CIRCUIT_MICROCHIP.get()).setWeight(10).apply(SetItemCountFunction.setCount(UniformGenerator.between(2, 4))))
                         .add(LootItem.lootTableItem(NtmItems.LAUNCH_CODE_PIECE.get()).setWeight(5))
                         .add(LootItem.lootTableItem(NtmItems.GEM_ALEXANDRITE.get()).setWeight(1))
+                        // Original POOL_METEORITE_TREASURE (ItemPoolsSingle.java:112): the discover blueprint booklet
+                        .add(NtmChestLootTableProvider.blueprintFolder(BlueprintFolderItem.Type.DISCOVER).setWeight(1))
                 );
     }
 

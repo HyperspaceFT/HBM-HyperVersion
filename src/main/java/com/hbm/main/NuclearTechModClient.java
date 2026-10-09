@@ -20,6 +20,7 @@ import com.hbm.inventory.fluid.Fluids;
 import com.hbm.inventory.screens.LoadingScreenRendererNT;
 import com.hbm.items.*;
 import com.hbm.items.component.NtmDataComponents;
+import com.hbm.items.machine.BlueprintsItem;
 import com.hbm.items.special.PolaroidItem;
 import com.hbm.items.tools.ColtanCompassItem;
 import com.hbm.items.tools.GeigerCounterItem;
@@ -168,6 +169,8 @@ public class NuclearTechModClient {
             ItemProperties.register(NtmItems.MISSILE_SOYUZ.get(), NuclearTechMod.withDefaultNamespace("item_meta"), (stack, level, entity, seed) -> MetaHelper.getMeta(stack));
             ItemProperties.register(NtmItems.POLAROID.get(), NuclearTechMod.withDefaultNamespace("polaroid_id"), (stack, level, entity, seed) -> PolaroidItem.polaroidID);
             ItemProperties.register(NtmItems.SCRAPS.get(), NuclearTechMod.withDefaultNamespace("scraps_type"), (stack, level, entity, seed) -> CopperScrapsItem.getModelType(stack));
+            // Original ItemBlueprints.getIcon: the blueprint texture follows the pool prefix
+            ItemProperties.register(NtmItems.BLUEPRINTS.get(), NuclearTechMod.withDefaultNamespace("blueprint_type"), (stack, level, entity, seed) -> BlueprintsItem.getModelType(stack));
             // Original TextureColtass: points at the stored deposit centre in the overworld, spins randomly elsewhere or
             // before the server has stored a centre. Vanilla's compass function gives the same wobble and dimension check.
             ItemProperties.register(NtmItems.COLTAN_TOOL.get(), NuclearTechMod.withDefaultNamespace("angle"), new CompassItemPropertyFunction((level, stack, entity) ->

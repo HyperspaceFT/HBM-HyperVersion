@@ -82,6 +82,19 @@ public class Goal12BShredderRegression {
         List<String> live = live(), head = head();
         List<String> added = new ArrayList<>(live);
         added.removeAll(head);
+        // Goal 13A (migration/GOAL13A.md A13) adds the four concrete chain entries; they are taken out here and the added check below requires
+        // exactly these four (verify_goal13a.py section 8s checks them in detail).
+        List<String> concreteChain = new ArrayList<>();
+        for(String e : added) if(e.startsWith("hbmsntm:concrete:") || e.startsWith("hbmsntm:concrete_smooth:") || e.startsWith("hbmsntm:resource_limestone:")
+                || e.startsWith("hbmsntm:block_slag:")) concreteChain.add(e);
+        added.removeAll(concreteChain);
+        live.removeAll(concreteChain);
+        check(concreteChain.size() == 4 && concreteChain.stream().anyMatch(e -> e.startsWith("hbmsntm:concrete:") && e.contains(" -> minecraft:gravel x1:"))
+                        && concreteChain.stream().anyMatch(e -> e.startsWith("hbmsntm:concrete_smooth:") && e.contains(" -> minecraft:gravel x1:"))
+                        && concreteChain.stream().anyMatch(e -> e.startsWith("hbmsntm:resource_limestone:") && e.contains(" -> hbmsntm:powder_limestone x4:"))
+                        && concreteChain.stream().anyMatch(e -> e.startsWith("hbmsntm:block_slag:") && e.contains(" -> hbmsntm:powder_cement x4:")),
+                "Goal 13A: exactly the concrete (1 gravel), concrete_smooth (1 gravel), resource_limestone (4 limestone powder) and block_slag (4 cement powder) entries are added: "
+                        + concreteChain);
         List<String> rest = new ArrayList<>(live);
         rest.removeIf(e -> !head.contains(e));
         check(rest.equals(head) && added.size() == 3 && live.size() == head.size() + 3,

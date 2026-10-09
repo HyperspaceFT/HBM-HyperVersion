@@ -46,3 +46,6 @@ check requires every fluid of the written `_hbmAssemblyMachine.json` template to
 which inherits the stand-in, gains one check that `writeFluidStack` writes `["FLUID",1000]`.
 
 Goal 12B (`build/migration/goal12b/production.diff`) registers `CrackingRecipes` in `SerializableRecipe.registerAllHandlers`; the stand-ins gain a name-only `CrackingRecipes` handler (as for `CrucibleRecipes`), so every world built on these stubs compiles the production `SerializableRecipe` again; no check changes.
+
+Goal 13A (`migration/GOAL13A.md`, `build/migration/goal13a/production-stage1.diff` plus the later review edits) makes `AssemblyMachineRecipes` read `NtmConfig.enable528()` (the `alt..circuit` recipes are registered only outside 528 mode); the stand-in `NtmConfig` gains `enable528()` (the same `COMMON.ENABLE_528` flag), so every world built on these stubs compiles the production `AssemblyMachineRecipes` again; no check changes.
+Goal 13B added `ArcFurnaceRecipes` to the name-only handler stand-ins in `stubs.py` (with a comment), because the production `SerializableRecipe.registerAllHandlers` now names it; no assertion changed, and every recipe world that reuses these stubs inherits the name.

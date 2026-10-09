@@ -31,6 +31,9 @@ import java.util.Map;
  * 200 mB light oil, 200 mB mercury -> 1 desh ingot, 100 ticks, 100 HE/t.
  * Goal 12B (migration/GOAL12B.md) appends ass.crackingtower after ass.chemplant and changes the chem.coltancleaning input
  * (B1); sections 1 and 4 accept exactly these and check them, everything else is compared as before.
+ * Goal 13A (migration/GOAL13A.md) appends ass.analogAlt, ass.factorioChip and ass.atomicClockAlt after ass.crackingtower and changes the sand
+ * input of chem.concrete, chem.concreteasbestos, chem.ducrete and chem.liquidconk from the sand block to the sand tag (A16); sections 1 and 4
+ * accept exactly these and check them in the same way.
  */
 public class Goal11CRecipeRegression {
     private static int checks;
@@ -170,11 +173,22 @@ public class Goal11CRecipeRegression {
                 "ass.chemplant is not pooled (no blueprint needed, as the original registers it without setPools)");
         // Goal 12B (migration/GOAL12B.md) appends exactly ass.crackingtower after ass.chemplant; verify_goal12b.py checks its content.
         List<String> goal12b = List.of("ass.crackingtower");
-        check(liveNames.size() == baseNames.size() + 1 + goal12b.size() && liveNames.get(liveNames.size() - 1 - goal12b.size()).equals("ass.chemplant")
-                        && liveNames.get(liveNames.size() - 2 - goal12b.size()).equals("ass.tank")
-                        && liveNames.subList(liveNames.size() - goal12b.size(), liveNames.size()).equals(goal12b),
+        // Goal 13A (migration/GOAL13A.md A4): exactly ass.analogAlt, ass.factorioChip and ass.atomicClockAlt (the pool alt..circuit) follow
+        // ass.crackingtower; one added check below (verify_goal13a.py checks their content).
+        List<String> goal13a = List.of("ass.analogAlt", "ass.factorioChip", "ass.atomicClockAlt");
+        // Goal 13B (migration/GOAL13B.md B4): ass.chip follows ass.crackingtower and comes in front of the Goal 13A entries, ass.arcfurnace comes last;
+        // one added check below (verify_goal13b.py checks their content).
+        List<String> goal13b = List.of("ass.chip", "ass.arcfurnace");
+        check(liveNames.size() == baseNames.size() + 1 + goal12b.size() + goal13a.size() + goal13b.size() && liveNames.get(liveNames.size() - 1 - goal12b.size() - goal13a.size() - goal13b.size()).equals("ass.chemplant")
+                        && liveNames.get(liveNames.size() - 2 - goal12b.size() - goal13a.size() - goal13b.size()).equals("ass.tank")
+                        && liveNames.subList(liveNames.size() - goal12b.size() - goal13a.size() - goal13b.size(), liveNames.size() - goal13a.size() - goal13b.size()).equals(goal12b),
                 "exactly one recipe is added, ass.chemplant, last before the Goal 12B entry " + goal12b + " and directly after ass.tank ("
                         + baseNames.size() + " -> " + liveNames.size() + ")");
+        check(liveNames.subList(Math.max(liveNames.size() - goal13a.size() - 1, 0), Math.max(liveNames.size() - 1, 0)).equals(goal13a)
+                        && goal13a.stream().allMatch(n -> { GenericRecipe r = AssemblyMachineRecipes.INSTANCE.recipeNameMap.get(n); return r != null && r.isPooled() && r.getPools().length == 1 && r.getPools()[0].equals("alt..circuit") && r.customLocalization; }),
+                "Goal 13A entries are exactly these, after ass.crackingtower: " + goal13a + ", each named and in the pool alt..circuit (migration/GOAL13A.md A4)");
+        check(liveNames.get(liveNames.size() - goal13a.size() - 2).equals("ass.chip") && liveNames.get(liveNames.size() - 1).equals("ass.arcfurnace"),
+                "Goal 13B entries are exactly these: " + goal13b + ", ass.chip directly after ass.crackingtower and in front of the Goal 13A entries, ass.arcfurnace last (migration/GOAL13B.md B4)");
         check(liveNames.subList(0, baseNames.size()).equals(baseNames), "every post-Goal 11B recipe keeps its name and order");
         List<String> changed = new ArrayList<>();
         for(String name : baseNames) if(!live.get(name).equals(base.get(name))) changed.add(name);
@@ -233,8 +247,18 @@ public class Goal11CRecipeRegression {
         for(String name : baseNames) if(!live.get(name).equals(base.get(name))) changed.add(name);
         // Goal 12B (migration/GOAL12B.md B1) changes the chem.coltancleaning input from purified tantalite to crushed coltan ore;
         // the added check below requires that to be its only difference.
-        check(changed.equals(List.of("chem.polymer", "chem.coltancleaning")),
-                "only chem.polymer (and Goal 12B's chem.coltancleaning) differ from the post-Goal 11B table (compiled base-g11b copy): " + changed);
+        // Goal 13A (migration/GOAL13A.md A16) changes the sand input of the four concrete recipes; the checks below require that to be their only difference.
+        List<String> concrete = List.of("chem.concrete", "chem.concreteasbestos", "chem.ducrete", "chem.liquidconk");
+        check(changed.equals(List.of("chem.concrete", "chem.concreteasbestos", "chem.ducrete", "chem.liquidconk", "chem.polymer", "chem.coltancleaning")),
+                "only chem.polymer (and Goal 12B's chem.coltancleaning and Goal 13A's four concrete recipes) differ from the post-Goal 11B table (compiled base-g11b copy): " + changed);
+        for(String name : concrete) {
+            JsonObject sand = live.get(name).deepCopy();
+            JsonArray sandInput = sand.getAsJsonArray("inputItem");
+            check(sandInput.get(2).toString().equals("[\"tag\",\"minecraft:sand\",8]"),
+                    "Goal 13A: " + name + " takes 8 of the tag minecraft:sand third: " + sandInput.get(2));
+            sandInput.set(2, item("minecraft:sand", 8, WILDCARD));
+            check(sand.equals(base.get(name)), "Goal 13A: " + name + " differs from the post-Goal 11B table only in its sand input, the sand block x8 -> the tag x8: " + live.get(name));
+        }
         JsonObject cleaning = base.get("chem.coltancleaning").deepCopy();
         JsonArray firstInput = cleaning.getAsJsonArray("inputItem").get(0).getAsJsonArray();
         check(firstInput.get(1).getAsString().equals("hbmsntm:powder_coltan"), "the post-Goal 11B chem.coltancleaning took hbmsntm:powder_coltan first: " + firstInput);

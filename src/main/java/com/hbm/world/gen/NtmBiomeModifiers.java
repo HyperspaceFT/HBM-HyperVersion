@@ -26,6 +26,8 @@ public class NtmBiomeModifiers {
 
     public static final ResourceKey<BiomeModifier> ADD_CRASHED_BOMB = registerKey("add_crashed_bomb");
 
+    public static final ResourceKey<BiomeModifier> ADD_BLUEPRINT_CHEST = registerKey("add_blueprint_chest");
+
     public static void bootstrap(BootstrapContext<BiomeModifier> context) {
         HolderGetter<PlacedFeature> placedFeatures = context.lookup(Registries.PLACED_FEATURE);
         HolderGetter<Biome> biomes = context.lookup(Registries.BIOME);
@@ -36,6 +38,9 @@ public class NtmBiomeModifiers {
         context.register(ADD_LANDMINE, new AddFeaturesBiomeModifier(biomes.getOrThrow(BiomeTags.IS_OVERWORLD), HolderSet.direct(placedFeatures.getOrThrow(NtmPlacedFeatures.LANDMINE_PLACED)), GenerationStep.Decoration.UNDERGROUND_DECORATION));
 
         context.register(ADD_CRASHED_BOMB, new AddFeaturesBiomeModifier(biomes.getOrThrow(BiomeTags.IS_OVERWORLD), HolderSet.direct(placedFeatures.getOrThrow(NtmPlacedFeatures.CRASHED_BOMB_PLACED)), GenerationStep.Decoration.UNDERGROUND_DECORATION));
+
+        // The last step: the original world generator runs after vanilla population, so trees and snow are already there
+        context.register(ADD_BLUEPRINT_CHEST, new AddFeaturesBiomeModifier(biomes.getOrThrow(BiomeTags.IS_OVERWORLD), HolderSet.direct(placedFeatures.getOrThrow(NtmPlacedFeatures.BLUEPRINT_CHEST_PLACED)), GenerationStep.Decoration.TOP_LAYER_MODIFICATION));
     }
 
     private static ResourceKey<BiomeModifier> registerKey(String name) {

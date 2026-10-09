@@ -299,6 +299,7 @@ public class NtmBlockTagProvider extends BlockTagsProvider {
                         NtmBlocks.MACHINE_FRACKING_TOWER.get(),
                         NtmBlocks.MACHINE_REFINERY.get(),
                         NtmBlocks.MACHINE_CATALYTIC_CRACKER.get(),
+                        NtmBlocks.MACHINE_ARC_FURNACE.get(),
                         NtmBlocks.MACHINE_BLAST_FURNACE.get(),
                         NtmBlocks.MACHINE_WOOD_BURNER.get(),
                         NtmBlocks.FURNACE_COMBINATION.get(),

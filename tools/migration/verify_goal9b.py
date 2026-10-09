@@ -8,6 +8,7 @@ import sys
 import uuid
 
 from goal9b_regression.stubs import build_stubs
+from goal13a_regression.anvil_block import stripped_sources
 from verify_goal9a import PRODUCTION as GOAL9A_PRODUCTION
 
 
@@ -103,7 +104,9 @@ def main():
     head.parent.mkdir(parents=True)
     head.write_text(baseline_anvil(), encoding="utf-8")
     paths.append(str(head))
-    paths.extend(str(SOURCE / name) for name in PRODUCTION)
+    # Goal 13A appends four anvil entries after the last entry of the goals before it; this suite compiles the live AnvilRecipes without that
+    # block (goal13a_regression/anvil_block.py), so every assertion about the entries and counts of its own goals stays as it was.
+    paths.extend(str(p) for p in stripped_sources([SOURCE / name for name in PRODUCTION], run_dir))
     paths.extend(str(FIXTURE / name) for name in FIXTURES)
     with log.open("a", encoding="utf-8") as stream:
         stream.write(f"jdk: {java}\nsource: {SOURCE}\nanvil baseline: git {ANVIL_BASELINE_COMMIT}:{ANVIL} as goal9b.head.AnvilRecipes\n"

@@ -16,6 +16,7 @@ import com.hbm.inventory.fluid.Fluids;
 import com.hbm.inventory.recipes.SolderingRecipes;
 import com.hbm.inventory.recipes.AssemblyMachineRecipes;
 import com.hbm.inventory.recipes.ArcWelderRecipes;
+import com.hbm.inventory.recipes.ArcFurnaceRecipes;
 import com.hbm.inventory.recipes.BlastFurnaceRecipes;
 import com.hbm.inventory.recipes.ChemicalPlantRecipes;
 import com.hbm.inventory.recipes.CentrifugeRecipes;
@@ -58,6 +59,7 @@ public abstract class SerializableRecipe {
         recipeHandlers.add(new ShredderRecipes());
         recipeHandlers.add(new CentrifugeRecipes());
         recipeHandlers.add(new CrackingRecipes());
+        recipeHandlers.add(new ArcFurnaceRecipes());
 
         //GENERIC
         recipeHandlers.add(AssemblyMachineRecipes.INSTANCE);

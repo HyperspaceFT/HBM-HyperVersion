@@ -1,0 +1,13 @@
+{
+  "type": "minecraft:smelting",
+  "category": "misc",
+  "cookingtime": 200,
+  "experience": 3.0,
+  "ingredient": {
+    "item": "hbmsntm:arc_electrode_desh_burnt"
+  },
+  "result": {
+    "count": 1,
+    "id": "hbmsntm:ingot_desh"
+  }
+}

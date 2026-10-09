@@ -29,8 +29,8 @@ public class HeaterHeatexBlockEntity extends AbstractHeaterMachineBlockEntity im
     public boolean converted = true;
 
     public final FluidTank[] tanks = new FluidTank[] {
-            new FluidTank(Fluids.NONE, 24_000),
-            new FluidTank(Fluids.NONE, 24_000)
+            new FluidTank(Fluids.COOLANT_HOT, 24_000),
+            new FluidTank(Fluids.COOLANT, 24_000)
     };
 
     public HeaterHeatexBlockEntity(BlockPos pos, BlockState state) {

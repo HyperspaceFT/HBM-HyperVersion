@@ -25,6 +25,8 @@ public class NtmPlacedFeatures {
 
     public static final ResourceKey<PlacedFeature> CRASHED_BOMB_PLACED = registerKey("crashed_bomb_placed");
 
+    public static final ResourceKey<PlacedFeature> BLUEPRINT_CHEST_PLACED = registerKey("blueprint_chest_placed");
+
     public static void bootstrap(BootstrapContext<PlacedFeature> context) {
         HolderGetter<ConfiguredFeature<?, ?>> configuredFeatures = context.lookup(Registries.CONFIGURED_FEATURE);
 
@@ -35,6 +37,8 @@ public class NtmPlacedFeatures {
         register(context, BEDROCK_OIL_PLACED, configuredFeatures.getOrThrow(NtmConfiguredFeatures.BEDROCK_OIL), List.of(RarityFilter.onAverageOnceEvery(64), InSquarePlacement.spread(), HeightmapPlacement.onHeightmap(Heightmap.Types.WORLD_SURFACE_WG)));
         register(context, LANDMINE_PLACED, configuredFeatures.getOrThrow(NtmConfiguredFeatures.LANDMINE), List.of(RarityFilter.onAverageOnceEvery(64), InSquarePlacement.spread(), HeightmapPlacement.onHeightmap(Heightmap.Types.WORLD_SURFACE_WG)));
         register(context, CRASHED_BOMB_PLACED, configuredFeatures.getOrThrow(NtmConfiguredFeatures.CRASHED_BOMB), List.of(RarityFilter.onAverageOnceEvery(500), InSquarePlacement.spread(), HeightmapPlacement.onHeightmap(Heightmap.Types.WORLD_SURFACE_WG)));
+        // Original blueprint chest: once per chunk at the chunk corner; the feature does the grid and 50% tests itself
+        register(context, BLUEPRINT_CHEST_PLACED, configuredFeatures.getOrThrow(NtmConfiguredFeatures.BLUEPRINT_CHEST), List.of());
     }
 
     private static ResourceKey<PlacedFeature> registerKey(String name) {

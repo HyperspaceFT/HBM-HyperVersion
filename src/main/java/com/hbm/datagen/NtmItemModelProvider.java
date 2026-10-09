@@ -4,6 +4,7 @@ import com.hbm.blocks.NtmBlocks;
 import com.hbm.items.CopperScrapsItem;
 import com.hbm.items.ICustomItemModelRegister;
 import com.hbm.items.NtmItems;
+import com.hbm.items.machine.BlueprintsItem;
 import com.hbm.main.NuclearTechMod;
 import net.minecraft.client.renderer.block.model.BlockModel;
 import net.minecraft.core.registries.BuiltInRegistries;
@@ -163,6 +164,7 @@ public class NtmItemModelProvider extends ItemModelProvider {
         this.basicItem(NtmItems.NUGGET_DINEUTRONIUM.get());
         this.basicItem(NtmItems.NUGGET_NIOBIUM.get());
         this.basicItem(NtmItems.NUGGET_SILICON.get());
+        this.basicItem(NtmItems.BILLET_SILICON.get());
         this.basicItem(NtmItems.NUGGET_ACTINIUM.get());
         this.basicItem(NtmItems.NUGGET_COBALT.get());
         this.basicItem(NtmItems.NUGGET_CO60.get());
@@ -668,7 +670,8 @@ public class NtmItemModelProvider extends ItemModelProvider {
         // BATTERY_SC uses ICustomItemModelRegister
         this.basicItem(NtmItems.BATTERY_CREATIVE.get());
 
-        // todo register BLUEPRINTS
+        this.registerBlueprints();
+        // BLUEPRINT_FOLDER uses ICustomItemModelRegister
 
         this.basicItem(NtmItems.STAMP_STONE_FLAT.get());
         this.basicItem(NtmItems.STAMP_STONE_PLATE.get());
@@ -944,6 +947,26 @@ public class NtmItemModelProvider extends ItemModelProvider {
                 .model(getBuilder("scraps_liquid")
                         .parent(getExistingFile(mcLoc("item/generated")))
                         .texture("layer0", modLoc("item/scraps_liquid")))
+                .end();
+    }
+
+    /**
+     * Original ItemBlueprints icons by pool prefix: the base model is the blue blueprint (alt. and any other pool), with
+     * overrides for discover. (beige), secret. (black) and 528. (grey) on the "blueprint_type" predicate.
+     */
+    private void registerBlueprints() {
+        ItemModelBuilder builder = this.basicItem(NtmItems.BLUEPRINTS.get());
+        blueprintOverride(builder, BlueprintsItem.MODEL_DISCOVER, "blueprints_discover");
+        blueprintOverride(builder, BlueprintsItem.MODEL_SECRET, "blueprints_secret");
+        blueprintOverride(builder, BlueprintsItem.MODEL_528, "blueprints_528");
+    }
+
+    private void blueprintOverride(ItemModelBuilder builder, float value, String name) {
+        builder.override()
+                .predicate(NuclearTechMod.withDefaultNamespace("blueprint_type"), value)
+                .model(getBuilder(name)
+                        .parent(getExistingFile(mcLoc("item/generated")))
+                        .texture("layer0", modLoc("item/" + name)))
                 .end();
     }
 

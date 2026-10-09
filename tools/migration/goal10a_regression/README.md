@@ -68,3 +68,6 @@ Recipe world:
 - `SerializableRecipe.readRecipeFile` leaves its `FileReader` open; on Windows the enabled `hbmCrucible.json` therefore cannot be deleted while the JVM runs, so section 5b restores the defaults through the handler instead of deleting the file (pre-existing behaviour, not a Goal 10A change).
 
 Goal 12B (`build/migration/goal12b/production.diff`) registers `CrackingRecipes` after `CentrifugeRecipes`; section 5b now requires the nine Goal 10A handlers plus exactly one `CrackingRecipes` (ten), every other check unchanged.
+
+Goal 13A (`migration/GOAL13A.md`, `build/migration/goal13a/production-stage1.diff` plus the later review edits) makes `AssemblyMachineRecipes` read `NtmConfig.enable528()`; the stand-in `NtmConfig` of this world (the base of the Goal 11A to 13A worlds) gains `enable528()` (the `COMMON.ENABLE_528` flag); no Goal 10A check changes.
+Goal 13B converted section 5b of the recipe fixture: the registered handler count is now 11 (the nine handlers, Goal 12B's `CrackingRecipes` and Goal 13B's `ArcFurnaceRecipes`, each once) instead of 10, with one added check for the extra handler and nothing deleted or relaxed.

@@ -54,6 +54,9 @@ NEW_LINE = "        writer.value(stack.type.getInternalName());\t//fluid type"
 # Goal 12B (build/migration/goal12b/production.diff) adds exactly these two lines to SerializableRecipe.java (the
 # CrackingRecipes import and its registration after CentrifugeRecipes); section 5 takes them out before its comparisons.
 GOAL12B_LINES = ("import com.hbm.inventory.recipes.CrackingRecipes;", "        recipeHandlers.add(new CrackingRecipes());")
+# Goal 13B (build/migration/goal13b/production-stage1.diff) adds exactly these two lines as well (the ArcFurnaceRecipes import and its registration
+# after CrackingRecipes); section 5 takes them out in the same way, and verify_goal13b.py checks them.
+GOAL13B_LINES = ("import com.hbm.inventory.recipes.ArcFurnaceRecipes;", "        recipeHandlers.add(new ArcFurnaceRecipes());")
 CRACKING = "com/hbm/inventory/recipes/CrackingRecipes.java"
 TEMPLATES = {"chemical plant":"_hbmChemicalPlant.json", "assembly machine": "_hbmAssemblyMachine.json",
              "soldering station": "_hbmSoldering.json", "arc welder": "_hbmArcWelder.json"}
@@ -232,6 +235,8 @@ def production_diff(check):
     # Goal 12B: the two added lines (GOAL12B_LINES), each exactly once, are taken out; everything below compares the rest.
     check(all(live.count(line) == 1 for line in GOAL12B_LINES), f"Goal 12B: SerializableRecipe.java holds each of its two added lines once: {GOAL12B_LINES}")
     live = [line for line in live if line not in GOAL12B_LINES]
+    check(all(live.count(line) == 1 for line in GOAL13B_LINES), f"Goal 13B: SerializableRecipe.java holds each of its two added lines once: {GOAL13B_LINES}")
+    live = [line for line in live if line not in GOAL13B_LINES]
     differing = [i + 1 for i in range(max(len(live), len(base))) if (live[i] if i < len(live) else None) != (base[i] if i < len(base) else None)]
     check(len(live) == len(base) and differing == [WRITER_LINE], f"SerializableRecipe.java differs from 1e29ad29 in exactly line {WRITER_LINE}: {differing[:10]}")
     check(base[WRITER_LINE - 1] == OLD_LINE and live[WRITER_LINE - 1] == NEW_LINE,
@@ -247,10 +252,10 @@ def production_diff(check):
     committed = git("show", f"{GOAL11D_COMMIT}:src/main/java/{SERIALIZABLE}")
     # Goal 12B changes the working copy by exactly its two lines (git now lists the file); without them it is the commit.
     working = (ROOT / "src/main/java" / SERIALIZABLE).read_bytes().replace(b"\r\n", b"\n")
-    for line in GOAL12B_LINES:
+    for line in GOAL12B_LINES + GOAL13B_LINES:
         working = working.replace(line.encode("utf-8") + b"\n", b"", 1) if working.count(line.encode("utf-8") + b"\n") == 1 else b""
     check(worktree == ["src/main/java/" + SERIALIZABLE] and working == committed,
-          f"the working copy of SerializableRecipe.java without the two Goal 12B lines is byte-identical to {GOAL11D_COMMIT[:8]} "
+          f"the working copy of SerializableRecipe.java without the two Goal 12B lines (and Goal 13B's two) is byte-identical to {GOAL11D_COMMIT[:8]} "
           f"(modulo the CRLF checkout): {worktree}")
 
 

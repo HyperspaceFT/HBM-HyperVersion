@@ -45,6 +45,12 @@ public class NtmBlockEntityTypes {
                             MachineArcWelderBlockEntity::new,
                             NtmBlocks.MACHINE_ARC_WELDER.get())
                     .build(null));
+    public static final Supplier<BlockEntityType<MachineArcFurnaceBlockEntity>> MACHINE_ARC_FURNACE = BLOCK_ENTITY_TYPES.register(
+            "machine_arc_furnace",
+            () -> BlockEntityType.Builder.of(
+                            MachineArcFurnaceBlockEntity::new,
+                            NtmBlocks.MACHINE_ARC_FURNACE.get())
+                    .build(null));
 
     public static final Supplier<BlockEntityType<MachineHeatBoilerBlockEntity>> HEAT_BOILER = BLOCK_ENTITY_TYPES.register(
             "heat_boiler",

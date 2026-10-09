@@ -36,6 +36,9 @@ import java.util.Map;
  * 12 desh ingots, 4 niobium ingots -> 1 catalytic cracking tower, 200 ticks, 100 HE/t (the expensive inputs and the 528 pool
  * are not ported, D6a/D6b); CrackingRecipes.java:23-55 (12 defaults), :57-124 (hbmCracking.json: input, output1, output2;
  * the comment; readRecipe puts the entry).
+ * Goal 13A (migration/GOAL13A.md) appends ass.analogAlt, ass.factorioChip and ass.atomicClockAlt after ass.crackingtower and changes the sand input of
+ * chem.concrete, chem.concreteasbestos, chem.ducrete and chem.liquidconk from the sand block to the sand tag (A16); sections 3 and 10 accept exactly
+ * these and check them, everything else is compared as before.
  */
 public class Goal12BRecipeRegression {
     private static int checks;
@@ -148,7 +151,17 @@ public class Goal12BRecipeRegression {
         check(old.equals(head.get("chem.coltancleaning")),
                 "the 3687da34 entry differed only in its first input, purified tantalite (the self-loop B1 removes): " + head.get("chem.coltancleaning"));
         check(new ArrayList<>(live.keySet()).equals(new ArrayList<>(head.keySet())), "every chemical plant recipe keeps its name and order (" + live.size() + " recipes)");
-        check(changed(live, head).equals(List.of("chem.coltancleaning")), "only chem.coltancleaning differs from the 3687da34 table: " + changed(live, head));
+        // Goal 13A (migration/GOAL13A.md A16) changes the sand input of the four concrete recipes; the checks below require that to be their only difference.
+        List<String> concrete = List.of("chem.concrete", "chem.concreteasbestos", "chem.ducrete", "chem.liquidconk");
+        check(changed(live, head).equals(List.of("chem.concrete", "chem.concreteasbestos", "chem.ducrete", "chem.liquidconk", "chem.coltancleaning")),
+                "only chem.coltancleaning (and Goal 13A's four concrete recipes) differs from the 3687da34 table: " + changed(live, head));
+        for(String name : concrete) {
+            JsonObject sand = live.get(name).deepCopy();
+            JsonArray sandInput = sand.getAsJsonArray("inputItem");
+            check(sandInput.get(2).toString().equals("[\"tag\",\"minecraft:sand\",8]"), "Goal 13A: " + name + " takes 8 of the tag minecraft:sand third: " + sandInput.get(2));
+            sandInput.set(2, item("minecraft:sand", 8, WILDCARD));
+            check(sand.equals(head.get(name)), "Goal 13A: " + name + " differs from the 3687da34 table only in its sand input, the sand block x8 -> the tag x8: " + live.get(name));
+        }
         GenericRecipe recipe = ChemicalPlantRecipes.INSTANCE.recipeNameMap.get("chem.coltancleaning");
         check(recipe != null && !recipe.isPooled() && recipe.customLocalization, "chem.coltancleaning is not pooled and keeps its named localization");
         ChemicalPlantRecipes.INSTANCE.deleteRecipes();
@@ -252,9 +265,19 @@ public class Goal12BRecipeRegression {
         GenericRecipe recipe = AssemblyMachineRecipes.INSTANCE.recipeNameMap.get("ass.crackingtower");
         check(recipe != null && !recipe.isPooled() && recipe.getPools() == null && !recipe.customLocalization && recipe.duration == 200 && recipe.power == 100,
                 "not pooled (D6a), not named, 200 ticks and 100 HE/t on the recipe object");
-        check(liveNames.size() == headNames.size() + 1 && liveNames.get(liveNames.size() - 1).equals("ass.crackingtower")
-                        && liveNames.get(liveNames.size() - 2).equals("ass.chemplant") && liveNames.subList(0, headNames.size()).equals(headNames),
-                "exactly one recipe is appended, last, directly after ass.chemplant; every earlier recipe keeps its name and order (" + headNames.size() + " -> " + liveNames.size() + ")");
+        // Goal 13A (migration/GOAL13A.md A4): exactly ass.analogAlt, ass.factorioChip and ass.atomicClockAlt (the pool alt..circuit) follow ass.crackingtower.
+        List<String> goal13a = List.of("ass.analogAlt", "ass.factorioChip", "ass.atomicClockAlt");
+        // Goal 13B (migration/GOAL13B.md B4): ass.chip follows ass.crackingtower and comes in front of the Goal 13A entries, ass.arcfurnace comes last;
+        // one added check below (verify_goal13b.py checks their content).
+        List<String> goal13b = List.of("ass.chip", "ass.arcfurnace");
+        check(liveNames.size() == headNames.size() + 1 + goal13a.size() + goal13b.size() && liveNames.get(liveNames.size() - 1 - goal13a.size() - goal13b.size()).equals("ass.crackingtower")
+                        && liveNames.get(liveNames.size() - 2 - goal13a.size() - goal13b.size()).equals("ass.chemplant") && liveNames.subList(0, headNames.size()).equals(headNames),
+                "exactly one recipe is appended, last before the Goal 13A entries, directly after ass.chemplant; every earlier recipe keeps its name and order (" + headNames.size() + " -> " + liveNames.size() + ")");
+        check(liveNames.subList(liveNames.size() - goal13a.size() - 1, liveNames.size() - 1).equals(goal13a)
+                        && goal13a.stream().allMatch(n -> { GenericRecipe r = AssemblyMachineRecipes.INSTANCE.recipeNameMap.get(n); return r != null && r.isPooled() && r.getPools().length == 1 && r.getPools()[0].equals("alt..circuit") && r.customLocalization; }),
+                "Goal 13A entries are exactly these, after ass.crackingtower: " + goal13a + ", each named and in the pool alt..circuit (migration/GOAL13A.md A4)");
+        check(liveNames.get(liveNames.size() - goal13a.size() - 2).equals("ass.chip") && liveNames.get(liveNames.size() - 1).equals("ass.arcfurnace"),
+                "Goal 13B entries are exactly these: " + goal13b + ", ass.chip directly after ass.crackingtower and in front of the Goal 13A entries, ass.arcfurnace last (migration/GOAL13B.md B4)");
         check(changed(live, head).isEmpty(), "no 3687da34 assembler recipe changes: " + changed(live, head));
         AssemblyMachineRecipes.INSTANCE.deleteRecipes();
         AssemblyMachineRecipes.INSTANCE.readRecipe(live.get("ass.crackingtower"));

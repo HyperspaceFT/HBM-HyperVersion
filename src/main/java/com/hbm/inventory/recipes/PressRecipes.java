@@ -86,6 +86,8 @@ public class PressRecipes extends SerializableRecipe {
         makeRecipe(StampType.WIRE, new ComparableStack(NtmItems.INGOT_RED_COPPER.get()),         new ItemStack(NtmItems.WIRE_RED_COPPER.get(), 8));
         makeRecipe(StampType.WIRE, new ComparableStack(NtmItems.INGOT_TUNGSTEN.get()),           new ItemStack(NtmItems.WIRE_TUNGSTEN.get(), 8));
         makeRecipe(StampType.WIRE, new ComparableStack(NtmItems.INGOT_SCHRABIDIUM.get()),		    new ItemStack(NtmItems.WIRE_SCHRABIDIUM.get(), 8));
+        // Original PressRecipes.java:99 uses the ore-dictionary silicon billet; NEO has no such tag, so the item stands in.
+        makeRecipe(StampType.CIRCUIT, new ComparableStack(NtmItems.BILLET_SILICON.get()),        new ItemStack(NtmItems.CIRCUIT_PRINTED_SILICON_WAFER.get(), 1));
     }
 
     public static void makeRecipe(StampType type, AStack in, Item out) {

@@ -124,19 +124,19 @@ public class ChemicalPlantRecipes extends GenericRecipes<GenericRecipe> {
                 .inputItems(new ComparableStack(Blocks.COBBLESTONE, 16))
                 .outputItems(new ItemStack(Blocks.GRAVEL, 8), new ItemStack(Blocks.SAND, 8)));
         this.register(new GenericRecipe("chem.concrete").setupNamed(100, 100L)
-                .inputItems(new ComparableStack(NtmItems.POWDER_CEMENT.get()), new ComparableStack(Blocks.GRAVEL, 8), new ComparableStack(Blocks.SAND, 8))
+                .inputItems(new ComparableStack(NtmItems.POWDER_CEMENT.get()), new ComparableStack(Blocks.GRAVEL, 8), new TagStack(ItemTags.SAND, 8))
                 .inputFluids(new FluidStack(Fluids.WATER, 2000))
                 .outputItems(new ItemStack(NtmBlocks.CONCRETE_SMOOTH.get(), 16)));
         this.register(new GenericRecipe("chem.concreteasbestos").setupNamed(100, 100L)
-                .inputItems(new ComparableStack(NtmItems.POWDER_CEMENT.get(), 4), new ComparableStack(NtmItems.INGOT_ASBESTOS.get(), 4), new ComparableStack(Blocks.SAND, 8))
+                .inputItems(new ComparableStack(NtmItems.POWDER_CEMENT.get(), 4), new ComparableStack(NtmItems.INGOT_ASBESTOS.get(), 4), new TagStack(ItemTags.SAND, 8))
                 .inputFluids(new FluidStack(Fluids.WATER, 2000))
                 .outputItems(new ItemStack(NtmBlocks.CONCRETE_ASBESTOS.get(), 16)));
         this.register(new GenericRecipe("chem.ducrete").setupNamed(150, 100L)
-                .inputItems(new ComparableStack(NtmItems.POWDER_CEMENT.get(), 4), new ComparableStack(NtmItems.INGOT_FERROURANIUM.get()), new ComparableStack(Blocks.SAND, 8))
+                .inputItems(new ComparableStack(NtmItems.POWDER_CEMENT.get(), 4), new ComparableStack(NtmItems.INGOT_FERROURANIUM.get()), new TagStack(ItemTags.SAND, 8))
                 .inputFluids(new FluidStack(Fluids.WATER, 2000))
                 .outputItems(new ItemStack(NtmBlocks.DUCRETE_SMOOTH.get(), 8)));
         this.register(new GenericRecipe("chem.liquidconk").setupNamed(100, 100L)
-                .inputItems(new ComparableStack(NtmItems.POWDER_CEMENT.get()), new ComparableStack(Blocks.GRAVEL, 8), new ComparableStack(Blocks.SAND, 8))
+                .inputItems(new ComparableStack(NtmItems.POWDER_CEMENT.get()), new ComparableStack(Blocks.GRAVEL, 8), new TagStack(ItemTags.SAND, 8))
                 .inputFluids(new FluidStack(Fluids.WATER, 2000))
                 .outputFluids(new FluidStack(Fluids.CONCRETE, 16000)));
         this.register(new GenericRecipe("chem.asphalt").setupNamed(100, 100L)

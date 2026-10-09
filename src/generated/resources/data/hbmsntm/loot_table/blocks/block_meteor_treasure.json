@@ -134,9 +134,25 @@
         {
           "type": "minecraft:item",
           "name": "hbmsntm:gem_alexandrite"
+        },
+        {
+          "type": "minecraft:item",
+          "functions": [
+            {
+              "components": {
+                "hbmsntm:meta": 1
+              },
+              "function": "minecraft:set_components"
+            }
+          ],
+          "name": "hbmsntm:blueprint_folder"
         }
       ],
-      "rolls": 1.0
+      "rolls": {
+        "type": "minecraft:uniform",
+        "max": 3.0,
+        "min": 1.0
+      }
     }
   ],
   "random_sequence": "hbmsntm:blocks/block_meteor_treasure"

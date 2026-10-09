@@ -113,7 +113,13 @@ public class Goal11BRecipeRegression {
         List<String> goal11c = List.of("ass.chemplant");
         // Goal 12B (migration/GOAL12B.md): exactly ass.crackingtower follows ass.chemplant; one added check below.
         List<String> goal12b = List.of("ass.crackingtower");
-        check(liveNames.size() == baseNames.size() + 1 + goal11c.size() + goal12b.size() && liveNames.get(baseNames.size()).equals("ass.tank"),
+        // Goal 13A (migration/GOAL13A.md A4): exactly ass.analogAlt, ass.factorioChip and ass.atomicClockAlt (the pool alt..circuit) follow
+        // ass.crackingtower; one added check below (verify_goal13a.py checks their content).
+        List<String> goal13a = List.of("ass.analogAlt", "ass.factorioChip", "ass.atomicClockAlt");
+        // Goal 13B (migration/GOAL13B.md B4): ass.chip follows ass.crackingtower and comes in front of the Goal 13A entries, ass.arcfurnace comes last;
+        // one added check below (verify_goal13b.py checks their content).
+        List<String> goal13b = List.of("ass.chip", "ass.arcfurnace");
+        check(liveNames.size() == baseNames.size() + 1 + goal11c.size() + goal12b.size() + goal13a.size() + goal13b.size() && liveNames.get(baseNames.size()).equals("ass.tank"),
                 "exactly one recipe is added, at the end before the Goal 11C entry (" + baseNames.size() + " -> " + liveNames.size() + ", "
                         + liveNames.subList(Math.min(baseNames.size(), liveNames.size()), liveNames.size()) + ")");
         JsonObject chemplant = new JsonObject();
@@ -136,7 +142,7 @@ public class Goal11BRecipeRegression {
         chemplant.add("outputItem", chemOut);
         chemplant.addProperty("duration", 200);
         chemplant.addProperty("power", 100);
-        check(liveNames.subList(Math.min(baseNames.size() + 1, liveNames.size()), Math.max(liveNames.size() - goal12b.size(), 0)).equals(goal11c)
+        check(liveNames.subList(Math.min(baseNames.size() + 1, liveNames.size()), Math.max(liveNames.size() - goal13a.size() - goal13b.size() - goal12b.size(), 0)).equals(goal11c)
                         && chemplant.equals(live.get("ass.chemplant")),
                 "Goal 11C entries are exactly these, after ass.tank: " + goal11c + " = ass.chemplant 200 ticks, 100 HE/t, 8 steel ingots, 2 copper pipes, "
                         + "16 polymer plates, 2 motors, 2 tungsten coils, 1 analog circuit board -> 1 chemical plant (original "
@@ -159,10 +165,15 @@ public class Goal11BRecipeRegression {
         cracker.add("outputItem", crackOut);
         cracker.addProperty("duration", 200);
         cracker.addProperty("power", 100);
-        check(liveNames.subList(Math.max(liveNames.size() - goal12b.size(), 0), liveNames.size()).equals(goal12b) && cracker.equals(live.get("ass.crackingtower")),
+        check(liveNames.subList(Math.max(liveNames.size() - goal13a.size() - goal13b.size() - goal12b.size(), 0), Math.max(liveNames.size() - goal13a.size() - goal13b.size(), 0)).equals(goal12b) && cracker.equals(live.get("ass.crackingtower")),
                 "Goal 12B entries are exactly these, after ass.chemplant: " + goal12b + " = ass.crackingtower 200 ticks, 100 HE/t, 16 steel scaffolds, "
                         + "6 steel shells, 12 desh ingots, 4 niobium ingots -> 1 catalytic cracking tower (original AssemblyMachineRecipes.java:316-317): "
                         + live.get("ass.crackingtower"));
+        check(liveNames.subList(Math.max(liveNames.size() - goal13a.size() - 1, 0), Math.max(liveNames.size() - 1, 0)).equals(goal13a)
+                        && goal13a.stream().allMatch(n -> { GenericRecipe r = AssemblyMachineRecipes.INSTANCE.recipeNameMap.get(n); return r != null && r.isPooled() && r.getPools().length == 1 && r.getPools()[0].equals("alt..circuit") && r.customLocalization; }),
+                "Goal 13A entries are exactly these, after ass.crackingtower: " + goal13a + ", each named and in the pool alt..circuit (migration/GOAL13A.md A4)");
+        check(liveNames.get(liveNames.size() - goal13a.size() - 2).equals("ass.chip") && liveNames.get(liveNames.size() - 1).equals("ass.arcfurnace"),
+                "Goal 13B entries are exactly these: " + goal13b + ", ass.chip directly after ass.crackingtower and in front of the Goal 13A entries, ass.arcfurnace last (migration/GOAL13B.md B4)");
         check(liveNames.subList(0, baseNames.size()).equals(baseNames), "every post-Goal 11A recipe keeps its name and order");
         List<String> changed = new ArrayList<>();
         for(String name : baseNames) if(!live.get(name).equals(base.get(name))) changed.add(name);

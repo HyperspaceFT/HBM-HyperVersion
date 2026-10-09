@@ -20,6 +20,8 @@ import java.util.List;
  * (goal11c.base.ShredderRecipes, the base-g11b copy compiled in the same world).
  * Goal 12B adds the coltan fragment and block entries; the table comparison takes exactly those out (one added check
  * requires them).
+ * Goal 13A adds the four concrete chain entries (concrete and smooth concrete to gravel, the limestone block to limestone powder, the
+ * slag block to cement powder); the table comparison takes exactly those out as well (one added check requires them).
  */
 public class Goal11CShredderRegression {
     private static int checks;
@@ -98,8 +100,20 @@ public class Goal11CShredderRegression {
         check(coltan.size() == 2 && coltan.stream().anyMatch(e -> e.startsWith("hbmsntm:block_coltan:") && e.contains(" -> hbmsntm:powder_coltan_ore x9:"))
                         && coltan.stream().anyMatch(e -> e.startsWith("hbmsntm:fragment_coltan:") && e.contains(" -> hbmsntm:powder_coltan_ore x1:")),
                 "Goal 12B: exactly the block_coltan (9) and fragment_coltan (1) entries are added, to crushed coltan ore: " + coltan);
+        // Goal 13A (migration/GOAL13A.md A13) adds the concrete chain entries; they are taken out here and the added check below requires
+        // exactly these four (verify_goal13a.py section 8s checks them in detail).
+        List<String> concreteChain = new ArrayList<>();
+        for(String e : live) if(e.startsWith("hbmsntm:concrete:") || e.startsWith("hbmsntm:concrete_smooth:") || e.startsWith("hbmsntm:resource_limestone:")
+                || e.startsWith("hbmsntm:block_slag:")) concreteChain.add(e);
+        live.removeAll(concreteChain);
+        check(concreteChain.size() == 4 && concreteChain.stream().anyMatch(e -> e.startsWith("hbmsntm:concrete:") && e.contains(" -> minecraft:gravel x1:"))
+                        && concreteChain.stream().anyMatch(e -> e.startsWith("hbmsntm:concrete_smooth:") && e.contains(" -> minecraft:gravel x1:"))
+                        && concreteChain.stream().anyMatch(e -> e.startsWith("hbmsntm:resource_limestone:") && e.contains(" -> hbmsntm:powder_limestone x4:"))
+                        && concreteChain.stream().anyMatch(e -> e.startsWith("hbmsntm:block_slag:") && e.contains(" -> hbmsntm:powder_cement x4:")),
+                "Goal 13A: exactly the concrete (1 gravel), concrete_smooth (1 gravel), resource_limestone (4 limestone powder) and block_slag (4 cement powder) entries are added: "
+                        + concreteChain);
         check(live.equals(expected), "the default table is the post-Goal 11B table (" + base.size() + " entries) with exactly the chunk entry "
-                + "inserted after ore_rare_deepslate (" + live.size() + " entries without the Goal 12B entries); first difference at "
+                + "inserted after ore_rare_deepslate (" + live.size() + " entries without the Goal 12B and 13A entries); first difference at "
                 + firstDifference(live, expected));
 
         // The production loader: a custom hbmShredder.json entry for the chunk wins over the default (registerIfAbsent).

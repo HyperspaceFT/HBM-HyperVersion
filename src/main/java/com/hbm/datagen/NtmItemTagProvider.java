@@ -36,6 +36,7 @@ public class NtmItemTagProvider extends ItemTagsProvider {
     private static final TagKey<Item> INGOTS_PLASTIC = ItemTags.create(ResourceLocation.fromNamespaceAndPath("ntm", "ingots_plastic"));
     private static final TagKey<Item> ANY_RUBBERS = ItemTags.create(ResourceLocation.fromNamespaceAndPath("ntm", "any_rubbers"));
     private static final TagKey<Item> ANY_TARS = ItemTags.create(ResourceLocation.fromNamespaceAndPath("ntm", "any_tars"));
+    private static final TagKey<Item> ANY_CONCRETE = ItemTags.create(ResourceLocation.fromNamespaceAndPath("ntm", "any_concrete"));
 
     public NtmItemTagProvider(PackOutput output, CompletableFuture<HolderLookup.Provider> provider, CompletableFuture<TagLookup<Block>> blockTags, ExistingFileHelper helper) {
         super(output, provider, blockTags, NuclearTechMod.MODID, helper);
@@ -241,6 +242,15 @@ public class NtmItemTagProvider extends ItemTagsProvider {
                 NtmItems.OIL_TAR_WOOD.get(),
                 NtmItems.OIL_TAR_COAL.get()
                 );
+
+        // The original's ANY_CONCRETE (OreDictManager.java:321, 501-503); the coloured concretes are not in NEO.
+        this.tag(ANY_CONCRETE).add(
+                NtmBlocks.CONCRETE.asItem(),
+                NtmBlocks.CONCRETE_SMOOTH.asItem(),
+                NtmBlocks.CONCRETE_ASBESTOS.asItem(),
+                NtmBlocks.DUCRETE.asItem(),
+                NtmBlocks.DUCRETE_SMOOTH.asItem()
+        );
 
     }
 }

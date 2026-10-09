@@ -28,6 +28,7 @@ import zipfile
 from goal11d_regression.stubs import SERIALIZABLE, GENERIC_RECIPES, GENERIC_RECIPE, TABLES, recipe_stubs as goal11d_recipe_stubs
 from goal12a_regression.stubs import GOAL12A_SOURCES, build_stubs
 from goal12a_regression.anvil_block import without_goal12a
+from goal13a_regression.anvil_block import stripped_sources, without_goal13a
 from verify_goal10c import Sections, jdk
 from verify_goal11c import PRODUCTION as GOAL11C_PRODUCTION
 from verify_goal3c_recipes import GSON
@@ -99,7 +100,9 @@ def method(text, signature):
 # ---- Python section 1t: the anvil source ---------------------------------------------------------------------------------
 
 def anvil_source(check):
-    live = (SOURCE / ANVIL).read_text(encoding="utf-8").replace("\r\n", "\n")
+    # Goal 13A appends its anvil block after the Goal 12A one: the comparison is about the source as Goal 12A left it.
+    live, found_13a = without_goal13a((SOURCE / ANVIL).read_text(encoding="utf-8").replace("\r\n", "\n"))
+    check(found_13a, "the Goal 13A block (goal13a_regression/anvil_block.py) follows the Goal 12A entries exactly once, at the end of registerConstruction")
     base = subprocess.run(["git", "-C", str(ROOT), "show", f"{BASELINE_COMMIT}:src/main/java/{ANVIL}"], capture_output=True, check=True).stdout.decode("utf-8").replace("\r\n", "\n")
     reverted, found = without_goal12a(live)
     check(found, "the Goal 12A block (goal12a_regression/anvil_block.py) follows the Goal 11A entries exactly once, at the end of registerConstruction, "
@@ -252,7 +255,7 @@ def main():
     refuse_shadowing(stubs, PRODUCTION, "machine")
     stubs["goal12a/head/AnvilRecipes.java"] = head_anvil
     machine = run_dir / "machine"
-    sources, classes = write_sources(machine, stubs, [SOURCE / p for p in PRODUCTION] + [FIXTURE11A / p for p in FIXTURES11A] + [FIXTURE / p for p in FIXTURES])
+    sources, classes = write_sources(machine, stubs, stripped_sources([SOURCE / p for p in PRODUCTION], machine) + [FIXTURE11A / p for p in FIXTURES11A] + [FIXTURE / p for p in FIXTURES])  # Goal 13A: without its anvil block
     members = read_json(PLASTIC_TAG)["values"]
     with log.open("a", encoding="utf-8") as stream:
         stream.write(f"jdk: {java_bin}\nsource: {SOURCE}\nanvil baseline: git {BASELINE_COMMIT}:src/main/java/{ANVIL} as goal12a.head.AnvilRecipes\n"

@@ -18,6 +18,8 @@ public class NtmDataComponents {
     // Coltan compass target, the original colX / colZ tag; block coordinates, may be negative
     public static final DeferredHolder<DataComponentType<?>, DataComponentType<Integer>> COLTAN_X = DATA_COMPONENT_TYPES.register("coltan_x", () -> DataComponentType.<Integer>builder().persistent(Codec.INT).networkSynchronized(ByteBufCodecs.INT).build());
     public static final DeferredHolder<DataComponentType<?>, DataComponentType<Integer>> COLTAN_Z = DATA_COMPONENT_TYPES.register("coltan_z", () -> DataComponentType.<Integer>builder().persistent(Codec.INT).networkSynchronized(ByteBufCodecs.INT).build());
+    // Arc furnace electrode wear, the original ItemArcElectrode "durability" tag; uses so far, absent means unused
+    public static final DeferredHolder<DataComponentType<?>, DataComponentType<Integer>> ARC_ELECTRODE_DURABILITY = DATA_COMPONENT_TYPES.register("arc_electrode_durability", () -> DataComponentType.<Integer>builder().persistent(Codec.INT).networkSynchronized(ByteBufCodecs.INT).build());
 
     public static void register(IEventBus eventBus) { DATA_COMPONENT_TYPES.register(eventBus); }
 }

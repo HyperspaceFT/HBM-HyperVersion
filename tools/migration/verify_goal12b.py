@@ -202,6 +202,10 @@ def registration(check):
     start = text.index("public static void registerAllHandlers() {")
     body = text[start:text.index("}", start)]
     adds = re.findall(r"recipeHandlers\.add\((.*?)\);", body)
+    # Goal 13B registers ArcFurnaceRecipes directly after CrackingRecipes; one added check requires that and the comparisons below skip it.
+    check(adds.count("new ArcFurnaceRecipes()") == 1 and adds.index("new ArcFurnaceRecipes()") == adds.index("new CrackingRecipes()") + 1,
+          f"Goal 13B: registerAllHandlers adds one ArcFurnaceRecipes directly after CrackingRecipes: {adds}")
+    adds = [a for a in adds if a != "new ArcFurnaceRecipes()"]
     check(adds.count("new CrackingRecipes()") == 1, f"registerAllHandlers adds one CrackingRecipes: {adds}")
     i = adds.index("new CrackingRecipes()")
     check(adds[i - 1] == "new CentrifugeRecipes()" and adds[i + 1] == "AssemblyMachineRecipes.INSTANCE" and all(not a.endswith(".INSTANCE") for a in adds[:i]),

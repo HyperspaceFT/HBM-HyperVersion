@@ -15,6 +15,7 @@ from pathlib import Path
 from goal10c_regression.anvil_block import without_goal10c
 from goal11a_regression.anvil_block import without_goal11a
 from goal12a_regression.anvil_block import without_goal12a
+from goal13a_regression.anvil_block import without_goal13a
 
 ROOT = Path(__file__).resolve().parents[2]
 ORIGINAL = ROOT.parent / "Hbm-s-Nuclear-Tech-GIT/src/main/java/com/hbm"
@@ -112,6 +113,10 @@ def anvil():
     head = git_show(f"{BASELINE_COMMIT}:src/main/java/com/hbm/inventory/recipes/anvil/AnvilRecipes.java").decode("utf-8").replace("\r\n", "\n")
     # Goal 12A (migration/GOAL12A.md) appends its block after the Goal 11A fluid burner entries and imports WireDenseItem;
     # both must occur exactly once where Goal 12A put them and are removed first (goal12a_regression/anvil_block.py).
+    # Goal 13A (migration/GOAL13A.md) appends its electric heater and heat exchanging heater entries after the Goal 12A desh motor entry; the
+    # block must occur exactly once there and is removed before the Goal 12A block is looked for (goal13a_regression/anvil_block.py).
+    source, goal13a_found = without_goal13a(source)
+    check(goal13a_found, "the Goal 13A block follows the Goal 12A block exactly once, at the end of registerConstruction")
     source, goal12a_found = without_goal12a(source)
     check(goal12a_found, "the Goal 12A block follows the Goal 11A block exactly once, at the end of registerConstruction, with its one import")
     # Goal 11A (migration/GOAL11A.md) appends the fluid burner block after the Goal 10C block; it must occur exactly once,

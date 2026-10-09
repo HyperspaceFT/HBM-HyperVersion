@@ -1,0 +1,32 @@
+{
+  "parent": "minecraft:recipes/root",
+  "criteria": {
+    "has_concrete": {
+      "conditions": {
+        "items": [
+          {
+            "items": "hbmsntm:concrete"
+          }
+        ]
+      },
+      "trigger": "minecraft:inventory_changed"
+    },
+    "has_the_recipe": {
+      "conditions": {
+        "recipe": "hbmsntm:brick_concrete_from_concrete"
+      },
+      "trigger": "minecraft:recipe_unlocked"
+    }
+  },
+  "requirements": [
+    [
+      "has_the_recipe",
+      "has_concrete"
+    ]
+  ],
+  "rewards": {
+    "recipes": [
+      "hbmsntm:brick_concrete_from_concrete"
+    ]
+  }
+}

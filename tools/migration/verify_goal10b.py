@@ -21,6 +21,7 @@ import sys
 import uuid
 
 from goal10b_regression.stubs import ANVIL, ARC_WELDER, SOLDERING, build_anvil_stubs, build_machine_stubs
+from goal13a_regression.anvil_block import stripped_sources
 from verify_goal9b import PRODUCTION as GOAL9B_PRODUCTION
 
 
@@ -296,7 +297,9 @@ def main():
             path.parent.mkdir(parents=True, exist_ok=True)
             path.write_text(content, encoding="utf-8")
             paths.append(str(path))
-        paths.extend(str(SOURCE / source) for source in production)
+        # Goal 13A appends four anvil entries after the last entry of the goals before it; this suite compiles the live AnvilRecipes without that
+        # block (goal13a_regression/anvil_block.py), so every assertion about the entries and counts of its own goals stays as it was.
+        paths.extend(str(p) for p in stripped_sources([SOURCE / source for source in production], run_dir / f"{name}-stripped"))
         paths.extend(str(FIXTURE / fixture) for fixture in fixtures)
         with log.open("a", encoding="utf-8") as stream:
             stream.write(f"jdk: {java}\nsource: {SOURCE}\n{name} baselines: git {BASELINE_COMMIT} {sorted(heads)} as goal10b.head\n"

@@ -29,6 +29,7 @@ import uuid
 
 from goal11b_regression.stubs import GOAL11B_SOURCES
 from goal11c_regression.stubs import GOAL11C_SOURCES, build_stubs, recipe_stubs, shredder_stubs
+from goal13a_regression.anvil_block import stripped_sources
 from verify_goal10c import Sections, jdk
 from verify_goal11a import PRODUCTION as GOAL11A_PRODUCTION
 from verify_goal3c_recipes import GSON, PRODUCTION as RECIPE_PRODUCTION
@@ -213,7 +214,7 @@ def main():
     stubs = build_stubs(SOURCE, [(FIXTURE / p).read_text(encoding="utf-8") for p in FIXTURES], vanilla_tags, NEOFORGE_SOURCES)
     refuse_shadowing(stubs, PRODUCTION, "machine")
     machine = run_dir / "machine"
-    sources, classes = write_sources(machine, stubs, [SOURCE / p for p in PRODUCTION] + [FIXTURE11A / p for p in FIXTURES11A] + [FIXTURE / p for p in FIXTURES])
+    sources, classes = write_sources(machine, stubs, stripped_sources([SOURCE / p for p in PRODUCTION], machine) + [FIXTURE11A / p for p in FIXTURES11A] + [FIXTURE / p for p in FIXTURES])  # Goal 13A: without its anvil block
     run("Compile the Goal 11C machine world", [str(javac), "-J-Duser.language=en", "-encoding", "UTF-8", "-nowarn",
                                                "-d", str(classes), f"@{sources}"])
     run("Run Goal 11C machine world (sections 2, 3, 4m, 6)",

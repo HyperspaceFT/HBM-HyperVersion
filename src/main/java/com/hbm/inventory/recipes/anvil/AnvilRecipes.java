@@ -539,6 +539,50 @@ public class AnvilRecipes {
                 new AnvilOutput(new ItemStack(NtmItems.MOTOR_DESH.get(), 1))
         ).setTier(3).setOverlay(OverlayType.CONSTRUCTION));
 
+        // Electric heater, original AnvilRecipes.java:291-298: one entry per copper ingot item; STEEL.plate() is the plate tag.
+        CONSTRUCTION_RECIPES.add(new AnvilConstructionRecipe(
+                new AStack[] {
+                        new RecipesCommon.TagStack(ItemTags.create(ResourceLocation.fromNamespaceAndPath("ntm", "ingots_plastic")), 4),
+                        new ComparableStack(Items.COPPER_INGOT, 8),
+                        new RecipesCommon.TagStack(NtmTags.Items.PLATES_STEEL, 8),
+                        new ComparableStack(NtmItems.COIL_TUNGSTEN.get(), 8),
+                        new ComparableStack(NtmItems.CIRCUIT_INTEGRATED_BOARD.get(), 1)
+                },
+                new AnvilOutput(new ItemStack(NtmBlocks.HEATER_ELECTRIC.asItem()))
+        ).setTier(3).setOverlay(OverlayType.CONSTRUCTION));
+
+        CONSTRUCTION_RECIPES.add(new AnvilConstructionRecipe(
+                new AStack[] {
+                        new RecipesCommon.TagStack(ItemTags.create(ResourceLocation.fromNamespaceAndPath("ntm", "ingots_plastic")), 4),
+                        new ComparableStack(NtmItems.INGOT_COPPER.get(), 8),
+                        new RecipesCommon.TagStack(NtmTags.Items.PLATES_STEEL, 8),
+                        new ComparableStack(NtmItems.COIL_TUNGSTEN.get(), 8),
+                        new ComparableStack(NtmItems.CIRCUIT_INTEGRATED_BOARD.get(), 1)
+                },
+                new AnvilOutput(new ItemStack(NtmBlocks.HEATER_ELECTRIC.asItem()))
+        ).setTier(3).setOverlay(OverlayType.CONSTRUCTION));
+
+        // Heat exchanging heater, original AnvilRecipes.java:300-306. RUBBER.ingot() excludes biorubber, so the exact ingot is used, not ntm:any_rubbers.
+        CONSTRUCTION_RECIPES.add(new AnvilConstructionRecipe(
+                new AStack[] {
+                        new ComparableStack(NtmItems.INGOT_RUBBER.get(), 4),
+                        new ComparableStack(Items.COPPER_INGOT, 16),
+                        new RecipesCommon.TagStack(NtmTags.Items.PLATES_STEEL, 16),
+                        new ComparableStack(NtmItems.PIPE_STEEL.get(), 3)
+                },
+                new AnvilOutput(new ItemStack(NtmBlocks.HEATER_HEATEX.asItem()))
+        ).setTier(3).setOverlay(OverlayType.CONSTRUCTION));
+
+        CONSTRUCTION_RECIPES.add(new AnvilConstructionRecipe(
+                new AStack[] {
+                        new ComparableStack(NtmItems.INGOT_RUBBER.get(), 4),
+                        new ComparableStack(NtmItems.INGOT_COPPER.get(), 16),
+                        new RecipesCommon.TagStack(NtmTags.Items.PLATES_STEEL, 16),
+                        new ComparableStack(NtmItems.PIPE_STEEL.get(), 3)
+                },
+                new AnvilOutput(new ItemStack(NtmBlocks.HEATER_HEATEX.asItem()))
+        ).setTier(3).setOverlay(OverlayType.CONSTRUCTION));
+
     }
 
     private static void addAnvilRecipe(ItemLike input, int inputCount, ItemLike output, int outputCount, int tier) {

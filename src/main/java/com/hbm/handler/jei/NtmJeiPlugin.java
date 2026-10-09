@@ -13,6 +13,7 @@ import com.hbm.inventory.fluid.FluidType;
 import com.hbm.inventory.fluid.Fluids;
 import com.hbm.inventory.recipes.loader.GenericRecipe;
 import com.hbm.inventory.recipes.AssemblyMachineRecipes;
+import com.hbm.inventory.recipes.ArcFurnaceRecipes;
 import com.hbm.inventory.recipes.ArcWelderRecipes;
 import com.hbm.inventory.recipes.BlastFurnaceRecipes;
 import com.hbm.inventory.recipes.ChemicalPlantRecipes;
@@ -27,6 +28,7 @@ import com.hbm.inventory.screens.AnvilMenuScreen;
 import com.hbm.inventory.screens.MachineFurnaceCombinationScreen;
 import com.hbm.inventory.screens.MachineAssemblyMachineScreen;
 import com.hbm.inventory.screens.MachineCrucibleScreen;
+import com.hbm.inventory.screens.MachineArcFurnaceScreen;
 import com.hbm.inventory.screens.MachineArcWelderScreen;
 import com.hbm.inventory.screens.MachineSolderingStationScreen;
 import com.hbm.items.NtmItems;
@@ -62,6 +64,7 @@ public class NtmJeiPlugin implements IModPlugin {
                 new AnvilRecipeHandler(guiHelper),
                 new SolderingStationRecipeHandler(guiHelper),
                 new ArcWelderRecipeHandler(guiHelper),
+                new ArcFurnaceRecipeHandler(guiHelper),
                 new AssemblyMachineRecipeHandler(guiHelper),
                 new BlastFurnaceRecipeHandler(guiHelper),
                 new CentrifugeRecipeHandler(guiHelper),
@@ -84,6 +87,7 @@ public class NtmJeiPlugin implements IModPlugin {
         registration.addRecipes(AnvilRecipeHandler.RECIPE_TYPE, AnvilRecipes.getSmithing());
         registration.addRecipes(SolderingStationRecipeHandler.RECIPE_TYPE, SolderingRecipes.recipes);
         registration.addRecipes(ArcWelderRecipeHandler.RECIPE_TYPE, ArcWelderRecipes.recipes);
+        registration.addRecipes(ArcFurnaceRecipeHandler.RECIPE_TYPE, ArcFurnaceRecipes.recipes);
         registration.addRecipes(AssemblyMachineRecipeHandler.RECIPE_TYPE, AssemblyMachineRecipes.INSTANCE.recipeOrderedList);
         registration.addRecipes(BlastFurnaceRecipeHandler.RECIPE_TYPE, BlastFurnaceRecipes.INSTANCE.recipeOrderedList);
         registration.addRecipes(CentrifugeRecipeHandler.RECIPE_TYPE, CentrifugeRecipes.getJeiRecipes());
@@ -119,6 +123,10 @@ public class NtmJeiPlugin implements IModPlugin {
         registration.addRecipeCatalyst(
                 NtmBlocks.MACHINE_ARC_WELDER.asItem(),
                 ArcWelderRecipeHandler.RECIPE_TYPE
+        );
+        registration.addRecipeCatalyst(
+                NtmBlocks.MACHINE_ARC_FURNACE.asItem(),
+                ArcFurnaceRecipeHandler.RECIPE_TYPE
         );
         registration.addRecipeCatalyst(
                 NtmBlocks.MACHINE_ASSEMBLY_MACHINE.asItem(),
@@ -195,6 +203,7 @@ public class NtmJeiPlugin implements IModPlugin {
         registration.addRecipeClickArea(AnvilMenuScreen.class, 12, 50, 36, 16, AnvilConstructionRecipeHandler.RECIPE_TYPE);
         registration.addRecipeClickArea(MachineSolderingStationScreen.class, 72, 29, 32, 13, SolderingStationRecipeHandler.RECIPE_TYPE);
         registration.addRecipeClickArea(MachineArcWelderScreen.class, 72, 36, 32, 13, ArcWelderRecipeHandler.RECIPE_TYPE);
+        registration.addRecipeClickArea(MachineArcFurnaceScreen.class, MachineArcFurnaceScreen.PROGRESS_X, MachineArcFurnaceScreen.PROGRESS_Y, MachineArcFurnaceScreen.PROGRESS_WIDTH, MachineArcFurnaceScreen.PROGRESS_HEIGHT, ArcFurnaceRecipeHandler.RECIPE_TYPE);
         registration.addRecipeClickArea(MachineFurnaceCombinationScreen.class, 54, 61, 18, 18, FurnaceCombinationRecipeHandler.RECIPE_TYPE);
         registration.addRecipeClickArea(com.hbm.inventory.screens.MachinePressScreen.class, 79, 35, 18, 18, PressRecipeHandler.RECIPE_TYPE);
         registration.addRecipeClickArea(com.hbm.inventory.screens.MachineElectricFurnaceScreen.class, 43, 36, 28, 12, mezz.jei.api.constants.RecipeTypes.SMELTING);

@@ -278,6 +278,9 @@ public class NtmSoundDefinitionsProvider extends SoundDefinitionsProvider {
                         sound("hbmsntm:block/boilergroan2")
                 )
         );
+        this.add(NtmSoundEvents.ELECTRIC_HUM_LOOP, SoundDefinition.definition()
+                .with(sound("hbmsntm:block/electric_hum"))
+        );
         this.add(NtmSoundEvents.TURBINE_LEVI_LOOP, SoundDefinition.definition()
                 .with(sound(NuclearTechMod.withDefaultNamespace("block/chungus_turbine")))
         );

@@ -1224,6 +1224,35 @@ public class NtmRecipeProvider extends RecipeProvider {
                 .unlockedBy("has_crafting_table", has(Items.CRAFTING_TABLE))
                 .save(recipeOutput, ResourceLocation.fromNamespaceAndPath("hbmsntm", "83"));
 
+        // Concrete chain, original PowderRecipes.java:36 and CraftingManager.java:362-365.
+        ShapelessRecipeBuilder.shapeless(RecipeCategory.MISC, NtmItems.POWDER_CEMENT.get(), 4)
+                .requires(NtmItems.POWDER_LIMESTONE.get())
+                .requires(Items.CLAY_BALL, 3)
+                .unlockedBy("has_clay_ball", has(Items.CLAY_BALL))
+                .save(recipeOutput, ResourceLocation.fromNamespaceAndPath("hbmsntm", "cement_from_limestone_powder"));
+        ShapedRecipeBuilder.shaped(RecipeCategory.BUILDING_BLOCKS, NtmBlocks.CONCRETE.get(), 4)
+                .pattern("CC")
+                .pattern("CC")
+                .define('C', NtmBlocks.CONCRETE_SMOOTH.get())
+                .unlockedBy("has_concrete_smooth", has(NtmBlocks.CONCRETE_SMOOTH))
+                .save(recipeOutput);
+        ShapedRecipeBuilder.shaped(RecipeCategory.BUILDING_BLOCKS, NtmBlocks.BRICK_CONCRETE.get(), 4)
+                .pattern(" C ")
+                .pattern("CBC")
+                .pattern(" C ")
+                .define('C', NtmBlocks.CONCRETE_SMOOTH.get())
+                .define('B', Items.CLAY_BALL)
+                .unlockedBy("has_concrete_smooth", has(NtmBlocks.CONCRETE_SMOOTH))
+                .save(recipeOutput, ResourceLocation.fromNamespaceAndPath("hbmsntm", "brick_concrete_from_concrete_smooth"));
+        ShapedRecipeBuilder.shaped(RecipeCategory.BUILDING_BLOCKS, NtmBlocks.BRICK_CONCRETE.get(), 4)
+                .pattern(" C ")
+                .pattern("CBC")
+                .pattern(" C ")
+                .define('C', NtmBlocks.CONCRETE.get())
+                .define('B', Items.CLAY_BALL)
+                .unlockedBy("has_concrete", has(NtmBlocks.CONCRETE))
+                .save(recipeOutput, ResourceLocation.fromNamespaceAndPath("hbmsntm", "brick_concrete_from_concrete"));
+
         //
         ShapedRecipeBuilder.shaped(RecipeCategory.BUILDING_BLOCKS, NtmBlocks.BRICK_CONCRETE_MOSSY.get(), 8)
                 .pattern("BBB")
@@ -1513,6 +1542,26 @@ public class NtmRecipeProvider extends RecipeProvider {
         registerPowderSmeltingRecipes(recipeOutput);
         registerTinyPowderRecipes(recipeOutput);
         registerCrystalSmeltingRecipes(recipeOutput);
+        registerBurntElectrodeSmeltingRecipes(recipeOutput);
+    }
+
+    // Original SmeltingRecipes.java:112-115: burnt arc electrodes smelt back into their ingot, 3.0 experience.
+    private void registerBurntElectrodeSmeltingRecipes(RecipeOutput recipeOutput) {
+        addBurntElectrodeSmelting(recipeOutput, NtmItems.ARC_ELECTRODE_GRAPHITE_BURNT.get(), NtmItems.INGOT_GRAPHITE.get());
+        addBurntElectrodeSmelting(recipeOutput, NtmItems.ARC_ELECTRODE_LANTHANIUM_BURNT.get(), NtmItems.INGOT_LANTHANIUM.get());
+        addBurntElectrodeSmelting(recipeOutput, NtmItems.ARC_ELECTRODE_DESH_BURNT.get(), NtmItems.INGOT_DESH.get());
+        addBurntElectrodeSmelting(recipeOutput, NtmItems.ARC_ELECTRODE_SATURNITE_BURNT.get(), NtmItems.INGOT_SATURNITE.get());
+    }
+
+    private void addBurntElectrodeSmelting(RecipeOutput recipeOutput, ItemLike inputItem, ItemLike outputItem) {
+        Item input = inputItem.asItem();
+        Item output = outputItem.asItem();
+        String inputName = BuiltInRegistries.ITEM.getKey(input).getPath();
+        String outputName = BuiltInRegistries.ITEM.getKey(output).getPath();
+
+        SimpleCookingRecipeBuilder.smelting(Ingredient.of(input), RecipeCategory.MISC, output, 3.0F, 200)
+                .unlockedBy("has_" + inputName, has(input))
+                .save(recipeOutput, ResourceLocation.fromNamespaceAndPath("hbmsntm", inputName + "_to_" + outputName));
     }
 
     private void registerMaterialBlockRecipes(RecipeOutput recipeOutput) {
@@ -1617,6 +1666,7 @@ public class NtmRecipeProvider extends RecipeProvider {
         addBilletRecipe(recipeOutput, NtmItems.BILLET_URANIUM.get(), NtmItems.NUGGET_URANIUM.get(), NtmItems.INGOT_URANIUM.get());
         addBilletRecipe(recipeOutput, NtmItems.BILLET_URANIUM_FUEL.get(), NtmItems.NUGGET_URANIUM_FUEL.get(), NtmItems.INGOT_URANIUM_FUEL.get());
         addBilletRecipe(recipeOutput, NtmItems.BILLET_ZIRCONIUM.get(), NtmItems.NUGGET_ZIRCONIUM.get(), NtmItems.INGOT_ZIRCONIUM.get());
+        addBilletRecipe(recipeOutput, NtmItems.BILLET_SILICON.get(), NtmItems.NUGGET_SILICON.get(), NtmItems.INGOT_SILICON.get());
     }
 
     private void registerPowderSmeltingRecipes(RecipeOutput recipeOutput) {
