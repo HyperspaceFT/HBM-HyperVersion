@@ -96,6 +96,16 @@ public class NtmRecipeProvider extends RecipeProvider {
                 .define('P', NtmItems.INGOT_STEEL.get())
                 .unlockedBy("has_steel_plate", has(NtmItems.PLATE_STEEL.get()))
                 .save(recipeOutput, ResourceLocation.fromNamespaceAndPath("hbmsntm", "barrel_steel"));
+        // Original CraftingManager empty-canister pattern, normal recipe output.
+        ShapedRecipeBuilder.shaped(RecipeCategory.MISC, NtmItems.CANISTER_EMPTY.get(), 2)
+                .pattern("S ")
+                .pattern("AA")
+                .pattern("AA")
+                .define('S', NtmTags.Items.PLATES_STEEL)
+                .define('A', NtmItems.PLATE_ALUMINIUM.get())
+                .unlockedBy("has_steel_plate", has(NtmTags.Items.PLATES_STEEL))
+                .save(recipeOutput, ResourceLocation.fromNamespaceAndPath("hbmsntm", "canister_empty"));
+
         ShapedRecipeBuilder.shaped(RecipeCategory.MISC, NtmBlocks.BARREL_PLASTIC.get(), 1)
                 .pattern("IPI")
                 .pattern("I I")
@@ -1028,6 +1038,46 @@ public class NtmRecipeProvider extends RecipeProvider {
                 .define('S', NtmItems.INGOT_STEEL.get())
                 .unlockedBy("has_steel_ingot", has(NtmItems.INGOT_STEEL.get()))
                 .save(recipeOutput, ResourceLocation.fromNamespaceAndPath("hbmsntm", "steel_scaffold"));
+
+        // Original CraftingManager: ordinary steel structures and fraction tower prerequisites.
+        ShapedRecipeBuilder.shaped(RecipeCategory.BUILDING_BLOCKS, NtmBlocks.STEEL_BEAM.get(), 8)
+                .pattern("S").pattern("S").pattern("S")
+                .define('S', NtmItems.INGOT_STEEL.get())
+                .unlockedBy("has_steel_ingot", has(NtmItems.INGOT_STEEL.get()))
+                .save(recipeOutput, ResourceLocation.fromNamespaceAndPath("hbmsntm", "steel_beam"));
+        ShapedRecipeBuilder.shaped(RecipeCategory.BUILDING_BLOCKS, NtmBlocks.STEEL_BEAM.get(), 8)
+                .pattern("S").pattern("S").pattern("S")
+                .define('S', NtmBlocks.STEEL_SCAFFOLD.get())
+                .unlockedBy("has_steel_scaffold", has(NtmBlocks.STEEL_SCAFFOLD.get()))
+                .save(recipeOutput, ResourceLocation.fromNamespaceAndPath("hbmsntm", "steel_beam_from_scaffold"));
+        ShapedRecipeBuilder.shaped(RecipeCategory.BUILDING_BLOCKS, NtmBlocks.STEEL_GRATE.get(), 4)
+                .pattern("SS").pattern("SS")
+                .define('S', NtmBlocks.STEEL_BEAM.get())
+                .unlockedBy("has_steel_beam", has(NtmBlocks.STEEL_BEAM.get()))
+                .save(recipeOutput, ResourceLocation.fromNamespaceAndPath("hbmsntm", "steel_grate"));
+        ShapedRecipeBuilder.shaped(RecipeCategory.MISC, NtmBlocks.MACHINE_FRACTION_TOWER.get())
+                .pattern("H").pattern("G").pattern("H")
+                .define('H', DataComponentIngredient.of(false, NtmDataComponents.META, CastPlateItem.Type.STEEL.ordinal(), NtmItems.CAST_PLATE_WELDED.get()))
+                .define('G', NtmBlocks.STEEL_GRATE.get())
+                .unlockedBy("has_welded_plate", has(NtmItems.CAST_PLATE_WELDED.get()))
+                .save(recipeOutput, ResourceLocation.fromNamespaceAndPath("hbmsntm", "machine_fraction_tower"));
+        ShapedRecipeBuilder.shaped(RecipeCategory.MISC, NtmBlocks.FRACTION_SPACER.get())
+                .pattern("BHB")
+                .define('B', Items.IRON_BARS)
+                .define('H', NtmItems.SHELL_STEEL.get())
+                .unlockedBy("has_steel_shell", has(NtmItems.SHELL_STEEL.get()))
+                .save(recipeOutput, ResourceLocation.fromNamespaceAndPath("hbmsntm", "fraction_spacer"));
+
+        // Original CraftingManager mixer: four steel plates, Dura ingot, two panes, vacuum tube and motor.
+        ShapedRecipeBuilder.shaped(RecipeCategory.MISC, NtmBlocks.MACHINE_MIXER.get())
+                .pattern("PIP").pattern("GCG").pattern("PMP")
+                .define('P', NtmTags.Items.PLATES_STEEL)
+                .define('I', NtmItems.INGOT_DURA_STEEL.get())
+                .define('G', Tags.Items.GLASS_PANES)
+                .define('C', NtmItems.CIRCUIT_VACUUM_TUBE.get())
+                .define('M', NtmItems.MOTOR.get())
+                .unlockedBy("has_dura_ingot", has(NtmItems.INGOT_DURA_STEEL.get()))
+                .save(recipeOutput, ResourceLocation.fromNamespaceAndPath("hbmsntm", "machine_mixer"));
 
         // The first anvil must be craftable before any plate or steel production.
         ShapedRecipeBuilder.shaped(RecipeCategory.MISC, NtmBlocks.ANVIL.get())

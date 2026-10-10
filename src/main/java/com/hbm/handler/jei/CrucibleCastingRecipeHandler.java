@@ -19,10 +19,12 @@ import net.minecraft.world.item.ItemStack;
 import java.util.ArrayList;
 import java.util.List;
 
-/** Upstream NEI "Crucible Casting", limited to NEO's small cast-plate mold. */
+/** Upstream NEI "Crucible Casting": existing plates and the mixer prerequisite Dura ingot. */
 public class CrucibleCastingRecipeHandler implements IRecipeCategory<CrucibleCastingRecipeHandler.Casting> {
 
-    public record Casting(NTMMaterial material) { }
+    public record Casting(NTMMaterial material, boolean ingot) {
+        public Casting(NTMMaterial material) { this(material, false); }
+    }
 
     public static final RecipeType<Casting> RECIPE_TYPE = RecipeType.create(
             NuclearTechMod.MODID,
@@ -46,6 +48,7 @@ public class CrucibleCastingRecipeHandler implements IRecipeCategory<CrucibleCas
     public static List<Casting> getRecipes() {
         List<Casting> recipes = new ArrayList<>();
         for(NTMMaterial material : CopperCastingRecipes.getCastableMaterials()) recipes.add(new Casting(material));
+        recipes.add(new Casting(Mats.MAT_DURA, true));
         return recipes;
     }
 
@@ -57,9 +60,9 @@ public class CrucibleCastingRecipeHandler implements IRecipeCategory<CrucibleCas
     @Override
     public void setRecipe(IRecipeLayoutBuilder builder, Casting recipe, IFocusGroup focuses) {
         builder.addInputSlot(48, 24).addItemStack(CrucibleAlloyingRecipeHandler.liquid(
-                new Mats.MaterialStack(recipe.material(), CopperCastingRecipes.PLATE_QUANTA)));
-        builder.addSlot(RecipeIngredientRole.CATALYST, 75, 6).addItemStack(new ItemStack(NtmItems.MOLD_PLATE_CAST.get()));
+                new Mats.MaterialStack(recipe.material(), recipe.ingot() ? CopperCastingRecipes.INGOT_QUANTA : CopperCastingRecipes.PLATE_QUANTA)));
+        builder.addSlot(RecipeIngredientRole.CATALYST, 75, 6).addItemStack(new ItemStack(recipe.ingot() ? NtmItems.MOLD_INGOT.get() : NtmItems.MOLD_PLATE_CAST.get()));
         builder.addSlot(RecipeIngredientRole.CATALYST, 75, 42).addItemStack(new ItemStack(NtmBlocks.FOUNDRY_MOLD.asItem()));
-        builder.addOutputSlot(102, 24).addItemStack(CopperCastingRecipes.getPlate(recipe.material()));
+        builder.addOutputSlot(102, 24).addItemStack(recipe.ingot() ? new ItemStack(NtmItems.INGOT_DURA_STEEL.get()) : CopperCastingRecipes.getPlate(recipe.material()));
     }
 }

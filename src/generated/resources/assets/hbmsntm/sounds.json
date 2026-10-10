@@ -73,6 +73,12 @@
       "hbmsntm:block/chungus_turbine"
     ]
   },
+  "block.compressor_stroke": {
+    "sounds": [
+      "hbmsntm:tool/boltgun"
+    ],
+    "subtitle": "subtitles.block.compressor_stroke"
+  },
   "block.debris": {
     "sounds": [
       "hbmsntm:block/debris1",
@@ -85,6 +91,12 @@
       "hbmsntm:block/electric_hum"
     ]
   },
+  "block.engine": {
+    "sounds": [
+      "hbmsntm:block/engine"
+    ],
+    "subtitle": "subtitles.block.engine"
+  },
   "block.fensu_hum": {
     "sounds": [
       "hbmsntm:block/fensu_hum"
@@ -94,6 +106,12 @@
     "sounds": [
       "hbmsntm:block/hunduns_magnificent_howl"
     ]
+  },
+  "block.igenerator_operate": {
+    "sounds": [
+      "hbmsntm:block/igenerator_operate"
+    ],
+    "subtitle": "subtitles.block.igenerator_operate"
   },
   "block.lock_open": {
     "sounds": [
@@ -380,6 +398,15 @@
     "sounds": [
       "hbmsntm:player/vomit"
     ]
+  },
+  "step.metal_block": {
+    "sounds": [
+      "hbmsntm:footsteps/metal_step1",
+      "hbmsntm:footsteps/metal_step2",
+      "hbmsntm:footsteps/metal_step3",
+      "hbmsntm:footsteps/metal_step4"
+    ],
+    "subtitle": "subtitles.block.hbmsntm.steel_grate.step"
   },
   "weapon.casing.large": {
     "sounds": [

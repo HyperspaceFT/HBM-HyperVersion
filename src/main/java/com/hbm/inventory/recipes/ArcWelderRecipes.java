@@ -46,7 +46,7 @@ public class ArcWelderRecipes extends SerializableRecipe {
         ItemStack output = readItemStack(json.get("output").getAsJsonArray());
         int duration = json.get("duration").getAsInt();
         long consumption = json.get("consumption").getAsLong();
-        recipes.add(new ArcWelderRecipe(output, duration, consumption, fluid, inputs));
+        addRecipe(output, duration, consumption, fluid, inputs);
     }
 
     @Override

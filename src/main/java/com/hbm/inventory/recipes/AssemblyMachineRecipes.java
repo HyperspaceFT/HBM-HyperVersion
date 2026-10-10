@@ -11,6 +11,9 @@ import com.hbm.inventory.fluid.FluidType;
 import com.hbm.inventory.fluid.Fluids;
 import com.hbm.inventory.recipes.loader.GenericRecipe;
 import com.hbm.inventory.recipes.loader.GenericRecipes;
+import com.hbm.items.BoltItem;
+import com.hbm.items.WireDenseItem;
+import com.hbm.items.machine.PistonSetItem;
 import com.hbm.items.CastPlateItem;
 import com.hbm.items.NtmItems;
 import com.hbm.items.PartGenericItem;
@@ -251,6 +254,65 @@ public class AssemblyMachineRecipes extends GenericRecipes<GenericRecipe> {
                 .inputItems(new RecipesCommon.TagStack(NtmTags.Items.PLATES_STEEL, 8),
                         new RecipesCommon.TagStack(NtmTags.Items.PLATES_COPPER, 4),
                         new ComparableStack(NtmItems.MOTOR.get(), 2)));
+
+        // Original ass.compressor, normal inputs only; cast plates retain their steel META identity.
+        this.register(new GenericRecipe("ass.compressor").setup(200, 100).outputItems(new ItemStack(NtmBlocks.MACHINE_COMPRESSOR.get(), 1))
+                .inputItems(NtmItems.castPlateIngredient(CastPlateItem.Type.STEEL, 8),
+                        new RecipesCommon.TagStack(NtmTags.Items.PLATES_COPPER, 4),
+                        new ComparableStack(NtmItems.SHELL_STEEL.get(), 2),
+                        new ComparableStack(NtmItems.MOTOR.get(), 3),
+                        new ComparableStack(NtmItems.CIRCUIT_ANALOG_BOARD.get(), 1)));
+
+        // Original normal ass.coker inputs remain available in both enable528 settings; welded steel keeps its material component.
+        this.register(new GenericRecipe("ass.coker").setup(200, 100).outputItems(new ItemStack(NtmBlocks.MACHINE_COKER.get(), 1))
+                .inputItems(NtmItems.castPlateWeldedIngredient(CastPlateItem.Type.STEEL, 8),
+                        new ComparableStack(NtmItems.SHELL_STEEL.get(), 4),
+                        new RecipesCommon.TagStack(NtmTags.Items.PLATES_COPPER, 8),
+                        new ComparableStack(NtmItems.INGOT_RUBBER.get(), 4),
+                        new ComparableStack(NtmItems.INGOT_NIOBIUM.get(), 4)));
+
+        // Original normal centrifuge acquisition remains available in both enable528 settings.
+        // Dura and titanium plates have no declared NEO tags; ntm:ingots_plastic is polymer/bakelite.
+        this.register(new GenericRecipe("ass.centrifugetower").setup(100, 100).outputItems(new ItemStack(NtmItems.CENTRIFUGE_ELEMENT.get(), 1))
+                .inputItems(new ComparableStack(NtmItems.PLATE_DURA_STEEL.get(), 4),
+                        new ComparableStack(NtmItems.PLATE_TITANIUM.get(), 4),
+                        new ComparableStack(NtmItems.MOTOR.get(), 1)));
+        this.register(new GenericRecipe("ass.centrifuge").setup(200, 100).outputItems(new ItemStack(NtmBlocks.MACHINE_CENTRIFUGE.get(), 1))
+                .inputItems(new ComparableStack(NtmItems.CENTRIFUGE_ELEMENT.get(), 1),
+                        new RecipesCommon.TagStack(ItemTags.create(ResourceLocation.fromNamespaceAndPath("ntm", "ingots_plastic")), 4),
+                        new RecipesCommon.TagStack(NtmTags.Items.PLATES_STEEL, 8),
+                        new RecipesCommon.TagStack(NtmTags.Items.PLATES_COPPER, 4),
+                        new ComparableStack(NtmItems.CIRCUIT_ANALOG_BOARD.get(), 1)));
+
+        // Original normal combustion/piston inputs remain available in both enable528 settings.
+        this.register(new GenericRecipe("ass.combustiongen").setup(300, 100).outputItems(new ItemStack(NtmBlocks.MACHINE_COMBUSTION_ENGINE.get(), 1))
+                .inputItems(new RecipesCommon.TagStack(NtmTags.Items.PLATES_STEEL, 16),
+                        new ComparableStack(NtmItems.INGOT_COPPER.get(), 12),
+                        new ComparableStack(MetaHelper.newStack(NtmItems.WIRE_DENSE.get(), 8, WireDenseItem.Type.GOLD.meta)),
+                        new ComparableStack(NtmItems.CANISTER_EMPTY.get(), 4),
+                        new ComparableStack(NtmItems.CIRCUIT_INTEGRATED_BOARD.get(), 1)));
+        this.register(new GenericRecipe("ass.pistonsetsteel").setup(200, 100).outputItems(MetaHelper.newStack(NtmItems.PISTON_SET.get(), 1, PistonSetItem.Type.STEEL.ordinal()))
+                .inputItems(new RecipesCommon.TagStack(NtmTags.Items.PLATES_STEEL, 16),
+                        new RecipesCommon.TagStack(NtmTags.Items.PLATES_COPPER, 4),
+                        new ComparableStack(NtmItems.INGOT_TUNGSTEN.get(), 8),
+                        new ComparableStack(MetaHelper.newStack(NtmItems.BOLT.get(), 16, BoltItem.Type.TUNGSTEN.meta))));
+        this.register(new GenericRecipe("ass.pistonsetdura").setup(200, 100).outputItems(MetaHelper.newStack(NtmItems.PISTON_SET.get(), 1, PistonSetItem.Type.DURA.ordinal()))
+                .inputItems(new ComparableStack(NtmItems.INGOT_DURA_STEEL.get(), 24),
+                        new ComparableStack(NtmItems.PLATE_TITANIUM.get(), 8),
+                        new ComparableStack(NtmItems.INGOT_TUNGSTEN.get(), 8),
+                        new ComparableStack(MetaHelper.newStack(NtmItems.BOLT.get(), 16, BoltItem.Type.DURA_STEEL.meta))));
+        this.register(new GenericRecipe("ass.pistonsetdesh").setup(200, 100).outputItems(MetaHelper.newStack(NtmItems.PISTON_SET.get(), 1, PistonSetItem.Type.DESH.ordinal()))
+                .inputItems(new ComparableStack(NtmItems.INGOT_DESH.get(), 24),
+                        new RecipesCommon.TagStack(ItemTags.create(ResourceLocation.fromNamespaceAndPath("ntm", "ingots_plastic")), 12),
+                        new RecipesCommon.TagStack(NtmTags.Items.PLATES_COPPER, 24),
+                        new ComparableStack(NtmItems.INGOT_TUNGSTEN.get(), 16),
+                        new ComparableStack(NtmItems.PIPE_DURA_STEEL.get(), 4)));
+
+        // Original ass.dieselgen, normal inputs only; no blueprint pool or unavailable expensive-mode materials.
+        this.register(new GenericRecipe("ass.dieselgen").setup(200, 100).outputItems(new ItemStack(NtmBlocks.MACHINE_DIESEL.get(), 1))
+                .inputItems(new ComparableStack(NtmItems.SHELL_STEEL.get(), 1),
+                        NtmItems.castPlateIngredient(CastPlateItem.Type.COPPER, 2),
+                        new ComparableStack(NtmItems.COIL_COPPER.get(), 4)));
 
         // Original ass.tank (normal mode only: the expensive mode uses item_expensive, which NEO does not have)
         this.register(new GenericRecipe("ass.tank").setup(200, 100).outputItems(new ItemStack(NtmBlocks.MACHINE_FLUID_TANK.get(), 1))

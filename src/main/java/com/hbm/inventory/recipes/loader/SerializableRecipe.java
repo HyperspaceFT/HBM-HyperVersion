@@ -21,6 +21,10 @@ import com.hbm.inventory.recipes.BlastFurnaceRecipes;
 import com.hbm.inventory.recipes.ChemicalPlantRecipes;
 import com.hbm.inventory.recipes.CentrifugeRecipes;
 import com.hbm.inventory.recipes.CrackingRecipes;
+import com.hbm.inventory.recipes.FractionRecipes;
+import com.hbm.inventory.recipes.CompressorRecipes;
+import com.hbm.inventory.recipes.CokerRecipes;
+import com.hbm.inventory.recipes.MixerRecipes;
 import com.hbm.inventory.recipes.CrucibleRecipes;
 import com.hbm.inventory.recipes.PressRecipes;
 import com.hbm.inventory.recipes.ShredderRecipes;
@@ -59,6 +63,10 @@ public abstract class SerializableRecipe {
         recipeHandlers.add(new ShredderRecipes());
         recipeHandlers.add(new CentrifugeRecipes());
         recipeHandlers.add(new CrackingRecipes());
+        recipeHandlers.add(new FractionRecipes());
+        recipeHandlers.add(new CompressorRecipes());
+        recipeHandlers.add(new CokerRecipes());
+        recipeHandlers.add(new MixerRecipes());
         recipeHandlers.add(new ArcFurnaceRecipes());
 
         //GENERIC

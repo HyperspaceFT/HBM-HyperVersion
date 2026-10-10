@@ -1,6 +1,8 @@
 package com.hbm.handler.jei;
 
 import com.hbm.blocks.NtmBlocks;
+import com.hbm.handler.CentrifugeRecipeClientSync;
+import java.util.List;
 import com.hbm.inventory.recipes.CentrifugeRecipes;
 import com.hbm.main.NuclearTechMod;
 import mezz.jei.api.gui.builder.IRecipeLayoutBuilder;
@@ -21,6 +23,8 @@ public class CentrifugeRecipeHandler implements IRecipeCategory<CentrifugeRecipe
             "centrifuge",
             CentrifugeRecipes.CentrifugeRecipe.class
     );
+
+    public static List<CentrifugeRecipes.CentrifugeRecipe> getRecipes() { return CentrifugeRecipeClientSync.getRecipes(); }
 
     private static final String TEXTURE = "textures/gui/gui_centrifuge.png";
 

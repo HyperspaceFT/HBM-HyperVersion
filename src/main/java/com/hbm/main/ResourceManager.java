@@ -52,6 +52,8 @@ public class ResourceManager {
     public static final ResourceLocation REFINERY_TEX = NuclearTechMod.withDefaultNamespace("textures/models/machines/refinery.png");
     // Original cracking_tower_tex; it points at catalytic_cracker.png, not the unused cracking_tower.png.
     public static final ResourceLocation CATALYTIC_CRACKER_TEX = NuclearTechMod.withDefaultNamespace("textures/models/machines/catalytic_cracker.png");
+    public static final ResourceLocation fraction_tower_tex = NuclearTechMod.withDefaultNamespace("textures/models/machines/fraction_tower.png");
+    public static final ResourceLocation fraction_spacer_tex = NuclearTechMod.withDefaultNamespace("textures/models/machines/fraction_spacer.png");
     public static final ResourceLocation ARC_FURNACE_TEX = NuclearTechMod.withDefaultNamespace("textures/models/machines/arc_furnace.png");
     public static final ResourceLocation FURNACE_COMBINATION_TEX = NuclearTechMod.withDefaultNamespace("textures/models/machines/combination_oven.png");
     public static final ResourceLocation MACHINE_CRUCIBLE_TEX = NuclearTechMod.withDefaultNamespace("textures/models/machines/crucible_heat.png");
@@ -66,6 +68,11 @@ public class ResourceManager {
     public static final ResourceLocation HEATER_FIREBOX_TEX = NuclearTechMod.withDefaultNamespace("textures/models/machines/firebox.png");
     public static final ResourceLocation STIRLING_TEX = NuclearTechMod.withDefaultNamespace("textures/models/machines/stirling.png");
     public static final ResourceLocation STEAM_ENGINE_TEX = NuclearTechMod.withDefaultNamespace("textures/models/machines/steam_engine.png");
+    public static final ResourceLocation diesel_tex = NuclearTechMod.withDefaultNamespace("textures/models/machines/dieselgen.png");
+    public static final ResourceLocation compressor_tex = NuclearTechMod.withDefaultNamespace("textures/models/machines/compressor.png");
+    public static final ResourceLocation coker_tex = NuclearTechMod.withDefaultNamespace("textures/models/machines/coker.png");
+    public static final ResourceLocation mixer_tex = NuclearTechMod.withDefaultNamespace("textures/models/machines/mixer.png");
+    public static final ResourceLocation combustion_engine_tex = NuclearTechMod.withDefaultNamespace("textures/models/machines/combustion_engine.png");
     public static final ResourceLocation PUMP_ELECTRIC_TEX = NuclearTechMod.withDefaultNamespace("textures/models/machines/pump_electric.png");
     public static final ResourceLocation HEATER_OVEN_TEX = NuclearTechMod.withDefaultNamespace("textures/models/machines/heating_oven.png");
     public static final ResourceLocation HEATER_OILBURNER_TEX = NuclearTechMod.withDefaultNamespace("textures/models/machines/oilburner.png");
@@ -297,6 +304,8 @@ public class ResourceManager {
     public static IModelCustom fracking_tower;
     public static IModelCustom refinery;
     public static IModelCustom catalytic_cracker;
+    public static IModelCustom fraction_tower;
+    public static IModelCustom fraction_spacer;
     public static IModelCustom arc_furnace;
     public static IModelCustom furnace_combination;
     public static IModelCustom machine_crucible;
@@ -310,6 +319,11 @@ public class ResourceManager {
     public static IModelCustom heater_firebox;
     public static IModelCustom stirling;
     public static IModelCustom steam_engine;
+    public static IModelCustom diesel;
+    public static IModelCustom compressor;
+    public static IModelCustom coker;
+    public static IModelCustom mixer;
+    public static IModelCustom combustion_engine;
     public static IModelCustom pump;
     public static IModelCustom heater_oven;
     public static IModelCustom heater_oilburner;
@@ -438,6 +452,8 @@ public class ResourceManager {
         fracking_tower = new HFRWavefrontObject("models/obj/machines/fracking_tower.obj").asVBO();
         refinery = new HFRWavefrontObject("models/obj/machines/refinery.obj").asVBO();
         catalytic_cracker = new HFRWavefrontObject("models/obj/machines/catalytic_cracker.obj").asVBO();
+        fraction_tower = new HFRWavefrontObject("models/obj/machines/fraction_tower.obj").asVBO();
+        fraction_spacer = new HFRWavefrontObject("models/obj/machines/fraction_spacer.obj").asVBO();
         arc_furnace = new HFRWavefrontObject("models/obj/machines/arc_furnace.obj").asVBO();
         furnace_combination = new HFRWavefrontObject("models/obj/machines/combination_oven.obj").asVBO();
         machine_crucible = new HFRWavefrontObject("models/obj/machines/crucible.obj").asVBO();
@@ -451,6 +467,11 @@ public class ResourceManager {
         heater_firebox = new HFRWavefrontObject("models/obj/machines/firebox.obj").asVBO();
         stirling = new HFRWavefrontObject("models/obj/machines/stirling.obj").asVBO();
         steam_engine = new HFRWavefrontObject("models/obj/machines/steam_engine.obj").asVBO();
+        diesel = new HFRWavefrontObject("models/obj/machines/dieselgen.obj").asVBO();
+        compressor = new HFRWavefrontObject("models/obj/machines/compressor.obj").asVBO();
+        coker = new HFRWavefrontObject("models/obj/machines/coker.obj").asVBO();
+        mixer = new HFRWavefrontObject("models/obj/machines/mixer.obj").asVBO();
+        combustion_engine = new HFRWavefrontObject("models/obj/machines/combustion_engine.obj").asVBO();
         pump = new HFRWavefrontObject("models/obj/machines/pump.obj").asVBO();
         heater_oven = new HFRWavefrontObject("models/obj/machines/heating_oven.obj").asVBO();
         heater_oilburner = new HFRWavefrontObject("models/obj/machines/oilburner.obj").asVBO();

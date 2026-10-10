@@ -11,6 +11,8 @@ public class NtmSoundEvents {
 
     public static final DeferredRegister<SoundEvent> SOUND_EVENTS = DeferredRegister.create(BuiltInRegistries.SOUND_EVENT, NuclearTechMod.MODID);
 
+    public static final DeferredHolder<SoundEvent, SoundEvent> STEP_METAL_BLOCK = reg("step.metal_block");
+
     public static final DeferredHolder<SoundEvent, SoundEvent> GUN_REVOLVER_COCK = reg("weapon.reload.revolver_cock");
     public static final DeferredHolder<SoundEvent, SoundEvent> GUN_REVOLVER_CLOSE = reg("weapon.reload.revolver_close");
     public static final DeferredHolder<SoundEvent, SoundEvent> GUN_REVOLVER_SPIN = reg("weapon.reload.revolver_spin");
@@ -76,6 +78,9 @@ public class NtmSoundEvents {
     public static final DeferredHolder<SoundEvent, SoundEvent> SQUEAKY_TOY = reg("block.squeaky_toy"); // BLOCKS CATEGORY
     public static final DeferredHolder<SoundEvent, SoundEvent> HUNDUNS_MAGNIFICENT_HOWL = reg("block.hunduns_magnificent_howl"); // BLOCKS CATEGORY
     public static final DeferredHolder<SoundEvent, SoundEvent> ELECTRIC_MOTOR_LOOP = reg("block.motor"); // BLOCKS CATEGORY
+    public static final DeferredHolder<SoundEvent, SoundEvent> ENGINE_LOOP = reg("block.engine"); // BLOCKS CATEGORY
+    public static final DeferredHolder<SoundEvent, SoundEvent> IGENERATOR_OPERATE = reg("block.igenerator_operate");
+    public static final DeferredHolder<SoundEvent, SoundEvent> COMPRESSOR_STROKE = reg("block.compressor_stroke");
     public static final DeferredHolder<SoundEvent, SoundEvent> BOILER = reg("block.boiler"); // BLOCKS CATEGORY
     public static final DeferredHolder<SoundEvent, SoundEvent> TURBINE_LEVI_LOOP = reg("block.chungus_turbine_running");
     public static final DeferredHolder<SoundEvent, SoundEvent> BOILER_GROAN = reg("block.boilergroan"); // BLOCKS CATEGORY

@@ -1,0 +1,34 @@
+{
+  "variants": {
+    "height=0": {
+      "model": "hbmsntm:block/steel_grate_1"
+    },
+    "height=1": {
+      "model": "hbmsntm:block/steel_grate_2"
+    },
+    "height=2": {
+      "model": "hbmsntm:block/steel_grate_3"
+    },
+    "height=3": {
+      "model": "hbmsntm:block/steel_grate_4"
+    },
+    "height=4": {
+      "model": "hbmsntm:block/steel_grate_5"
+    },
+    "height=5": {
+      "model": "hbmsntm:block/steel_grate_6"
+    },
+    "height=6": {
+      "model": "hbmsntm:block/steel_grate_7"
+    },
+    "height=7": {
+      "model": "hbmsntm:block/steel_grate_8"
+    },
+    "height=8": {
+      "model": "hbmsntm:block/steel_grate_9"
+    },
+    "height=9": {
+      "model": "hbmsntm:block/steel_grate_0"
+    }
+  }
+}

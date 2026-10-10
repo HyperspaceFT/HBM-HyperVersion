@@ -419,10 +419,9 @@ public class Goal6Regression {
         long delivered = high.getPower() + (shredder.power - 8_000) + low.getPower();
         check(high.getPower() == 1_000 && shredder.power == 10_000 && supply.used == delivered,
                 "three-priority case conserves energy");
-        // Upstream PowerNetMK2 subtracts cumulative energyUsed after each priority; the LOW socket is shorted here.
-        check(low.getPower() == 0 && supply.power == 2_000,
-                "known upstream multi-priority shortfall: LOW receives 0 of the remaining 1000 HE");
-        System.out.println("three-priority PowerNet characterization: passed");
+        check(low.getPower() == 1_000 && supply.power == 1_000,
+                "LOW receives the remaining 1000 HE after HIGH and NORMAL, with exact source debit");
+        System.out.println("three-priority PowerNet allocation: passed");
     }
 
     static void unloadRemovalAndReload() {

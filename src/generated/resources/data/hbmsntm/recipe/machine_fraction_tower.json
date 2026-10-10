@@ -1,0 +1,25 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "key": {
+    "G": {
+      "item": "hbmsntm:steel_grate"
+    },
+    "H": {
+      "type": "neoforge:components",
+      "components": {
+        "hbmsntm:meta": 11
+      },
+      "items": "hbmsntm:cast_plate_welded"
+    }
+  },
+  "pattern": [
+    "H",
+    "G",
+    "H"
+  ],
+  "result": {
+    "count": 1,
+    "id": "hbmsntm:machine_fraction_tower"
+  }
+}

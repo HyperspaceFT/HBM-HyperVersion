@@ -196,29 +196,9 @@ public abstract class DummyableBlock extends BaseEntityBlock implements ICustomB
 
         if(!checkRequirement(level, adjustedPos, dir, offset)) {
             if(!player.hasInfiniteMaterials()) {
-                ItemStack mainHandStack = player.getMainHandItem();
-                ItemStack offHandStack = player.getOffhandItem();
-                Item item = this.asItem();
-
-                boolean added = false;
-
-                if(mainHandStack.is(item) && mainHandStack.getCount() < mainHandStack.getMaxStackSize()) {
-                    mainHandStack.grow(1);
-                    added = true;
-                } else if(offHandStack.is(item) && offHandStack.getCount() < offHandStack.getMaxStackSize()) {
-                    offHandStack.grow(1);
-                    added = true;
-                } else if(mainHandStack.isEmpty()) {
-                    player.setItemInHand(InteractionHand.MAIN_HAND, new ItemStack(this));
-                    added = true;
-                } else if(offHandStack.isEmpty()) {
-                    player.setItemInHand(InteractionHand.OFF_HAND, new ItemStack(this));
-                    added = true;
-                }
-
-                if(!added) {
-                    player.getInventory().add(new ItemStack(this));
-                }
+                // BlockItem.place consumes one after this callback. Compensate that exact stack, preserving components
+                // even at its stack limit; the pending consume immediately restores the original count.
+                stack.grow(1);
             }
             return;
         }

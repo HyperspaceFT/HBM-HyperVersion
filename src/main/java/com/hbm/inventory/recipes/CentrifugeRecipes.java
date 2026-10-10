@@ -1,12 +1,19 @@
 package com.hbm.inventory.recipes;
 
+import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
+import com.google.gson.JsonObject;
 import com.google.gson.stream.JsonWriter;
 import com.hbm.blocks.NtmBlocks;
 import com.hbm.inventory.MetaHelper;
-import com.hbm.inventory.RecipesCommon.ComparableStack;
 import com.hbm.inventory.recipes.loader.SerializableRecipe;
 import com.hbm.items.NtmItems;
+import com.hbm.items.component.NtmDataComponents;
+import com.hbm.util.TagsUtil;
+import net.minecraft.core.registries.BuiltInRegistries;
+import net.minecraft.nbt.TagParser;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.level.ItemLike;
@@ -14,68 +21,123 @@ import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.Blocks;
 
 import java.io.IOException;
+import java.io.Reader;
+import java.io.StringWriter;
+import java.nio.CharBuffer;
+import java.nio.charset.CharacterCodingException;
+import java.nio.charset.CodingErrorAction;
+import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
-import java.util.LinkedHashMap;
 import java.util.List;
-import java.util.Map.Entry;
 
 public class CentrifugeRecipes extends SerializableRecipe {
+    public static final int MAX_SYNC_RECIPES = 4096;
+    public static final int MAX_SYNC_BYTES = 256 * 1024;
+    private static final List<CentrifugeRecipe> RECIPES = new ArrayList<>();
+    private final List<CentrifugeRecipe> table;
 
-    private static final LinkedHashMap<ComparableStack, ItemStack[]> RECIPES = new LinkedHashMap<>();
+    public CentrifugeRecipes() { this(RECIPES); }
+    private CentrifugeRecipes(List<CentrifugeRecipe> table) { this.table = table; }
 
     public static class CentrifugeRecipe {
         public final ItemStack input;
         public final ItemStack[] outputs;
 
         public CentrifugeRecipe(ItemStack input, ItemStack[] outputs) {
-            this.input = input.copy();
+            if(input == null || input.isEmpty() || input.getCount() <= 0) throw invalid("invalid input");
+            this.input = input.copyWithCount(1);
+            encodeItem(this.input);
+            if(outputs == null || outputs.length < 1 || outputs.length > 4) throw invalid("outputs must have 1..4 slots");
             this.outputs = copyOutputs(outputs);
+            boolean any = false;
+            for(ItemStack output : this.outputs) {
+                if(!output.isEmpty()) { encodeItem(output); any = true; }
+            }
+            if(!any) throw invalid("recipe needs a nonempty output");
+        }
+
+        /** Legacy generic inputs ignore unrelated components; custom-data inputs are exact constraints. */
+        public boolean matches(ItemStack stack) {
+            if(stack == null || stack.isEmpty() || input.getItem() != stack.getItem()) return false;
+            int meta = MetaHelper.getMeta(input);
+            // Historical candidate META32767 may match distinct concrete-META rows; ordered lookup keeps the first.
+            if(meta != MetaHelper.WILDCARD_VALUE && MetaHelper.getMeta(stack) != MetaHelper.WILDCARD_VALUE && meta != MetaHelper.getMeta(stack)) return false;
+            if(!TagsUtil.hasCustomData(input)) return true;
+            ItemStack expected = input.copy(), actual = stack.copy();
+            if(meta == MetaHelper.WILDCARD_VALUE) {
+                expected.remove(NtmDataComponents.META.get());
+                actual.remove(NtmDataComponents.META.get());
+            }
+            return ItemStack.isSameItemSameComponents(expected, actual);
+        }
+
+        public boolean sameRecipe(CentrifugeRecipe other) {
+            if(other == null || !ItemStack.isSameItemSameComponents(input, other.input) || outputs.length != other.outputs.length) return false;
+            for(int i = 0; i < outputs.length; i++) {
+                if(outputs[i].isEmpty() && other.outputs[i].isEmpty()) continue;
+                if(outputs[i].getCount() != other.outputs[i].getCount() || !ItemStack.isSameItemSameComponents(outputs[i], other.outputs[i])) return false;
+            }
+            return true;
         }
     }
 
-    public static List<CentrifugeRecipe> getJeiRecipes() {
-        List<CentrifugeRecipe> list = new ArrayList<>(RECIPES.size());
-        for(Entry<ComparableStack, ItemStack[]> entry : RECIPES.entrySet()) {
-            ItemStack input = entry.getKey().toStack();
-            input.setCount(1);
-            list.add(new CentrifugeRecipe(input, entry.getValue()));
-        }
-        return list;
+    public static List<CentrifugeRecipe> getJeiRecipes() { return copyRecipes(RECIPES); }
+    public static List<CentrifugeRecipe> getDefaultRecipes() {
+        List<CentrifugeRecipe> defaults = new ArrayList<>();
+        new CentrifugeRecipes(defaults).registerDefaults();
+        return copyRecipes(defaults);
     }
-
-    public static boolean hasRecipe(ItemStack stack) {
-        if(stack.isEmpty()) return false;
-        return RECIPES.containsKey(new ComparableStack(stack).makeSingular());
+    public static List<CentrifugeRecipe> copyRecipes(List<CentrifugeRecipe> source) {
+        List<CentrifugeRecipe> result = new ArrayList<>(source.size());
+        for(CentrifugeRecipe recipe : source) result.add(new CentrifugeRecipe(recipe.input, recipe.outputs));
+        return result;
     }
-
+    public static boolean hasRecipe(ItemStack stack) { return hasRecipe(RECIPES, stack); }
+    public static boolean hasRecipe(List<CentrifugeRecipe> source, ItemStack stack) {
+        for(CentrifugeRecipe recipe : source) if(recipe.matches(stack)) return true;
+        return false;
+    }
     public static ItemStack[] getOutput(ItemStack stack) {
-        if(stack.isEmpty()) return new ItemStack[0];
-
-        ItemStack[] output = RECIPES.get(new ComparableStack(stack).makeSingular());
-        return output == null ? new ItemStack[0] : copyOutputs(output);
+        for(CentrifugeRecipe recipe : RECIPES) if(recipe.matches(stack)) return copyOutputs(recipe.outputs);
+        return new ItemStack[0];
     }
-
-    public static void setRecipe(ItemStack input, ItemStack... outputs) {
-        RECIPES.put(new ComparableStack(input).makeSingular(), copyOutputs(outputs));
-    }
-
+    public static void setRecipe(ItemStack input, ItemStack... outputs) { new CentrifugeRecipes().addRecipe(input, outputs); }
+    private void addRecipe(ItemStack input, ItemStack... outputs) { add(new CentrifugeRecipe(input, outputs)); }
     public static void setRecipe(Block input, ItemStack... outputs) {
-        RECIPES.put(new ComparableStack(input).makeSingular(), copyOutputs(outputs));
+        setRecipe(MetaHelper.newStack(input, 1, MetaHelper.WILDCARD_VALUE), outputs);
     }
-
-    private static ItemStack stack(ItemLike item, int count) {
-        return new ItemStack(item, count);
+    private void add(CentrifugeRecipe row) {
+        if(table.size() >= MAX_SYNC_RECIPES) throw invalid("too many recipes");
+        for(CentrifugeRecipe old : table) {
+            if(old.input.getItem() != row.input.getItem()) continue;
+            int a = MetaHelper.getMeta(old.input), b = MetaHelper.getMeta(row.input);
+            // Reject overlap for ordinary concrete candidates; preserve the historical wildcard-candidate exception.
+            if(a != b && a != MetaHelper.WILDCARD_VALUE && b != MetaHelper.WILDCARD_VALUE) continue;
+            if(!TagsUtil.hasCustomData(old.input) || !TagsUtil.hasCustomData(row.input)) throw invalid("overlapping input " + BuiltInRegistries.ITEM.getKey(row.input.getItem()));
+            ItemStack left = old.input.copy(), right = row.input.copy();
+            if(a == MetaHelper.WILDCARD_VALUE || b == MetaHelper.WILDCARD_VALUE) {
+                left.remove(NtmDataComponents.META.get()); right.remove(NtmDataComponents.META.get());
+            }
+            if(ItemStack.isSameItemSameComponents(left, right)) throw invalid("duplicate/overlapping exact input");
+        }
+        table.add(row);
     }
-
+    private static ItemStack stack(ItemLike item, int count) { return new ItemStack(item, count); }
     private static ItemStack[] copyOutputs(ItemStack[] outputs) {
-        ItemStack[] copy = new ItemStack[Math.min(outputs.length, 4)];
+        ItemStack[] copy = new ItemStack[outputs.length];
         for(int i = 0; i < copy.length; i++) {
+            if(outputs[i] == null) throw invalid("null output slot");
             copy[i] = outputs[i].copy();
         }
         return copy;
     }
 
-    private static void registerOreRecipes() {
+    private static final class Defaults {
+        private final CentrifugeRecipes owner;
+        private Defaults(CentrifugeRecipes owner) { this.owner = owner; }
+        private void setRecipe(ItemStack input, ItemStack... outputs) { owner.addRecipe(MetaHelper.newStack(input.getItem(), 1, MetaHelper.getMeta(input)), outputs); }
+        private void setRecipe(Block input, ItemStack... outputs) { owner.addRecipe(MetaHelper.newStack(input, 1, MetaHelper.WILDCARD_VALUE), outputs); }
+    private void registerOreRecipes() {
         setRecipe(Blocks.COAL_ORE, stack(NtmItems.POWDER_COAL.get(), 2), stack(NtmItems.POWDER_COAL.get(), 2), stack(NtmItems.POWDER_COAL.get(), 2), stack(Blocks.STONE, 1));
         setRecipe(Blocks.DEEPSLATE_COAL_ORE, stack(NtmItems.POWDER_COAL.get(), 2), stack(NtmItems.POWDER_COAL.get(), 2), stack(NtmItems.POWDER_COAL.get(), 2), stack(Blocks.STONE, 1));
         setRecipe(Blocks.IRON_ORE, stack(NtmItems.POWDER_IRON.get(), 1), stack(NtmItems.POWDER_IRON.get(), 1), stack(NtmItems.POWDER_IRON.get(), 1), stack(Blocks.STONE, 1));
@@ -130,7 +192,7 @@ public class CentrifugeRecipes extends SerializableRecipe {
         setRecipe(stack(Items.BLAZE_ROD, 1), stack(Items.BLAZE_POWDER, 1), stack(Items.BLAZE_POWDER, 1), stack(NtmItems.POWDER_FIRE.get(), 1), stack(NtmItems.POWDER_FIRE.get(), 1));
     }
 
-    private static void registerCrystalRecipes() {
+    private void registerCrystalRecipes() {
         setRecipe(stack(NtmItems.CRYSTAL_COAL.get(), 1), stack(NtmItems.POWDER_COAL.get(), 3), stack(NtmItems.POWDER_COAL.get(), 3), stack(NtmItems.POWDER_COAL.get(), 3), stack(NtmItems.POWDER_LITHIUM_TINY.get(), 1));
         setRecipe(stack(NtmItems.CRYSTAL_IRON.get(), 1), stack(NtmItems.POWDER_IRON.get(), 2), stack(NtmItems.POWDER_IRON.get(), 2), stack(NtmItems.POWDER_TITANIUM.get(), 1), stack(NtmItems.POWDER_LITHIUM_TINY.get(), 1));
         setRecipe(stack(NtmItems.CRYSTAL_GOLD.get(), 1), stack(NtmItems.POWDER_GOLD.get(), 2), stack(NtmItems.POWDER_GOLD.get(), 2), stack(NtmItems.NUGGET_MERCURY.get(), 1), stack(NtmItems.POWDER_LITHIUM_TINY.get(), 1));
@@ -159,50 +221,131 @@ public class CentrifugeRecipes extends SerializableRecipe {
         setRecipe(stack(NtmItems.CRYSTAL_COBALT.get(), 1), stack(NtmItems.POWDER_COBALT.get(), 2), stack(NtmItems.POWDER_IRON.get(), 3), stack(NtmItems.POWDER_COPPER.get(), 3), stack(NtmItems.POWDER_LITHIUM_TINY.get(), 1));
     }
 
-    @Override
-    public String getFileName() {
-        return "hbmCentrifuge.json";
     }
 
-    @Override
-    public Object getRecipeObject() {
-        return RECIPES;
+    @Override public String getFileName() { return "hbmCentrifuge.json"; }
+    @Override public Object getRecipeObject() { return table; }
+    @Override public void registerDefaults() { Defaults defaults = new Defaults(this); defaults.registerOreRecipes(); defaults.registerCrystalRecipes(); }
+    @Override public void deleteRecipes() { table.clear(); }
+    @Override public String getComment() {
+        return "Centrifuge recipes ported from 1.12.2, limited to ore_ blocks, crystal_ items and vanilla ore blocks. Replaces the whole table; empty disables it. Each input consumes one item regardless of configured positive count. Arrays are ID, count, META, custom-data SNBT; omitted META decodes as zero, explicit null preserves absence. Generic inputs match item/META (32767 wildcard); custom-data inputs constrain components. Outputs retain 1..4 ordered slots, including [minecraft:air,0] placeholders; at least one positive output is required.";
     }
-
-    @Override
-    public void readRecipe(JsonElement recipe) {
-        var obj = recipe.getAsJsonObject();
-        ItemStack input = readItemStack(obj.get("input").getAsJsonArray());
-        ItemStack[] output = readItemStackArray(obj.get("outputs").getAsJsonArray());
-        setRecipe(input, output);
+    @Override public void readRecipe(JsonElement element) {
+        try {
+            if(element == null || !element.isJsonObject()) throw invalid("expected recipe object");
+            JsonObject row = element.getAsJsonObject();
+            ItemStack input = decodeItem(array(row.get("input"), "input"), false);
+            JsonArray outputs = array(row.get("outputs"), "outputs");
+            if(outputs.size() < 1 || outputs.size() > 4) throw invalid("outputs must have 1..4 slots");
+            ItemStack[] result = new ItemStack[outputs.size()];
+            for(int i = 0; i < result.length; i++) result[i] = decodeItem(array(outputs.get(i), "output " + i), true);
+            addRecipe(input, result);
+        } catch(RuntimeException ex) { throw invalid("recipe " + table.size() + ": " + ex.getMessage()); }
     }
-
-    @Override
-    public void writeRecipe(Object recipe, JsonWriter writer) throws IOException {
-        @SuppressWarnings("unchecked")
-        Entry<ComparableStack, ItemStack[]> entry = (Entry<ComparableStack, ItemStack[]>) recipe;
-        writer.name("input");
-        writeItemStack(entry.getKey().toStack(), writer);
+    @Override public void writeRecipe(Object value, JsonWriter writer) throws IOException {
+        CentrifugeRecipe row = (CentrifugeRecipe) value;
+        writer.name("input"); writeItem(row.input.copyWithCount(1), writer);
         writer.name("outputs").beginArray();
-        for(ItemStack stack : entry.getValue()) {
-            writeItemStack(stack, writer);
+        for(ItemStack output : row.outputs) writeItem(output, writer);
+        writer.endArray();
+    }
+    @Override public void readRecipeStream(Reader reader) {
+        StringBuilder text = new StringBuilder(); char[] chunk = new char[4096];
+        try {
+            int count;
+            while((count = reader.read(chunk)) != -1) {
+                if(text.length() + count > MAX_SYNC_BYTES) throw invalid("configuration exceeds 256 KiB");
+                text.append(chunk, 0, count);
+            }
+        } catch(IOException ex) { throw invalid("cannot read configuration: " + ex.getMessage()); }
+        List<CentrifugeRecipe> replacement = readSnapshot(text.toString());
+        table.clear(); table.addAll(replacement);
+    }
+    public static List<CentrifugeRecipe> readSnapshot(String json) {
+        encodeSnapshot(json);
+        JsonObject root = gson.fromJson(json, JsonObject.class);
+        if(root == null) throw invalid("missing table object");
+        JsonArray rows = array(root.get("recipes"), "recipes");
+        if(rows.size() > MAX_SYNC_RECIPES) throw invalid("too many recipes");
+        List<CentrifugeRecipe> result = new ArrayList<>();
+        CentrifugeRecipes handler = new CentrifugeRecipes(result);
+        for(JsonElement row : rows) handler.readRecipe(row);
+        return result;
+    }
+    public static String writeSnapshot() throws IOException {
+        StringWriter text = new StringWriter(); JsonWriter writer = new JsonWriter(text);
+        writer.beginObject().name("recipes").beginArray();
+        CentrifugeRecipes handler = new CentrifugeRecipes();
+        for(CentrifugeRecipe row : RECIPES) { writer.beginObject(); handler.writeRecipe(row, writer); writer.endObject(); }
+        writer.endArray().endObject(); writer.close();
+        String result = text.toString(); readSnapshot(result); return result;
+    }
+    public static byte[] encodeSnapshot(String json) {
+        if(json == null || json.length() > MAX_SYNC_BYTES) throw invalid("snapshot exceeds 256 KiB");
+        try {
+            var bytes = StandardCharsets.UTF_8.newEncoder().onMalformedInput(CodingErrorAction.REPORT)
+                    .onUnmappableCharacter(CodingErrorAction.REPORT).encode(CharBuffer.wrap(json));
+            if(bytes.remaining() > MAX_SYNC_BYTES) throw invalid("snapshot exceeds 256 KiB");
+            byte[] result = new byte[bytes.remaining()]; bytes.get(result); return result;
+        } catch(CharacterCodingException ex) { throw invalid("malformed UTF-16 surrogate"); }
+    }
+    private static ItemStack decodeItem(JsonArray values, boolean output) {
+        if(values.size() < 1 || values.size() > 4) throw invalid("item array needs ID and optional count, META, SNBT");
+        ResourceLocation id = ResourceLocation.parse(string(values.get(0)));
+        if(!BuiltInRegistries.ITEM.containsKey(id)) throw invalid("unknown item " + id);
+        Item item = BuiltInRegistries.ITEM.get(id);
+        int count = values.size() > 1 ? integer(values.get(1)) : 1;
+        if(item == Items.AIR) {
+            if(!output || count != 0 || values.size() != 2) throw invalid("empty slot must be [minecraft:air,0] output");
+            return ItemStack.EMPTY;
+        }
+        if(count <= 0) throw invalid("item count must be positive");
+        ItemStack stack = new ItemStack(item, count);
+        if(values.size() > 2 && values.get(2).isJsonNull()) stack.remove(NtmDataComponents.META.get());
+        else {
+            int meta = values.size() > 2 ? integer(values.get(2)) : 0;
+            if(meta < 0) throw invalid("META must be nonnegative");
+            MetaHelper.setMeta(stack, meta);
+        }
+        if(values.size() > 3) {
+            try { TagsUtil.putCustomData(stack, TagParser.parseTag(string(values.get(3)))); }
+            catch(Exception ex) { throw invalid("invalid custom-data SNBT: " + ex.getMessage()); }
+        }
+        return stack;
+    }
+    private static JsonArray encodeItem(ItemStack stack) {
+        JsonArray result = new JsonArray();
+        if(stack.isEmpty()) { result.add("minecraft:air"); result.add(0); return result; }
+        if(stack.getCount() <= 0) throw invalid("invalid stack count");
+        result.add(BuiltInRegistries.ITEM.getKey(stack.getItem()).toString());
+        result.add(stack.getCount());
+        if(stack.has(NtmDataComponents.META.get())) result.add(MetaHelper.getMeta(stack));
+        else result.add(com.google.gson.JsonNull.INSTANCE);
+        if(TagsUtil.hasCustomData(stack)) result.add(TagsUtil.getCustomData(stack).toString());
+        if(!ItemStack.isSameItemSameComponents(stack, decodeItem(result, false))) throw invalid("array cannot represent components: " + result.get(0));
+        return result;
+    }
+    private static void writeItem(ItemStack stack, JsonWriter writer) throws IOException {
+        writer.beginArray();
+        for(JsonElement value : encodeItem(stack)) {
+            if(value.isJsonNull()) writer.nullValue();
+            else if(value.getAsJsonPrimitive().isNumber()) writer.value(value.getAsNumber());
+            else writer.value(value.getAsString());
         }
         writer.endArray();
     }
-
-    @Override
-    public void registerDefaults() {
-        registerOreRecipes();
-        registerCrystalRecipes();
+    private static JsonArray array(JsonElement value, String name) {
+        if(value == null || !value.isJsonArray()) throw invalid("expected " + name + " array");
+        return value.getAsJsonArray();
     }
-
-    @Override
-    public void deleteRecipes() {
-        RECIPES.clear();
+    private static String string(JsonElement value) {
+        if(value == null || !value.isJsonPrimitive() || !value.getAsJsonPrimitive().isString()) throw invalid("expected string");
+        return value.getAsString();
     }
-
-    @Override
-    public String getComment() {
-        return "Centrifuge recipes ported from 1.12.2, limited to ore_ blocks, crystal_ items and vanilla ore blocks.";
+    private static int integer(JsonElement value) {
+        if(value == null || !value.isJsonPrimitive() || !value.getAsJsonPrimitive().isNumber()) throw invalid("expected integer");
+        try { return Integer.parseInt(value.getAsString()); }
+        catch(NumberFormatException ex) { throw invalid("expected in-range integer"); }
     }
+    private static IllegalArgumentException invalid(String message) { return new IllegalArgumentException("Centrifuge: " + message); }
 }

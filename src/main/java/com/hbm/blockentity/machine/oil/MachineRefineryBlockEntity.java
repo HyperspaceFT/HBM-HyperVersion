@@ -97,15 +97,15 @@ public class MachineRefineryBlockEntity extends MachineBaseBlockEntity implement
                 }
 
                 this.power = Library.chargeTEFromItems(this.slots, 0, this.power, MAX_POWER);
-                this.tanks[0].setType(12, this.slots);
-                this.tanks[0].loadTank(this.level, 1, 2, this.slots);
+                if(this.tanks[0].setType(12, this.slots)) this.setChanged();
+                if(this.tanks[0].loadTank(this.level, 1, 2, this.slots)) this.setChanged();
 
                 boolean refined = this.refine();
 
-                this.tanks[1].unloadTank(this.level, 3, 4, this.slots);
-                this.tanks[2].unloadTank(this.level, 5, 6, this.slots);
-                this.tanks[3].unloadTank(this.level, 7, 8, this.slots);
-                this.tanks[4].unloadTank(this.level, 9, 10, this.slots);
+                if(this.tanks[1].unloadTank(this.level, 3, 4, this.slots)) this.setChanged();
+                if(this.tanks[2].unloadTank(this.level, 5, 6, this.slots)) this.setChanged();
+                if(this.tanks[3].unloadTank(this.level, 7, 8, this.slots)) this.setChanged();
+                if(this.tanks[4].unloadTank(this.level, 9, 10, this.slots)) this.setChanged();
 
                 for(DirPos pos : this.getConPos()) {
                     for(int i = 1; i < this.tanks.length; i++) {
@@ -178,6 +178,7 @@ public class MachineRefineryBlockEntity extends MachineBaseBlockEntity implement
         FluidStack[] outputs = new FluidStack[] { refinery.getV(), refinery.getW(), refinery.getX(), refinery.getY() };
 
         for(int i = 0; i < outputs.length; i++) {
+            if(this.tanks[i + 1].getTankType() != outputs[i].type) this.setChanged();
             this.tanks[i + 1].setTankType(outputs[i].type);
         }
 
@@ -246,7 +247,7 @@ public class MachineRefineryBlockEntity extends MachineBaseBlockEntity implement
         }
 
         if(slot == 1) {
-            return !FluidContainerRegistry.getFullContainer(stack, this.tanks[0].getTankType()).isEmpty();
+            return FluidContainerRegistry.getFluidContent(stack, this.tanks[0].getTankType()) > 0;
         }
 
         if(slot == 3) {
@@ -438,6 +439,21 @@ public class MachineRefineryBlockEntity extends MachineBaseBlockEntity implement
     @Override
     public FluidTank[] getAllTanks() {
         return this.tanks;
+    }
+
+    @Override
+    public long transferFluid(FluidType type, int pressure, long amount) {
+        long remainder = IFluidStandardTransceiverMK2.super.transferFluid(type, pressure, amount);
+        // Network transfers can happen while the refinery is idle, between its ticks.
+        if(remainder < amount) this.setChanged();
+        return remainder;
+    }
+
+    @Override
+    public void useUpFluid(FluidType type, int pressure, long amount) {
+        long previous = this.getFluidAvailable(type, pressure);
+        IFluidStandardTransceiverMK2.super.useUpFluid(type, pressure, amount);
+        if(this.getFluidAvailable(type, pressure) != previous) this.setChanged();
     }
 
     @Override

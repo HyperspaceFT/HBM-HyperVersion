@@ -1,6 +1,11 @@
 package com.hbm.handler.jei;
 
 import com.hbm.blocks.NtmBlocks;
+import com.hbm.handler.FractionRecipeClientSync;
+import com.hbm.handler.CompressorRecipeClientSync;
+import com.hbm.handler.CokerRecipeClientSync;
+import com.hbm.handler.MixerRecipeClientSync;
+import com.hbm.handler.CentrifugeRecipeClientSync;
 import com.hbm.handler.jei.AssemblyMachineRecipeHandler;
 import com.hbm.handler.jei.AssemblyMachineTransferInfo;
 import com.hbm.handler.jei.BoilerRecipeHandler;
@@ -49,10 +54,167 @@ import net.minecraft.world.item.ItemStack;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.LinkedHashMap;
+import java.util.Map;
 
 @JeiPlugin
 @SuppressWarnings("unused")
 public class NtmJeiPlugin implements IModPlugin {
+
+    private mezz.jei.api.runtime.IJeiRuntime runtime;
+    private List<CentrifugeRecipes.CentrifugeRecipe> displayedCentrifugeRecipes = List.of();
+    private final List<CentrifugeRecipes.CentrifugeRecipe> knownCentrifugeRecipes = new ArrayList<>();
+    private List<CokingRecipeHandler.CokerJeiRecipe> displayedCokerRecipes = List.of();
+    private final List<CokingRecipeHandler.CokerJeiRecipe> knownCokerRecipes = new ArrayList<>();
+    private List<MixingRecipeHandler.MixerJeiRecipe> displayedMixerRecipes = List.of();
+    private final List<MixingRecipeHandler.MixerJeiRecipe> knownMixerRecipes = new ArrayList<>();
+    private List<FractioningRecipeHandler.FractionRecipe> displayedFractions = List.of();
+    private final Map<String, FractioningRecipeHandler.FractionRecipe> knownFractions = new LinkedHashMap<>();
+    private List<CompressorRecipeHandler.CompressorJeiRecipe> displayedCompressorRecipes = List.of();
+    private final Map<CompressorRecipeHandler.CompressorJeiRecipe, CompressorRecipeHandler.CompressorJeiRecipe> knownCompressorRecipes = new LinkedHashMap<>();
+
+    @Override
+    public void onRuntimeAvailable(mezz.jei.api.runtime.IJeiRuntime runtime) {
+        this.runtime = runtime;
+        FractionRecipeClientSync.setRefresh(this::refreshFractions);
+        this.refreshFractions();
+        CompressorRecipeClientSync.setRefresh(this::refreshCompressorRecipes);
+        this.refreshCompressorRecipes();
+        CokerRecipeClientSync.setRefresh(this::refreshCokerRecipes);
+        this.refreshCokerRecipes();
+        MixerRecipeClientSync.setRefresh(this::refreshMixerRecipes);
+        this.refreshMixerRecipes();
+        CentrifugeRecipeClientSync.setRefresh(this::refreshCentrifugeRecipes);
+        this.refreshCentrifugeRecipes();
+    }
+
+    @Override
+    public void onRuntimeUnavailable() {
+        FractionRecipeClientSync.setRefresh(null);
+        CompressorRecipeClientSync.setRefresh(null);
+        CokerRecipeClientSync.setRefresh(null);
+        MixerRecipeClientSync.setRefresh(null);
+        CentrifugeRecipeClientSync.setRefresh(null);
+        this.displayedCentrifugeRecipes = List.of();
+        this.knownCentrifugeRecipes.clear();
+        this.displayedCokerRecipes = List.of();
+        this.knownCokerRecipes.clear();
+        this.displayedMixerRecipes = List.of();
+        this.knownMixerRecipes.clear();
+        this.runtime = null;
+        this.displayedFractions = List.of();
+        this.knownFractions.clear();
+        this.displayedCompressorRecipes = List.of();
+        this.knownCompressorRecipes.clear();
+    }
+
+    private static String fractionKey(FractioningRecipeHandler.FractionRecipe recipe) {
+        return recipe.input().getInternalName() + ":" + recipe.output1().type.getInternalName() + ":" + recipe.output1().fill + ":" + recipe.output1().pressure
+                + ":" + recipe.output2().type.getInternalName() + ":" + recipe.output2().fill + ":" + recipe.output2().pressure;
+    }
+
+    private void refreshFractions() {
+        if(this.runtime == null) return;
+        var manager = this.runtime.getRecipeManager();
+        // JEI's public API hides recipes instead of deleting them. Reuse identical rows on repeated snapshots.
+        manager.hideRecipes(FractioningRecipeHandler.RECIPE_TYPE, this.displayedFractions);
+        List<FractioningRecipeHandler.FractionRecipe> visible = new ArrayList<>();
+        List<FractioningRecipeHandler.FractionRecipe> added = new ArrayList<>();
+        for(var recipe : FractioningRecipeHandler.getRecipes()) {
+            String key = fractionKey(recipe);
+            var known = this.knownFractions.get(key);
+            if(known == null) {
+                known = recipe;
+                this.knownFractions.put(key, known);
+                added.add(known);
+            }
+            visible.add(known);
+        }
+        manager.addRecipes(FractioningRecipeHandler.RECIPE_TYPE, added);
+        manager.unhideRecipes(FractioningRecipeHandler.RECIPE_TYPE, visible);
+        this.displayedFractions = visible;
+    }
+
+    private void refreshCompressorRecipes() {
+        if(this.runtime == null) return;
+        var manager = this.runtime.getRecipeManager();
+        manager.hideRecipes(CompressorRecipeHandler.RECIPE_TYPE, this.displayedCompressorRecipes);
+        List<CompressorRecipeHandler.CompressorJeiRecipe> visible = new ArrayList<>();
+        List<CompressorRecipeHandler.CompressorJeiRecipe> added = new ArrayList<>();
+        for(var recipe : CompressorRecipeHandler.getRecipes()) {
+            // Record identity includes both pressures, amounts, duration and generic-example status.
+            var known = this.knownCompressorRecipes.get(recipe);
+            if(known == null) {
+                known = recipe;
+                this.knownCompressorRecipes.put(recipe, known);
+                added.add(known);
+            }
+            visible.add(known);
+        }
+        manager.addRecipes(CompressorRecipeHandler.RECIPE_TYPE, added);
+        manager.unhideRecipes(CompressorRecipeHandler.RECIPE_TYPE, visible);
+        this.displayedCompressorRecipes = visible;
+    }
+
+    private void refreshCentrifugeRecipes() {
+        if(this.runtime == null) return;
+        var manager = this.runtime.getRecipeManager();
+        manager.hideRecipes(CentrifugeRecipeHandler.RECIPE_TYPE, this.displayedCentrifugeRecipes);
+        List<CentrifugeRecipes.CentrifugeRecipe> visible = new ArrayList<>();
+        List<CentrifugeRecipes.CentrifugeRecipe> added = new ArrayList<>();
+        for(var recipe : CentrifugeRecipeHandler.getRecipes()) {
+            var known = this.knownCentrifugeRecipes.stream().filter(recipe::sameRecipe).findFirst().orElse(null);
+            if(known == null) {
+                known = recipe;
+                this.knownCentrifugeRecipes.add(known);
+                added.add(known);
+            }
+            visible.add(known);
+        }
+        manager.addRecipes(CentrifugeRecipeHandler.RECIPE_TYPE, added);
+        manager.unhideRecipes(CentrifugeRecipeHandler.RECIPE_TYPE, visible);
+        this.displayedCentrifugeRecipes = visible;
+    }
+
+    private void refreshCokerRecipes() {
+        if(this.runtime == null) return;
+        var manager = this.runtime.getRecipeManager();
+        manager.hideRecipes(CokingRecipeHandler.RECIPE_TYPE, this.displayedCokerRecipes);
+        List<CokingRecipeHandler.CokerJeiRecipe> visible = new ArrayList<>();
+        List<CokingRecipeHandler.CokerJeiRecipe> added = new ArrayList<>();
+        for(var recipe : CokingRecipeHandler.getRecipes()) {
+            var known = this.knownCokerRecipes.stream().filter(recipe::sameRecipe).findFirst().orElse(null);
+            if(known == null) {
+                known = recipe;
+                this.knownCokerRecipes.add(known);
+                added.add(known);
+            }
+            visible.add(known);
+        }
+        manager.addRecipes(CokingRecipeHandler.RECIPE_TYPE, added);
+        manager.unhideRecipes(CokingRecipeHandler.RECIPE_TYPE, visible);
+        this.displayedCokerRecipes = visible;
+    }
+
+    private void refreshMixerRecipes() {
+        if(this.runtime == null) return;
+        var manager = this.runtime.getRecipeManager();
+        manager.hideRecipes(MixingRecipeHandler.RECIPE_TYPE, this.displayedMixerRecipes);
+        List<MixingRecipeHandler.MixerJeiRecipe> visible = new ArrayList<>();
+        List<MixingRecipeHandler.MixerJeiRecipe> added = new ArrayList<>();
+        for(var recipe : MixingRecipeHandler.getRecipes()) {
+            var known = this.knownMixerRecipes.stream().filter(recipe::sameRecipe).findFirst().orElse(null);
+            if(known == null) {
+                known = recipe;
+                this.knownMixerRecipes.add(known);
+                added.add(known);
+            }
+            visible.add(known);
+        }
+        manager.addRecipes(MixingRecipeHandler.RECIPE_TYPE, added);
+        manager.unhideRecipes(MixingRecipeHandler.RECIPE_TYPE, visible);
+        this.displayedMixerRecipes = visible;
+    }
 
     @Override public ResourceLocation getPluginUid() { return NuclearTechMod.withDefaultNamespace("jei_plugin"); }
 
@@ -74,6 +236,10 @@ public class NtmJeiPlugin implements IModPlugin {
                 new ShredderRecipeHandler(guiHelper),
                 new RefineryRecipeHandler(guiHelper),
                 new CrackingRecipeHandler(guiHelper),
+                new FractioningRecipeHandler(guiHelper),
+                new CompressorRecipeHandler(guiHelper),
+                new CokingRecipeHandler(guiHelper),
+                new MixingRecipeHandler(guiHelper),
                 new BoilerRecipeHandler(guiHelper),
                 new CrucibleSmeltingRecipeHandler(guiHelper),
                 new CrucibleAlloyingRecipeHandler(guiHelper),
@@ -90,13 +256,32 @@ public class NtmJeiPlugin implements IModPlugin {
         registration.addRecipes(ArcFurnaceRecipeHandler.RECIPE_TYPE, ArcFurnaceRecipes.recipes);
         registration.addRecipes(AssemblyMachineRecipeHandler.RECIPE_TYPE, AssemblyMachineRecipes.INSTANCE.recipeOrderedList);
         registration.addRecipes(BlastFurnaceRecipeHandler.RECIPE_TYPE, BlastFurnaceRecipes.INSTANCE.recipeOrderedList);
-        registration.addRecipes(CentrifugeRecipeHandler.RECIPE_TYPE, CentrifugeRecipes.getJeiRecipes());
+        this.displayedCentrifugeRecipes = CentrifugeRecipeHandler.getRecipes();
+        this.knownCentrifugeRecipes.clear();
+        this.knownCentrifugeRecipes.addAll(this.displayedCentrifugeRecipes);
+        registration.addRecipes(CentrifugeRecipeHandler.RECIPE_TYPE, this.displayedCentrifugeRecipes);
         registration.addRecipes(ChemicalPlantRecipeHandler.RECIPE_TYPE, ChemicalPlantRecipes.INSTANCE.recipeOrderedList);
         registration.addRecipes(FurnaceCombinationRecipeHandler.RECIPE_TYPE, CombinationRecipes.getJeiRecipes());
         registration.addRecipes(PressRecipeHandler.RECIPE_TYPE, PressRecipeHandler.getRecipes());
         registration.addRecipes(ShredderRecipeHandler.RECIPE_TYPE, ShredderRecipes.getJeiRecipes());
         registration.addRecipes(RefineryRecipeHandler.RECIPE_TYPE, RefineryRecipeHandler.getRecipes());
         registration.addRecipes(CrackingRecipeHandler.RECIPE_TYPE, CrackingRecipeHandler.getRecipes());
+        this.displayedFractions = FractioningRecipeHandler.getRecipes();
+        this.knownFractions.clear();
+        for(var recipe : this.displayedFractions) this.knownFractions.put(fractionKey(recipe), recipe);
+        registration.addRecipes(FractioningRecipeHandler.RECIPE_TYPE, this.displayedFractions);
+        this.displayedCompressorRecipes = CompressorRecipeHandler.getRecipes();
+        this.knownCompressorRecipes.clear();
+        for(var recipe : this.displayedCompressorRecipes) this.knownCompressorRecipes.put(recipe, recipe);
+        registration.addRecipes(CompressorRecipeHandler.RECIPE_TYPE, this.displayedCompressorRecipes);
+        this.displayedCokerRecipes = CokingRecipeHandler.getRecipes();
+        this.knownCokerRecipes.clear();
+        this.knownCokerRecipes.addAll(this.displayedCokerRecipes);
+        registration.addRecipes(CokingRecipeHandler.RECIPE_TYPE, this.displayedCokerRecipes);
+        this.displayedMixerRecipes = MixingRecipeHandler.getRecipes();
+        this.knownMixerRecipes.clear();
+        this.knownMixerRecipes.addAll(this.displayedMixerRecipes);
+        registration.addRecipes(MixingRecipeHandler.RECIPE_TYPE, this.displayedMixerRecipes);
         registration.addRecipes(BoilerRecipeHandler.RECIPE_TYPE, BoilerRecipeHandler.getRecipes());
         registration.addRecipes(CrucibleSmeltingRecipeHandler.RECIPE_TYPE, CopperCastingRecipes.getMeltEntries());
         registration.addRecipes(CrucibleAlloyingRecipeHandler.RECIPE_TYPE, CrucibleRecipes.INSTANCE.recipeOrderedList);
@@ -105,6 +290,9 @@ public class NtmJeiPlugin implements IModPlugin {
 
     @Override
     public void registerRecipeCatalysts(IRecipeCatalystRegistration registration) {
+        registration.addRecipeCatalyst(NtmBlocks.MACHINE_COMPRESSOR.asItem(), CompressorRecipeHandler.RECIPE_TYPE);
+        registration.addRecipeCatalyst(NtmBlocks.MACHINE_COKER.asItem(), CokingRecipeHandler.RECIPE_TYPE);
+        registration.addRecipeCatalyst(NtmBlocks.MACHINE_MIXER.asItem(), MixingRecipeHandler.RECIPE_TYPE);
         for(com.hbm.blocks.machine.NTMAnvilBlock.Variant variant : com.hbm.blocks.machine.NTMAnvilBlock.Variant.values()) {
             registration.addRecipeCatalyst(
                     MetaHelper.newStack(NtmBlocks.ANVIL.asItem(), variant.ordinal()),
@@ -169,6 +357,7 @@ public class NtmJeiPlugin implements IModPlugin {
                 NtmBlocks.MACHINE_CATALYTIC_CRACKER.asItem(),
                 CrackingRecipeHandler.RECIPE_TYPE
         );
+        registration.addRecipeCatalyst(NtmBlocks.MACHINE_FRACTION_TOWER.asItem(), FractioningRecipeHandler.RECIPE_TYPE);
         registration.addRecipeCatalyst(
                 NtmBlocks.HEAT_BOILER.asItem(),
                 BoilerRecipeHandler.RECIPE_TYPE

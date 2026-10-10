@@ -385,11 +385,13 @@ public class NtmItems {
     public static final DeferredItem<Item> COIL_TUNGSTEN = ITEMS.register("coil_tungsten", () -> new Item(new Item.Properties()));
     public static final DeferredItem<Item> MOTOR = ITEMS.register("motor", () -> new Item(new Item.Properties()));
     public static final DeferredItem<Item> MOTOR_DESH = ITEMS.register("motor_desh", () -> new Item(new Item.Properties()));
+    public static final DeferredItem<Item> CENTRIFUGE_ELEMENT = ITEMS.register("centrifuge_element", () -> new Item(new Item.Properties()));
     public static final DeferredItem<Item> GEAR_LARGE = ITEMS.register("gear_large", () -> new Item(new Item.Properties()));
     public static final DeferredItem<Item> CAST_PLATE_WELDED = ITEMS.register("cast_plate_welded", () -> new CastPlateItem(new Item.Properties(), true));
     public static final DeferredItem<Item> CAST_PLATE = ITEMS.register("cast_plate", () -> new CastPlateItem(new Item.Properties(), false));
     public static final DeferredItem<Item> MOLD_BASE = ITEMS.register("mold_base", () -> new Item(new Item.Properties().stacksTo(1)));
     public static final DeferredItem<Item> MOLD_PLATE_CAST = ITEMS.register("mold_plate_cast", () -> new Item(new Item.Properties().stacksTo(1)));
+    public static final DeferredItem<Item> MOLD_INGOT = ITEMS.register("mold_ingot", () -> new Item(new Item.Properties().stacksTo(1)));
     public static final DeferredItem<Item> SCRAPS = ITEMS.register("scraps", () -> new CopperScrapsItem(new Item.Properties().stacksTo(1)));
     public static final DeferredItem<Item> PIPES_STEEL = ITEMS.register("pipes_steel", () -> new Item(new Item.Properties()));
     public static final DeferredItem<Item> CRT_DISPLAY = ITEMS.register("crt_display", () -> new Item(new Item.Properties()));
@@ -417,6 +419,7 @@ public class NtmItems {
     public static final DeferredItem<Item> PELLET_CHARGED = ITEMS.register("pellet_charged", () -> new Item(new Item.Properties()));
     public static final DeferredItem<Item> GLYPHID_MEAT = ITEMS.register("glyphid_meat", () -> new Item(new Item.Properties().food(NtmFoods.GLYPHID_MEAT)));
     public static final DeferredItem<Item> SOLID_FUEL = ITEMS.register("solid_fuel", () -> new Item(new Item.Properties()));
+    public static final DeferredItem<Item> PISTON_SET = ITEMS.register("piston_set", () -> new PistonSetItem(new Item.Properties()));
     public static final DeferredItem<Item> CANISTER_EMPTY = ITEMS.register("canister_empty", () -> new Item(new Item.Properties()));
     public static final DeferredItem<Item> CANISTER_NAPALM = ITEMS.register("canister_napalm", () -> new Item(new Item.Properties()));
     public static final DeferredItem<Item> FUEL_ADDITIVE = ITEMS.register("fuel_additive", () -> new FuelAdditiveItem(new Item.Properties()));

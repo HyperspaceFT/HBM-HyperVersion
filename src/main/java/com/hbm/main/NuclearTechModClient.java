@@ -14,6 +14,12 @@ import com.hbm.handler.HazmatRegistry;
 import com.hbm.hazard.HazardSystem;
 import com.hbm.interfaces.IHoldableWeapon;
 import com.hbm.interfaces.Spaghetti;
+import com.hbm.inventory.NtmMenuTypes;
+import com.hbm.inventory.screens.MachineDieselScreen;
+import com.hbm.inventory.screens.MachineCompressorScreen;
+import com.hbm.inventory.screens.MachineCokerScreen;
+import com.hbm.inventory.screens.MachineMixerScreen;
+import com.hbm.inventory.screens.MachineCombustionEngineScreen;
 import com.hbm.inventory.MetaHelper;
 import com.hbm.inventory.fluid.FluidType;
 import com.hbm.inventory.fluid.Fluids;
@@ -135,6 +141,15 @@ public class NuclearTechModClient {
 
     public NuclearTechModClient(ModContainer modContainer) {
         modContainer.registerExtensionPoint(IConfigScreenFactory.class, ConfigurationScreen::new);
+    }
+
+    @SubscribeEvent
+    public static void registerScreens(RegisterMenuScreensEvent event) {
+        event.register(NtmMenuTypes.MACHINE_DIESEL.get(), MachineDieselScreen::new);
+        event.register(NtmMenuTypes.MACHINE_COMPRESSOR.get(), MachineCompressorScreen::new);
+        event.register(NtmMenuTypes.MACHINE_COKER.get(), MachineCokerScreen::new);
+        event.register(NtmMenuTypes.MACHINE_MIXER.get(), MachineMixerScreen::new);
+        event.register(NtmMenuTypes.MACHINE_COMBUSTION_ENGINE.get(), MachineCombustionEngineScreen::new);
     }
 
     @SubscribeEvent

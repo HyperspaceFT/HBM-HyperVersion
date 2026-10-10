@@ -6,6 +6,9 @@ import com.hbm.blockentity.machine.boiler.MachineHeatBoilerBlockEntity;
 import com.hbm.blockentity.machine.boiler.MachineIndustrialBoilerBlockEntity;
 import com.hbm.blockentity.machine.heater.*;
 import com.hbm.blockentity.machine.oil.MachineCatalyticCrackerBlockEntity;
+import com.hbm.blockentity.machine.oil.MachineCokerBlockEntity;
+import com.hbm.blockentity.machine.oil.MachineFractionTowerBlockEntity;
+import com.hbm.blockentity.machine.oil.FractionSpacerBlockEntity;
 import com.hbm.blockentity.machine.oil.MachineFrackingTowerBlockEntity;
 import com.hbm.blockentity.machine.oil.MachineOilWellBlockEntity;
 import com.hbm.blockentity.machine.oil.MachinePumpjackBlockEntity;
@@ -167,6 +170,13 @@ public class NtmBlockEntityTypes {
                             NtmBlocks.MACHINE_CATALYTIC_CRACKER.get())
                     .build(null));
 
+    public static final Supplier<BlockEntityType<MachineFractionTowerBlockEntity>> MACHINE_FRACTION_TOWER = BLOCK_ENTITY_TYPES.register(
+            "machine_fraction_tower",
+            () -> BlockEntityType.Builder.of(MachineFractionTowerBlockEntity::new, NtmBlocks.MACHINE_FRACTION_TOWER.get()).build(null));
+    public static final Supplier<BlockEntityType<FractionSpacerBlockEntity>> FRACTION_SPACER = BLOCK_ENTITY_TYPES.register(
+            "fraction_spacer",
+            () -> BlockEntityType.Builder.of(FractionSpacerBlockEntity::new, NtmBlocks.FRACTION_SPACER.get()).build(null));
+
     public static final Supplier<BlockEntityType<MachineFurnaceCombinationBlockEntity>> FURNACE_COMBINATION = BLOCK_ENTITY_TYPES.register(
             "furnace_combination",
             () -> BlockEntityType.Builder.of(
@@ -191,6 +201,29 @@ public class NtmBlockEntityTypes {
             () -> BlockEntityType.Builder.of(
                             MachineBlastFurnaceBlockEntity::new,
                             NtmBlocks.MACHINE_BLAST_FURNACE.get())
+                    .build(null));
+
+    public static final Supplier<BlockEntityType<MachineCompressorBlockEntity>> MACHINE_COMPRESSOR = BLOCK_ENTITY_TYPES.register(
+            "machine_compressor",
+            () -> BlockEntityType.Builder.of(MachineCompressorBlockEntity::new, NtmBlocks.MACHINE_COMPRESSOR.get()).build(null));
+
+    public static final Supplier<BlockEntityType<MachineCokerBlockEntity>> MACHINE_COKER = BLOCK_ENTITY_TYPES.register(
+            "machine_coker",
+            () -> BlockEntityType.Builder.of(MachineCokerBlockEntity::new, NtmBlocks.MACHINE_COKER.get()).build(null));
+
+    public static final Supplier<BlockEntityType<MachineMixerBlockEntity>> MACHINE_MIXER = BLOCK_ENTITY_TYPES.register(
+            "machine_mixer",
+            () -> BlockEntityType.Builder.of(MachineMixerBlockEntity::new, NtmBlocks.MACHINE_MIXER.get()).build(null));
+
+    public static final Supplier<BlockEntityType<MachineCombustionEngineBlockEntity>> MACHINE_COMBUSTION_ENGINE = BLOCK_ENTITY_TYPES.register(
+            "machine_combustion_engine",
+            () -> BlockEntityType.Builder.of(MachineCombustionEngineBlockEntity::new, NtmBlocks.MACHINE_COMBUSTION_ENGINE.get()).build(null));
+
+    public static final Supplier<BlockEntityType<MachineDieselBlockEntity>> MACHINE_DIESEL = BLOCK_ENTITY_TYPES.register(
+            "machine_diesel",
+            () -> BlockEntityType.Builder.of(
+                            MachineDieselBlockEntity::new,
+                            NtmBlocks.MACHINE_DIESEL.get())
                     .build(null));
 
     public static final Supplier<BlockEntityType<MachineWoodBurnerBlockEntity>> MACHINE_WOOD_BURNER = BLOCK_ENTITY_TYPES.register(

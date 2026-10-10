@@ -19,7 +19,7 @@ import net.minecraft.world.inventory.AbstractContainerMenu;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.block.state.BlockState;
 
-/** Small cast-plate mold: three ingots, 200 ticks, reusable mold, one output at a time. Accepts any material with a cast plate. */
+/** Small cast-plate and Dura ingot molds: reusable molds and one output at a time. */
 public class FoundryMoldBlockEntity extends MachineBaseBlockEntity {
     public int amount;
     public int cooloff = 200;
@@ -30,13 +30,36 @@ public class FoundryMoldBlockEntity extends MachineBaseBlockEntity {
     }
 
     @Override protected Component getDefaultName() { return Component.translatable("block.hbmsntm.foundry_mold"); }
-    public boolean hasMold() { return this.slots.get(0).is(NtmItems.MOLD_PLATE_CAST.get()); }
-    public int getCapacity() { return this.hasMold() ? CopperCastingRecipes.PLATE_QUANTA : 0; }
+    private boolean hasPlateMold() { return this.slots.get(0).is(NtmItems.MOLD_PLATE_CAST.get()); }
+    private boolean hasIngotMold() { return this.slots.get(0).is(NtmItems.MOLD_INGOT.get()); }
+    public boolean hasMold() { return this.hasPlateMold() || this.hasIngotMold(); }
+    public int getCapacity() {
+        if(this.hasIngotMold()) return CopperCastingRecipes.INGOT_QUANTA;
+        if(this.hasPlateMold()) return CopperCastingRecipes.PLATE_QUANTA;
+        return 0;
+    }
+
+    private boolean accepts(NTMMaterial material) {
+        if(this.hasIngotMold()) return material == Mats.MAT_DURA;
+        return this.hasPlateMold() && CopperCastingRecipes.getPlateType(material) != null;
+    }
+
+    private static boolean accepts(ItemStack mold, NTMMaterial material) {
+        if(mold.is(NtmItems.MOLD_INGOT.get())) return material == Mats.MAT_DURA;
+        return mold.is(NtmItems.MOLD_PLATE_CAST.get()) && CopperCastingRecipes.getPlateType(material) != null;
+    }
+
+    private static int capacityFor(ItemStack mold, NTMMaterial material) {
+        if(!accepts(mold, material)) return 0;
+        return mold.is(NtmItems.MOLD_INGOT.get())
+                ? CopperCastingRecipes.INGOT_QUANTA
+                : CopperCastingRecipes.PLATE_QUANTA;
+    }
 
     /** Returns accepted quanta without mutating the caller's material stack. */
     public int pour(Mats.MaterialStack offered) {
         if(this.level == null || this.level.isClientSide || offered == null || offered.amount <= 0
-                || CopperCastingRecipes.getPlateType(offered.material) == null || !this.hasMold()
+                || !this.accepts(offered.material)
                 || !this.slots.get(1).isEmpty()) return 0;
         if(this.amount > 0 && this.type != offered.material) return 0;
         int accepted = Math.min(offered.amount, Math.max(0, this.getCapacity() - this.amount));
@@ -52,10 +75,12 @@ public class FoundryMoldBlockEntity extends MachineBaseBlockEntity {
     public void updateEntity() {
         if(this.level == null || this.level.isClientSide) return;
         int oldCooloff = this.cooloff;
-        if(this.hasMold() && CopperCastingRecipes.getPlateType(this.type) != null && this.amount == this.getCapacity()
+        if(this.accepts(this.type) && this.amount == this.getCapacity()
                 && this.slots.get(1).isEmpty()) {
             if(--this.cooloff <= 0) {
-                this.slots.set(1, CopperCastingRecipes.getPlate(this.type));
+                this.slots.set(1, this.hasIngotMold()
+                        ? new ItemStack(NtmItems.INGOT_DURA_STEEL.get())
+                        : CopperCastingRecipes.getPlate(this.type));
                 this.amount = 0;
                 this.type = null;
                 this.cooloff = 200;
@@ -69,7 +94,8 @@ public class FoundryMoldBlockEntity extends MachineBaseBlockEntity {
     }
 
     public boolean insertMold(ItemStack stack) {
-        if(!this.slots.get(0).isEmpty() || this.amount > 0 || !stack.is(NtmItems.MOLD_PLATE_CAST.get())) return false;
+        if(!this.slots.get(0).isEmpty() || this.amount > 0
+                || (!stack.is(NtmItems.MOLD_PLATE_CAST.get()) && !stack.is(NtmItems.MOLD_INGOT.get()))) return false;
         this.slots.set(0, stack.split(1));
         this.setChanged();
         return true;
@@ -89,10 +115,10 @@ public class FoundryMoldBlockEntity extends MachineBaseBlockEntity {
         return scraps;
     }
 
-    /** Materials without a plate output (or unknown IDs) are dropped on load, as Goal 5A did for non-copper IDs. */
-    private static NTMMaterial castableMaterial(int id) {
+    /** Drop unknown or mold-incompatible material state; valid cast-plate saves remain supported. */
+    private static NTMMaterial castableMaterial(int id, ItemStack mold) {
         NTMMaterial material = Mats.matById.get(id);
-        return CopperCastingRecipes.getPlateType(material) != null ? material : null;
+        return accepts(mold, material) ? material : null;
     }
 
     @Override public boolean canPlaceItem(int slot, ItemStack stack) { return false; }
@@ -107,8 +133,8 @@ public class FoundryMoldBlockEntity extends MachineBaseBlockEntity {
     }
     @Override protected void loadAdditional(CompoundTag tag, HolderLookup.Provider registries) {
         super.loadAdditional(tag, registries);
-        this.type = castableMaterial(tag.getInt("type"));
-        this.amount = this.type == null ? 0 : Math.clamp(tag.getInt("amount"), 0, CopperCastingRecipes.PLATE_QUANTA);
+        this.type = castableMaterial(tag.getInt("type"), this.slots.get(0));
+        this.amount = this.type == null ? 0 : Math.clamp(tag.getInt("amount"), 0, capacityFor(this.slots.get(0), this.type));
         this.cooloff = tag.contains("cooloff") ? Math.clamp(tag.getInt("cooloff"), 1, 200) : 200;
     }
     @Override public void serialize(RegistryFriendlyByteBuf buf) {
@@ -119,9 +145,12 @@ public class FoundryMoldBlockEntity extends MachineBaseBlockEntity {
     }
     @Override public void deserialize(RegistryFriendlyByteBuf buf) {
         super.deserialize(buf);
-        this.amount = buf.readInt(); this.cooloff = buf.readInt();
-        this.type = castableMaterial(buf.readInt());
+        int amount = buf.readInt();
+        this.cooloff = Math.clamp(buf.readInt(), 1, 200);
+        int type = buf.readInt();
         this.slots.set(0, ItemStack.OPTIONAL_STREAM_CODEC.decode(buf));
         this.slots.set(1, ItemStack.OPTIONAL_STREAM_CODEC.decode(buf));
+        this.type = castableMaterial(type, this.slots.get(0));
+        this.amount = this.type == null ? 0 : Math.clamp(amount, 0, capacityFor(this.slots.get(0), this.type));
     }
 }

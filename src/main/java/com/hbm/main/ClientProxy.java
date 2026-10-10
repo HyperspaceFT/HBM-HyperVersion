@@ -191,6 +191,8 @@ public class ClientProxy extends ServerProxy {
         BlockEntityRenderers.register(NtmBlockEntityTypes.HEATER_FIREBOX.get(), new RenderHeaterFirebox());
         BlockEntityRenderers.register(NtmBlockEntityTypes.MACHINE_STIRLING.get(), new RenderStirling());
         BlockEntityRenderers.register(NtmBlockEntityTypes.MACHINE_STEAM_ENGINE.get(), new RenderSteamEngine());
+        BlockEntityRenderers.register(NtmBlockEntityTypes.MACHINE_DIESEL.get(), new RenderDieselGen());
+        BlockEntityRenderers.register(NtmBlockEntityTypes.MACHINE_COMBUSTION_ENGINE.get(), new RenderCombustionEngine());
         BlockEntityRenderers.register(NtmBlockEntityTypes.PUMP_ELECTRIC.get(), new RenderPumpElectric());
         BlockEntityRenderers.register(NtmBlockEntityTypes.HEATER_OVEN.get(), new RenderHeatingOven());
         BlockEntityRenderers.register(NtmBlockEntityTypes.HEATER_OILBURNER.get(), new RenderOilburner());
@@ -201,6 +203,11 @@ public class ClientProxy extends ServerProxy {
         BlockEntityRenderers.register(NtmBlockEntityTypes.MACHINE_FRACKING_TOWER.get(), new RenderFrackingTower());
         BlockEntityRenderers.register(NtmBlockEntityTypes.MACHINE_REFINERY.get(), new RenderRefinery());
         BlockEntityRenderers.register(NtmBlockEntityTypes.MACHINE_CATALYTIC_CRACKER.get(), new RenderCatalyticCracker());
+        BlockEntityRenderers.register(NtmBlockEntityTypes.MACHINE_FRACTION_TOWER.get(), new RenderFractionTower());
+        BlockEntityRenderers.register(NtmBlockEntityTypes.MACHINE_COMPRESSOR.get(), new RenderCompressor());
+        BlockEntityRenderers.register(NtmBlockEntityTypes.MACHINE_COKER.get(), new RenderCoker());
+        BlockEntityRenderers.register(NtmBlockEntityTypes.MACHINE_MIXER.get(), new RenderMixer());
+        BlockEntityRenderers.register(NtmBlockEntityTypes.FRACTION_SPACER.get(), new RenderSpacer());
         BlockEntityRenderers.register(NtmBlockEntityTypes.FURNACE_COMBINATION.get(), new RenderFurnaceCombination());
         BlockEntityRenderers.register(NtmBlockEntityTypes.MACHINE_CRUCIBLE.get(), new RenderCrucible());
         BlockEntityRenderers.register(NtmBlockEntityTypes.MACHINE_BLAST_FURNACE.get(), new RenderBlastFurnace());

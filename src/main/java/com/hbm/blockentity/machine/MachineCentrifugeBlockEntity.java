@@ -1,12 +1,14 @@
 package com.hbm.blockentity.machine;
 
 import api.hbm.energymk2.IBatteryItem;
+import api.hbm.energymk2.PowerNetMK2;
 import api.hbm.energymk2.IEnergyReceiverMK2;
 import com.hbm.blockentity.IUpgradeInfoProvider;
 import com.hbm.blockentity.MachineBaseBlockEntity;
 import com.hbm.blockentity.NtmBlockEntityTypes;
 import com.hbm.blocks.NtmBlocks;
 import com.hbm.inventory.UpgradeManagerNT;
+import com.hbm.handler.CentrifugeRecipeClientSync;
 import com.hbm.inventory.menus.MachineCentrifugeMenu;
 import com.hbm.inventory.recipes.CentrifugeRecipes;
 import com.hbm.items.machine.MachineUpgradeItem;
@@ -15,6 +17,8 @@ import com.hbm.lib.Library;
 import com.hbm.registry.NtmSoundEvents;
 import com.hbm.sound.AudioWrapper;
 import com.hbm.util.BobMathUtil;
+import com.hbm.uninos.NodeNet;
+import com.hbm.uninos.UniNodespace;
 import com.hbm.util.fauxpointtwelve.DirPos;
 import net.minecraft.ChatFormatting;
 import net.minecraft.core.BlockPos;
@@ -32,6 +36,7 @@ import net.minecraft.world.item.TooltipFlag;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.AABB;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
@@ -75,6 +80,11 @@ public class MachineCentrifugeBlockEntity extends MachineBaseBlockEntity impleme
             return;
         }
 
+        long previousPower = this.power;
+        int previousProgress = this.progress;
+        boolean previousProgressing = this.isProgressing;
+        ItemStack previousBattery = this.slots.get(SLOT_BATTERY).copy();
+
         for(DirPos dirPos : this.getConPos()) {
             this.trySubscribe(this.level, dirPos);
         }
@@ -110,6 +120,8 @@ public class MachineCentrifugeBlockEntity extends MachineBaseBlockEntity impleme
         }
 
         this.power = Math.max(0L, Math.min(this.power, this.getMaxPower()));
+        if(this.power != previousPower || this.progress != previousProgress || this.isProgressing != previousProgressing
+                || !ItemStack.matches(previousBattery, this.slots.get(SLOT_BATTERY))) this.setChanged();
         this.networkPackNT(25);
     }
 
@@ -249,7 +261,8 @@ public class MachineCentrifugeBlockEntity extends MachineBaseBlockEntity impleme
 
     @Override
     public boolean canPlaceItem(int slot, ItemStack stack) {
-        if(slot == SLOT_INPUT) return CentrifugeRecipes.hasRecipe(stack);
+        if(slot == SLOT_INPUT) return this.level != null && this.level.isClientSide
+                ? CentrifugeRecipeClientSync.hasRecipe(stack) : CentrifugeRecipes.hasRecipe(stack);
         if(slot == SLOT_BATTERY) return stack.getItem() instanceof IBatteryItem;
         if(slot >= SLOT_UPGRADE_START && slot <= SLOT_UPGRADE_END) {
             return stack.getItem() instanceof MachineUpgradeItem item && this.getValidUpgrades().containsKey(item.type);
@@ -270,8 +283,9 @@ public class MachineCentrifugeBlockEntity extends MachineBaseBlockEntity impleme
     @Override
     protected void loadAdditional(CompoundTag tag, HolderLookup.Provider registries) {
         super.loadAdditional(tag, registries);
-        this.power = tag.getLong("power");
-        this.progress = tag.getInt("progress");
+        this.power = Math.max(0L, Math.min(tag.getLong("power"), this.getMaxPower()));
+        int savedProgress = tag.getInt("progress");
+        this.progress = savedProgress >= 0 && savedProgress < PROCESSING_SPEED ? savedProgress : 0;
         this.isProgressing = tag.getBoolean("isProgressing");
     }
 
@@ -306,7 +320,8 @@ public class MachineCentrifugeBlockEntity extends MachineBaseBlockEntity impleme
 
     @Override
     public void setPower(long power) {
-        this.power = power;
+        long bounded = Math.max(0L, Math.min(power, this.getMaxPower()));
+        if(this.power != bounded) { this.power = bounded; this.setChanged(); }
     }
 
     @Override
@@ -323,8 +338,30 @@ public class MachineCentrifugeBlockEntity extends MachineBaseBlockEntity impleme
         return AudioWrapper.getLoopedSound(NtmSoundEvents.CENTRIFUGE_OPERATE.get(), SoundSource.BLOCKS, this, 1.0F, 15F, 1.0F, 20);
     }
 
+    private void removeNetworkSubscriptions() {
+        if(this.level == null || this.level.isClientSide) return;
+        for(NodeNet net : new ArrayList<>(UniNodespace.activeNodeNets)) {
+            if(net instanceof PowerNetMK2 powerNet) powerNet.removeReceiver(this);
+        }
+    }
+
+    @Override
+    public ItemStack removeItemNoUpdate(int slot) {
+        ItemStack removed = super.removeItemNoUpdate(slot);
+        if(!removed.isEmpty()) this.setChanged();
+        return removed;
+    }
+
+    @Override
+    public void clearContent() {
+        boolean changed = !this.isEmpty();
+        super.clearContent();
+        if(changed) this.setChanged();
+    }
+
     @Override
     public void onChunkUnloaded() {
+        this.removeNetworkSubscriptions();
         super.onChunkUnloaded();
         if(this.audio != null) {
             this.audio.stopSound();
@@ -334,6 +371,7 @@ public class MachineCentrifugeBlockEntity extends MachineBaseBlockEntity impleme
 
     @Override
     public void setRemoved() {
+        this.removeNetworkSubscriptions();
         super.setRemoved();
         if(this.audio != null) {
             this.audio.stopSound();

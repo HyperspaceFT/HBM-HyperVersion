@@ -8,6 +8,7 @@ import com.hbm.blockentity.IUpgradeInfoProvider;
 import com.hbm.blockentity.MachineBaseBlockEntity;
 import com.hbm.blocks.NtmBlocks;
 import com.hbm.inventory.UpgradeManagerNT;
+import com.hbm.inventory.fluid.FluidType;
 import com.hbm.inventory.fluid.Fluids;
 import com.hbm.inventory.fluid.tank.FluidTank;
 import com.hbm.items.machine.MachineUpgradeItem;
@@ -103,8 +104,8 @@ public abstract class OilDrillBaseBlockEntity extends MachineBaseBlockEntity imp
 
             this.updateConnections();
 
-            this.tanks[0].unloadTank(this.level, 1, 2, slots);
-            this.tanks[1].unloadTank(this.level, 3, 4, slots);
+            if(this.tanks[0].unloadTank(this.level, 1, 2, slots)) this.setChanged();
+            if(this.tanks[1].unloadTank(this.level, 3, 4, slots)) this.setChanged();
 
             upgradeManager.checkSlots(slots, 5, 7);
             this.speedLevel = upgradeManager.getLevel(UpgradeType.SPEED);
@@ -116,6 +117,7 @@ public abstract class OilDrillBaseBlockEntity extends MachineBaseBlockEntity imp
 
             if(toBurn > 0) {
                 tanks[1].setFill(tanks[1].getFill() - toBurn);
+                this.setChanged();
                 this.power += toBurn * 5;
 
                 if(this.power > this.getMaxPower()) this.power = this.getMaxPower();
@@ -138,7 +140,19 @@ public abstract class OilDrillBaseBlockEntity extends MachineBaseBlockEntity imp
 
                         if(!this.level.getBlockState(new BlockPos(this.getBlockPos().getX(), y, this.getBlockPos().getZ())).is(NtmBlocks.OIL_PIPE.get())) {
 
-                            if(this.trySuck(y)) {
+                            // Subclasses also extract bedrock oil and consume solution outside the base doSuck branch.
+                            FluidTank[] extractionTanks = this.getAllTanks();
+                            int[] previousFills = new int[extractionTanks.length];
+                            for(int i = 0; i < extractionTanks.length; i++) previousFills[i] = extractionTanks[i].getFill();
+                            boolean sucked = this.trySuck(y);
+                            for(int i = 0; i < extractionTanks.length; i++) {
+                                if(previousFills[i] != extractionTanks[i].getFill()) {
+                                    this.setChanged();
+                                    break;
+                                }
+                            }
+
+                            if(sucked) {
                                 break;
                             } else {
                                 this.tryDrill(y);
@@ -278,7 +292,11 @@ public abstract class OilDrillBaseBlockEntity extends MachineBaseBlockEntity imp
         if(this.level == null) return;
 
         if(this.level.getBlockState(pos).is(NtmBlocks.ORE_OIL.get())) {
+            int previousOil = this.tanks[0].getFill();
+            int previousGas = this.tanks[1].getFill();
             this.onSuck(pos);
+            // The extracted deposit can be in another chunk; its block change does not dirty the core's chunk.
+            if(previousOil != this.tanks[0].getFill() || previousGas != this.tanks[1].getFill()) this.setChanged();
         }
     }
 
@@ -290,6 +308,20 @@ public abstract class OilDrillBaseBlockEntity extends MachineBaseBlockEntity imp
     @Override public FluidTank[] getSendingTanks() { return tanks; }
     @Override public FluidTank[] getReceivingTanks() { return new FluidTank[0]; }
     @Override public FluidTank[] getAllTanks() { return tanks; }
+
+    @Override
+    public long transferFluid(FluidType type, int pressure, long amount) {
+        long remainder = IFluidStandardTransceiverMK2.super.transferFluid(type, pressure, amount);
+        if(remainder < amount) this.setChanged();
+        return remainder;
+    }
+
+    @Override
+    public void useUpFluid(FluidType type, int pressure, long amount) {
+        long previous = this.getFluidAvailable(type, pressure);
+        IFluidStandardTransceiverMK2.super.useUpFluid(type, pressure, amount);
+        if(this.getFluidAvailable(type, pressure) != previous) this.setChanged();
+    }
 
     public abstract DirPos[] getConPos();
 

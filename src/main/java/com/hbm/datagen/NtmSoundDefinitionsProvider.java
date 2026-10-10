@@ -16,6 +16,13 @@ public class NtmSoundDefinitionsProvider extends SoundDefinitionsProvider {
     @Override
     public void registerSounds() {
 
+        this.add(NtmSoundEvents.STEP_METAL_BLOCK, SoundDefinition.definition()
+                .with(sound(NuclearTechMod.withDefaultNamespace("footsteps/metal_step1")),
+                        sound(NuclearTechMod.withDefaultNamespace("footsteps/metal_step2")),
+                        sound(NuclearTechMod.withDefaultNamespace("footsteps/metal_step3")),
+                        sound(NuclearTechMod.withDefaultNamespace("footsteps/metal_step4")))
+                .subtitle("subtitles.block.hbmsntm.steel_grate.step"));
+
         // WEAPONS
         this.add(NtmSoundEvents.GUN_REVOLVER_COCK, SoundDefinition.definition()
                 .with(sound(NuclearTechMod.withDefaultNamespace("weapon/reload/revolver_cock")))
@@ -214,6 +221,18 @@ public class NtmSoundDefinitionsProvider extends SoundDefinitionsProvider {
         this.add(NtmSoundEvents.WARN_OVERSPEED, SoundDefinition.definition()
                 .subtitle("subtitles.block.warn_overspeed")
                 .with(sound(NuclearTechMod.withDefaultNamespace("block/warn_overspeed")))
+        );
+        this.add(NtmSoundEvents.ENGINE_LOOP, SoundDefinition.definition()
+                .subtitle("subtitles.block.engine")
+                .with(sound(NuclearTechMod.withDefaultNamespace("block/engine")))
+        );
+        this.add(NtmSoundEvents.COMPRESSOR_STROKE, SoundDefinition.definition()
+                .subtitle("subtitles.block.compressor_stroke")
+                .with(sound(NuclearTechMod.withDefaultNamespace("tool/boltgun")))
+        );
+        this.add(NtmSoundEvents.IGENERATOR_OPERATE, SoundDefinition.definition()
+                .subtitle("subtitles.block.igenerator_operate")
+                .with(sound(NuclearTechMod.withDefaultNamespace("block/igenerator_operate")))
         );
         this.add(NtmSoundEvents.STEAM_ENGINE_OPERATE, SoundDefinition.definition()
                 .subtitle("subtitles.block.steam_engine_operate")

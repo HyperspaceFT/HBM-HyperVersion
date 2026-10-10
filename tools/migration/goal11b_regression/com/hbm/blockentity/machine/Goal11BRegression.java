@@ -548,7 +548,7 @@ public class Goal11BRegression {
         // One item per slot that the menu accepts there (so the face rule is not just canPlaceItem saying no).
         Map<Integer, ItemStack> representative = new LinkedHashMap<>();
         representative.put(0, pack());
-        representative.put(1, canister());
+        representative.put(1, full(Fluids.HOTOIL));
         representative.put(3, canister());
         representative.put(5, canister());
         representative.put(7, canister());
@@ -556,7 +556,12 @@ public class Goal11BRegression {
         representative.put(12, identifier);
         boolean menuAccepts = true;
         for(Map.Entry<Integer, ItemStack> e : representative.entrySet()) menuAccepts &= rf.canPlaceItem(e.getKey(), e.getValue());
-        check(menuAccepts, "the representative items are accepted by the menu rule: battery in 0, empty canisters in 1/3/5/7/9, identifier in 12");
+        check(menuAccepts, "the representative items are accepted by the menu rule: battery in 0, full hot-oil canister in 1, empty canisters in 3/5/7/9, identifier in 12");
+        check(rf.canPlaceItem(1, full(Fluids.HOTOIL)), "slot 1 accepts a matching full hot-oil canister");
+        check(!rf.canPlaceItem(1, canister()), "slot 1 rejects an empty canister");
+        check(!rf.canPlaceItem(1, full(Fluids.HEAVYOIL)), "slot 1 rejects a full canister of the wrong fluid");
+        check(base.canPlaceItem(1, canister()) && !base.canPlaceItem(1, full(Fluids.HOTOIL)),
+                "the post-Goal 11A slot 1 accepted empty canisters and rejected full hot oil: the reviewed input-slot defect");
         List<ItemStack> items = List.of(pack(), canister(), full(Fluids.HOTOIL), full(Fluids.HEAVYOIL), identifier, new ItemStack(NtmItems.SULFUR.get()),
                 new ItemStack(NtmItems.OIL_TAR_CRACK.get()), new ItemStack(Items.COAL));
         boolean noInsert = true, takeOnly11 = true;
@@ -574,15 +579,16 @@ public class Goal11BRegression {
         check(base.canPlaceItemThroughFace(0, pack(), Direction.UP) && base.canTakeItemThroughFace(2, canister(), Direction.UP),
                 "the post-Goal 11A refinery still inserted through faces (battery into slot 0) and took from slot 2: the rule above is the Goal 11B change");
 
-        // The menu rule is unchanged: every slot and item against the post-Goal 11A class, with the same tank types.
+        // Apart from the reviewed slot 1 fix, menu rules stay equal to Goal 11A, with the same tank types.
         boolean unchanged = true;
         List<String> diff = new ArrayList<>();
         List<ItemStack> all = new ArrayList<>(items);
         all.addAll(representative.values());
         for(int slot = 0; slot < 13; slot++) for(ItemStack stack : all) {
+            if(slot == 1) continue;
             if(rf.canPlaceItem(slot, stack) != base.canPlaceItem(slot, stack)) { unchanged = false; diff.add(slot + " " + id(stack)); }
         }
-        check(unchanged, "canPlaceItem (menu slots) answers as the post-Goal 11A refinery for slots 0-12 and every test item: " + diff);
+        check(unchanged, "canPlaceItem (menu slots) answers as the post-Goal 11A refinery for slots 0-12 except the reviewed slot 1 fix, and every test item: " + diff);
         for(int slot : new int[] {0, 1, 3, 5, 7, 9, 12}) {
             boolean accepted = false;
             for(ItemStack stack : all) accepted |= rf.canPlaceItem(slot, stack);

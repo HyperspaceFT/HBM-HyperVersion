@@ -7,6 +7,7 @@ import com.hbm.blockentity.LoadedBaseBlockEntity;
 import com.hbm.blockentity.NtmBlockEntityTypes;
 import com.hbm.blocks.DummyableBlock;
 import com.hbm.inventory.FluidStack;
+import com.hbm.inventory.fluid.FluidType;
 import com.hbm.inventory.fluid.Fluids;
 import com.hbm.inventory.fluid.tank.FluidTank;
 import com.hbm.inventory.recipes.CrackingRecipes;
@@ -17,6 +18,8 @@ import net.minecraft.core.Direction;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.RegistryFriendlyByteBuf;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.AABB;
 
@@ -99,15 +102,21 @@ public class MachineCatalyticCrackerBlockEntity extends LoadedBaseBlockEntity im
         Pair<FluidStack, FluidStack> quart = CrackingRecipes.getCracking(this.tanks[0].getTankType());
 
         if(quart != null) {
-            this.tanks[1].setTankType(Fluids.STEAM);
-            this.tanks[2].setTankType(quart.getKey().type);
-            this.tanks[3].setTankType(quart.getValue().type);
-            this.tanks[4].setTankType(Fluids.SPENTSTEAM);
+            this.setTankType(1, Fluids.STEAM);
+            this.setTankType(2, quart.getKey().type);
+            this.setTankType(3, quart.getValue().type);
+            this.setTankType(4, Fluids.SPENTSTEAM);
         } else {
-            this.tanks[2].setTankType(Fluids.NONE);
-            this.tanks[3].setTankType(Fluids.NONE);
-            this.tanks[4].setTankType(Fluids.NONE);
+            this.setTankType(2, Fluids.NONE);
+            this.setTankType(3, Fluids.NONE);
+            this.setTankType(4, Fluids.NONE);
         }
+    }
+
+    private void setTankType(int index, FluidType type) {
+        if(this.tanks[index].getTankType() == type) return;
+        this.tanks[index].setTankType(type);
+        this.setChanged();
     }
 
     /**
@@ -201,7 +210,28 @@ public class MachineCatalyticCrackerBlockEntity extends LoadedBaseBlockEntity im
     }
 
     @Override
+    public long transferFluid(FluidType type, int pressure, long amount) {
+        long remainder = IFluidStandardTransceiverMK2.super.transferFluid(type, pressure, amount);
+        if(remainder < amount) this.setChanged();
+        return remainder;
+    }
+
+    @Override
+    public void useUpFluid(FluidType type, int pressure, long amount) {
+        long previous = this.getFluidAvailable(type, pressure);
+        IFluidStandardTransceiverMK2.super.useUpFluid(type, pressure, amount);
+        if(this.getFluidAvailable(type, pressure) != previous) this.setChanged();
+    }
+
+    @Override
     public FluidTank getTankToPaste() {
         return this.tanks[0];
+    }
+
+    @Override
+    public void pasteSettings(CompoundTag tag, int index, Level level, Player player, BlockPos pos) {
+        FluidType previous = this.tanks[0].getTankType();
+        IFluidCopiable.super.pasteSettings(tag, index, level, player, pos);
+        if(this.tanks[0].getTankType() != previous) this.setChanged();
     }
 }

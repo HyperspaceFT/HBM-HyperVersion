@@ -27,8 +27,8 @@ public class MachineSolderingStationBlock extends DummyableBlock {
         DummyBlockType type = state.getValue(TYPE);
         return switch(type) {
             case CORE -> new MachineSolderingStationBlockEntity(pos, state);
-            case EXTRA -> new ProxyComboBlockEntity(pos, state).inventory().power().fluid();
-            default -> null;
+            // Upstream gives every non-core part a proxy; DUMMY also covers already placed stations.
+            case DUMMY, EXTRA -> new ProxyComboBlockEntity(pos, state).inventory().power().fluid();
         };
     }
 

@@ -297,11 +297,13 @@ public class NtmCreativeTabs {
                         output.accept(NtmItems.COIL_TUNGSTEN.get());
                         output.accept(NtmItems.MOTOR.get());
                         output.accept(NtmItems.MOTOR_DESH.get());
+                        output.accept(NtmItems.CENTRIFUGE_ELEMENT.get());
                         output.accept(NtmItems.GEAR_LARGE.get());
                         addMetaItems(output, NtmItems.CAST_PLATE_WELDED.get());
                         addMetaItems(output, NtmItems.CAST_PLATE.get());
                         output.accept(NtmItems.MOLD_BASE.get());
                         output.accept(NtmItems.MOLD_PLATE_CAST.get());
+                        output.accept(NtmItems.MOLD_INGOT.get());
                         // One ingot's worth per crucible material, like upstream ItemScraps.getSubItems.
                         for(NTMMaterial material : Mats.orderedList) {
                             output.accept(CopperScrapsItem.create(new Mats.MaterialStack(material, MaterialShapes.INGOT.q(1))));
@@ -329,6 +331,7 @@ public class NtmCreativeTabs {
                         output.accept(NtmItems.PLANT_ITEM.get());
                         output.accept(NtmBlocks.PLANT_FLOWER.get());
                         addMetaItems(output, NtmItems.PART_GENERIC.get());
+                        addMetaItems(output, NtmItems.PISTON_SET.get());
                         output.accept(NtmItems.CANISTER_EMPTY.get());
                         output.accept(NtmItems.CANISTER_NAPALM.get());
                         addMetaItems(output, NtmItems.FUEL_ADDITIVE.get());
@@ -668,6 +671,8 @@ public class NtmCreativeTabs {
                         output.accept(NtmBlocks.BRICK_FIRE);
                         output.accept(NtmBlocks.REINFORCED_LAMINATE);
                         output.accept(NtmBlocks.STEEL_SCAFFOLD);
+                        output.accept(NtmBlocks.STEEL_BEAM);
+                        output.accept(NtmBlocks.STEEL_GRATE);
                         output.accept(NtmBlocks.SAND_QUARTZ);
                         output.accept(NtmBlocks.GLASS_QUARTZ);
 
@@ -804,11 +809,18 @@ public class NtmCreativeTabs {
                         output.accept(NtmBlocks.MACHINE_FRACKING_TOWER);
                         output.accept(NtmBlocks.MACHINE_REFINERY);
                         output.accept(NtmBlocks.MACHINE_CATALYTIC_CRACKER);
+                        output.accept(NtmBlocks.MACHINE_FRACTION_TOWER);
+                        output.accept(NtmBlocks.MACHINE_COMPRESSOR);
+                        output.accept(NtmBlocks.MACHINE_COKER);
+                        output.accept(NtmBlocks.MACHINE_MIXER);
+                        output.accept(NtmBlocks.FRACTION_SPACER);
                         output.accept(NtmBlocks.MACHINE_ARC_FURNACE);
                         output.accept(NtmBlocks.FURNACE_COMBINATION);
                         output.accept(NtmBlocks.MACHINE_CRUCIBLE);
                         output.accept(NtmBlocks.FOUNDRY_MOLD);
                         output.accept(NtmBlocks.MACHINE_BLAST_FURNACE);
+                        output.accept(NtmBlocks.MACHINE_COMBUSTION_ENGINE);
+                        output.accept(NtmBlocks.MACHINE_DIESEL);
                         output.accept(NtmBlocks.MACHINE_WOOD_BURNER);
                         output.accept(NtmBlocks.MACHINE_CENTRIFUGE);
                         output.accept(NtmBlocks.MACHINE_CHEMICAL_PLANT);

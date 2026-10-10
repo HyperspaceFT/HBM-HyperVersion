@@ -376,11 +376,13 @@ public class NtmItemModelProvider extends ItemModelProvider {
 
         this.basicItem(NtmItems.MOTOR.get());
         this.basicItem(NtmItems.MOTOR_DESH.get());
+        this.basicItem(NtmItems.CENTRIFUGE_ELEMENT.get());
         this.basicItem(NtmItems.GEAR_LARGE.get());
         this.basicItem(NtmItems.CAST_PLATE_WELDED.get());
         this.basicItem(NtmItems.CAST_PLATE.get());
         this.basicItem(NtmItems.MOLD_BASE.get());
         this.basicItem(NtmItems.MOLD_PLATE_CAST.get());
+        this.basicItem(NtmItems.MOLD_INGOT.get());
         this.registerScraps();
         this.basicItem(NtmItems.PIPES_STEEL.get());
         this.basicItem(NtmItems.CRT_DISPLAY.get());

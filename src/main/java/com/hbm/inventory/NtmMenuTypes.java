@@ -27,6 +27,11 @@ public class NtmMenuTypes {
     public static final DeferredHolder<MenuType<?>, MenuType<MachineFurnaceCombinationMenu>> FURNACE_COMBINATION = reg("furnace_combination", MachineFurnaceCombinationMenu::new);
     public static final DeferredHolder<MenuType<?>, MenuType<MachineCrucibleMenu>> MACHINE_CRUCIBLE = reg("machine_crucible", MachineCrucibleMenu::new);
     public static final DeferredHolder<MenuType<?>, MenuType<MachineBlastFurnaceMenu>> MACHINE_BLAST_FURNACE = reg("machine_blast_furnace", MachineBlastFurnaceMenu::new);
+    public static final DeferredHolder<MenuType<?>, MenuType<MachineCombustionEngineMenu>> MACHINE_COMBUSTION_ENGINE = reg("machine_combustion_engine", MachineCombustionEngineMenu::new);
+    public static final DeferredHolder<MenuType<?>, MenuType<MachineDieselMenu>> MACHINE_DIESEL = reg("machine_diesel", MachineDieselMenu::new);
+    public static final DeferredHolder<MenuType<?>, MenuType<MachineCompressorMenu>> MACHINE_COMPRESSOR = reg("machine_compressor", MachineCompressorMenu::new);
+    public static final DeferredHolder<MenuType<?>, MenuType<MachineCokerMenu>> MACHINE_COKER = reg("machine_coker", MachineCokerMenu::new);
+    public static final DeferredHolder<MenuType<?>, MenuType<MachineMixerMenu>> MACHINE_MIXER = reg("machine_mixer", MachineMixerMenu::new);
     public static final DeferredHolder<MenuType<?>, MenuType<MachineWoodBurnerMenu>> MACHINE_WOOD_BURNER = reg("machine_wood_burner", MachineWoodBurnerMenu::new);
     public static final DeferredHolder<MenuType<?>, MenuType<MachineCentrifugeMenu>> MACHINE_CENTRIFUGE = reg("machine_centrifuge", MachineCentrifugeMenu::new);
     public static final DeferredHolder<MenuType<?>, MenuType<MachineChemicalPlantMenu>> MACHINE_CHEMICAL_PLANT = reg("machine_chemical_plant", MachineChemicalPlantMenu::new);

@@ -8,6 +8,7 @@ import com.hbm.blocks.generic.LayeringBlock;
 import com.hbm.blocks.generic.OreBasaltBlock;
 import com.hbm.blocks.generic.OreBasaltBlock.BasaltOreType;
 import com.hbm.blocks.generic.SellafieldSlakedBlock;
+import com.hbm.blocks.generic.SteelGrateBlock;
 import com.hbm.blocks.network.FluidDuctConnectingBlock;
 import com.hbm.blocks.states.NtmBlockStateProperties;
 import com.hbm.main.NuclearTechMod;
@@ -165,6 +166,14 @@ public class NtmBlockStateProvider extends BlockStateProvider {
         this.simpleCubeAllBlock(NtmBlocks.DUCRETE_BRICK);
         this.simpleCubeAllBlock(NtmBlocks.REINFORCED_LAMINATE);
         this.simpleCubeAllBlock(NtmBlocks.STEEL_SCAFFOLD);
+        this.steelBeamBlock();
+        this.steelGrateBlock();
+        this.particleOnlyBlock(NtmBlocks.FRACTION_SPACER, modLoc("block/block_steel"));
+        this.particleOnlyBlock(NtmBlocks.MACHINE_FRACTION_TOWER, modLoc("block/block_steel"));
+        this.particleOnlyBlock(NtmBlocks.MACHINE_COMPRESSOR, modLoc("block/block_steel"));
+        this.particleOnlyBlock(NtmBlocks.MACHINE_COKER, modLoc("block/block_steel"));
+        this.particleOnlyBlock(NtmBlocks.MACHINE_MIXER, modLoc("block/block_steel"));
+        this.particleOnlyBlock(NtmBlocks.MACHINE_COMBUSTION_ENGINE, modLoc("block/block_steel"));
         this.simpleCubeAllBlock(NtmBlocks.SAND_QUARTZ);
         this.simpleCubeAllBlock(NtmBlocks.GLASS_QUARTZ);
         this.simpleCubeAllBlock(NtmBlocks.TRANSFORMER);
@@ -733,6 +742,50 @@ public class NtmBlockStateProvider extends BlockStateProvider {
                 .face(Direction.SOUTH).texture("#side").end()
                 .face(Direction.WEST).texture("#side").end()
                 .face(Direction.EAST).texture("#side").end().end();
+    }
+
+    private void steelBeamBlock() {
+        // beam.obj is an unrotated 1/8-wide column. Its sides use the first 1/8 of the texture width.
+        BlockModelBuilder model = this.models().getBuilder("steel_beam")
+                .texture("particle", modLoc("block/steel_beam")).texture("beam", modLoc("block/steel_beam"));
+        var element = model.element().from(7, 0, 7).to(9, 16, 9);
+        for(Direction face : Direction.values()) {
+            var builder = element.face(face).texture("#beam");
+            if(face.getAxis() == Direction.Axis.Y) {
+                // The original OBJ loader flips V; its cap patch is the bottom-right 2x2 texels.
+                builder.uvs(2, 14, 4, 16).rotation(face == Direction.UP
+                        ? ModelBuilder.FaceRotation.COUNTERCLOCKWISE_90 : ModelBuilder.FaceRotation.CLOCKWISE_90);
+            } else {
+                builder.uvs(0.00056F, 0.00056F, 2.000432F, 15.99944F);
+            }
+        }
+        this.simpleBlockWithItem(NtmBlocks.STEEL_BEAM.get(), model);
+    }
+
+    private void steelGrateBlock() {
+        Map<Integer, ModelFile> models = new LinkedHashMap<>();
+        for(int height = -1; height <= 8; height++) {
+            BlockModelBuilder model = this.models().getBuilder("steel_grate_" + (height + 1))
+                    .renderType("cutout")
+                    .texture("particle", modLoc("block/grate_top"))
+                    .texture("top", modLoc("block/grate_top"))
+                    .texture("side", modLoc("block/grate_side"));
+            var element = model.element().from(0, height * 2, 0).to(16, height * 2 + 2, 16);
+            // No cullface: the -1 and 8 states are rendered across the logical block boundary.
+            for(Direction face : Direction.values()) {
+                if(face.getAxis() == Direction.Axis.Y) {
+                    element.face(face).texture("#top").uvs(0, 0, 16, 16);
+                } else {
+                    int renderedHeight = height == -1 ? 7 : height == 8 ? 0 : height;
+                    element.face(face).texture("#side").uvs(0, 14 - renderedHeight * 2, 16, 16 - renderedHeight * 2);
+                }
+            }
+            models.put(height, model);
+        }
+        this.getVariantBuilder(NtmBlocks.STEEL_GRATE.get()).forAllStates(state ->
+                ConfiguredModel.builder().modelFile(models.get(state.getValue(SteelGrateBlock.HEIGHT) == 9
+                        ? -1 : state.getValue(SteelGrateBlock.HEIGHT))).build());
+        this.simpleBlockItem(NtmBlocks.STEEL_GRATE.get(), models.get(0));
     }
 
     /** Creates block with item, uses cube all model */

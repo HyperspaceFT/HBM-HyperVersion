@@ -1,0 +1,78 @@
+{
+  "elements": [
+    {
+      "faces": {
+        "down": {
+          "rotation": 90,
+          "texture": "#beam",
+          "uv": [
+            2.0,
+            14.0,
+            4.0,
+            16.0
+          ]
+        },
+        "east": {
+          "texture": "#beam",
+          "uv": [
+            5.6E-4,
+            5.6E-4,
+            2.000432,
+            15.99944
+          ]
+        },
+        "north": {
+          "texture": "#beam",
+          "uv": [
+            5.6E-4,
+            5.6E-4,
+            2.000432,
+            15.99944
+          ]
+        },
+        "south": {
+          "texture": "#beam",
+          "uv": [
+            5.6E-4,
+            5.6E-4,
+            2.000432,
+            15.99944
+          ]
+        },
+        "up": {
+          "rotation": 270,
+          "texture": "#beam",
+          "uv": [
+            2.0,
+            14.0,
+            4.0,
+            16.0
+          ]
+        },
+        "west": {
+          "texture": "#beam",
+          "uv": [
+            5.6E-4,
+            5.6E-4,
+            2.000432,
+            15.99944
+          ]
+        }
+      },
+      "from": [
+        7,
+        0,
+        7
+      ],
+      "to": [
+        9,
+        16,
+        9
+      ]
+    }
+  ],
+  "textures": {
+    "beam": "hbmsntm:block/steel_beam",
+    "particle": "hbmsntm:block/steel_beam"
+  }
+}

@@ -8,6 +8,7 @@ import com.hbm.blockentity.NtmBlockEntityTypes;
 import com.hbm.blocks.NtmBlocks;
 import com.hbm.interfaces.IControlReceiver;
 import com.hbm.inventory.UpgradeManagerNT;
+import com.hbm.inventory.fluid.FluidType;
 import com.hbm.inventory.fluid.Fluids;
 import com.hbm.inventory.fluid.tank.FluidTank;
 import com.hbm.inventory.menus.MachineChemicalPlantMenu;
@@ -100,13 +101,13 @@ public class MachineChemicalPlantBlockEntity extends MachineBaseBlockEntity impl
             this.upgradeManager.checkSlots(this.slots, 2, 3);
 
             // As in the original, all three container slots load whatever recipe is selected
-            this.inputTanks[0].loadTank(this.level, 10, 13, this.slots);
-            this.inputTanks[1].loadTank(this.level, 11, 14, this.slots);
-            this.inputTanks[2].loadTank(this.level, 12, 15, this.slots);
+            if(this.inputTanks[0].loadTank(this.level, 10, 13, this.slots)) this.setChanged();
+            if(this.inputTanks[1].loadTank(this.level, 11, 14, this.slots)) this.setChanged();
+            if(this.inputTanks[2].loadTank(this.level, 12, 15, this.slots)) this.setChanged();
 
-            this.outputTanks[0].unloadTank(this.level, 16, 19, this.slots);
-            this.outputTanks[1].unloadTank(this.level, 17, 20, this.slots);
-            this.outputTanks[2].unloadTank(this.level, 18, 21, this.slots);
+            if(this.outputTanks[0].unloadTank(this.level, 16, 19, this.slots)) this.setChanged();
+            if(this.outputTanks[1].unloadTank(this.level, 17, 20, this.slots)) this.setChanged();
+            if(this.outputTanks[2].unloadTank(this.level, 18, 21, this.slots)) this.setChanged();
 
             for(DirPos pos : this.getConPos()) {
                 this.trySubscribe(this.level, pos);
@@ -132,7 +133,24 @@ public class MachineChemicalPlantBlockEntity extends MachineBaseBlockEntity impl
             pow += Math.min(this.upgradeManager.getLevel(UpgradeType.SPEED), 3);
             pow += Math.min(this.upgradeManager.getLevel(UpgradeType.OVERDRIVE), 3) * 10D / 3D;
 
+            // Recipe setup may reset or retype tanks even when there is no power or no item input.
+            FluidTank[] tanks = this.getAllTanks();
+            FluidType[] previousTypes = new FluidType[tanks.length];
+            int[] previousFills = new int[tanks.length];
+            int[] previousPressures = new int[tanks.length];
+            for(int i = 0; i < tanks.length; i++) {
+                previousTypes[i] = tanks[i].getTankType();
+                previousFills[i] = tanks[i].getFill();
+                previousPressures[i] = tanks[i].getPressure();
+            }
+
             this.chemicalModule.update(speed, pow, true, this.slots.get(1));
+            for(int i = 0; i < tanks.length; i++) {
+                if(previousTypes[i] != tanks[i].getTankType() || previousFills[i] != tanks[i].getFill() || previousPressures[i] != tanks[i].getPressure()) {
+                    this.setChanged();
+                    break;
+                }
+            }
             this.didProcess = this.chemicalModule.didProcess;
             if(this.chemicalModule.markDirty) {
                 this.setChanged();
@@ -285,6 +303,20 @@ public class MachineChemicalPlantBlockEntity extends MachineBaseBlockEntity impl
     @Override
     public FluidTank[] getAllTanks() {
         return new FluidTank[] { this.inputTanks[0], this.inputTanks[1], this.inputTanks[2], this.outputTanks[0], this.outputTanks[1], this.outputTanks[2] };
+    }
+
+    @Override
+    public long transferFluid(FluidType type, int pressure, long amount) {
+        long remainder = IFluidStandardTransceiverMK2.super.transferFluid(type, pressure, amount);
+        if(remainder < amount) this.setChanged();
+        return remainder;
+    }
+
+    @Override
+    public void useUpFluid(FluidType type, int pressure, long amount) {
+        long previous = this.getFluidAvailable(type, pressure);
+        IFluidStandardTransceiverMK2.super.useUpFluid(type, pressure, amount);
+        if(this.getFluidAvailable(type, pressure) != previous) this.setChanged();
     }
 
     @Override
