@@ -6,6 +6,7 @@ import com.hbm.handler.CompressorRecipeClientSync;
 import com.hbm.handler.CokerRecipeClientSync;
 import com.hbm.handler.MixerRecipeClientSync;
 import com.hbm.handler.CentrifugeRecipeClientSync;
+import com.hbm.handler.CrystallizerRecipeClientSync;
 import com.hbm.handler.jei.AssemblyMachineRecipeHandler;
 import com.hbm.handler.jei.AssemblyMachineTransferInfo;
 import com.hbm.handler.jei.BoilerRecipeHandler;
@@ -23,6 +24,7 @@ import com.hbm.inventory.recipes.ArcWelderRecipes;
 import com.hbm.inventory.recipes.BlastFurnaceRecipes;
 import com.hbm.inventory.recipes.ChemicalPlantRecipes;
 import com.hbm.inventory.recipes.CentrifugeRecipes;
+import com.hbm.inventory.recipes.CrystallizerRecipes;
 import com.hbm.inventory.recipes.CombinationRecipes;
 import com.hbm.inventory.recipes.CopperCastingRecipes;
 import com.hbm.inventory.recipes.CrucibleRecipes;
@@ -64,6 +66,8 @@ public class NtmJeiPlugin implements IModPlugin {
     private mezz.jei.api.runtime.IJeiRuntime runtime;
     private List<CentrifugeRecipes.CentrifugeRecipe> displayedCentrifugeRecipes = List.of();
     private final List<CentrifugeRecipes.CentrifugeRecipe> knownCentrifugeRecipes = new ArrayList<>();
+    private List<CrystallizerRecipes.CrystallizerRecipe> displayedCrystallizerRecipes = List.of();
+    private final List<CrystallizerRecipes.CrystallizerRecipe> knownCrystallizerRecipes = new ArrayList<>();
     private List<CokingRecipeHandler.CokerJeiRecipe> displayedCokerRecipes = List.of();
     private final List<CokingRecipeHandler.CokerJeiRecipe> knownCokerRecipes = new ArrayList<>();
     private List<MixingRecipeHandler.MixerJeiRecipe> displayedMixerRecipes = List.of();
@@ -86,6 +90,8 @@ public class NtmJeiPlugin implements IModPlugin {
         this.refreshMixerRecipes();
         CentrifugeRecipeClientSync.setRefresh(this::refreshCentrifugeRecipes);
         this.refreshCentrifugeRecipes();
+        CrystallizerRecipeClientSync.setRefresh(this::refreshCrystallizerRecipes);
+        this.refreshCrystallizerRecipes();
     }
 
     @Override
@@ -95,8 +101,11 @@ public class NtmJeiPlugin implements IModPlugin {
         CokerRecipeClientSync.setRefresh(null);
         MixerRecipeClientSync.setRefresh(null);
         CentrifugeRecipeClientSync.setRefresh(null);
+        CrystallizerRecipeClientSync.setRefresh(null);
         this.displayedCentrifugeRecipes = List.of();
         this.knownCentrifugeRecipes.clear();
+        this.displayedCrystallizerRecipes = List.of();
+        this.knownCrystallizerRecipes.clear();
         this.displayedCokerRecipes = List.of();
         this.knownCokerRecipes.clear();
         this.displayedMixerRecipes = List.of();
@@ -176,6 +185,26 @@ public class NtmJeiPlugin implements IModPlugin {
         this.displayedCentrifugeRecipes = visible;
     }
 
+
+    private void refreshCrystallizerRecipes() {
+        if(this.runtime == null) return;
+        var manager = this.runtime.getRecipeManager();
+        manager.hideRecipes(CrystallizerRecipeHandler.RECIPE_TYPE, this.displayedCrystallizerRecipes);
+        List<CrystallizerRecipes.CrystallizerRecipe> visible = new ArrayList<>();
+        List<CrystallizerRecipes.CrystallizerRecipe> added = new ArrayList<>();
+        for(var recipe : CrystallizerRecipeHandler.getRecipes()) {
+            var known = this.knownCrystallizerRecipes.stream().filter(recipe::sameRecipe).findFirst().orElse(null);
+            if(known == null) {
+                known = recipe;
+                this.knownCrystallizerRecipes.add(known);
+                added.add(known);
+            }
+            visible.add(known);
+        }
+        manager.addRecipes(CrystallizerRecipeHandler.RECIPE_TYPE, added);
+        manager.unhideRecipes(CrystallizerRecipeHandler.RECIPE_TYPE, visible);
+        this.displayedCrystallizerRecipes = visible;
+    }
     private void refreshCokerRecipes() {
         if(this.runtime == null) return;
         var manager = this.runtime.getRecipeManager();
@@ -230,6 +259,7 @@ public class NtmJeiPlugin implements IModPlugin {
                 new AssemblyMachineRecipeHandler(guiHelper),
                 new BlastFurnaceRecipeHandler(guiHelper),
                 new CentrifugeRecipeHandler(guiHelper),
+                new CrystallizerRecipeHandler(guiHelper),
                 new ChemicalPlantRecipeHandler(guiHelper),
                 new FurnaceCombinationRecipeHandler(guiHelper),
                 new PressRecipeHandler(guiHelper),
@@ -260,6 +290,10 @@ public class NtmJeiPlugin implements IModPlugin {
         this.knownCentrifugeRecipes.clear();
         this.knownCentrifugeRecipes.addAll(this.displayedCentrifugeRecipes);
         registration.addRecipes(CentrifugeRecipeHandler.RECIPE_TYPE, this.displayedCentrifugeRecipes);
+        this.displayedCrystallizerRecipes = CrystallizerRecipeHandler.getRecipes();
+        this.knownCrystallizerRecipes.clear();
+        this.knownCrystallizerRecipes.addAll(this.displayedCrystallizerRecipes);
+        registration.addRecipes(CrystallizerRecipeHandler.RECIPE_TYPE, this.displayedCrystallizerRecipes);
         registration.addRecipes(ChemicalPlantRecipeHandler.RECIPE_TYPE, ChemicalPlantRecipes.INSTANCE.recipeOrderedList);
         registration.addRecipes(FurnaceCombinationRecipeHandler.RECIPE_TYPE, CombinationRecipes.getJeiRecipes());
         registration.addRecipes(PressRecipeHandler.RECIPE_TYPE, PressRecipeHandler.getRecipes());
@@ -336,6 +370,10 @@ public class NtmJeiPlugin implements IModPlugin {
         registration.addRecipeCatalyst(
                 NtmBlocks.MACHINE_CENTRIFUGE.asItem(),
                 CentrifugeRecipeHandler.RECIPE_TYPE
+        );
+        registration.addRecipeCatalyst(
+                NtmBlocks.MACHINE_CRYSTALLIZER.asItem(),
+                CrystallizerRecipeHandler.RECIPE_TYPE
         );
         registration.addRecipeCatalyst(
                 NtmBlocks.MACHINE_CHEMICAL_PLANT.asItem(),

@@ -385,5 +385,14 @@ public class AssemblyMachineRecipes extends GenericRecipes<GenericRecipe> {
                         NtmItems.castPlateIngredient(CastPlateItem.Type.STEEL, 8),
                         new ComparableStack(NtmBlocks.TRANSFORMER.get(), 1),
                         new ComparableStack(NtmItems.CIRCUIT_ANALOG_BOARD.get(), 1)));
+
+        // Original normal ass.acidizer (AssemblyMachineRecipes.java:289-291), registered in every mode like the original;
+        // BASIC is the integrated circuit board, the expensive branch is not migrated (NEO has no item_expensive).
+        this.register(new GenericRecipe("ass.acidizer").setup(200, 100).outputItems(new ItemStack(NtmBlocks.MACHINE_CRYSTALLIZER.get(), 1))
+                .inputItems(NtmItems.castPlateWeldedIngredient(CastPlateItem.Type.STEEL, 2),
+                        new ComparableStack(NtmItems.SHELL_TITANIUM.get(), 3),
+                        new ComparableStack(NtmItems.INGOT_DESH.get(), 4),
+                        new ComparableStack(NtmItems.MOTOR.get(), 1),
+                        new ComparableStack(NtmItems.CIRCUIT_INTEGRATED_BOARD.get(), 2)));
     }
 }

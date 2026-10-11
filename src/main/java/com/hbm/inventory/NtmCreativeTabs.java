@@ -825,6 +825,7 @@ public class NtmCreativeTabs {
                         output.accept(NtmBlocks.MACHINE_DIESEL);
                         output.accept(NtmBlocks.MACHINE_WOOD_BURNER);
                         output.accept(NtmBlocks.MACHINE_CENTRIFUGE);
+                        output.accept(NtmBlocks.MACHINE_CRYSTALLIZER);
                         output.accept(NtmBlocks.MACHINE_CHEMICAL_PLANT);
                         output.accept(NtmBlocks.HEAT_BOILER);
                         output.accept(NtmBlocks.MACHINE_INDUSTRIAL_BOILER);

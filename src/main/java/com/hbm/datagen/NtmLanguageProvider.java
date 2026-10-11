@@ -1900,6 +1900,31 @@ public class NtmLanguageProvider extends LanguageProvider {
         this.add("machine_turbofan.warning.kerosene", "Default kerosene at level 3 produces 30,800 HE/t gross; this does not cover a 125,000 HE/t load.");
         this.add("machine_turbofan.warning.charge_order", "Generation is followed by battery charging; any energy above 1,000,000 HE is then discarded.");
 
+        // Goal18A: standard ore acidizer (machine_crystallizer)
+        this.add("block.hbmsntm.machine_crystallizer", "Ore Acidizer");
+        this.add("container.machine_crystallizer", "Ore Acidizer");
+        this.add("machine_crystallizer.slot.input", "Ore or other recipe input");
+        this.add("machine_crystallizer.slot.battery", "Battery to discharge into the machine");
+        this.add("machine_crystallizer.slot.output", "Crystal output");
+        this.add("machine_crystallizer.slot.fluid_in", "Acid container input");
+        this.add("machine_crystallizer.slot.fluid_out", "Empty container output");
+        this.add("machine_crystallizer.slot.upgrade", "Upgrade (Speed, Effectiveness, Overdrive; levels 1–3)");
+        this.add("machine_crystallizer.slot.identifier", "Fluid identifier (sets the acid type)");
+        this.add("machine_crystallizer.status.running", "Processing");
+        this.add("machine_crystallizer.status.idle", "Idle");
+        this.add("machine_crystallizer.progress", "Progress: %s / %s sub-cycles; the crystal is delivered on sub-cycle %s");
+        this.add("machine_crystallizer.consumption", "Energy per sub-cycle: %s HE; sub-cycles per tick: %s");
+        this.add("machine_crystallizer.chance", "Chance to keep the input: %s%%");
+        this.add("machine_crystallizer.acid", "Acid per crystal: %s mB %s");
+        this.add("machine_crystallizer.no_recipe", "No recipe for this input with the current acid");
+        this.add("machine_crystallizer.warning.cycles", "A recipe with duration 600 completes after 601 effective sub-cycles (601,000 HE without upgrades).");
+        this.add("machine_crystallizer.warning.progress", "Progress is lost when a sub-cycle fails or the world reloads; energy already spent is not refunded.");
+        this.add("machine_crystallizer.warning.acid", "Every finished crystal consumes the full acid amount, even when Effectiveness keeps the input.");
+        this.add("machine_crystallizer.warning.type", "Changing the fluid type discards the acid already in the tank.");
+        this.add("container.machine_crystallizer.jei.duration", "Duration: %s ticks (%s effective sub-cycles before upgrades)");
+        this.add("container.machine_crystallizer.jei.productivity", "Productivity: %s%% chance per Effectiveness level to keep the input; the acid is always consumed");
+        this.add("container.machine_crystallizer.jei.config", "Server acidizer configuration (hbmCrystallizer.json); a custom file replaces the whole table.");
+
         this.add("block.hbmsntm.machine_coker", "Coker Unit");
         this.add("container.machine_coker", "Coker Unit");
         this.add("block.hbmsntm.machine_coker.desc", "Cokes fluids using heat from below.$Each batch requires 20,000 TU of accumulated processing heat; speed depends on stored heat.$Changing input fluid type empties the input tank. Changing byproduct type discards its previous contents.$Use pipes for fluids; slots are for a fluid identifier and item output.");

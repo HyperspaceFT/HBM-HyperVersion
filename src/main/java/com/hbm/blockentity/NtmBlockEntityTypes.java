@@ -223,6 +223,10 @@ public class NtmBlockEntityTypes {
             "machine_turbofan",
             () -> BlockEntityType.Builder.of(MachineTurbofanBlockEntity::new, NtmBlocks.MACHINE_TURBOFAN.get()).build(null));
 
+    public static final Supplier<BlockEntityType<MachineCrystallizerBlockEntity>> MACHINE_CRYSTALLIZER = BLOCK_ENTITY_TYPES.register(
+            "machine_crystallizer",
+            () -> BlockEntityType.Builder.of(MachineCrystallizerBlockEntity::new, NtmBlocks.MACHINE_CRYSTALLIZER.get()).build(null));
+
     public static final Supplier<BlockEntityType<MachineDieselBlockEntity>> MACHINE_DIESEL = BLOCK_ENTITY_TYPES.register(
             "machine_diesel",
             () -> BlockEntityType.Builder.of(
