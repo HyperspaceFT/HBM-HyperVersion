@@ -98,7 +98,7 @@ public class CompressorRecipes extends SerializableRecipe {
     /** Validate a whole replacement before publishing it, including enabled empty custom tables. */
     @Override
     public void readRecipeStream(Reader reader) {
-        Map<RecipeKey, CompressorRecipe> replacement = parseTable(gson.fromJson(reader, JsonObject.class));
+        Map<RecipeKey, CompressorRecipe> replacement = parseTable(gson.fromJson(reader, JsonObject.class), true);
         this.table.clear();
         this.table.putAll(replacement);
     }
@@ -123,16 +123,20 @@ public class CompressorRecipes extends SerializableRecipe {
 
     public static Map<RecipeKey, CompressorRecipe> readSnapshot(String text) {
         checkSnapshotSize(text);
-        return parseTable(gson.fromJson(text, JsonObject.class));
+        return parseTable(gson.fromJson(text, JsonObject.class), false);
     }
 
-    private static Map<RecipeKey, CompressorRecipe> parseTable(JsonObject object) {
+    /** Only the config-file path is lenient (bad rows skipped); sync snapshots and the writeSnapshot check stay strict. */
+    private static Map<RecipeKey, CompressorRecipe> parseTable(JsonObject object, boolean lenient) {
         if(object == null || !object.has("recipes") || !object.get("recipes").isJsonArray()) throw new IllegalArgumentException("Missing compressor recipes array");
         JsonArray rows = object.getAsJsonArray("recipes");
         if(rows.size() > MAX_SYNC_RECIPES) throw new IllegalArgumentException("Too many compressor recipes");
         Map<RecipeKey, CompressorRecipe> result = new LinkedHashMap<>();
         CompressorRecipes handler = new CompressorRecipes(result);
-        for(JsonElement row : rows) handler.readRecipe(row);
+        for(int i = 0; i < rows.size(); i++) {
+            if(lenient) handler.readRecipeLenient(rows.get(i), i);
+            else handler.readRecipe(rows.get(i));
+        }
         return result;
     }
 

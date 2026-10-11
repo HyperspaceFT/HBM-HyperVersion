@@ -167,7 +167,7 @@ public class CokerRecipes extends SerializableRecipe {
     /** Stage the whole custom replacement, so an invalid later row cannot publish an earlier row. */
     @Override
     public void readRecipeStream(Reader reader) {
-        Map<FluidType, CokerRecipe> replacement = parseTable(gson.fromJson(reader, JsonObject.class));
+        Map<FluidType, CokerRecipe> replacement = parseTable(gson.fromJson(reader, JsonObject.class), true);
         this.table.clear();
         this.table.putAll(replacement);
     }
@@ -190,16 +190,20 @@ public class CokerRecipes extends SerializableRecipe {
 
     public static Map<FluidType, CokerRecipe> readSnapshot(String text) {
         checkSnapshotSize(text);
-        return parseTable(gson.fromJson(text, JsonObject.class));
+        return parseTable(gson.fromJson(text, JsonObject.class), false);
     }
 
-    private static Map<FluidType, CokerRecipe> parseTable(JsonObject object) {
+    /** Only the config-file path is lenient (bad rows skipped); sync snapshots and the writeSnapshot check stay strict. */
+    private static Map<FluidType, CokerRecipe> parseTable(JsonObject object, boolean lenient) {
         if(object == null || !object.has("recipes") || !object.get("recipes").isJsonArray()) throw new IllegalArgumentException("Missing coker recipes array");
         JsonArray rows = object.getAsJsonArray("recipes");
         if(rows.size() > MAX_SYNC_RECIPES) throw new IllegalArgumentException("Too many coker recipes");
         Map<FluidType, CokerRecipe> replacement = new LinkedHashMap<>();
         CokerRecipes handler = new CokerRecipes(replacement);
-        for(JsonElement row : rows) handler.readRecipe(row);
+        for(int i = 0; i < rows.size(); i++) {
+            if(lenient) handler.readRecipeLenient(rows.get(i), i);
+            else handler.readRecipe(rows.get(i));
+        }
         return replacement;
     }
 

@@ -64,7 +64,7 @@ public class MachineRefineryMenu extends MenuBase<MachineRefineryBlockEntity> {
                     if(!this.moveItemStackTo(stack, 0, 1, false)) return ItemStack.EMPTY;
                 } else if(stack.getItem() instanceof IItemFluidIdentifier) {
                     if(!this.moveItemStackTo(stack, 12, 13, false)) return ItemStack.EMPTY;
-                } else if(!FluidContainerRegistry.getFullContainer(stack, this.be.tanks[0].getTankType()).isEmpty()) {
+                } else if(FluidContainerRegistry.getFluidContent(stack, this.be.tanks[0].getTankType()) > 0) {
                     if(!this.moveItemStackTo(stack, 1, 2, false)) return ItemStack.EMPTY;
                 } else if(!FluidContainerRegistry.getFullContainer(stack, this.be.tanks[1].getTankType()).isEmpty()) {
                     if(!this.moveItemStackTo(stack, 3, 4, false)) return ItemStack.EMPTY;

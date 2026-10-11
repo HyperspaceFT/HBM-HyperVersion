@@ -28,7 +28,13 @@ public class Goal16BRecipeRegression {
  static final String IN="[\"minecraft:blaze_rod\",1,null]", OUT="[\"minecraft:blaze_powder\",100,null]";
  static final String CUSTOM=table(row(IN,"[\"minecraft:air\",0],"+OUT));
  static void load(String json){new CentrifugeRecipes().readRecipeStream(new StringReader(json));}
- static void reject(String json,String name)throws Exception{String before=CentrifugeRecipes.writeSnapshot();fails(()->load(json),name);check(before.equals(CentrifugeRecipes.writeSnapshot()),"atomic "+name);}
+ /** Invalid row: strict snapshot/sync parsing still throws without touching the table; the config-file load skips it and keeps the other rows. */
+ static void reject(String json,String name)throws Exception{
+  String before=CentrifugeRecipes.writeSnapshot();fails(()->CentrifugeRecipes.readSnapshot(json),name);check(before.equals(CentrifugeRecipes.writeSnapshot()),"atomic "+name);
+  int rows=JsonParser.parseString(json).getAsJsonObject().getAsJsonArray("recipes").size();
+  load(json);check(CentrifugeRecipes.getJeiRecipes().size()<rows,"file load skips invalid row "+name);CentrifugeRecipes.writeSnapshot();
+  load(before);check(before.equals(CentrifugeRecipes.writeSnapshot()),"restore after "+name);
+ }
  static void defaults(Path out)throws Exception{
   var handler=new CentrifugeRecipes();handler.deleteRecipes();handler.registerDefaults();
   var frozen=new FrozenCentrifugeRecipes();frozen.deleteRecipes();frozen.registerDefaults();

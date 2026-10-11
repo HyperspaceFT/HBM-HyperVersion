@@ -113,15 +113,21 @@ public abstract class SerializableRecipe {
                 }
             } else if(recFile.exists() && recFile.isFile()) {
                 NuclearTechMod.LOGGER.info("Reading recipe file {}", recFile.getName());
-                recipe.readRecipeFile(recFile);
-                recipe.modified = true;
+
+                if(recipe.readRecipeFile(recFile)) {
+                    recipe.modified = true;
+                } else {
+                    // The file as a whole is unusable (already logged): this handler falls back to its defaults, the player's file stays untouched
+                    NuclearTechMod.LOGGER.error("Falling back to default recipes for {}", recipe.getFileName());
+                    recipe.deleteRecipes();
+                    recipe.registerDefaults();
+                    notifyRecipeListeners(recipe);
+                    recipe.modified = false;
+                }
             } else {
                 NuclearTechMod.LOGGER.info("No recipe file found, registering defaults for {}", recipe.getFileName());
                 recipe.registerDefaults();
-
-                for(IRecipeRegisterListener listener : additionalListeners) {
-                    listener.onRecipeLoad(recipe.getClass().getSimpleName());
-                }
+                notifyRecipeListeners(recipe);
 
                 File recTemplate = new File(recDir.getAbsolutePath() + File.separatorChar + "_" + recipe.getFileName());
                 NuclearTechMod.LOGGER.info("Writing template file {}", recTemplate.getName());
@@ -133,6 +139,12 @@ public abstract class SerializableRecipe {
         }
 
         NuclearTechMod.LOGGER.info("Finished recipe init!");
+    }
+
+    private static void notifyRecipeListeners(SerializableRecipe recipe) {
+        for(IRecipeRegisterListener listener : additionalListeners) {
+            listener.onRecipeLoad(recipe.getClass().getSimpleName());
+        }
     }
 
     public static void receiveRecipes(String filename, byte[] data) {
@@ -214,17 +226,48 @@ public abstract class SerializableRecipe {
         }
     }
 
-    public void readRecipeFile(File file) {
-        try {
-            readRecipeStream(new FileReader(file));
-        } catch(FileNotFoundException ex) { }
+    /**
+     * Loads a player-edited recipe file. A single invalid row is skipped (see {@link #readRecipeLenient}), but a file that cannot be
+     * loaded at all (malformed JSON, missing "recipes" array, over the size or count limits) must never abort mod loading.
+     * @return false if the file as a whole was unusable and the caller has to register the defaults instead
+     */
+    public boolean readRecipeFile(File file) {
+        try(Reader reader = new FileReader(file)) {
+            readRecipeStream(reader);
+            return true;
+        } catch(FileNotFoundException ex) {
+            return true;
+        } catch(IOException ex) {
+            NuclearTechMod.LOGGER.error("Failed to close recipe file {}", file.getAbsolutePath(), ex);
+            return true;
+        } catch(RuntimeException ex) {
+            NuclearTechMod.LOGGER.error("Unable to load recipe file {}: {}", file.getAbsolutePath(), ex.getMessage(), ex);
+            return false;
+        }
     }
 
     public void readRecipeStream(Reader reader) {
         JsonObject json = gson.fromJson(reader, JsonObject.class);
         JsonArray recipes = json.get("recipes").getAsJsonArray();
+        int index = 0;
         for(JsonElement recipe : recipes) {
-            if(recipe != null) this.readRecipe(recipe);
+            if(recipe != null) this.readRecipeLenient(recipe, index);
+            index++;
+        }
+    }
+
+    /**
+     * Row-level wrapper for reading recipe FILES: readRecipe stays strict (it also backs the client sync decoders and the
+     * snapshot self-checks), but a bad row in a player's config file is logged and skipped so the remaining rows still load.
+     * @return whether the row was accepted
+     */
+    protected boolean readRecipeLenient(JsonElement row, int index) {
+        try {
+            this.readRecipe(row);
+            return true;
+        } catch(RuntimeException ex) {
+            NuclearTechMod.LOGGER.error("Skipping invalid recipe {} in {}: {}", index, this.getFileName(), ex.getMessage());
+            return false;
         }
     }
 

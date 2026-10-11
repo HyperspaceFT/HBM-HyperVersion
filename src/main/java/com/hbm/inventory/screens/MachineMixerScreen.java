@@ -44,8 +44,8 @@ public class MachineMixerScreen extends InfoScreen<MachineMixerMenu> {
         super.render(graphics, mouseX, mouseY, partialTicks);
         this.drawElectricityInfo(graphics, mouseX, mouseY, this.leftPos + 12, this.topPos + 18, 16, 52, this.be.power, MachineMixerBlockEntity.MAX_POWER);
         this.drawCustomInfoStat(graphics, mouseX, mouseY, this.leftPos + 152, this.topPos + 55, 8, 8, mouseX, mouseY,
-                Component.translatable("desc.gui.upgrade"), Component.translatable("desc.gui.upgrade.speed"),
-                Component.translatable("desc.gui.upgrade.power"), Component.translatable("desc.gui.upgrade.overdrive"));
+                Component.translatable("container.upgrade"), Component.translatable("container.upgrade.speed"),
+                Component.translatable("container.upgrade.power"), Component.translatable("container.upgrade.overdrive"));
         MixerRecipe[] recipes = this.getRecipes();
         List<Component> label = new ArrayList<>();
         if(recipes.length > 0) {

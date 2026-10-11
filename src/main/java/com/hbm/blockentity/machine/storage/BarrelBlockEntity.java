@@ -176,7 +176,7 @@ public class BarrelBlockEntity extends MachineBaseBlockEntity implements IFluidS
     public byte getComparatorPower() {
         if(this.tank.getFill() <= 0) return 0;
         double frac = (double) this.tank.getFill() / (double) this.tank.getMaxFill() * 15D;
-        return (byte) Math.clamp((int) Math.ceil(frac), 0, 15);
+        return (byte) Math.clamp((int) frac + 1, 0, 15);
     }
 
     @Override

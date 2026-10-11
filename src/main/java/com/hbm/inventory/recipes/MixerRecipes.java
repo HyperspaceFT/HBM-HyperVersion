@@ -232,7 +232,7 @@ public class MixerRecipes extends SerializableRecipe {
                 text.append(buffer,0,amount);
             }
         } catch(IOException ex) { throw invalid("unable to read configuration: " + ex.getMessage()); }
-        Map<FluidType,MixerRecipe[]> replacement = readSnapshot(text.toString());
+        Map<FluidType,MixerRecipe[]> replacement = readSnapshot(text.toString(),true);
         table.clear(); table.putAll(replacement);
     }
     public static String writeSnapshot() throws IOException {
@@ -248,9 +248,11 @@ public class MixerRecipes extends SerializableRecipe {
         readSnapshot(result);
         return result;
     }
-    public static Map<FluidType,MixerRecipe[]> readSnapshot(String json) {
+    public static Map<FluidType,MixerRecipe[]> readSnapshot(String json) { return readSnapshot(json,false); }
+    /** Only the config-file path is lenient (bad groups skipped); sync snapshots and the writeSnapshot check stay strict. */
+    private static Map<FluidType,MixerRecipe[]> readSnapshot(String json, boolean lenient) {
         encodeSnapshot(json);
-        return parseTable(gson.fromJson(json,JsonObject.class));
+        return parseTable(gson.fromJson(json,JsonObject.class),lenient);
     }
     /** Shared disk/snapshot/packet boundary: never replace an unpaired UTF-16 surrogate on the wire. */
     public static byte[] encodeSnapshot(String json) {
@@ -265,13 +267,16 @@ public class MixerRecipes extends SerializableRecipe {
             return bytes;
         } catch(CharacterCodingException ex) { throw invalid("snapshot contains malformed UTF-16 surrogate"); }
     }
-    private static Map<FluidType,MixerRecipe[]> parseTable(JsonObject object) {
+    private static Map<FluidType,MixerRecipe[]> parseTable(JsonObject object, boolean lenient) {
         if(object == null) throw invalid("missing table object");
         JsonArray rows = array(object.get("recipes"),"table recipes");
         if(rows.size() > MAX_SYNC_GROUPS) throw invalid("too many output groups");
         Map<FluidType,MixerRecipe[]> replacement = new LinkedHashMap<>();
         MixerRecipes handler = new MixerRecipes(replacement);
-        for(JsonElement row : rows) handler.readRecipe(row);
+        for(int i = 0; i < rows.size(); i++) {
+            if(lenient) handler.readRecipeLenient(rows.get(i),i);
+            else handler.readRecipe(rows.get(i));
+        }
         return replacement;
     }
     private static FluidStack readFluid(JsonElement element) {

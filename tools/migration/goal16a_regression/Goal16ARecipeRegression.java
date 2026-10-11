@@ -36,7 +36,15 @@ public class Goal16ARecipeRegression {
     static final String CUSTOM=table(group("COOLANT",variant("17","19","\"solidInput\":[\"nbt\",\"minecraft:egg\",2,null,\"{probe:7}\"]")));
     static void load(String json){new MixerRecipes().readRecipeStream(new StringReader(json));}
     static void fails(Runnable action,String label){boolean failed=false;try{action.run();}catch(RuntimeException ex){failed=true;}check(failed,label);}
-    static void reject(String json,String label)throws Exception{String before=MixerRecipes.writeSnapshot();fails(()->load(json),label);check(MixerRecipes.writeSnapshot().equals(before),"atomic "+label);}
+    /** Whole-file failures (size, count, malformed document) still abort the stream load; the table stays untouched. */
+    static void rejectFile(String json,String label)throws Exception{String before=MixerRecipes.writeSnapshot();fails(()->load(json),label);check(MixerRecipes.writeSnapshot().equals(before),"atomic "+label);}
+    /** Invalid group: strict snapshot/sync parsing still throws without touching the table; the config-file load skips it and keeps the other groups. */
+    static void reject(String json,String label)throws Exception{
+        String before=MixerRecipes.writeSnapshot();fails(()->MixerRecipes.readSnapshot(json),label);check(MixerRecipes.writeSnapshot().equals(before),"atomic "+label);
+        int rows=JsonParser.parseString(json).getAsJsonObject().getAsJsonArray("recipes").size();
+        load(json);check(MixerRecipes.recipes.size()<rows,"file load skips invalid group "+label);MixerRecipes.writeSnapshot();
+        load(before);check(MixerRecipes.writeSnapshot().equals(before),"restore after "+label);
+    }
 
     static void defaults(Path output)throws Exception{
         scenario();Fluids.initializeGoal15BFuels();MixerRecipes handler=new MixerRecipes();handler.deleteRecipes();handler.registerDefaults();
@@ -114,17 +122,22 @@ public class Goal16ARecipeRegression {
         RecipesCommon.TAG_MEMBERS.put("runtime:test",List.of(Items.EGG));load(table(group("COOLANT",variant("1","1","\"solidInput\":[\"tag\",\"runtime:test\"]"))));check(MixerRecipes.recipes.size()==1,"runtime bound tag accepts");
         load(table(group("COOLANT",SIMPLE)));reject(table(group("SOLVENT",String.join(",",Collections.nCopies(257,SIMPLE)))),"257 group variants");
         load(table(group("SOLVENT",String.join(",",Collections.nCopies(256,SIMPLE)))));check(MixerRecipes.getOutput(Fluids.SOLVENT).length==256,"256 group variants");
-        reject(table(String.join(",",Collections.nCopies(4097,group("COOLANT",SIMPLE)))),"4097 row bound");
+        rejectFile(table(String.join(",",Collections.nCopies(4097,group("COOLANT",SIMPLE)))),"4097 row bound");
         handler.deleteRecipes();var types=Arrays.stream(Fluids.getInNiceOrder()).filter(t->t!=Fluids.NONE).toList();
         for(int i=0;i<16;i++)handler.readRecipe(JsonParser.parseString(group(types.get(i).getInternalName(),String.join(",",Collections.nCopies(256,SIMPLE)))));
         check(MixerRecipes.recipes.values().stream().mapToInt(a->a.length).sum()==4096,"4096 total via direct production group parser");fails(()->handler.readRecipe(JsonParser.parseString(group(types.get(16).getInternalName(),SIMPLE))),"4097 total rejected");
-        load(CUSTOM);reject(" ".repeat(262145),"snapshot byte bound");reject("中".repeat(87382),"UTF8 byte bound");
+        load(CUSTOM);rejectFile(" ".repeat(262145),"snapshot byte bound");rejectFile("中".repeat(87382),"UTF8 byte bound");
         String empty="{\"recipes\":[]}";
         check(MixerRecipes.readSnapshot(empty+" ".repeat(262144-empty.length())).isEmpty(),"exact 256KiB ASCII boundary accepted");
         String unicode="{\"comment\":\""+"中".repeat(87370)+"\",\"recipes\":[]}";
         int remaining=262144-unicode.getBytes(StandardCharsets.UTF_8).length;
         check(remaining>=0&&MixerRecipes.readSnapshot(unicode+" ".repeat(remaining)).isEmpty(),"exact 256KiB UTF8 boundary accepted");
-        Files.writeString(file,table(group("COOLANT",variant("0","1",FLUID))));fails(SerializableRecipe::initialize,"shared init throws on bad disk");check(MixerRecipes.recipes.isEmpty(),"shared init clears before disk parse, not claimed transactional");
+        Files.writeString(file,table(group("COOLANT",variant("0","1",FLUID))));SerializableRecipe.initialize();check(handler.modified&&MixerRecipes.recipes.isEmpty(),"shared init skips the only bad disk group and keeps the cleared table, not claimed transactional");
+        Files.writeString(file,table(group("COOLANT",SIMPLE)+","+group("SOLVENT",variant("0","1",FLUID))+","+group("WATER",SIMPLE)));SerializableRecipe.initialize();
+        check(handler.modified&&MixerRecipes.recipes.size()==2&&MixerRecipes.getOutput(Fluids.COOLANT,0)!=null&&MixerRecipes.getOutput(Fluids.WATER,0)!=null&&MixerRecipes.getOutput(Fluids.SOLVENT,0)==null,"shared init skips only the bad middle group");
+        for(String broken:List.of("{not json","{\"other\":[]}","","[]",table(String.join(",",Collections.nCopies(4097,group("COOLANT",SIMPLE)))),"{\"recipes\":["+group("COOLANT",SIMPLE)+"],\"comment\":\""+"x".repeat(262145)+"\"}")){
+            Files.writeString(file,broken);SerializableRecipe.initialize();check(MixerRecipes.recipes.size()==38&&!handler.modified,"unusable disk file falls back to defaults without throwing");
+        }
         Files.writeString(file,"{\"recipes\":[]}");SerializableRecipe.initialize();load(CUSTOM);
     }
 

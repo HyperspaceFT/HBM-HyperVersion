@@ -258,10 +258,12 @@ public class CentrifugeRecipes extends SerializableRecipe {
                 text.append(chunk, 0, count);
             }
         } catch(IOException ex) { throw invalid("cannot read configuration: " + ex.getMessage()); }
-        List<CentrifugeRecipe> replacement = readSnapshot(text.toString());
+        List<CentrifugeRecipe> replacement = readSnapshot(text.toString(), true);
         table.clear(); table.addAll(replacement);
     }
-    public static List<CentrifugeRecipe> readSnapshot(String json) {
+    public static List<CentrifugeRecipe> readSnapshot(String json) { return readSnapshot(json, false); }
+    /** Only the config-file path is lenient (bad rows skipped); sync snapshots and the writeSnapshot check stay strict. */
+    private static List<CentrifugeRecipe> readSnapshot(String json, boolean lenient) {
         encodeSnapshot(json);
         JsonObject root = gson.fromJson(json, JsonObject.class);
         if(root == null) throw invalid("missing table object");
@@ -269,7 +271,10 @@ public class CentrifugeRecipes extends SerializableRecipe {
         if(rows.size() > MAX_SYNC_RECIPES) throw invalid("too many recipes");
         List<CentrifugeRecipe> result = new ArrayList<>();
         CentrifugeRecipes handler = new CentrifugeRecipes(result);
-        for(JsonElement row : rows) handler.readRecipe(row);
+        for(int i = 0; i < rows.size(); i++) {
+            if(lenient) handler.readRecipeLenient(rows.get(i), i);
+            else handler.readRecipe(rows.get(i));
+        }
         return result;
     }
     public static String writeSnapshot() throws IOException {
