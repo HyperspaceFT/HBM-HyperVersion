@@ -42,7 +42,9 @@ import java.util.List;
  * Ore acidizer ("crystallizer") table: one input item (exact item/META or tag) plus one acid type and amount produce one
  * output stack after {@code duration} ticks. Rows are keyed on the input identity and the acid type, so the same item may
  * carry different rows for different acids; lookup returns the first registered row whose acid type matches and whose
- * input accepts the stack. Goal 18A registers only the fourteen hydrogen peroxide ore groups (28 ore-block rows).
+ * input accepts the stack. The default table holds the fourteen hydrogen peroxide ore groups (Goal 18A) followed by the four
+ * sulfuric acid ore groups (titanium, tungsten, cobalt, rare earth; Goal 18B), 36 ore-block rows. A custom file still replaces
+ * the whole table, so an existing custom table does not gain the four sulfuric acid groups automatically.
  */
 public class CrystallizerRecipes extends SerializableRecipe {
     public static final int MAX_SYNC_RECIPES = 4096;
@@ -151,15 +153,16 @@ public class CrystallizerRecipes extends SerializableRecipe {
         }
         table.add(row);
     }
-    private void ore(Block stone, Block deepslate, ItemLike crystal) {
-        FluidStack peroxide = new FluidStack(Fluids.PEROXIDE, DEFAULT_ACID);
-        add(new CrystallizerRecipe(new ComparableStack(stone, 1), peroxide, new ItemStack(crystal), DEFAULT_DURATION, DEFAULT_PRODUCTIVITY));
-        add(new CrystallizerRecipe(new ComparableStack(deepslate, 1), peroxide, new ItemStack(crystal), DEFAULT_DURATION, DEFAULT_PRODUCTIVITY));
+    private void ore(Block stone, Block deepslate, ItemLike crystal) { ore(stone, deepslate, crystal, Fluids.PEROXIDE); }
+    private void ore(Block stone, Block deepslate, ItemLike crystal, FluidType acid) {
+        FluidStack fluid = new FluidStack(acid, DEFAULT_ACID);
+        add(new CrystallizerRecipe(new ComparableStack(stone, 1), fluid, new ItemStack(crystal), DEFAULT_DURATION, DEFAULT_PRODUCTIVITY));
+        add(new CrystallizerRecipe(new ComparableStack(deepslate, 1), fluid, new ItemStack(crystal), DEFAULT_DURATION, DEFAULT_PRODUCTIVITY));
     }
 
     @Override public String getFileName() { return "hbmCrystallizer.json"; }
     @Override public Object getRecipeObject() { return table; }
-    /** Fourteen ordinary peroxide ore groups in the original table order; stone and deepslate ore blocks are separate rows. */
+    /** Fourteen ordinary peroxide ore groups in the original table order, then the four sulfuric acid groups; stone and deepslate ore blocks are separate rows. */
     @Override public void registerDefaults() {
         ore(Blocks.COAL_ORE, Blocks.DEEPSLATE_COAL_ORE, NtmItems.CRYSTAL_COAL.get());
         ore(Blocks.IRON_ORE, Blocks.DEEPSLATE_IRON_ORE, NtmItems.CRYSTAL_IRON.get());
@@ -175,10 +178,14 @@ public class CrystallizerRecipes extends SerializableRecipe {
         ore(NtmBlocks.ORE_BERYLLIUM.get(), NtmBlocks.ORE_BERYLLIUM_DEEPSLATE.get(), NtmItems.CRYSTAL_BERYLLIUM.get());
         ore(NtmBlocks.ORE_LEAD.get(), NtmBlocks.ORE_LEAD_DEEPSLATE.get(), NtmItems.CRYSTAL_LEAD.get());
         ore(NtmBlocks.ORE_CINNABAR.get(), NtmBlocks.ORE_CINNABAR_DEEPSLATE.get(), NtmItems.CRYSTAL_CINNABAR.get());
+        ore(NtmBlocks.ORE_TITANIUM.get(), NtmBlocks.ORE_TITANIUM_DEEPSLATE.get(), NtmItems.CRYSTAL_TITANIUM.get(), Fluids.SULFURIC_ACID);
+        ore(NtmBlocks.ORE_TUNGSTEN.get(), NtmBlocks.ORE_TUNGSTEN_DEEPSLATE.get(), NtmItems.CRYSTAL_TUNGSTEN.get(), Fluids.SULFURIC_ACID);
+        ore(NtmBlocks.ORE_COBALT.get(), NtmBlocks.ORE_COBALT_DEEPSLATE.get(), NtmItems.CRYSTAL_COBALT.get(), Fluids.SULFURIC_ACID);
+        ore(NtmBlocks.ORE_RARE.get(), NtmBlocks.ORE_RARE_DEEPSLATE.get(), NtmItems.CRYSTAL_RARE.get(), Fluids.SULFURIC_ACID);
     }
     @Override public void deleteRecipes() { table.clear(); }
     @Override public String getComment() {
-        return "Ore acidizer (crystallizer) recipes. Replaces the whole table; an empty table disables the machine. Each row: input [\"item\", id, count, META] (META 32767 is a wildcard; omitted count is 1, omitted META is the wildcard) or [\"tag\", id, count]; fluid [internal acid name, mB] with 1..8000 mB; output [id, count, META|null, custom-data SNBT] (omitted or null META keeps the item without a META component); duration in ticks 1..1000000 (the machine completes after duration+1 effective sub-cycles); productivity 0..1 is the chance per Effectiveness level that the input is kept, the acid is always consumed. Rows are keyed on input identity plus acid type, so one item may have one row per acid; the first matching row in table order wins. Only the fourteen hydrogen peroxide ore groups are registered by default.";
+        return "Ore acidizer (crystallizer) recipes. Replaces the whole table; an empty table disables the machine. Each row: input [\"item\", id, count, META] (META 32767 is a wildcard; omitted count is 1, omitted META is the wildcard) or [\"tag\", id, count]; fluid [internal acid name, mB] with 1..8000 mB; output [id, count, META|null, custom-data SNBT] (omitted or null META keeps the item without a META component); duration in ticks 1..1000000 (the machine completes after duration+1 effective sub-cycles); productivity 0..1 is the chance per Effectiveness level that the input is kept, the acid is always consumed. Rows are keyed on input identity plus acid type, so one item may have one row per acid; the first matching row in table order wins. The default table holds the fourteen hydrogen peroxide ore groups plus the four sulfuric acid ore groups (titanium, tungsten, cobalt, rare earth), 36 rows; a custom file still replaces the whole table, so an existing custom table does not gain the four sulfuric acid groups automatically (append their rows to keep them).";
     }
     @Override public void readRecipe(JsonElement element) {
         try {
