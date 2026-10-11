@@ -140,8 +140,19 @@ public class Goal18BMachineRegression extends Goal18AMachineRegression {
     // b. Finite tungsten chain over the real turbofan, PowerNetMK2 and centrifuge.
     static final class Run{
         int kerosene,burned,remaining,steps,crActive,crUnder,cfTicks,cfUnder,cfDone,crystalsMade,sixthCrystalTick=-1,upgradeMax,keptInputs,oreLeft,acidLeft;
-        long gross,crSpent,cfSpent,discarded,turbofanBuffer,crBuffer,cfBuffer;boolean conserved=true;ItemStack[] outputs=new ItemStack[4];
+        long gross,crSpent,cfSpent,discarded,turbofanBuffer,crBuffer,cfBuffer,turbofanInitial,crInitial,cfInitial,batteryInitial,batteryHE;
+        boolean conserved=true,discardAtCapOnly=true;ItemStack[] outputs=new ItemStack[4];
         long finalBuffers(){return turbofanBuffer+crBuffer+cfBuffer;}
+        long initialBuffers(){return turbofanInitial+crInitial+cfInitial;}
+    }
+    /** Charge held by a battery item in a slot (0 for an empty or non-battery slot). */
+    static long charge(ItemStack s){return !s.isEmpty()&&s.getItem() instanceof IBatteryItem b?b.getCharge(s):0L;}
+    static long turbofanStore(MachineTurbofanBlockEntity t){return t.power+charge(t.slots.get(MachineTurbofanBlockEntity.SLOT_BATTERY));}
+    static long acidizerStore(MachineCrystallizerBlockEntity c){return c.power+charge(c.slots.get(MachineCrystallizerBlockEntity.SLOT_BATTERY));}
+    /** The centrifuge battery slot is index 1 (private SLOT_BATTERY in MachineCentrifugeBlockEntity). */
+    static long centrifugeStore(MachineCentrifugeBlockEntity c){return c.power+charge(c.slots.get(1));}
+    static long batteries(MachineTurbofanBlockEntity t,MachineCrystallizerBlockEntity cr,MachineCentrifugeBlockEntity cf){
+        return charge(t.slots.get(MachineTurbofanBlockEntity.SLOT_BATTERY))+charge(cr.slots.get(MachineCrystallizerBlockEntity.SLOT_BATTERY))+charge(cf.slots.get(1));
     }
     static Run tungsten(int kerosene,int maxSteps){
         Level l=fresh18b();Run r=new Run();r.kerosene=kerosene;
@@ -149,25 +160,29 @@ public class Goal18BMachineRegression extends Goal18AMachineRegression {
         var cr=acidizer(l,100,0L,4000);cr.slots.set(0,new ItemStack(ORE_W,6));
         var cf=centrifuge(l,200,0L);
         PowerNetMK2 network=new PowerNetMK2();
+        r.turbofanInitial=t.power;r.crInitial=cr.power;r.cfInitial=cf.power;r.batteryInitial=batteries(t,cr,cf);
         while(r.steps<maxSteps&&!(r.crystalsMade==6&&r.cfDone==6)){
             r.steps++;
-            long before=t.power;int fuel=t.tank.getFill();step(l,t);r.gross+=t.output;r.burned+=fuel-t.tank.getFill();r.discarded+=before+t.output-t.power;
+            // Discard = what the turbofan step generated but neither its cache nor its battery kept; it may only occur at the cache cap.
+            long before=turbofanStore(t);int fuel=t.tank.getFill();step(l,t);r.gross+=t.output;r.burned+=fuel-t.tank.getFill();
+            long d=before+t.output-turbofanStore(t);r.discarded+=d;if(d<0||d>0&&t.power!=MachineTurbofanBlockEntity.MAX_POWER)r.discardAtCapOnly=false;
             // PowerNetMK2 drops entries older than its wall-clock timeout, so the subscriptions are refreshed every tick.
             network.addProvider(t);network.addReceiver(cr);network.addReceiver(cf);network.update();
             boolean ready=!cr.slots.get(0).isEmpty()&&cr.tank.getFill()>=500;int ore=cr.slots.get(0).getCount(),out=crystals(cr);
-            before=cr.power;cr.updateEntity();executedTicks++;long use=before-cr.power;r.crSpent+=use;
+            before=acidizerStore(cr);cr.updateEntity();executedTicks++;long use=before-acidizerStore(cr);r.crSpent+=use;
             if(use>0)r.crActive++;else if(ready)r.crUnder++;
             r.upgradeMax=Math.max(r.upgradeMax,upgradeLevels(cr));
             int made=crystals(cr)-out;
             if(made>0){r.crystalsMade+=made;r.keptInputs+=made-(ore-cr.slots.get(0).getCount());if(r.crystalsMade==6)r.sixthCrystalTick=r.steps;}
             if(crystals(cr)>0){ItemStack moved=cr.removeItem(2,crystals(cr));if(cf.slots.get(0).isEmpty())cf.slots.set(0,moved);else cf.slots.get(0).grow(moved.getCount());}
             if(!cf.slots.get(0).isEmpty()){
-                int inputs=cf.slots.get(0).getCount();before=cf.power;cf.updateEntity();executedTicks++;r.cfTicks++;long u=before-cf.power;r.cfSpent+=u;
+                int inputs=cf.slots.get(0).getCount();before=centrifugeStore(cf);cf.updateEntity();executedTicks++;r.cfTicks++;long u=before-centrifugeStore(cf);r.cfSpent+=u;
                 if(u==0)r.cfUnder++;if(cf.slots.get(0).getCount()<inputs)r.cfDone++;
             }
-            if(r.gross!=r.crSpent+r.cfSpent+r.discarded+t.power+cr.power+cf.power)r.conserved=false;
+            long batteryHE=batteries(t,cr,cf)-r.batteryInitial;
+            if(r.gross!=r.crSpent+r.cfSpent+r.discarded+batteryHE+(t.power+cr.power+cf.power-r.initialBuffers()))r.conserved=false;
         }
-        r.remaining=t.tank.getFill();r.turbofanBuffer=t.power;r.crBuffer=cr.power;r.cfBuffer=cf.power;r.oreLeft=cr.slots.get(0).getCount();r.acidLeft=cr.tank.getFill();
+        r.batteryHE=batteries(t,cr,cf)-r.batteryInitial;r.remaining=t.tank.getFill();r.turbofanBuffer=t.power;r.crBuffer=cr.power;r.cfBuffer=cf.power;r.oreLeft=cr.slots.get(0).getCount();r.acidLeft=cr.tank.getFill();
         for(int i=0;i<4;i++)r.outputs[i]=cf.slots.get(2+i).copy();
         check(cr.tank.getTankType()==Fluids.SULFURIC_ACID&&t.tank.getTankType()==Fluids.KEROSENE&&t.afterburner==0,"chain kept its sulfuric acid tank and A0 kerosene");
         return r;
@@ -181,13 +196,15 @@ public class Goal18BMachineRegression extends Goal18AMachineRegression {
         check(r.cfTicks==1200&&r.cfDone==6&&r.cfSpent==240_000L&&r.steps==3805,"real centrifuge: 6 x 200 ticks, 240,000 HE, done on tick 3,805");
         check(count(r.outputs[0],POWDER_W)==24&&count(r.outputs[1],POWDER_FE)==6&&count(r.outputs[2],POWDER_LI_TINY)==6&&r.outputs[3].isEmpty(),"merged centrifuge outputs: 24 tungsten powder, 6 iron powder, 6 tiny lithium powder, fourth slot empty");
         check(r.burned==r.kerosene-r.remaining&&r.gross==3850L*r.burned,"A0 kerosene: 3,850 HE per burnt mB");
-        check(r.conserved&&r.gross==r.crSpent+r.cfSpent+r.discarded+r.finalBuffers(),"energy identity gross == crystallizer + centrifuge + discarded + buffers on every tick");
+        check(r.conserved&&r.gross==r.crSpent+r.cfSpent+r.discarded+r.batteryHE+r.finalBuffers()-r.initialBuffers(),"energy identity gross == crystallizer + centrifuge + discarded + battery change + (final - initial buffers) on every tick");
+        check(r.discardAtCapOnly,"the turbofan discards only while its cache sits at the 1,000,000 HE cap and never a negative amount, on every tick");
         check(r.upgradeMax==0,"no SPEED/EFFECT/OVERDRIVE in the deterministic ledger");
         rows.add(tungstenRow("tungsten",r));
         // One step below the chosen preset: the same tick budget under-supplies the crystallizer.
         scenario();Run c=tungsten(COUNTER_KEROSENE_MB,r.steps);
         check(c.burned==COUNTER_KEROSENE_MB&&c.remaining==0&&c.crUnder>0&&c.sixthCrystalTick==-1&&c.crystalsMade<6,"100 mB less kerosene runs short: under-supplied ticks reset the progress and the sixth crystal misses the same tick budget");
-        check(c.conserved&&c.gross==c.crSpent+c.cfSpent+c.discarded+c.finalBuffers(),"the short run conserves energy as well");
+        check(c.conserved&&c.gross==c.crSpent+c.cfSpent+c.discarded+c.batteryHE+c.finalBuffers()-c.initialBuffers(),"the short run conserves energy as well");
+        check(c.discardAtCapOnly,"the short run discards only at the turbofan cache cap as well");
         rows.add(tungstenRow("tungsten-counterexample",c));
     }
     static String tungstenRow(String chain,Run r){
@@ -198,7 +215,8 @@ public class Goal18BMachineRegression extends Goal18AMachineRegression {
         s.append(",\"afterburner\":0,\"turbofanHEt\":3850,\"powerNet\":\"PowerNetMK2 re-registered every tick: turbofan provider; crystallizer and centrifuge receivers\"");
         s.append(",\"tickOrder\":\"turbofan updateEntity -> PowerNetMK2.update -> crystallizer updateEntity -> move crystals -> centrifuge updateEntity (when it has input)\"");
         s.append(",\"chainTicks\":").append(r.steps).append(",\"grossHE\":").append(r.gross).append(",\"crystallizerHE\":").append(r.crSpent).append(",\"centrifugeHE\":").append(r.cfSpent);
-        s.append(",\"discardedHE\":").append(r.discarded).append(",\"batteryHE\":0,\"finalBuffersHE\":").append(r.finalBuffers());
+        s.append(",\"turbofanInitialHE\":").append(r.turbofanInitial).append(",\"crystallizerInitialHE\":").append(r.crInitial).append(",\"centrifugeInitialHE\":").append(r.cfInitial).append(",\"batteryInitialHE\":").append(r.batteryInitial);
+        s.append(",\"discardedHE\":").append(r.discarded).append(",\"batteryHE\":").append(r.batteryHE).append(",\"finalBuffersHE\":").append(r.finalBuffers());
         s.append(",\"buffersHE\":{\"turbofan\":").append(r.turbofanBuffer).append(",\"crystallizer\":").append(r.crBuffer).append(",\"centrifuge\":").append(r.cfBuffer).append("}");
         s.append(",\"crystallizerTicks\":").append(r.crActive).append(",\"sixthCrystalTick\":").append(r.sixthCrystalTick).append(",\"centrifugeTicks\":").append(r.cfTicks);
         s.append(",\"crystals\":").append(r.crystalsMade).append(",\"oreConsumed\":").append(6-r.oreLeft).append(",\"remainingSulfuricMB\":").append(r.acidLeft);

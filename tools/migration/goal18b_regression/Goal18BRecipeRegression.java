@@ -43,6 +43,13 @@ public final class Goal18BRecipeRegression {
     private Goal18BRecipeRegression() { }
     private static void check(boolean condition, String message) { checks++; if(!condition) throw new AssertionError(message); }
     private static void scenario() { scenarios++; }
+    private static void rejects(String json, String label) {
+        checks++;
+        // Gson syntax errors and the contract's IllegalArgumentException are both RuntimeExceptions: the file loader falls back and the client sync ignores either.
+        try { CrystallizerRecipes.readSnapshot(json); }
+        catch(RuntimeException ex) { return; }
+        throw new AssertionError("accepted invalid " + label);
+    }
     private static String table(String... rows) { return "{\"recipes\":[" + String.join(",", rows) + "]}"; }
     private static String row(String input, String fluid, String output, String duration, String productivity) {
         return "{\"input\":" + input + ",\"fluid\":" + fluid + ",\"output\":" + output + ",\"duration\":" + duration + (productivity == null ? "" : ",\"productivity\":" + productivity) + "}";
@@ -236,6 +243,45 @@ public final class Goal18BRecipeRegression {
         check(CrystallizerRecipes.getJeiRecipes().size() == ROWS, "defaults restore after the merge scenario");
     }
 
+    /** Server-side config paths the Goal18A recipe fixture no longer reaches on this tree: custom empty table, lenient file, strict rejection. */
+    private static void configPaths() throws Exception {
+        scenario();
+        ItemStack tungsten = stack(NtmBlocks.ORE_TUNGSTEN.get()), deepTungsten = stack(NtmBlocks.ORE_TUNGSTEN_DEEPSLATE.get()), coal = stack(Blocks.COAL_ORE);
+        String good = sulfuricRow("ore_tungsten", "crystal_tungsten");
+        String duplicate = row("[\"item\",\"hbmsntm:ore_tungsten\"]", "[\"SULFURIC_ACID\",250]", "[\"hbmsntm:crystal_tungsten\",2,null]", "300", "0.1");
+        String malformed = row("[\"item\",\"hbmsntm:ore_tungsten_deepslate\",1,32767]", "[\"SULFURIC_ACID\"]", "[\"hbmsntm:crystal_tungsten\",1,null]", "600", "0.05");
+        // (a) A custom empty table replaces the whole default table, sulfuric acid groups included.
+        restoreDefaults();
+        CrystallizerRecipes handler = new CrystallizerRecipes();
+        handler.readRecipeStream(new StringReader(table()));
+        check(CrystallizerRecipes.getJeiRecipes().isEmpty() && !CrystallizerRecipes.hasRecipe(tungsten, Fluids.SULFURIC_ACID) && !CrystallizerRecipes.hasRecipe(coal, Fluids.PEROXIDE), "a custom empty table disables every default, the sulfuric acid groups included");
+        // (b) The lenient config-file path keeps the good row, skips the malformed row and rejects the duplicate input/acid key.
+        restoreDefaults();
+        Path dir = Files.createTempDirectory("goal18b-recipes");
+        Path file = dir.resolve("hbmCrystallizer.json");
+        Files.writeString(file, table(good, malformed, duplicate), StandardCharsets.UTF_8);
+        check(handler.readRecipeFile(file.toFile()), "a usable file with bad rows still loads and reports success");
+        List<CrystallizerRecipe> live = CrystallizerRecipes.getJeiRecipes();
+        check(live.size() == 1 && live.get(0).sameRecipe(CrystallizerRecipes.getDefaultRecipes().get(30)), "exactly the good tungsten row is accepted");
+        CrystallizerRecipe accepted = CrystallizerRecipes.getOutput(tungsten, Fluids.SULFURIC_ACID);
+        check(accepted != null && accepted.acidAmount() == 500 && accepted.duration == 600 && accepted.output.getCount() == 1, "the duplicate ore_tungsten@SULFURIC_ACID row did not replace the first one");
+        check(!CrystallizerRecipes.hasRecipe(deepTungsten, Fluids.SULFURIC_ACID) && !CrystallizerRecipes.hasRecipe(tungsten, Fluids.PEROXIDE) && !CrystallizerRecipes.hasRecipe(coal, Fluids.PEROXIDE), "the malformed row was skipped and no default came back");
+        Path broken = dir.resolve("broken.json");
+        Files.writeString(broken, "{\"recipes\":[", StandardCharsets.UTF_8);
+        check(!handler.readRecipeFile(broken.toFile()), "a malformed file reports failure so the loader falls back to the defaults");
+        Files.delete(file); Files.delete(broken); Files.delete(dir);
+        // (c) The strict reader (sync snapshots, writer self-check) rejects the whole table instead.
+        rejects(table(good, duplicate), "duplicate ore_tungsten@SULFURIC_ACID key");
+        rejects(table(good, malformed), "sulfuric acid without an amount");
+        rejects(table(row("[\"item\",\"hbmsntm:ore_tungsten\"]", "[\"SULFURIC\",500]", "[\"hbmsntm:crystal_tungsten\"]", "600", null)), "unknown acid");
+        rejects(table(row("[\"item\",\"hbmsntm:ore_tungsten\"]", "[\"sulfuric_acid\",500]", "[\"hbmsntm:crystal_tungsten\"]", "600", null)), "acid name that is not the internal name");
+        rejects(table(row("[\"item\",\"hbmsntm:ore_tungsten\"]", "[\"SULFURIC_ACID\",8001]", "[\"hbmsntm:crystal_tungsten\"]", "600", null)), "sulfuric acid above the 8,000 mB tank");
+        List<CrystallizerRecipe> distinct = CrystallizerRecipes.readSnapshot(table(good, row("[\"item\",\"hbmsntm:ore_tungsten\"]", "[\"PEROXIDE\",500]", "[\"hbmsntm:crystal_tungsten\"]", "600", null)));
+        check(distinct.size() == 2 && CrystallizerRecipes.getOutput(distinct, tungsten, Fluids.PEROXIDE) == distinct.get(1) && CrystallizerRecipes.getOutput(distinct, tungsten, Fluids.SULFURIC_ACID) == distinct.get(0), "the same ore under the other acid is a distinct key");
+        restoreDefaults();
+        check(CrystallizerRecipes.getJeiRecipes().size() == ROWS, "defaults restore after the config-path scenario");
+    }
+
     private static JsonObject writeAssembly(GenericRecipes<GenericRecipe> handler, GenericRecipe recipe) throws Exception {
         StringWriter serialized = new StringWriter();
         try(JsonWriter writer = new JsonWriter(serialized)) { writer.beginObject(); handler.writeRecipe(recipe, writer); writer.endObject(); }
@@ -267,7 +313,7 @@ public final class Goal18BRecipeRegression {
 
     public static void main(String[] args) throws Exception {
         Path output = Path.of(args[0]), frozen = Path.of(args[1]), merge = Path.of(args[2]);
-        defaults(); frozen18A(frozen); roundTrip(); sync(frozen); mergeExample(merge); assemblyUnchanged();
+        defaults(); frozen18A(frozen); roundTrip(); sync(frozen); mergeExample(merge); configPaths(); assemblyUnchanged();
         restoreDefaults();
         Files.writeString(output.resolve("goal18b-crystallizer-recipes.json"), CrystallizerRecipes.writeSnapshot());
         System.out.println("Goal18B recipes: " + checks + " assertions; " + scenarios + " independent scenarios; 0 executed ticks");
