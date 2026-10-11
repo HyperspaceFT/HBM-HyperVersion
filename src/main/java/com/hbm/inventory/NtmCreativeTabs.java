@@ -304,6 +304,7 @@ public class NtmCreativeTabs {
                         output.accept(NtmItems.MOLD_BASE.get());
                         output.accept(NtmItems.MOLD_PLATE_CAST.get());
                         output.accept(NtmItems.MOLD_INGOT.get());
+                        output.accept(NtmItems.MOLD_BLADE.get());
                         // One ingot's worth per crucible material, like upstream ItemScraps.getSubItems.
                         for(NTMMaterial material : Mats.orderedList) {
                             output.accept(CopperScrapsItem.create(new Mats.MaterialStack(material, MaterialShapes.INGOT.q(1))));
@@ -820,6 +821,7 @@ public class NtmCreativeTabs {
                         output.accept(NtmBlocks.FOUNDRY_MOLD);
                         output.accept(NtmBlocks.MACHINE_BLAST_FURNACE);
                         output.accept(NtmBlocks.MACHINE_COMBUSTION_ENGINE);
+                        output.accept(NtmBlocks.MACHINE_TURBOFAN);
                         output.accept(NtmBlocks.MACHINE_DIESEL);
                         output.accept(NtmBlocks.MACHINE_WOOD_BURNER);
                         output.accept(NtmBlocks.MACHINE_CENTRIFUGE);

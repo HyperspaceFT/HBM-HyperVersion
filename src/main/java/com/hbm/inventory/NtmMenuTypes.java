@@ -28,6 +28,7 @@ public class NtmMenuTypes {
     public static final DeferredHolder<MenuType<?>, MenuType<MachineCrucibleMenu>> MACHINE_CRUCIBLE = reg("machine_crucible", MachineCrucibleMenu::new);
     public static final DeferredHolder<MenuType<?>, MenuType<MachineBlastFurnaceMenu>> MACHINE_BLAST_FURNACE = reg("machine_blast_furnace", MachineBlastFurnaceMenu::new);
     public static final DeferredHolder<MenuType<?>, MenuType<MachineCombustionEngineMenu>> MACHINE_COMBUSTION_ENGINE = reg("machine_combustion_engine", MachineCombustionEngineMenu::new);
+    public static final DeferredHolder<MenuType<?>, MenuType<MachineTurbofanMenu>> MACHINE_TURBOFAN = reg("machine_turbofan", MachineTurbofanMenu::new);
     public static final DeferredHolder<MenuType<?>, MenuType<MachineDieselMenu>> MACHINE_DIESEL = reg("machine_diesel", MachineDieselMenu::new);
     public static final DeferredHolder<MenuType<?>, MenuType<MachineCompressorMenu>> MACHINE_COMPRESSOR = reg("machine_compressor", MachineCompressorMenu::new);
     public static final DeferredHolder<MenuType<?>, MenuType<MachineCokerMenu>> MACHINE_COKER = reg("machine_coker", MachineCokerMenu::new);

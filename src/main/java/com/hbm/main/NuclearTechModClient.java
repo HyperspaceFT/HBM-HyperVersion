@@ -20,6 +20,7 @@ import com.hbm.inventory.screens.MachineCompressorScreen;
 import com.hbm.inventory.screens.MachineCokerScreen;
 import com.hbm.inventory.screens.MachineMixerScreen;
 import com.hbm.inventory.screens.MachineCombustionEngineScreen;
+import com.hbm.inventory.screens.MachineTurbofanScreen;
 import com.hbm.inventory.MetaHelper;
 import com.hbm.inventory.fluid.FluidType;
 import com.hbm.inventory.fluid.Fluids;
@@ -150,6 +151,7 @@ public class NuclearTechModClient {
         event.register(NtmMenuTypes.MACHINE_COKER.get(), MachineCokerScreen::new);
         event.register(NtmMenuTypes.MACHINE_MIXER.get(), MachineMixerScreen::new);
         event.register(NtmMenuTypes.MACHINE_COMBUSTION_ENGINE.get(), MachineCombustionEngineScreen::new);
+        event.register(NtmMenuTypes.MACHINE_TURBOFAN.get(), MachineTurbofanScreen::new);
     }
 
     @SubscribeEvent

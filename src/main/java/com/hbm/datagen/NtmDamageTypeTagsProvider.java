@@ -40,7 +40,8 @@ public class NtmDamageTypeTagsProvider extends DamageTypeTagsProvider {
                         NtmDamageTypes.TAINT,
                         NtmDamageTypes.BANG,
                         NtmDamageTypes.LEAD,
-                        NtmDamageTypes.MONOXIDE
+                        NtmDamageTypes.MONOXIDE,
+                        NtmDamageTypes.TURBOFAN
                 );
 
         this.tag(DamageTypeTags.IS_PROJECTILE)
@@ -58,9 +59,12 @@ public class NtmDamageTypeTagsProvider extends DamageTypeTagsProvider {
                 );
 
         this.tag(NtmDamageTypeTags.ABSOLUTE)
+                .add(NtmDamageTypes.TURBOFAN)
                 .addTags(
                         DamageTypeTags.BYPASSES_EFFECTS,
                         DamageTypeTags.BYPASSES_RESISTANCE
                 );
+        this.tag(DamageTypeTags.BYPASSES_EFFECTS).add(NtmDamageTypes.TURBOFAN);
+        this.tag(DamageTypeTags.BYPASSES_RESISTANCE).add(NtmDamageTypes.TURBOFAN);
     }
 }

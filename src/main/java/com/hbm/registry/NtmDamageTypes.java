@@ -26,6 +26,7 @@ public interface NtmDamageTypes {
     ResourceKey<DamageType> SHRAPNEL = key("shrapnel");
     ResourceKey<DamageType> RUBBLE = key("rubble");
     ResourceKey<DamageType> MONOXIDE = key("monoxide");
+    ResourceKey<DamageType> TURBOFAN = key("turbofan");
     ResourceKey<DamageType> METEORITE = key("meteorite");
 
     ResourceKey<DamageType> PHYSICAL = key("physical");
@@ -52,6 +53,7 @@ public interface NtmDamageTypes {
         context.register(SHRAPNEL, new DamageType("shrapnel", 0.1F));
         context.register(RUBBLE, new DamageType("rubble", 0.1F));
         context.register(MONOXIDE, new DamageType("monoxide", 0.1F));
+        context.register(TURBOFAN, new DamageType("blender", 0.1F));
         context.register(METEORITE, new DamageType("meteorite", 0.1F));
 
         context.register(PHYSICAL, new DamageType("sednaPhysical", 0.1F));

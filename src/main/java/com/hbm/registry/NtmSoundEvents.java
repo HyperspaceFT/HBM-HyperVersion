@@ -80,6 +80,7 @@ public class NtmSoundEvents {
     public static final DeferredHolder<SoundEvent, SoundEvent> ELECTRIC_MOTOR_LOOP = reg("block.motor"); // BLOCKS CATEGORY
     public static final DeferredHolder<SoundEvent, SoundEvent> ENGINE_LOOP = reg("block.engine"); // BLOCKS CATEGORY
     public static final DeferredHolder<SoundEvent, SoundEvent> IGENERATOR_OPERATE = reg("block.igenerator_operate");
+    public static final DeferredHolder<SoundEvent, SoundEvent> TURBOFAN_OPERATE = reg("block.turbofan_operate");
     public static final DeferredHolder<SoundEvent, SoundEvent> COMPRESSOR_STROKE = reg("block.compressor_stroke");
     public static final DeferredHolder<SoundEvent, SoundEvent> BOILER = reg("block.boiler"); // BLOCKS CATEGORY
     public static final DeferredHolder<SoundEvent, SoundEvent> TURBINE_LEVI_LOOP = reg("block.chungus_turbine_running");

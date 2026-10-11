@@ -73,6 +73,9 @@ public class ResourceManager {
     public static final ResourceLocation coker_tex = NuclearTechMod.withDefaultNamespace("textures/models/machines/coker.png");
     public static final ResourceLocation mixer_tex = NuclearTechMod.withDefaultNamespace("textures/models/machines/mixer.png");
     public static final ResourceLocation combustion_engine_tex = NuclearTechMod.withDefaultNamespace("textures/models/machines/combustion_engine.png");
+    public static final ResourceLocation turbofan_tex = NuclearTechMod.withDefaultNamespace("textures/models/machines/turbofan.png");
+    public static final ResourceLocation turbofan_back_tex = NuclearTechMod.withDefaultNamespace("textures/models/machines/turbofan_back.png");
+    public static final ResourceLocation turbofan_afterburner_tex = NuclearTechMod.withDefaultNamespace("textures/models/machines/turbofan_afterburner.png");
     public static final ResourceLocation PUMP_ELECTRIC_TEX = NuclearTechMod.withDefaultNamespace("textures/models/machines/pump_electric.png");
     public static final ResourceLocation HEATER_OVEN_TEX = NuclearTechMod.withDefaultNamespace("textures/models/machines/heating_oven.png");
     public static final ResourceLocation HEATER_OILBURNER_TEX = NuclearTechMod.withDefaultNamespace("textures/models/machines/oilburner.png");
@@ -324,6 +327,7 @@ public class ResourceManager {
     public static IModelCustom coker;
     public static IModelCustom mixer;
     public static IModelCustom combustion_engine;
+    public static IModelCustom turbofan;
     public static IModelCustom pump;
     public static IModelCustom heater_oven;
     public static IModelCustom heater_oilburner;
@@ -472,6 +476,7 @@ public class ResourceManager {
         coker = new HFRWavefrontObject("models/obj/machines/coker.obj").asVBO();
         mixer = new HFRWavefrontObject("models/obj/machines/mixer.obj").asVBO();
         combustion_engine = new HFRWavefrontObject("models/obj/machines/combustion_engine.obj").asVBO();
+        turbofan = new HFRWavefrontObject("models/obj/machines/turbofan.obj").asVBO();
         pump = new HFRWavefrontObject("models/obj/machines/pump.obj").asVBO();
         heater_oven = new HFRWavefrontObject("models/obj/machines/heating_oven.obj").asVBO();
         heater_oilburner = new HFRWavefrontObject("models/obj/machines/oilburner.obj").asVBO();

@@ -170,6 +170,11 @@
     ],
     "subtitle": "subtitles.block.steam_engine_operate"
   },
+  "block.turbofan_operate": {
+    "sounds": [
+      "hbmsntm:block/turbofanoperate"
+    ]
+  },
   "block.warn_overspeed": {
     "sounds": [
       "hbmsntm:block/warn_overspeed"

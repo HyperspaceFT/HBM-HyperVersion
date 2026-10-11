@@ -790,6 +790,7 @@ public class NtmLanguageProvider extends LanguageProvider {
         this.add(NtmItems.MOLD_BASE, "Blank Foundry Mold");
         this.add(NtmItems.MOLD_PLATE_CAST, "Cast Plate Foundry Mold");
         this.add(NtmItems.MOLD_INGOT, "Ingot Foundry Mold (Dura Steel)");
+        this.add(NtmItems.MOLD_BLADE, "Small Blade Foundry Mold (Tungsten)");
         this.add(NtmItems.SCRAPS, "%s Scraps");
         this.add("item.hbmsntm.scraps.generic", "Foundry Scraps");
         this.add("item.hbmsntm.scraps.desc", "Recovered metal; remelt in a crucible.");
@@ -1874,6 +1875,31 @@ public class NtmLanguageProvider extends LanguageProvider {
         this.add("machine_diesel.status.running", "Generating");
         this.add("machine_diesel.status.idle", "Not generating");
         this.add("subtitles.block.engine", "Engine runs");
+        this.add("block.hbmsntm.machine_turbofan", "Turbofan Generator");
+        this.add("container.machine_turbofan", "Turbofan Generator");
+        this.add("machine_turbofan.slot.fuel", "Fuel container");
+        this.add("machine_turbofan.slot.empty", "Empty container output");
+        this.add("machine_turbofan.slot.afterburner", "Afterburner upgrade (levels 1–3)");
+        this.add("machine_turbofan.slot.battery", "Battery to charge");
+        this.add("machine_turbofan.slot.identifier", "Fluid identifier");
+        this.add("machine_turbofan.warning.full", "Fuel is consumed even when the energy buffer is full.");
+        this.add("machine_turbofan.warning.unsupported_fuel", "Non-aviation fluids are consumed without producing energy.");
+        this.add("machine_turbofan.warning.type", "Changing the fluid type discards the fuel already in the tank.");
+        this.add("machine_turbofan.warning.hazard", "Keep clear of the intake and exhaust while aviation fuel is burning.");
+        this.add("machine_turbofan.warning.redstone", "A redstone signal at any external port stops fuel burning and the danger zones.");
+        this.add("machine_turbofan.warning.smoke", "Smoke is retained in three 150 mB buffers; overflow pollutes the area. Smoke cannot be piped out.");
+        this.add("machine_turbofan.fuel_rate", "Fuel consumption: %s mB/t");
+        this.add("machine_turbofan.output", "Gross generation: %s HE/t");
+        this.add("machine_turbofan.afterburner", "Afterburner level: %s");
+        this.add("machine_turbofan.blood", "Blood: %s / %s mB");
+        this.add("machine_turbofan.status.running", "Burning fuel");
+        this.add("machine_turbofan.status.idle", "Idle");
+        this.add("machine_turbofan.status.redstone", "Stopped by redstone");
+        this.add("death.attack.blender", "%1$s was chopped in small, bite-sized pieces.");
+        this.add("death.attack.blender.player", "%1$s was blended by a turbofan while fighting %2$s");
+        this.add("machine_turbofan.warning.kerosene", "Default kerosene at level 3 produces 30,800 HE/t gross; this does not cover a 125,000 HE/t load.");
+        this.add("machine_turbofan.warning.charge_order", "Generation is followed by battery charging; any energy above 1,000,000 HE is then discarded.");
+
         this.add("block.hbmsntm.machine_coker", "Coker Unit");
         this.add("container.machine_coker", "Coker Unit");
         this.add("block.hbmsntm.machine_coker.desc", "Cokes fluids using heat from below.$Each batch requires 20,000 TU of accumulated processing heat; speed depends on stored heat.$Changing input fluid type empties the input tank. Changing byproduct type discards its previous contents.$Use pipes for fluids; slots are for a fluid identifier and item output.");
@@ -2005,7 +2031,7 @@ public class NtmLanguageProvider extends LanguageProvider {
         this.add("container.machine_crucible.jei.smelting", "Crucible Smelting");
         this.add("container.machine_crucible.jei.casting", "Crucible Casting");
         this.add("container.machine_crucible.jei.select_hint", "Select the recipe in the crucible's interface; it runs every %s ticks.");
-        this.add("casting.no_mold", "Insert a cast plate or Dura ingot mold before pouring.");
+        this.add("casting.no_mold", "Insert a cast plate, Dura ingot, or tungsten blade mold before pouring.");
         this.add("casting.contents", "%s: %s / %s quanta");
         this.add("casting.cooling", "Cooling: %s ticks remaining");
         this.add("casting.take_output", "Right-click to take the cast product.");

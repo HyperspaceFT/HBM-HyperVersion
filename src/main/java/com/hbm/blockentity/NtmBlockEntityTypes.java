@@ -219,6 +219,10 @@ public class NtmBlockEntityTypes {
             "machine_combustion_engine",
             () -> BlockEntityType.Builder.of(MachineCombustionEngineBlockEntity::new, NtmBlocks.MACHINE_COMBUSTION_ENGINE.get()).build(null));
 
+    public static final Supplier<BlockEntityType<MachineTurbofanBlockEntity>> MACHINE_TURBOFAN = BLOCK_ENTITY_TYPES.register(
+            "machine_turbofan",
+            () -> BlockEntityType.Builder.of(MachineTurbofanBlockEntity::new, NtmBlocks.MACHINE_TURBOFAN.get()).build(null));
+
     public static final Supplier<BlockEntityType<MachineDieselBlockEntity>> MACHINE_DIESEL = BLOCK_ENTITY_TYPES.register(
             "machine_diesel",
             () -> BlockEntityType.Builder.of(

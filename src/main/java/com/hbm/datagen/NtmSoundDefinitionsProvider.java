@@ -234,6 +234,9 @@ public class NtmSoundDefinitionsProvider extends SoundDefinitionsProvider {
                 .subtitle("subtitles.block.igenerator_operate")
                 .with(sound(NuclearTechMod.withDefaultNamespace("block/igenerator_operate")))
         );
+        this.add(NtmSoundEvents.TURBOFAN_OPERATE, SoundDefinition.definition()
+                .with(sound(NuclearTechMod.withDefaultNamespace("block/turbofanoperate")))
+        );
         this.add(NtmSoundEvents.STEAM_ENGINE_OPERATE, SoundDefinition.definition()
                 .subtitle("subtitles.block.steam_engine_operate")
                 .with(sound(NuclearTechMod.withDefaultNamespace("block/steam_engine_operate")))

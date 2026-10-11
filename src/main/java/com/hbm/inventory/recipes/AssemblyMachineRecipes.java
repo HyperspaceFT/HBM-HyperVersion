@@ -284,7 +284,14 @@ public class AssemblyMachineRecipes extends GenericRecipes<GenericRecipe> {
                         new RecipesCommon.TagStack(NtmTags.Items.PLATES_COPPER, 4),
                         new ComparableStack(NtmItems.CIRCUIT_ANALOG_BOARD.get(), 1)));
 
-        // Original normal combustion/piston inputs remain available in both enable528 settings.
+        // Original normal turbofan/combustion/piston inputs remain available in both enable528 settings.
+        this.register(new GenericRecipe("ass.turbofan").setup(300, 100).outputItems(new ItemStack(NtmBlocks.MACHINE_TURBOFAN.get(), 1))
+                .inputItems(new ComparableStack(NtmItems.SHELL_TITANIUM.get(), 8),
+                        new ComparableStack(NtmItems.PIPE_DURA_STEEL.get(), 4),
+                        new RecipesCommon.TagStack(ItemTags.create(ResourceLocation.fromNamespaceAndPath("ntm", "ingots_plastic")), 12),
+                        new ComparableStack(NtmItems.TURBINE_TUNGSTEN.get(), 1),
+                        new ComparableStack(MetaHelper.newStack(NtmItems.WIRE_DENSE.get(), 12, WireDenseItem.Type.GOLD.meta)),
+                        new ComparableStack(NtmItems.CIRCUIT_INTEGRATED_BOARD.get(), 3)));
         this.register(new GenericRecipe("ass.combustiongen").setup(300, 100).outputItems(new ItemStack(NtmBlocks.MACHINE_COMBUSTION_ENGINE.get(), 1))
                 .inputItems(new RecipesCommon.TagStack(NtmTags.Items.PLATES_STEEL, 16),
                         new ComparableStack(NtmItems.INGOT_COPPER.get(), 12),
