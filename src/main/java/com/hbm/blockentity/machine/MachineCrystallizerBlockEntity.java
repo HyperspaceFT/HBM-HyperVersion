@@ -4,6 +4,7 @@ import api.hbm.energymk2.IBatteryItem;
 import api.hbm.energymk2.IEnergyReceiverMK2;
 import api.hbm.energymk2.PowerNetMK2;
 import api.hbm.fluidmk2.FluidNetMK2;
+import api.hbm.fluidmk2.IFillableItem;
 import api.hbm.fluidmk2.IFluidStandardReceiverMK2;
 import com.hbm.blockentity.IFluidCopiable;
 import com.hbm.blockentity.IUpgradeInfoProvider;
@@ -22,6 +23,7 @@ import com.hbm.inventory.menus.MachineCrystallizerMenu;
 import com.hbm.inventory.recipes.CrystallizerRecipes;
 import com.hbm.inventory.recipes.CrystallizerRecipes.CrystallizerRecipe;
 import com.hbm.items.machine.IItemFluidIdentifier;
+import com.hbm.items.machine.InfiniteFluidItem;
 import com.hbm.items.machine.MachineUpgradeItem;
 import com.hbm.items.machine.MachineUpgradeItem.UpgradeType;
 import com.hbm.lib.Library;
@@ -127,9 +129,6 @@ public class MachineCrystallizerBlockEntity extends MachineBaseBlockEntity imple
             return;
         }
         long previousPower = this.power;
-        int previousProgress = this.progress;
-        int previousDuration = this.duration;
-        boolean previousOn = this.isOn;
         FluidType previousType = this.tank.getTankType();
         int previousFill = this.tank.getFill();
         ItemStack previousBattery = this.slots.get(SLOT_BATTERY).copy();
@@ -171,8 +170,8 @@ public class MachineCrystallizerBlockEntity extends MachineBaseBlockEntity imple
             }
         }
         this.power = Math.max(0L, Math.min(this.power, MAX_POWER));
-        if(changed || this.power != previousPower || this.progress != previousProgress || this.duration != previousDuration
-                || this.isOn != previousOn || this.tank.getFill() != previousFill || this.tank.getTankType() != previousType) this.setChanged();
+        // Only persisted state marks the chunk dirty; progress, isOn and duration are not saved and reset on load.
+        if(changed || this.power != previousPower || this.tank.getFill() != previousFill || this.tank.getTankType() != previousType) this.setChanged();
         this.markClimbingPlayers();
         this.networkPackNT(25);
     }
@@ -329,7 +328,9 @@ public class MachineCrystallizerBlockEntity extends MachineBaseBlockEntity imple
             case SLOT_INPUT -> this.level != null && this.level.isClientSide
                     ? CrystallizerRecipeClientSync.hasRecipe(stack, this.tank.getTankType()) : CrystallizerRecipes.hasRecipe(stack, this.tank.getTankType());
             case SLOT_BATTERY -> stack.getItem() instanceof IBatteryItem;
-            case SLOT_FLUID_IN -> FluidContainerRegistry.getFluidContent(stack, this.tank.getTankType()) > 0;
+            case SLOT_FLUID_IN -> FluidContainerRegistry.getFluidContent(stack, this.tank.getTankType()) > 0
+                    || stack.getItem() instanceof InfiniteFluidItem infinite && (infinite.getType() == null || infinite.getType() == this.tank.getTankType())
+                    || stack.getItem() instanceof IFillableItem fillable && fillable.providesFluid(this.tank.getTankType(), stack);
             case SLOT_UPGRADE_FIRST, SLOT_UPGRADE_LAST -> stack.getItem() instanceof MachineUpgradeItem upgrade
                     && upgrade.tier > 0 && this.getValidUpgrades().containsKey(upgrade.type);
             case SLOT_IDENTIFIER -> stack.getItem() instanceof IItemFluidIdentifier;

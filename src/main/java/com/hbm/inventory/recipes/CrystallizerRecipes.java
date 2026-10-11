@@ -137,7 +137,7 @@ public class CrystallizerRecipes extends SerializableRecipe {
         for(CrystallizerRecipe recipe : source) if(recipe.matches(stack, type)) return recipe;
         return null;
     }
-    /** Whether any row in the table accepts the item with any acid; used by the client-side slot prediction when the tank is not yet typed. */
+    /** Whether any row in the table accepts the item with any acid. Table query for tools and the isolation checks; the machine itself filters by the current acid type through {@link #hasRecipe}. */
     public static boolean hasRecipeForAnyAcid(List<CrystallizerRecipe> source, ItemStack stack) {
         if(stack == null || stack.isEmpty()) return false;
         for(CrystallizerRecipe recipe : source) if(recipe.input.matchesRecipe(stack, true)) return true;

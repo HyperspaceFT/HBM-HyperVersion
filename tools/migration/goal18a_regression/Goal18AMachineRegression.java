@@ -27,6 +27,8 @@ import java.util.*;
 
 /** Production crystallizer ticks over declared engine services: the recipe table rows are fixture inputs mirroring the verified defaults. */
 public class Goal18AMachineRegression extends Goal14CMachineRegression {
+    static final class FillablePeroxide extends Item implements IFillableItem{FillablePeroxide(){super("fillable_peroxide");}@Override public boolean providesFluid(FluidType t,ItemStack s){return t==Fluids.PEROXIDE;}}
+    static final class FillableNothing extends Item implements IFillableItem{FillableNothing(){super("fillable_nothing");}}
     static int executedTicks;
     static final Item ORE_IRON = Blocks.IRON_ORE.asItem(), ORE_COPPER = Blocks.COPPER_ORE.asItem(), ORE_DEEPSLATE_IRON = Blocks.DEEPSLATE_IRON_ORE.asItem();
     static Level fresh(){
@@ -109,6 +111,9 @@ public class Goal18AMachineRegression extends Goal14CMachineRegression {
             scenario();b.slots.set(3,full.copy());b.slots.set(4,bad);step(l,b);check(b.tank.getFill()==1000&&!b.slots.get(3).isEmpty(),"full or foreign return slot refuses the whole transfer");
         }
         scenario();b.slots.set(4,ItemStack.EMPTY);b.tank.setFill(7999);step(l,b);check(b.tank.getFill()==7999&&!b.slots.get(3).isEmpty(),"capacity short by 1 mB refuses the whole container");
+        scenario();check(b.canPlaceItem(3,full.copy())&&!b.canPlaceItem(3,new ItemStack(NtmItems.FLUID_TANK_EMPTY.get()))&&!b.canPlaceItem(3,new ItemStack(Items.STICK)),"the acid container slot accepts a full container of the tank's acid only");
+        check(b.canPlaceItem(3,new ItemStack(new InfiniteFluidItem(Fluids.PEROXIDE)))&&b.canPlaceItem(3,new ItemStack(new InfiniteFluidItem()))&&!b.canPlaceItem(3,new ItemStack(new InfiniteFluidItem(Fluids.SULFURIC_ACID))),"infinite fluid items the tank loader can empty pass the filter, a wrong-typed one does not");
+        check(b.canPlaceItem(3,new ItemStack(new FillablePeroxide()))&&!b.canPlaceItem(3,new ItemStack(new FillableNothing())),"a fillable item passes only while it provides the tank's acid");
         b.slots.set(3,ItemStack.EMPTY);b.tank.setFill(0);b.dirty=0;check(b.transferFluid(Fluids.PEROXIDE,0,500)==0&&b.tank.getFill()==500&&b.dirty>0,"pipe fill of the acid tank saves");
         b.dirty=0;check(b.transferFluid(Fluids.SULFURIC_ACID,0,10)==10&&b.transferFluid(Fluids.PEROXIDE,1,10)==10&&b.dirty==0,"wrong type or pressure is refused unchanged");
         check(b.getDemand(Fluids.PEROXIDE,0)==7500&&b.getDemand(Fluids.SULFURIC_ACID,0)==0,"demand is the tank's remaining peroxide capacity");

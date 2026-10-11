@@ -75,5 +75,21 @@ public class CentrifugeRecipeClientSync {public static final List<ItemStack> inp
         stubs[n] = stubs[n].replace('l.addAll(Collections.nCopies(n,value));', 'l.defaultValue=value;l.addAll(Collections.nCopies(n,value));')
     n = 'com/hbm/util/BobMathUtil.java'
     if 'getBlink(' not in stubs[n]: stubs[n] = stubs[n].replace('public class BobMathUtil{', 'public class BobMathUtil{public static boolean getBlink(){return false;}')
+    # Tank-loader item services: the acid container filter accepts what FluidTank.loadTank can empty (infinite item of the tank's
+    # type or untyped, fillable item providing the type); the inherited stand-ins carried neither method.
+    stubs['com/hbm/items/machine/InfiniteFluidItem.java'] = ('package com.hbm.items.machine;import net.minecraft.world.item.Item;import com.hbm.inventory.fluid.FluidType;'
+        'public class InfiniteFluidItem extends Item{private final FluidType type;public InfiniteFluidItem(){this(null);}'
+        'public InfiniteFluidItem(FluidType type){super("infinite");this.type=type;}public FluidType getType(){return type;}'
+        'public int getAmount(){return 1000;}public int getChance(){return 1;}public boolean allowPressure(int p){return p==0;}}')
+    stubs['api/hbm/fluidmk2/IFillableItem.java'] = ('package api.hbm.fluidmk2;import com.hbm.inventory.fluid.FluidType;import net.minecraft.world.item.ItemStack;'
+        'public interface IFillableItem{default boolean acceptsFluid(FluidType t,ItemStack s){return false;}default int tryFill(FluidType t,int a,ItemStack s){return a;}'
+        'default boolean providesFluid(FluidType t,ItemStack s){return false;}default int tryEmpty(FluidType t,int a,ItemStack s){return 0;}'
+        'default FluidType getFirstFluidType(ItemStack s){return null;}default int getFill(ItemStack s){return 0;}}')
+    # Vanilla ItemStack.matches compares every component including CUSTOM_DATA; the inherited stand-in kept custom data in a
+    # separate field and ignored it, so a battery whose charge changed looked unchanged. Compare that field as well.
+    n = 'net/minecraft/world/item/ItemStack.java'
+    old = 'return a.isEmpty()&&b.isEmpty()||Objects.equals(a.components,b.components);}'
+    if old not in stubs[n]: raise SystemExit('Goal18A: ItemStack.isSameItemSameComponents stand-in anchor missing')
+    stubs[n] = stubs[n].replace(old, 'return a.isEmpty()&&b.isEmpty()||Objects.equals(a.components,b.components)&&Objects.equals(a.customTag,b.customTag);}', 1)
     for path in MACHINE_SOURCES: stubs.pop(path, None)
     return stubs

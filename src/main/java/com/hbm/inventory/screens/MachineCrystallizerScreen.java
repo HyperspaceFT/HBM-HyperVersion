@@ -43,6 +43,8 @@ public class MachineCrystallizerScreen extends InfoScreen<MachineCrystallizerMen
         List<Component> status = new ArrayList<>();
         status.add(Component.translatable(this.be.isOn ? "machine_crystallizer.status.running" : "machine_crystallizer.status.idle"));
         status.add(Component.translatable("machine_crystallizer.progress", this.be.progress, this.be.duration, this.be.duration + 1));
+        // The server tick is the only writer of the upgrade levels; the client recomputes them from the menu-synced upgrade slots.
+        this.be.upgradeManager.checkSlots(this.be.slots, MachineCrystallizerBlockEntity.SLOT_UPGRADE_FIRST, MachineCrystallizerBlockEntity.SLOT_UPGRADE_LAST);
         int speed = this.be.upgradeManager.getLevel(UpgradeType.SPEED);
         int effect = this.be.upgradeManager.getLevel(UpgradeType.EFFECT);
         int overdrive = this.be.upgradeManager.getLevel(UpgradeType.OVERDRIVE);
