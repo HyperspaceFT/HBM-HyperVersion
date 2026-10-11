@@ -127,6 +127,7 @@ public class AnvilRecipes {
         SMITHING_RECIPES.add(new AnvilSmithingRenameRecipe());
         SMITHING_RECIPES.add(new AnvilSmithingCastMoldRecipe());
         SMITHING_RECIPES.add(new AnvilSmithingIngotMoldRecipe());
+        SMITHING_RECIPES.add(new AnvilSmithingBladeMoldRecipe());
     }
 
     private static void addUpgrade(NTMAnvilBlock.Variant input, NTMAnvilBlock.Variant output, ItemLike ingredient, int amount) {

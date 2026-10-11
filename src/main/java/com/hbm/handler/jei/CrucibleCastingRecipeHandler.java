@@ -19,11 +19,16 @@ import net.minecraft.world.item.ItemStack;
 import java.util.ArrayList;
 import java.util.List;
 
-/** Upstream NEI "Crucible Casting": existing plates and the mixer prerequisite Dura ingot. */
+/** Upstream NEI "Crucible Casting": existing plates, the mixer prerequisite Dura ingot and tungsten blades. */
 public class CrucibleCastingRecipeHandler implements IRecipeCategory<CrucibleCastingRecipeHandler.Casting> {
 
-    public record Casting(NTMMaterial material, boolean ingot) {
-        public Casting(NTMMaterial material) { this(material, false); }
+    public enum Shape { PLATE, INGOT, BLADE }
+
+    public record Casting(NTMMaterial material, Shape shape) {
+        public Casting(NTMMaterial material) { this(material, Shape.PLATE); }
+        public Casting(NTMMaterial material, boolean ingot) { this(material, ingot ? Shape.INGOT : Shape.PLATE); }
+        public boolean ingot() { return this.shape == Shape.INGOT; }
+        public boolean blade() { return this.shape == Shape.BLADE; }
     }
 
     public static final RecipeType<Casting> RECIPE_TYPE = RecipeType.create(
@@ -49,6 +54,7 @@ public class CrucibleCastingRecipeHandler implements IRecipeCategory<CrucibleCas
         List<Casting> recipes = new ArrayList<>();
         for(NTMMaterial material : CopperCastingRecipes.getCastableMaterials()) recipes.add(new Casting(material));
         recipes.add(new Casting(Mats.MAT_DURA, true));
+        recipes.add(new Casting(Mats.MAT_TUNGSTEN, Shape.BLADE));
         return recipes;
     }
 
@@ -60,9 +66,9 @@ public class CrucibleCastingRecipeHandler implements IRecipeCategory<CrucibleCas
     @Override
     public void setRecipe(IRecipeLayoutBuilder builder, Casting recipe, IFocusGroup focuses) {
         builder.addInputSlot(48, 24).addItemStack(CrucibleAlloyingRecipeHandler.liquid(
-                new Mats.MaterialStack(recipe.material(), recipe.ingot() ? CopperCastingRecipes.INGOT_QUANTA : CopperCastingRecipes.PLATE_QUANTA)));
-        builder.addSlot(RecipeIngredientRole.CATALYST, 75, 6).addItemStack(new ItemStack(recipe.ingot() ? NtmItems.MOLD_INGOT.get() : NtmItems.MOLD_PLATE_CAST.get()));
+                new Mats.MaterialStack(recipe.material(), recipe.ingot() ? CopperCastingRecipes.INGOT_QUANTA : recipe.blade() ? CopperCastingRecipes.BLADE_QUANTA : CopperCastingRecipes.PLATE_QUANTA)));
+        builder.addSlot(RecipeIngredientRole.CATALYST, 75, 6).addItemStack(new ItemStack(recipe.ingot() ? NtmItems.MOLD_INGOT.get() : recipe.blade() ? NtmItems.MOLD_BLADE.get() : NtmItems.MOLD_PLATE_CAST.get()));
         builder.addSlot(RecipeIngredientRole.CATALYST, 75, 42).addItemStack(new ItemStack(NtmBlocks.FOUNDRY_MOLD.asItem()));
-        builder.addOutputSlot(102, 24).addItemStack(recipe.ingot() ? new ItemStack(NtmItems.INGOT_DURA_STEEL.get()) : CopperCastingRecipes.getPlate(recipe.material()));
+        builder.addOutputSlot(102, 24).addItemStack(recipe.ingot() ? new ItemStack(NtmItems.INGOT_DURA_STEEL.get()) : recipe.blade() ? new ItemStack(NtmItems.BLADE_TUNGSTEN.get()) : CopperCastingRecipes.getPlate(recipe.material()));
     }
 }

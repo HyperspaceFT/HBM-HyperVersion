@@ -26,6 +26,7 @@ public final class CopperCastingRecipes {
     public static final int INGOT_QUANTA = MaterialShapes.INGOT.q(1);
     public static final int BLOCK_QUANTA = MaterialShapes.BLOCK.q(1);
     public static final int NUGGET_QUANTA = MaterialShapes.NUGGET.q(1);
+    public static final int BLADE_QUANTA = 3 * 72;
     public static final int PLATE_QUANTA = MaterialShapes.CASTPLATE.q(1);
     public static final int POUR_QUANTA = MaterialShapes.NUGGET.q(3);
 

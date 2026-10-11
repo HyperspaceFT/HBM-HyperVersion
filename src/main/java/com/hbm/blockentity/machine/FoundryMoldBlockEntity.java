@@ -19,7 +19,7 @@ import net.minecraft.world.inventory.AbstractContainerMenu;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.block.state.BlockState;
 
-/** Small cast-plate and Dura ingot molds: reusable molds and one output at a time. */
+/** Small cast-plate, Dura ingot and tungsten blade molds: reusable molds and one output at a time. */
 public class FoundryMoldBlockEntity extends MachineBaseBlockEntity {
     public int amount;
     public int cooloff = 200;
@@ -32,25 +32,30 @@ public class FoundryMoldBlockEntity extends MachineBaseBlockEntity {
     @Override protected Component getDefaultName() { return Component.translatable("block.hbmsntm.foundry_mold"); }
     private boolean hasPlateMold() { return this.slots.get(0).is(NtmItems.MOLD_PLATE_CAST.get()); }
     private boolean hasIngotMold() { return this.slots.get(0).is(NtmItems.MOLD_INGOT.get()); }
-    public boolean hasMold() { return this.hasPlateMold() || this.hasIngotMold(); }
+    private boolean hasBladeMold() { return this.slots.get(0).is(NtmItems.MOLD_BLADE.get()); }
+    public boolean hasMold() { return this.hasPlateMold() || this.hasIngotMold() || this.hasBladeMold(); }
     public int getCapacity() {
         if(this.hasIngotMold()) return CopperCastingRecipes.INGOT_QUANTA;
         if(this.hasPlateMold()) return CopperCastingRecipes.PLATE_QUANTA;
+        if(this.hasBladeMold()) return CopperCastingRecipes.BLADE_QUANTA;
         return 0;
     }
 
     private boolean accepts(NTMMaterial material) {
+        if(this.hasBladeMold()) return material == Mats.MAT_TUNGSTEN;
         if(this.hasIngotMold()) return material == Mats.MAT_DURA;
         return this.hasPlateMold() && CopperCastingRecipes.getPlateType(material) != null;
     }
 
     private static boolean accepts(ItemStack mold, NTMMaterial material) {
+        if(mold.is(NtmItems.MOLD_BLADE.get())) return material == Mats.MAT_TUNGSTEN;
         if(mold.is(NtmItems.MOLD_INGOT.get())) return material == Mats.MAT_DURA;
         return mold.is(NtmItems.MOLD_PLATE_CAST.get()) && CopperCastingRecipes.getPlateType(material) != null;
     }
 
     private static int capacityFor(ItemStack mold, NTMMaterial material) {
         if(!accepts(mold, material)) return 0;
+        if(mold.is(NtmItems.MOLD_BLADE.get())) return CopperCastingRecipes.BLADE_QUANTA;
         return mold.is(NtmItems.MOLD_INGOT.get())
                 ? CopperCastingRecipes.INGOT_QUANTA
                 : CopperCastingRecipes.PLATE_QUANTA;
@@ -80,6 +85,7 @@ public class FoundryMoldBlockEntity extends MachineBaseBlockEntity {
             if(--this.cooloff <= 0) {
                 this.slots.set(1, this.hasIngotMold()
                         ? new ItemStack(NtmItems.INGOT_DURA_STEEL.get())
+                        : this.hasBladeMold() ? new ItemStack(NtmItems.BLADE_TUNGSTEN.get())
                         : CopperCastingRecipes.getPlate(this.type));
                 this.amount = 0;
                 this.type = null;
@@ -95,7 +101,7 @@ public class FoundryMoldBlockEntity extends MachineBaseBlockEntity {
 
     public boolean insertMold(ItemStack stack) {
         if(!this.slots.get(0).isEmpty() || this.amount > 0
-                || (!stack.is(NtmItems.MOLD_PLATE_CAST.get()) && !stack.is(NtmItems.MOLD_INGOT.get()))) return false;
+                || (!stack.is(NtmItems.MOLD_PLATE_CAST.get()) && !stack.is(NtmItems.MOLD_INGOT.get()) && !stack.is(NtmItems.MOLD_BLADE.get()))) return false;
         this.slots.set(0, stack.split(1));
         this.setChanged();
         return true;

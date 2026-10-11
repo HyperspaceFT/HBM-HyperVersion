@@ -383,6 +383,7 @@ public class NtmItemModelProvider extends ItemModelProvider {
         this.basicItem(NtmItems.MOLD_BASE.get());
         this.basicItem(NtmItems.MOLD_PLATE_CAST.get());
         this.basicItem(NtmItems.MOLD_INGOT.get());
+        this.basicItem(NtmItems.MOLD_BLADE.get());
         this.registerScraps();
         this.basicItem(NtmItems.PIPES_STEEL.get());
         this.basicItem(NtmItems.CRT_DISPLAY.get());

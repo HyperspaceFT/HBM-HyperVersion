@@ -376,6 +376,10 @@ public class NtmJeiPlugin implements IModPlugin {
                 CrucibleCastingRecipeHandler.RECIPE_TYPE
         );
         registration.addRecipeCatalyst(
+                NtmItems.MOLD_BLADE.get(),
+                CrucibleCastingRecipeHandler.RECIPE_TYPE
+        );
+        registration.addRecipeCatalyst(
                 NtmItems.MOLD_PLATE_CAST.get(),
                 CrucibleCastingRecipeHandler.RECIPE_TYPE
         );

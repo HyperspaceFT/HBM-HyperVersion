@@ -56,7 +56,7 @@ public class FoundryMoldBlock extends BaseEntityBlock implements IToolable, ILoo
             if(!level.isClientSide) give(player, mold.removeItem(1, 64));
             return true;
         }
-        if((held.is(NtmItems.MOLD_PLATE_CAST.get()) || held.is(NtmItems.MOLD_INGOT.get()))
+        if((held.is(NtmItems.MOLD_PLATE_CAST.get()) || held.is(NtmItems.MOLD_INGOT.get()) || held.is(NtmItems.MOLD_BLADE.get()))
                 && mold.getItem(0).isEmpty() && mold.amount == 0) {
             if(!level.isClientSide) mold.insertMold(held);
             return true;

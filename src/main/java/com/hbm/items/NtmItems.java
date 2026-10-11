@@ -391,6 +391,7 @@ public class NtmItems {
     public static final DeferredItem<Item> CAST_PLATE = ITEMS.register("cast_plate", () -> new CastPlateItem(new Item.Properties(), false));
     public static final DeferredItem<Item> MOLD_BASE = ITEMS.register("mold_base", () -> new Item(new Item.Properties().stacksTo(1)));
     public static final DeferredItem<Item> MOLD_PLATE_CAST = ITEMS.register("mold_plate_cast", () -> new Item(new Item.Properties().stacksTo(1)));
+    public static final DeferredItem<Item> MOLD_BLADE = ITEMS.register("mold_blade", () -> new Item(new Item.Properties().stacksTo(1)));
     public static final DeferredItem<Item> MOLD_INGOT = ITEMS.register("mold_ingot", () -> new Item(new Item.Properties().stacksTo(1)));
     public static final DeferredItem<Item> SCRAPS = ITEMS.register("scraps", () -> new CopperScrapsItem(new Item.Properties().stacksTo(1)));
     public static final DeferredItem<Item> PIPES_STEEL = ITEMS.register("pipes_steel", () -> new Item(new Item.Properties()));
