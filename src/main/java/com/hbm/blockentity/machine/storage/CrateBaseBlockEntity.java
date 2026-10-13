@@ -40,6 +40,7 @@ public abstract class CrateBaseBlockEntity extends LockableBaseBlockEntity imple
     private Component customName;
 
     public boolean hasSpiders = false;
+    private boolean shouldDrop = true;
 
     private final int columns;
     private final int rows;
@@ -253,6 +254,14 @@ public abstract class CrateBaseBlockEntity extends LockableBaseBlockEntity imple
         if(savedTag.contains(IPersistentNBT.NBT_PERSISTENT_KEY)) {
             this.loadAdditional(savedTag.getCompound(IPersistentNBT.NBT_PERSISTENT_KEY), this.getLevel().registryAccess());
         }
+    }
+
+    public boolean shouldDrop() {
+        return this.shouldDrop;
+    }
+
+    public void preventDrop() {
+        this.shouldDrop = false;
     }
 
     @Override

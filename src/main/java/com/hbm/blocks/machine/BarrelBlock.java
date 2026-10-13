@@ -80,7 +80,7 @@ public class BarrelBlock extends BaseEntityBlock implements IPersistentInfoProvi
 
     @Override
     public BlockEntity newBlockEntity(BlockPos pos, BlockState state) {
-        return this.corroded ? null : new BarrelBlockEntity(pos, state);
+        return new BarrelBlockEntity(pos, state);
     }
 
     @Override
@@ -94,7 +94,6 @@ public class BarrelBlock extends BaseEntityBlock implements IPersistentInfoProvi
 
     @Override
     public <T extends BlockEntity> BlockEntityTicker<T> getTicker(Level level, BlockState state, BlockEntityType<T> type) {
-        if(this.corroded) return null;
         return (lvl, pos, st, be) -> {
             if(be instanceof ITickable tickable) tickable.updateEntity();
         };
@@ -136,7 +135,8 @@ public class BarrelBlock extends BaseEntityBlock implements IPersistentInfoProvi
             BlockEntity blockEntity = level.getBlockEntity(pos);
 
             if(blockEntity instanceof BarrelBlockEntity barrel) {
-                Containers.dropContents(level, pos, barrel);
+                // As in the original, a corroded barrel destroys its slot contents on every removal.
+                if(!this.corroded) Containers.dropContents(level, pos, barrel);
 
                 if(barrel.shouldDrop()) {
                     for(ItemStack stack : barrel.getDrops(this)) {
@@ -144,6 +144,8 @@ public class BarrelBlock extends BaseEntityBlock implements IPersistentInfoProvi
                     }
                 }
             } else {
+                // Since Goal 19A only a corroded barrel saved before 19A whose block entity was never created gets here: onRemove runs
+                // after the chunk section holds the new state, so the lazy getBlockEntity above creates nothing. One plain body drops.
                 Block.popResource(level, pos, new ItemStack(this));
             }
         }
@@ -159,7 +161,7 @@ public class BarrelBlock extends BaseEntityBlock implements IPersistentInfoProvi
 
     @Override
     public void onBlockExploded(BlockState state, Level level, BlockPos pos, Explosion explosion) {
-        if(!this.corroded && level.getBlockEntity(pos) instanceof BarrelBlockEntity barrel) {
+        if(level.getBlockEntity(pos) instanceof BarrelBlockEntity barrel) {
             // The explosion's loot pass owns the body drop, including its drop chance and no-drop policy.
             barrel.preventDrop();
         }
@@ -169,7 +171,7 @@ public class BarrelBlock extends BaseEntityBlock implements IPersistentInfoProvi
     @Override
     protected void spawnAfterBreak(BlockState state, ServerLevel level, BlockPos pos, ItemStack tool, boolean dropExperience) {
         super.spawnAfterBreak(state, level, pos, tool, dropExperience);
-        if(!this.corroded && level.getBlockEntity(pos) instanceof BarrelBlockEntity barrel) {
+        if(level.getBlockEntity(pos) instanceof BarrelBlockEntity barrel) {
             // destroyBlock(true) emits the persistent loot before removing the block; do not emit it again in onRemove.
             barrel.preventDrop();
         }
@@ -187,7 +189,6 @@ public class BarrelBlock extends BaseEntityBlock implements IPersistentInfoProvi
 
     @Override
     protected List<ItemStack> getDrops(BlockState state, LootParams.Builder params) {
-        if(this.corroded) return super.getDrops(state, params);
         return IPersistentNBT.getDropsFromLootParams(state, params);
     }
 
@@ -196,9 +197,6 @@ public class BarrelBlock extends BaseEntityBlock implements IPersistentInfoProvi
         components.add(Component.translatable("desc.capacity", String.format("%,d", this.capacity)).withStyle(ChatFormatting.AQUA));
 
         if(this.corroded) {
-            components.add(Component.translatable("desc.canhot").withStyle(ChatFormatting.GREEN));
-            components.add(Component.translatable("desc.canhighcor").withStyle(ChatFormatting.GREEN));
-            components.add(Component.translatable("desc.cannotam").withStyle(ChatFormatting.YELLOW));
             components.add(Component.translatable("desc.leaky").withStyle(ChatFormatting.RED));
         } else if(this.capacity == 12_000) {
             components.add(Component.translatable("desc.cannothot").withStyle(ChatFormatting.YELLOW));

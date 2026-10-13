@@ -2101,7 +2101,7 @@ public class NtmLanguageProvider extends LanguageProvider {
         this.add("container.launch_pad.ready", "Ready");
         this.add("container.soyuz_launcher", "Soyuz Launch Platform");
         this.add("container.soyuz_launcher.desc", "Designator only for CARGO MODE$The payload for SATELLITE MODE");
-        this.add("container.soyuz_launcher.satellite", "SATELLITE MODE");
+        this.add("container.soyuz_launcher.satellite", "§4Satellite Mode$Sends a satellite into orbit. Some$satellites require an orbital module.");
         this.add("container.soyuz_launcher.cargo", "CARGO MODE");
         this.add("container.recipe_selector.close", "Close");
         this.add("container.recipe_selector.close_search", "Clear search");

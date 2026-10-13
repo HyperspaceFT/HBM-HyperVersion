@@ -3,6 +3,7 @@ package com.hbm.inventory.fluid.trait;
 import com.google.common.collect.HashBiMap;
 import com.google.gson.JsonObject;
 import com.google.gson.stream.JsonWriter;
+import com.hbm.inventory.fluid.FluidType;
 import com.hbm.inventory.fluid.tank.FluidTank;
 import com.hbm.inventory.fluid.trait.FT_Heatable;
 import com.hbm.inventory.fluid.trait.FluidTraitSimple.*;
@@ -66,5 +67,12 @@ public class FluidTrait {
         VOID,	//if fluid is deleted entirely, shouldn't be used
         BURN,	//if fluid is burned or combusted
         SPILL	//if fluid is spilled via leakage or the container breaking
+    }
+
+    public static void onRelease(Level level, BlockPos pos, FluidType type, FluidTank tank, FluidReleaseType release, int mB) {
+
+        for(FluidTrait trait : type.traits.values()) {
+            trait.onFluidRelease(level, pos, tank, mB, release);
+        }
     }
 }

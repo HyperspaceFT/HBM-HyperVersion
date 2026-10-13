@@ -16,6 +16,9 @@ def machine_stubs(source, extras, tags, jar):
     # The inherited machine world replaces loader boot, not compressor table parsing.
     name = 'com/hbm/inventory/recipes/loader/SerializableRecipe.java'
     stubs[name] = stubs[name].replace('public abstract class SerializableRecipe{', 'public abstract class SerializableRecipe{public void readRecipeStream(java.io.Reader reader){}')
+    # The compressor table (and the Goal 16 coker and mixer tables built on this world) call SerializableRecipe.readRecipeLenient.
+    from goal19a_oldsuite_compat import add_lenient_row_reader
+    add_lenient_row_reader(stubs)
     # Extend the existing source-extracted 14A fuel subset with the actual final LPG call.
     text = (source / 'com/hbm/inventory/fluid/Fluids.java').read_text(encoding='utf-8')
     body = method_body(text, 'public static void init() {', 'Fluids')

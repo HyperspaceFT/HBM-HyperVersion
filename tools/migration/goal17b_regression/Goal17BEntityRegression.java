@@ -31,7 +31,7 @@ public class Goal17BEntityRegression extends Goal17BMachineRegression {
             Entity exhaust=at(new Entity(),f,-5),intake=at(new Entity(),f,5),outside=at(new Entity(),f,9),nonliving=at(new Entity(),f,3.6);
             LivingEntity living=at(new LivingEntity(),f,3.6);Player player=at(player(l),f,-6);
             l.testEntities.addAll(List.of(exhaust,intake,outside,nonliving,living,player));step(l,b);
-            pushed(exhaust,f);pushed(intake,f);pushed(living,f);check(player.hurtMarked,"server player push marks transport");
+            pushed(exhaust,f);pushed(intake,f);pushed(living,f);check(!player.hurtMarked&&player.getDeltaMovement().equals(Vec3.ZERO),"server player neither pushed nor hurtMarked (17B P2: client pushes the local player)");
             check(exhaust.fireSeconds==5&&exhaust.damageAmounts.equals(List.of(5F)),"afterburn exhaust fire5sec damage5");
             check(intake.fireSeconds==0&&intake.damageAmounts.isEmpty(),"intake only pull");
             check(outside.getDeltaMovement().equals(Vec3.ZERO)&&outside.damageAmounts.isEmpty(),"outside range untouched");
@@ -52,14 +52,16 @@ public class Goal17BEntityRegression extends Goal17BMachineRegression {
             }
         }
 
-        for(Direction f:FACINGS)for(int mode=0;mode<9;mode++){
+        for(Direction f:FACINGS)for(int mode=0;mode<10;mode++){
             scenario();Level l=fresh();l.isClientSide=true;var b=turbine(l,0,f,3,mode==6?Fluids.WATER:Fluids.KEROSENE,10);
             b.wasOn=mode!=4;b.consumption=mode==5?0:4;b.afterburner=3;b.redstonePowered=mode==3;
-            Player local=at(player(l),f,mode==7?5:3.6);local.creative=mode==2;if(mode==1)local.world=new Level();
+            Player local=at(player(l),f,mode==7?5:mode==9?-5:3.6);local.creative=mode==2;if(mode==1)local.world=new Level();
             com.hbm.main.NuclearTechMod.proxy.player=mode==8?null:local;
             Vec3 motion=new Vec3(1,2,3);local.setDeltaMovement(motion);step(l,b);
             check(local.slowCalls==(mode==0?1:0),"localclient web gates mode"+mode+"/"+f);
-            check(local.getDeltaMovement()==motion&&local.damageAmounts.isEmpty()&&local.fireSeconds==0&&!local.hurtMarked&&b.blood.getFill()==0&&b.tank.getFill()==10&&b.power==0,"client only web no duplicated push/damage/state");
+            Direction d=axis(f);boolean push=mode==0||mode==7||mode==9;
+            check(push?local.getDeltaMovement().equals(motion.add(-d.getStepX()*.2,0,-d.getStepZ()*.2)):local.getDeltaMovement()==motion,mode==9?"17B P2: client pushes the gated local player exactly once in the exhaust box mode"+mode+"/"+f:"17B P2: client pushes the gated local player exactly once (intake box, not exhaust), else motion untouched mode"+mode+"/"+f);
+            check(local.damageAmounts.isEmpty()&&local.fireSeconds==0&&!local.hurtMarked&&b.blood.getFill()==0&&b.tank.getFill()==10&&b.power==0,"client only local web/push, no damage/state");
         }
         com.hbm.main.NuclearTechMod.proxy.player=null;
 

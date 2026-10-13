@@ -129,11 +129,35 @@ public class BlockLifecycleRegression {
         level.be = barrel;
         block.onRemove(new BlockState(block), level, POS, new BlockState(block), false);
         check(level.drops.isEmpty() && level.inventoryDrops == 0, "same-block update does not drop");
-        // The corroded, no-BE branch is deliberately preserved, including its deferred duplication.
+        // The corroded, no-BE branch was deliberately preserved here, including its deferred duplication. Goal 19A gives the
+        // corroded barrel a block entity: its body now follows the persistent path above and it never drops its slots.
+        // The two BE-less checks below are this harness's legacy case (a corroded barrel saved before 19A whose block entity was
+        // never accessed). In the game IPersistentNBT.getDrops -> CompatExternal.getCoreFromPos -> Level.getBlockEntity (IMMEDIATE)
+        // creates the block entity while the block is still in place.
         ReviewedBarrel corroded = new ReviewedBarrel(true);
         level = new ServerLevel();
         check(corroded.canDropFromExplosion(new BlockState(corroded), level, POS, new Explosion()), "corroded explosion policy unchanged");
-        check(corroded.getDrops(new BlockState(corroded), new LootParams.Builder(level)).size() == 1, "corroded preview contract unchanged");
+        check(corroded.getDrops(new BlockState(corroded), new LootParams.Builder(level)).isEmpty(), "harness BE-less (legacy, never-accessed) corroded preview is empty (Goal 19A)");
+        remove(corroded, level);
+        check(level.drops.size() == 1 && level.drops.getFirst().item == corroded && level.drops.getFirst().components.isEmpty(),
+                "harness BE-less (legacy, never-accessed) corroded removal pops one plain body (Goal 19A)");
+        for(String trigger : List.of("survival", "vanilla TNT", "NTM standard", "destroyBlock(true)", "creative", "self-destruct")) {
+            level = new ServerLevel();
+            level.be = new BarrelBlockEntity(731, 16_000);
+            List<ItemStack> preview = corroded.getDrops(new BlockState(corroded), new LootParams.Builder(level));
+            check(preview.size() == 1 && preview.getFirst().item == corroded, "corroded preview is the persistent body (Goal 19A): " + trigger);
+            if(trigger.equals("destroyBlock(true)")) destroyWithDrops(corroded, level);
+            else if(trigger.equals("vanilla TNT")) explode(corroded, level, true, 1, 0.25F);
+            else if(trigger.equals("NTM standard")) explode(corroded, level, false, 1, 0.25F);
+            else {
+                if(trigger.equals("self-destruct")) ((BarrelBlockEntity) level.be).preventDrop();
+                remove(corroded, level);
+            }
+            int bodies = trigger.equals("self-destruct") ? 0 : 1;
+            check(level.drops.size() == bodies, "corroded body count (Goal 19A): " + trigger);
+            if(bodies == 1) check(level.drops.getFirst().components.equals(preview.getFirst().components), "corroded persistent fluid (Goal 19A): " + trigger);
+            check(level.inventoryDrops == 0, "corroded never drops its slots (Goal 19A): " + trigger);
+        }
     }
 
     static void comparator() {
@@ -148,7 +172,8 @@ public class BlockLifecycleRegression {
         level.be = null;
         check(block.getAnalogOutputSignal(new BlockState(block), level, POS) == 0, "missing BE returns zero");
         ReviewedBarrel corroded = new ReviewedBarrel(true);
-        check(corroded.getAnalogOutputSignal(new BlockState(corroded), level, POS) == 0, "corroded returns zero");
+        // Harness-only: in the game getAnalogOutputSignal's Level.getBlockEntity (IMMEDIATE) creates the corroded block entity.
+        check(corroded.getAnalogOutputSignal(new BlockState(corroded), level, POS) == 0, "harness BE-less (legacy, never-accessed) corroded barrel returns zero");
     }
 
     public static void main(String[] args) {

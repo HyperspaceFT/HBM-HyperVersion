@@ -35,13 +35,16 @@ def build_stubs(source):
              "private com.hbm.uninos.networkproviders.FluidNetProvider provider;"
              "public com.hbm.uninos.INetworkProvider<api.hbm.fluidmk2.FluidNetMK2> getNetworkProvider(){"
              "if(provider==null)provider=new com.hbm.uninos.networkproviders.FluidNetProvider(this);return provider;}"
-             "public boolean hot,corrosive,antimatter;public boolean isHot(){return hot;}public boolean isCorrosive(){return corrosive;}"
+             "public boolean hot,corrosive,highlyCorrosive,antimatter;public boolean isHot(){return hot;}public boolean isCorrosive(){return corrosive;}"
+             "public boolean isHighlyCorrosive(){return highlyCorrosive;}"
              "public boolean isAntimatter(){return antimatter;}public int getColor(){return 0;}public String getUnlocalizedName(){return \"fluid:\"+id;}"
              "public int getTint(){return 0;}")
 
     # Blocks are identities only: the barrel compares its block with NtmBlocks and reads the capacity from BarrelBlock.
+    # A steel barrel holding a highly corrosive fluid replaces itself with the default corroded barrel state (Goal 19A).
     stubs["net/minecraft/world/level/block/Block.java"] = (
-        "package net.minecraft.world.level.block;public class Block{}")
+        "package net.minecraft.world.level.block;public class Block{public net.minecraft.world.level.block.state.BlockState defaultBlockState(){"
+        "net.minecraft.world.level.block.state.BlockState s=new net.minecraft.world.level.block.state.BlockState();s.block=this;return s;}}")
     stubs["com/hbm/blocks/machine/BarrelBlock.java"] = (
         "package com.hbm.blocks.machine;public class BarrelBlock extends net.minecraft.world.level.block.Block{"
         "private final int capacity;public BarrelBlock(int c){capacity=c;}public int getCapacity(){return capacity;}}")
@@ -51,7 +54,8 @@ def build_stubs(source):
              "public net.minecraft.world.level.block.Block getBlock(){return block;}")
     _replace(stubs, "com/hbm/blocks/NtmBlocks.java", "public class NtmBlocks{",
              "public class NtmBlocks{public static final BlockRef BARREL_PLASTIC=new BlockRef(new com.hbm.blocks.machine.BarrelBlock(12_000)),"
-             "BARREL_STEEL=new BlockRef(new com.hbm.blocks.machine.BarrelBlock(16_000));"
+             "BARREL_STEEL=new BlockRef(new com.hbm.blocks.machine.BarrelBlock(16_000)),"
+             "BARREL_CORRODED=new BlockRef(new com.hbm.blocks.machine.BarrelBlock(16_000));"
              "public static class BlockRef{private final net.minecraft.world.level.block.Block b;public BlockRef(net.minecraft.world.level.block.Block b){this.b=b;}"
              "public net.minecraft.world.level.block.Block get(){return b;}}")
     _replace(stubs, "com/hbm/blockentity/NtmBlockEntityTypes.java", "BATTERY_SOCKET=new Ref()",
@@ -61,11 +65,17 @@ def build_stubs(source):
     _replace(stubs, "net/minecraft/world/level/Level.java", "public void addParticle(",
              "public final List<BlockPos> destroyed=new ArrayList<>();public int explosions,comparatorUpdates;"
              "public boolean destroyBlock(BlockPos p,boolean drop){destroyed.add(p);return true;}"
+             "public final List<BlockPos> replaced=new ArrayList<>();public boolean setBlock(BlockPos p,BlockState s,int flags){replaced.add(p);return true;}"
              "public enum ExplosionInteraction{TNT}public Object explode(Object e,double x,double y,double z,float r,ExplosionInteraction i){explosions++;return null;}"
              "public void updateNeighbourForOutputSignal(BlockPos p,Object b){comparatorUpdates++;}"
              "public void addParticle(")
     _replace(stubs, "net/minecraft/sounds/SoundEvents.java", "FIRECHARGE_USE=new Object()",
              "FIRECHARGE_USE=new Object(),FIRE_EXTINGUISH=new Object()")
+    # The corroded barrel's leak dispatches a SPILL release to the fluid's traits; these fluids carry none.
+    stubs["com/hbm/inventory/fluid/trait/FluidTrait.java"] = (
+        "package com.hbm.inventory.fluid.trait;public class FluidTrait{public enum FluidReleaseType{VOID,BURN,SPILL}"
+        "public static void onRelease(net.minecraft.world.level.Level l,net.minecraft.core.BlockPos p,com.hbm.inventory.fluid.FluidType t,"
+        "com.hbm.inventory.fluid.tank.FluidTank tank,FluidReleaseType r,int mB){}}")
 
     # The barrel menu is outside this regression; the pipe's copy tool path needs only its declared types.
     stubs["com/hbm/inventory/menus/BarrelMenu.java"] = (

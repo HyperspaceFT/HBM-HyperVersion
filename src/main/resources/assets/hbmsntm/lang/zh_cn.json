@@ -624,7 +624,7 @@
   "container.soyuz_launcher": "联盟号发射平台",
   "container.soyuz_launcher.cargo": "货运模式",
   "container.soyuz_launcher.desc": "仅在货运模式下使用的目标指示器$卫星模式下的载荷",
-  "container.soyuz_launcher.satellite": "卫星模式",
+  "container.soyuz_launcher.satellite": "§4卫星模式$将卫星送入轨道。$部分卫星需要轨道舱。",
   "container.upgrade": "§l可用升级：§r",
   "container.upgrade.afterburner": " * §d加力燃烧§r：最多叠加至 3 级",
   "container.upgrade.effectiveness": " * §a效能§r：最多叠加至 3 级",

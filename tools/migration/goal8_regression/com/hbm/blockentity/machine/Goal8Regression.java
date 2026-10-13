@@ -923,7 +923,7 @@ public class Goal8Regression {
         slow.tick();
         check(slow.flightTicks == 1 && !Goal8CogAccess.save(slow).getBoolean("inGround"), "when the block under it changes the cog comes loose");
         slow.tick();
-        check(slow.getOrientation() == 3 && slow.flightTicks == 2, "the next tick it is upright and flying again (orientation - 6)");
+        check(slow.getOrientation() == 9 && slow.flightTicks == 2, "the next tick it is still lying (orientation + 6 kept) and flying again");
 
         Player player = new Player();
         StrayCog pickup = cog(level, 9, 0, 0, 0);

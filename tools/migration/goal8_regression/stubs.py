@@ -202,7 +202,9 @@ def build_stubs(source):
     stubs["com/hbm/inventory/recipes/anvil/AnvilSmithingRecipe.java"] = (
         "package com.hbm.inventory.recipes.anvil;import com.hbm.inventory.RecipesCommon.AStack;import net.minecraft.world.item.ItemStack;"
         "public class AnvilSmithingRecipe{public AnvilSmithingRecipe(){}public AnvilSmithingRecipe(int tier,ItemStack out,AStack left,AStack right){}}")
-    for name in ("AnvilSmithingCyanideRecipe", "AnvilSmithingRenameRecipe", "AnvilSmithingCastMoldRecipe"):
+    # Goal 17A registers two more mold smithing recipes; like the three before them they are identities here (Goal 19A harness revival).
+    for name in ("AnvilSmithingCyanideRecipe", "AnvilSmithingRenameRecipe", "AnvilSmithingCastMoldRecipe",
+                 "AnvilSmithingIngotMoldRecipe", "AnvilSmithingBladeMoldRecipe"):
         stubs[f"com/hbm/inventory/recipes/anvil/{name}.java"] = (
             f"package com.hbm.inventory.recipes.anvil;public class {name} extends AnvilSmithingRecipe{{}}")
     return stubs

@@ -92,8 +92,9 @@ def main():
     charge='this.power = Library.chargeItemsFromTE(this.slots, SLOT_BATTERY, this.power, this.power);'
     mutations={
         'clamp_before_charge':(be_text.replace(charge,'this.power = Math.min(this.power, MAX_POWER); '+charge),'Goal17BMachineRegression'),
-        'smoke_scaled_by_fuel':(be_text.replace('Math.ceil(entry.getValue() * 100)','Math.ceil(entry.getValue() * this.consumption * 100)'),'Goal17BMachineRegression'),
-        'omit_client_web':(be_text.replace('this.updateAnimation(); this.updatePlayerWeb();','this.updateAnimation();'),'Goal17BEntityRegression')}
+        'smoke_unscaled_by_fuel':(be_text.replace('Math.ceil(entry.getValue() * amount * 100)','Math.ceil(entry.getValue() * 100)'),'Goal17BMachineRegression'),
+        'omit_client_web':(be_text.replace('this.updateAnimation(); this.updateLocalPlayer();','this.updateAnimation();'),'Goal17BEntityRegression'),
+        'omit_client_exhaust_push':(be_text.replace('        if(box.intersects(getExhaustBox(this.worldPosition, facing))) {\n            player.setDeltaMovement(player.getDeltaMovement().add(-intake.getStepX() * 0.2D, 0D, -intake.getStepZ() * 0.2D));\n        }\n',''),'Goal17BEntityRegression')}
     report['mutations']=[]
     for label,(mutated,main_class) in mutations.items():
         if mutated==be_text:raise SystemExit('Mutation anchor missing: '+label)
@@ -120,7 +121,7 @@ def main():
         record['compiled_successfully']=True
         record['behavior_mutation_detected']=True
     report['mutations_detected']=len(mutations)
-    print('Compiled machine/client behavior mutations detected: 3/3')
+    print(f'Compiled machine/client behavior mutations detected: {len(mutations)}/{len(mutations)}')
 
     report['finite_ledger']=json.loads((output/'finite.json').read_text(encoding='utf-8'))
     (output/'report.json').write_text(json.dumps(report,ensure_ascii=False,indent=2),encoding='utf-8')

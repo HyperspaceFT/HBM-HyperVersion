@@ -92,7 +92,8 @@ import java.util.function.Function;
  * ingots, 8 copper ingots, tier 2; no recycling entry); HeaterOilburner.java:31-44 (extras: above the core heat, the
  * sides fluid); TileEntityHeaterOilburner.java:31 (off), :54-79 (burn loop, pollute every 5 ticks while burning),
  * :134-139 (setting 1-10), :173-178 (receiveControl only toggles); TileEntityMachinePolluting.java:38-63 (per call and
- * pollution type ceil(value * 100) mB into a 100 mB tank, the overflow / 100 into the world); PollutionHandler.java:47
+ * pollution type ceil(value * amount * 100) mB, amount = toBurn * 5, into a 100 mB tank, the overflow / 100 into the
+ * world); PollutionHandler.java:47
  * and Fluids.java:225-242, :270-283, :682-714, :947-955 (soot rates, P_OIL/P_GAS, the fuel heat formula and round()).
  */
 public class Goal11ARegression {
@@ -133,8 +134,8 @@ public class Goal11ARegression {
     static final long HEATINGOIL_HEAT = originalRound((long) (100_000L / 0.31 * 1.0D * 1.0D * 1.1D * 1.05D * 1.05D));
 
     /** TileEntityMachinePolluting.pollute at steady state (full 100 mB tank, no outlet): the overflow / 100 per call. */
-    static float originalEmission(float value) {
-        int fluidAmount = (int) Math.ceil(value * 100);
+    static float originalEmission(float value, float amount) {
+        int fluidAmount = (int) Math.ceil(value * amount * 100);
         float tank = POLLUTION_TANK;
         float overflow = (tank + fluidAmount) - POLLUTION_TANK;
         return overflow / 100F;
@@ -1105,7 +1106,7 @@ public class Goal11ARegression {
                     + ": " + heat[k] + " TU per bucket as the original registerCalculatedFuel");
             FT_Polluting trait = fuel.getTrait(FT_Polluting.class);
             check(trait.burnMap.keySet().equals(Set.of(PollutionType.SOOT)) && trait.burnMap.get(PollutionType.SOOT) == soot[k],
-                    fuelName(fuel) + " burns into soot only, " + soot[k] + " per call (" + Fluids.POLLUTING.get(fuelName(fuel)) + ")");
+                    fuelName(fuel) + " burns into soot only, " + soot[k] + " per mB x 5 burned (" + Fluids.POLLUTING.get(fuelName(fuel)) + ")");
             for(int setting : new int[] {1, 10}) {
                 reset();
                 Level level = level();
@@ -1120,11 +1121,12 @@ public class Goal11ARegression {
                     b.heatEnergy = 0;
                     b.updateEntity();
                 }
-                float expected = originalEmission(soot[k]);
+                // Goal 19A: TileEntityHeaterOilburner.java:78-79 calls pollute(type, BURN, toBurn * 5); here toBurn = setting.
+                float expected = originalEmission(soot[k], setting * 5);
                 boolean amounts = PollutionHandler.CALLS.stream().allMatch(c -> c.type() == PollutionType.SOOT && c.amount() == expected);
                 check(PollutionHandler.CALLS.size() == 20 && amounts && b.tank.getFill() == 16_000 - 100 * setting,
-                        fuelName(fuel) + ", setting " + setting + ": one soot call every 5 ticks (20 in 100 ticks) of ceil(" + soot[k] + " x 100) / 100 = "
-                                + expected + ", independent of the amount burned (" + PollutionHandler.CALLS.size() + " calls"
+                        fuelName(fuel) + ", setting " + setting + ": one soot call every 5 ticks (20 in 100 ticks) of ceil(" + soot[k] + " x " + setting + " mB x 5 x 100) / 100 = "
+                                + expected + ", scaled by the amount burned (" + PollutionHandler.CALLS.size() + " calls"
                                 + (PollutionHandler.CALLS.isEmpty() ? "" : ", " + PollutionHandler.CALLS.get(0).amount()) + ")");
             }
         }

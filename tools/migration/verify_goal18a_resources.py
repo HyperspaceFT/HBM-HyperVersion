@@ -55,12 +55,14 @@ def verify(source):
     owner = read(ROOT / 'migration/goal18a-resource-ownership.json')
     check({(a['source_path'], a['target_path']) for a in owner['assets']} == set(ASSETS), 'Asset ownership covers exactly the four imported assets')
     source_compared = 0
+    # The record was written on a Linux (LF) checkout; a Windows checkout with core.autocrlf=true materialises acidizer.obj
+    # with CRLF (Goal 7B precedent), so the LF-normalised hash also counts. The record itself is unchanged.
     for a in owner['assets']:
         target = ROOT / a['target_path']
-        check(target.stat().st_size == a['bytes'] and sha(target) == a['sha256'], 'Imported asset bytes match the ownership record: ' + a['target_path'])
+        check((target.stat().st_size == a['bytes'] and sha(target) == a['sha256']) or normalized_sha(target) == a['sha256'], 'Imported asset bytes match the ownership record: ' + a['target_path'])
         if source is not None:
             original = source / a['source_path']
-            check(original.is_file() and sha(original) == a['sha256'], 'Original asset bytes retained: ' + a['source_path']); source_compared += 1
+            check(original.is_file() and a['sha256'] in (sha(original), normalized_sha(original)), 'Original asset bytes retained: ' + a['source_path']); source_compared += 1
     obj = (ROOT / ASSETS[0][1]).read_text(encoding='utf-8')
     check(all(('\no ' + part + '\n') in obj for part in ('Body', 'Spinner', 'Fluid')), 'OBJ keeps the Body, Spinner and Fluid parts the renderer names')
     for rel, needles in WIRING.items():

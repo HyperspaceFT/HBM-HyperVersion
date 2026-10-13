@@ -39,7 +39,7 @@ AVOID_CALL = """        if(touchesAvoidedStructure(level, origin, radius)) {
 ORE_LOOT = "        this.add(NtmBlocks.ORE_OIL.get(), block -> this.oreDropNoSilk(block, NtmItems.OIL_TAR_CRUDE.get()));\n"
 NO_SILK = """    private LootTable.Builder oreDropNoSilk(Block block, Item item) {
         return LootTable.lootTable()"""
-POLLUTION_AMOUNT = "(float) Math.ceil(entry.getValue() * 100F) / 100F"
+POLLUTION_AMOUNT = "(float) Math.ceil(entry.getValue() * amount * 100F) / 100F"
 # The review-fix mutations: where TileEntityHeaterOilburner clears shouldCool (inside the flammable branch, whatever toBurn is)
 # and the end of pasteSettings.
 KEEP_HEAT = """                }
@@ -103,8 +103,9 @@ MUTATIONS = [
     ("burner load without the setting clamp", BURNER,
      [('\n        this.setting = Math.clamp(tag.getInt("setting"), 1, MAX_SETTING);\n', '\n        this.setting = tag.getInt("setting");\n')]),
     ("burner pollution with the raw trait value", BURNER, [(POLLUTION_AMOUNT, "entry.getValue()")]),
-    ("burner pollution multiplied by the amount burned", BURNER,
-     [(POLLUTION_AMOUNT, POLLUTION_AMOUNT + " * Math.min(this.setting, Math.max(this.tank.getFill(), 1))")]),
+    ("burner pollution not scaled by the amount burned (Goal 19A reverse)", BURNER,
+     [(POLLUTION_AMOUNT, "(float) Math.ceil(entry.getValue() * 100F) / 100F")]),
+    ("burner pollution scaled by the mB burned without the x5", BURNER, [("this.pollute(this.tank.getTankType(), toBurn * 5);", "this.pollute(this.tank.getTankType(), toBurn);")]),
     ("burner transferFluid without setChanged", BURNER, [("        if(remainder < amount) this.setChanged();\n", "")]),
     ("bubble shape back to the integer r^2 / 2 test (odd radii lose a shell)", BUBBLE,
      [("if(distSq * 2 < r2) {", "if(distSq < r2 / 2) {")]),

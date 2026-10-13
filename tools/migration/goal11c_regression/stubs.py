@@ -208,8 +208,10 @@ def build_stubs(source, extra_sources=(), vanilla_tags_source="", sources_jar=No
         stubs.pop(name)
     all_texts = "\n".join(texts)
     # The special smithing entries (cyanide, rename, cast mold) stay stand-ins on the production base class; they match
-    # nothing here (the chain only looks for the desh anvil upgrade).
-    for special in ("AnvilSmithingCyanideRecipe", "AnvilSmithingRenameRecipe", "AnvilSmithingCastMoldRecipe"):
+    # nothing here (the chain only looks for the desh anvil upgrade). The two Goal 17A mold entries (ingot, blade) are the same kind
+    # of stand-in; AnvilRecipes registers them (Goal 19A harness revival).
+    for special in ("AnvilSmithingCyanideRecipe", "AnvilSmithingRenameRecipe", "AnvilSmithingCastMoldRecipe",
+                    "AnvilSmithingIngotMoldRecipe", "AnvilSmithingBladeMoldRecipe"):
         stubs[f"com/hbm/inventory/recipes/anvil/{special}.java"] = (
             f"package com.hbm.inventory.recipes.anvil;import net.minecraft.world.item.ItemStack;public class {special} extends AnvilSmithingRecipe{{"
             f"public {special}(){{super(1,ItemStack.EMPTY,null,null);}}public int matchesInt(ItemStack l,ItemStack r){{return -1;}}}}")

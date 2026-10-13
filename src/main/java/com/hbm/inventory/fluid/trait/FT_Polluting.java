@@ -56,8 +56,8 @@ public class FT_Polluting extends FluidTrait {
 
     @Override
     public void onFluidRelease(Level level, BlockPos pos, FluidTank tank, int overflowAmount, FluidReleaseType type) {
-        if(type == FluidReleaseType.SPILL) for(Entry<PollutionType, Float> entry : releaseMap.entrySet()) PollutionHandler.incrementPollution(level, pos, entry.getKey(), entry.getValue());
-        if(type == FluidReleaseType.BURN) for(Entry<PollutionType, Float> entry : burnMap.entrySet()) PollutionHandler.incrementPollution(level, pos, entry.getKey(), entry.getValue());
+        if(type == FluidReleaseType.SPILL) for(Entry<PollutionType, Float> entry : releaseMap.entrySet()) PollutionHandler.incrementPollution(level, pos, entry.getKey(), entry.getValue() * overflowAmount);
+        if(type == FluidReleaseType.BURN) for(Entry<PollutionType, Float> entry : burnMap.entrySet()) PollutionHandler.incrementPollution(level, pos, entry.getKey(), entry.getValue() * overflowAmount);
     }
 
     @Override

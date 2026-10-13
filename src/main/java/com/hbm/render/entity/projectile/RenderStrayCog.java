@@ -34,7 +34,7 @@ public class RenderStrayCog extends EntityRenderer<StrayCog> {
 
         RenderContext.translate(0.0F, 0.0F, -1.0F);
 
-        // Orientations 6-11 mark a cog lying on the ground, which stops spinning.
+        // Orientations 6-11 mark a lying cog (on the ground, or falling lying once its support is gone), which stops spinning.
         if(orientation < 6) {
             RenderContext.mulPose(Axis.ZN.rotationDegrees((float) (System.currentTimeMillis() % (360 * 3) / 3D)));
         }

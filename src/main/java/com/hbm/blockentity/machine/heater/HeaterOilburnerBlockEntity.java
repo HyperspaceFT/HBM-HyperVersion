@@ -88,7 +88,7 @@ public class HeaterOilburnerBlockEntity extends AbstractHeaterMachineBlockEntity
                     this.heatEnergy += (int) (trait.getHeatEnergy() / 1000L) * toBurn;
 
                     if(this.level.getGameTime() % 5 == 0) {
-                        this.pollute(this.tank.getTankType());
+                        this.pollute(this.tank.getTankType(), toBurn * 5);
                     }
                 }
 
@@ -113,16 +113,18 @@ public class HeaterOilburnerBlockEntity extends AbstractHeaterMachineBlockEntity
     }
 
     /**
-     * The original (TileEntityMachinePolluting) ignores the burned amount: per call and burn pollution type it puts
-     * ceil(value * 100) mB into a 100 mB smoke tank, and once that is full, with no outlet attached, releases the
-     * overflow / 100 into the world. NEO has no smoke tank or outlet, so this emits that steady-state overflow directly.
+     * The original (TileEntityMachinePolluting) is called with amount = toBurn * 5: per call and burn pollution type it
+     * puts ceil(value * amount * 100) mB into a 100 mB smoke tank, and once that tank is full, with no outlet attached,
+     * each call overflows exactly the mB it added, releasing overflow / 100 into the world. NEO has no smoke tank or
+     * outlet, so this emits that steady-state overflow directly; it skips the original's transient, in which the first
+     * calls only fill the empty tank and release nothing until it reaches 100 mB.
      */
-    private void pollute(FluidType type) {
+    private void pollute(FluidType type, float amount) {
         FT_Polluting trait = type.getTrait(FT_Polluting.class);
         if(trait == null) return;
 
         for(Map.Entry<PollutionType, Float> entry : trait.burnMap.entrySet()) {
-            PollutionHandler.incrementPollution(this.level, this.worldPosition, entry.getKey(), (float) Math.ceil(entry.getValue() * 100F) / 100F);
+            PollutionHandler.incrementPollution(this.level, this.worldPosition, entry.getKey(), (float) Math.ceil(entry.getValue() * amount * 100F) / 100F);
         }
     }
 

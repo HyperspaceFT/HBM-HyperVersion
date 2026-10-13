@@ -81,15 +81,17 @@ public class Goal17BMachineRegression extends Goal14CMachineRegression {
             scenario();Level l=fresh();var b=turbine(l,0,Direction.NORTH,a,Fluids.KEROSENE,2000);
             var trait=Fluids.KEROSENE.getTrait(FT_Polluting.class);
             check(trait.burnMap.size()==1&&trait.burnMap.containsKey(PollutionType.SOOT)&&trait.releaseMap.containsKey(PollutionType.POISON),"real P_FUEL burn/release maps");
+            // Goal19A: the original pollutes with amountToBurn * 5; kerosene soot .001F gives ceil(.001F*5*100)=1 at A0 and ceil(.001F*20*100)=3 at A3.
+            int produced=a==0?1:3;
             l.time=18;step(l,b);check(b.smoke.getFill()==0,"non20 active no smoke");step(l,b);
-            check(b.smoke.getFill()==1&&b.smokeLeaded.getFill()==0&&b.smokePoison.getFill()==0&&PollutionHandler.CALLS.isEmpty(),"ceil tiny real soot, independent of burnt mB A"+a);
-            b.smoke.setFill(149);l.time=39;step(l,b);check(b.smoke.getFill()==150&&PollutionHandler.CALLS.isEmpty(),"exact full has no pollution");
-            l.time=59;step(l,b);check(b.smoke.getFill()==150&&PollutionHandler.CALLS.size()==1&&Math.abs(PollutionHandler.CALLS.get(0).amount()-.01F)<1e-6,"only1mB overflow /100");
+            check(b.smoke.getFill()==produced&&b.smokeLeaded.getFill()==0&&b.smokePoison.getFill()==0&&PollutionHandler.CALLS.isEmpty(),"ceil real soot scaled by burnt mB*5 A"+a);
+            b.smoke.setFill(150-produced);l.time=39;step(l,b);check(b.smoke.getFill()==150&&PollutionHandler.CALLS.isEmpty(),"exact full has no pollution");
+            l.time=59;step(l,b);check(b.smoke.getFill()==150&&PollutionHandler.CALLS.size()==1&&Math.abs(PollutionHandler.CALLS.get(0).amount()-produced/100F)<1e-6,"only the call's "+produced+"mB overflow /100");
             l.powered.add(b.getConPos()[0].makeCompat());l.time=79;step(l,b);check(PollutionHandler.CALLS.size()==1,"redstone20 no pollution");
         }
-        scenario();Level l=fresh();Fluids.WATER.addTraits(new FT_Polluting().burn(PollutionType.SOOT,.0121F).burn(PollutionType.HEAVYMETAL,1.49F).burn(PollutionType.POISON,1.501F));
+        scenario();Level l=fresh();Fluids.WATER.addTraits(new FT_Polluting().burn(PollutionType.SOOT,.000605F).burn(PollutionType.HEAVYMETAL,.0745F).burn(PollutionType.POISON,.07505F));
         var b=turbine(l,0,Direction.NORTH,3,Fluids.WATER,100);l.time=19;step(l,b);
-        check(b.smoke.getFill()==2&&b.smokeLeaded.getFill()==149&&b.smokePoison.getFill()==150,"synthetic three-map individual ceil and cap");
+        check(b.smoke.getFill()==2&&b.smokeLeaded.getFill()==149&&b.smokePoison.getFill()==150,"synthetic three-map individual ceil of value*4mB*5 and cap");
         check(PollutionHandler.CALLS.size()==1&&PollutionHandler.CALLS.get(0).type()==PollutionType.POISON&&Math.abs(PollutionHandler.CALLS.get(0).amount()-.01F)<1e-6,"synthetic poison151 only1overflow");
         check(b.getAllTanks().length==5&&b.getSendingTanks().length==1&&b.getSendingTanks()[0]==b.blood,"All does not imply smoke output");
         check(b.getFluidAvailable(Fluids.SMOKE,0)==0&&b.getFluidAvailable(Fluids.SMOKE_LEADED,0)==0&&b.getFluidAvailable(Fluids.SMOKE_POISON,0)==0,"actual sender excludes smoke");

@@ -150,9 +150,9 @@ public class MachinePumpjackBlockEntity extends OilDrillBaseBlockEntity {
         BlockPos pos = this.getBlockPos();
         return new DirPos[] {
                 new DirPos(pos.getX() + rot.getStepX() * 2 + dir.getStepX() * 2, pos.getY(), pos.getZ() + rot.getStepZ() * 2 + dir.getStepZ() * 2, dir),
-                new DirPos(pos.getX() + rot.getStepX() * 2 + dir.getStepX() * 2, pos.getY(), pos.getZ() + rot.getStepZ() * 4 - dir.getStepZ() * 2, dir.getOpposite()),
-                new DirPos(pos.getX() + rot.getStepX() * 4 - dir.getStepX() * 2, pos.getY(), pos.getZ() + rot.getStepZ() * 4 + dir.getStepZ() * 2, dir),
-                new DirPos(pos.getX() + rot.getStepX() * 4 - dir.getStepX() * 2, pos.getY(), pos.getZ() + rot.getStepZ() * 2 - dir.getStepZ() * 2, dir.getOpposite())
+                new DirPos(pos.getX() + rot.getStepX() * 2 - dir.getStepX() * 2, pos.getY(), pos.getZ() + rot.getStepZ() * 2 - dir.getStepZ() * 2, dir.getOpposite()),
+                new DirPos(pos.getX() + rot.getStepX() * 4 + dir.getStepX() * 2, pos.getY(), pos.getZ() + rot.getStepZ() * 4 + dir.getStepZ() * 2, dir),
+                new DirPos(pos.getX() + rot.getStepX() * 4 - dir.getStepX() * 2, pos.getY(), pos.getZ() + rot.getStepZ() * 4 - dir.getStepZ() * 2, dir.getOpposite())
         };
     }
 

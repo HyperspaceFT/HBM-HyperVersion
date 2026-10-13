@@ -193,7 +193,7 @@ public class NtmBlocks {
     public static final DeferredBlock<Block> GLASS_QUARTZ = register("glass_quartz", () -> new Block(BlockBehaviour.Properties.of().noOcclusion().strength(1.0F, 10.0F).sound(SoundType.GLASS).mapColor(MapColor.METAL)));
 
     // Gravel
-    public static final DeferredBlock<Block> GRAVEL_OBSIDIAN = registerBlastInfoBlock("gravel_obsidian", () -> new ColoredFallingBlock(new ColorRGBA(-8356741), BlockBehaviour.Properties.of().strength(5.0F, 240.0F).sound(SoundType.GRAVEL).mapColor(MapColor.COLOR_BLACK).instrument(NoteBlockInstrument.BASEDRUM)));
+    public static final DeferredBlock<Block> GRAVEL_OBSIDIAN = registerBlastInfoBlock("gravel_obsidian", () -> new ColoredFallingBlock(new ColorRGBA(-8356741), BlockBehaviour.Properties.of().strength(5.0F, 20.0F).sound(SoundType.GRAVEL).mapColor(MapColor.COLOR_BLACK).instrument(NoteBlockInstrument.BASEDRUM)));
     public static final DeferredBlock<Block> GRAVEL_DIAMOND = register("gravel_diamond", () -> new ColoredFallingBlock(new ColorRGBA(-8356741), BlockBehaviour.Properties.of().strength(0.6F).sound(SoundType.GRAVEL).mapColor(MapColor.STONE)), LoreBlockItem.class, new Properties().rarity(Rarity.RARE));
     public static final DeferredBlock<Block> MOON_TURF = register("moon_turf", () -> new ColoredFallingBlock(new ColorRGBA(-176741), BlockBehaviour.Properties.of().strength(0.6F).sound(SoundType.SAND).mapColor(MapColor.STONE)));
     public static final DeferredBlock<Block> SAND_QUARTZ = register("sand_quartz", () -> new ColoredFallingBlock(new ColorRGBA(-845741), BlockBehaviour.Properties.of().strength(0.6F).sound(SoundType.SAND).mapColor(MapColor.SNOW)));
@@ -363,7 +363,7 @@ public class NtmBlocks {
     public static final DeferredBlock<Block> BARREL_PLASTIC = registerNew("barrel_plastic", () -> new com.hbm.blocks.machine.BarrelBlock(BlockBehaviour.Properties.of().noOcclusion().strength(0.3F, 2.5F).sound(SoundType.METAL), 12_000, false));
     public static final DeferredBlock<Block> EMP_BOMB = register("emp_bomb", () -> new Block(BlockBehaviour.Properties.of().strength(3.0F, 30.0F).sound(SoundType.METAL).mapColor(MapColor.METAL).requiresCorrectToolForDrops()));
     public static final DeferredBlock<Block> BARREL_STEEL = registerNew("barrel_steel", () -> new com.hbm.blocks.machine.BarrelBlock(BlockBehaviour.Properties.of().noOcclusion().strength(0.3F, 2.5F).sound(SoundType.METAL), 16_000, false));
-    public static final DeferredBlock<Block> BARREL_CORRODED = registerNew("barrel_corroded", () -> new com.hbm.blocks.machine.BarrelBlock(BlockBehaviour.Properties.of().noOcclusion().strength(0.3F, 2.5F).sound(SoundType.METAL), 6_000, true));
+    public static final DeferredBlock<Block> BARREL_CORRODED = registerNew("barrel_corroded", () -> new com.hbm.blocks.machine.BarrelBlock(BlockBehaviour.Properties.of().noOcclusion().strength(0.3F, 2.5F).sound(SoundType.METAL), 16_000, true));
     public static final DeferredBlock<Block> BARREL_TCALLOY = registerNew("barrel_tcalloy", () -> new com.hbm.blocks.machine.BarrelBlock(BlockBehaviour.Properties.of().noOcclusion().strength(0.3F, 2.5F).sound(SoundType.METAL), 24_000, false));
     public static final DeferredBlock<Block> TRANSFORMER = register("transformer", () -> new Block(BlockBehaviour.Properties.of().strength(1.5F).sound(SoundType.METAL).mapColor(MapColor.METAL)));
 

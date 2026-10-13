@@ -168,7 +168,11 @@ public String toString(){return getCount()+" "+(item==null?"air":item.id)+(compo
     stubs["com/hbm/inventory/fluid/trait/FluidTrait.java"] = (
         "package com.hbm.inventory.fluid.trait;import java.util.List;import net.minecraft.network.chat.Component;public class FluidTrait{"
         "public void addInfo(List<Component> info){}public void addInfoHidden(List<Component> info){}"
-        "public void serializeJSON(com.google.gson.stream.JsonWriter w)throws java.io.IOException{}public void deserializeJSON(com.google.gson.JsonObject o){}}")
+        "public void serializeJSON(com.google.gson.stream.JsonWriter w)throws java.io.IOException{}public void deserializeJSON(com.google.gson.JsonObject o){}"
+        # Goal 19A: the corroded barrel's leak names the release type and dispatcher; no corroded barrel leaks in this world.
+        "public enum FluidReleaseType{VOID,BURN,SPILL}"
+        "public static void onRelease(net.minecraft.world.level.Level l,net.minecraft.core.BlockPos p,com.hbm.inventory.fluid.FluidType t,"
+        "com.hbm.inventory.fluid.tank.FluidTank tank,FluidReleaseType r,int mB){}}")
     stubs["com/google/gson/JsonElement.java"] = (
         "package com.google.gson;public class JsonElement{public JsonArray getAsJsonArray(){return null;}public JsonObject getAsJsonObject(){return null;}"
         "public int getAsInt(){return 0;}public double getAsDouble(){return 0;}public String getAsString(){return \"\";}}")

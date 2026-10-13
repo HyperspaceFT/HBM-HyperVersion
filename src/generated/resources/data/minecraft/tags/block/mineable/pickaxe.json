@@ -222,6 +222,7 @@
     "hbmsntm:machine_crucible",
     "hbmsntm:foundry_mold",
     "hbmsntm:machine_centrifuge",
+    "hbmsntm:machine_crystallizer",
     "hbmsntm:machine_chemical_plant",
     "hbmsntm:crate_iron",
     "hbmsntm:crate_tungsten",

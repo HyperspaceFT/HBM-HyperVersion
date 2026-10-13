@@ -28,7 +28,8 @@ public interface IToolHarvestAbility extends IBaseAbility {
 
     default void onHarvestBlock(Level level, BlockPos pos, Player player, BlockPos refPos) {
         BlockState state = level.getBlockState(pos);
-        List<ItemStack> drops = Block.getDrops(state, (ServerLevel) level, refPos, level.getBlockEntity(refPos), player, player.getMainHandItem());
+        // As in the original, each block's drops come from its own position and block entity; refPos is only the block an area dig started from.
+        List<ItemStack> drops = Block.getDrops(state, (ServerLevel) level, pos, level.getBlockEntity(pos), player, player.getMainHandItem());
         harvestBlock(level, pos, player, refPos, drops);
     }
 
@@ -38,6 +39,11 @@ public interface IToolHarvestAbility extends IBaseAbility {
                 Block.popResource(level, pos, stack);
             }
         }
+        // As Level.destroyBlock -> Block.dropResources does, follow the emitted loot with spawnAfterBreak (dropExperience false, as in
+        // CommonHooks.handleBlockDrops) while the block is still in place; persistent blocks such as barrels and crates then skip their
+        // onRemove body. Player mining runs it after the removal instead, so anything a block places at its own position here (the
+        // asbestos brick's gas) is cleared by the removal below; this path left no gas before the call was added either.
+        level.getBlockState(pos).spawnAfterBreak((ServerLevel) level, pos, player.getMainHandItem(), false);
         level.removeBlock(pos, false);
 
         ToolAbilityItem.damageTool(player.getMainHandItem(), player, 1);
@@ -193,7 +199,7 @@ public interface IToolHarvestAbility extends IBaseAbility {
         @Override
         public void onHarvestBlock(Level level, BlockPos pos, Player player, BlockPos refPos) {
             BlockState state = level.getBlockState(pos);
-            List<ItemStack> drops = Block.getDrops(state, (ServerLevel) level, refPos, level.getBlockEntity(refPos), player, player.getMainHandItem());
+            List<ItemStack> drops = Block.getDrops(state, (ServerLevel) level, pos, level.getBlockEntity(pos), player, player.getMainHandItem());
             boolean changed = false;
 
             for (int i = 0; i < drops.size(); i++) {
@@ -208,7 +214,7 @@ public interface IToolHarvestAbility extends IBaseAbility {
             if (changed || !drops.isEmpty()) {
                 harvestBlock(level, pos, player, refPos, drops);
             } else {
-                harvestBlock(level, pos, player, refPos, Block.getDrops(state, (ServerLevel) level, refPos, level.getBlockEntity(refPos), player, player.getMainHandItem()));
+                harvestBlock(level, pos, player, refPos, Block.getDrops(state, (ServerLevel) level, pos, level.getBlockEntity(pos), player, player.getMainHandItem()));
             }
         }
     };

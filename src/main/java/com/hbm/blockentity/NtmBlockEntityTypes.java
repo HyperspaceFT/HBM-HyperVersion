@@ -260,6 +260,7 @@ public class NtmBlockEntityTypes {
                             BarrelBlockEntity::new,
                             NtmBlocks.BARREL_PLASTIC.get(),
                             NtmBlocks.BARREL_STEEL.get(),
+                            NtmBlocks.BARREL_CORRODED.get(),
                             NtmBlocks.BARREL_TCALLOY.get())
                     .build(null));
 

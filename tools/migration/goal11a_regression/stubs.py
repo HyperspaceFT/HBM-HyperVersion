@@ -478,6 +478,9 @@ def recipe_stubs(source, head_assembly):
 
     live = (source / ASSEMBLY).read_text(encoding="utf-8")
     stubs = goal3c_recipe_stubs(live + "\n" + head_assembly + "\nNtmItems.CAST_PLATE\n")
+    # Goals 13-15 let the live assembly table name BoltItem/WireDenseItem/PistonSetItem types (Goal 19A harness revival).
+    from goal19a_oldsuite_compat import add_missing, assembly_item_enums
+    add_missing(stubs, assembly_item_enums(source))
     types = cast_plate_types(source)
     stubs[CAST_PLATE] = "package com.hbm.items;public class CastPlateItem{public enum Type{" + ",".join(types) + "}}"
     items = stubs["com/hbm/items/NtmItems.java"]

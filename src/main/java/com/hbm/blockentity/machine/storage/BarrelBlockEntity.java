@@ -14,6 +14,7 @@ import com.hbm.inventory.FluidContainerRegistry;
 import com.hbm.inventory.fluid.FluidType;
 import com.hbm.inventory.fluid.Fluids;
 import com.hbm.inventory.fluid.tank.FluidTank;
+import com.hbm.inventory.fluid.trait.FluidTrait;
 import com.hbm.inventory.menus.BarrelMenu;
 import com.hbm.items.machine.IItemFluidIdentifier;
 import com.hbm.uninos.UniNodespace;
@@ -116,6 +117,8 @@ public class BarrelBlockEntity extends MachineBaseBlockEntity implements IFluidS
 
         if(this.tank.getFill() > 0) {
             this.checkFluidInteraction();
+            // The interaction may have destroyed or replaced the barrel; a removed block entity has nothing left to sync.
+            if(this.isRemoved()) return;
         }
 
         this.networkPackNT(25);
@@ -159,6 +162,37 @@ public class BarrelBlockEntity extends MachineBaseBlockEntity implements IFluidS
             this.shouldDrop = false;
             this.level.destroyBlock(this.getBlockPos(), false);
             this.level.playSound(null, this.getBlockPos().getX() + 0.5, this.getBlockPos().getY() + 0.5, this.getBlockPos().getZ() + 0.5, net.minecraft.sounds.SoundEvents.FIRE_EXTINGUISH, net.minecraft.sounds.SoundSource.BLOCKS, 1.0F, 1.0F);
+        }
+
+        if(block == NtmBlocks.BARREL_CORRODED.get()) {
+            if(this.level.random.nextInt(3) == 0) {
+                // Local safety bound: the original subtracts without one, but this only runs with a non-empty tank.
+                this.tank.setFill(Math.max(0, this.tank.getFill() - 1));
+                FluidTrait.onRelease(this.level, this.getBlockPos(), this.tank.getTankType(), this.tank, FluidTrait.FluidReleaseType.SPILL, 1);
+                this.setChanged();
+            }
+
+            if(this.level.random.nextInt(3 * 60 * 20) == 0) {
+                // Leaves nothing behind: onRemove drops no slots for a corroded barrel and no body once shouldDrop is cleared.
+                this.shouldDrop = false;
+                this.level.destroyBlock(this.getBlockPos(), false);
+                return;
+            }
+        }
+
+        if(block == NtmBlocks.BARREL_STEEL.get() && this.tank.getTankType().isHighlyCorrosive()) {
+            FluidType type = this.tank.getTankType();
+            int fill = this.tank.getFill();
+            // onRemove drops the steel barrel's slots once; without this the replacement would also drop a persistent steel barrel.
+            this.shouldDrop = false;
+            this.level.setBlock(this.getBlockPos(), NtmBlocks.BARREL_CORRODED.get().defaultBlockState(), 3);
+
+            // As in the original, only the fluid type and fill move into the corroded barrel; its mode starts over.
+            if(this.level.getBlockEntity(this.getBlockPos()) instanceof BarrelBlockEntity corroded) {
+                corroded.tank.setTankType(type);
+                corroded.tank.setFill(fill);
+                corroded.setChanged();
+            }
         }
     }
 

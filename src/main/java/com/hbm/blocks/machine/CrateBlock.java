@@ -15,6 +15,7 @@ import net.minecraft.ChatFormatting;
 import net.minecraft.core.BlockPos;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
+import net.minecraft.server.level.ServerLevel;
 import net.minecraft.stats.Stats;
 import net.minecraft.world.Containers;
 import net.minecraft.world.InteractionResult;
@@ -42,6 +43,7 @@ import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.HitResult;
 import org.jetbrains.annotations.Nullable;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
 
@@ -112,10 +114,12 @@ public class CrateBlock extends BaseEntityBlock implements IPersistentInfoProvid
             BlockEntity blockEntity = level.getBlockEntity(pos);
             if(blockEntity instanceof CrateBaseBlockEntity crate) {
                 if(NtmConfig.SERVER.CRATE_KEEP_CONTENTS.get()) {
-                    for(ItemStack stack : crate.getDrops(this)) Block.popResource(level, pos, stack);
+                    // Skipped when a loot pass already emitted the crate with its contents (see spawnAfterBreak).
+                    if(crate.shouldDrop()) for(ItemStack stack : crate.getDrops(this)) Block.popResource(level, pos, stack);
                 } else {
                     Containers.dropContents(level, pos, crate);
-                    Block.popResource(level, pos, new ItemStack(this));
+                    // A loot pass emits only the empty crate (see getDrops), so the contents still scatter here.
+                    if(crate.shouldDrop()) Block.popResource(level, pos, new ItemStack(this));
                 }
             }
         }
@@ -130,7 +134,19 @@ public class CrateBlock extends BaseEntityBlock implements IPersistentInfoProvid
     }
 
     @Override
+    protected void spawnAfterBreak(BlockState state, ServerLevel level, BlockPos pos, ItemStack tool, boolean dropExperience) {
+        super.spawnAfterBreak(state, level, pos, tool, dropExperience);
+        if(level.getBlockEntity(pos) instanceof CrateBaseBlockEntity crate) {
+            // destroyBlock(true), vanilla explosions (onExplosionHit) and tool abilities emit the loot before removing the block; do not emit
+            // the crate again in onRemove. ExplosionVNT's BlockProcessorStandard pops the loot without calling spawnAfterBreak.
+            crate.preventDrop();
+        }
+    }
+
+    @Override
     protected List<ItemStack> getDrops(BlockState state, LootParams.Builder params) {
+        // Without crate_keep_contents a crate drops empty and onRemove scatters its contents, as when a player breaks it.
+        if(!NtmConfig.SERVER.CRATE_KEEP_CONTENTS.get()) return new ArrayList<>(List.of(new ItemStack(this)));
         return IPersistentNBT.getDropsFromLootParams(state, params);
     }
 

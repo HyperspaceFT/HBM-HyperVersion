@@ -97,6 +97,13 @@ public class WeightedRandom{public static class Item{public int itemWeight;publi
         # Goal 10A registers CrucibleRecipes.INSTANCE after ChemicalPlantRecipes; this loader suite only needs the
         # name. The live crucible handler and its registration are checked by verify_goal10a.py.
         "CrucibleRecipes": "com/hbm/inventory/recipes",
+        # Goal 18A and the Goal 14-16 handlers (SerializableRecipe.registerAllHandlers); as above only the name is needed here (Goal 19A
+        # harness revival). Their live tables are checked by the suites of their own goals.
+        "CrystallizerRecipes": "com/hbm/inventory/recipes",
+        "FractionRecipes": "com/hbm/inventory/recipes",
+        "CompressorRecipes": "com/hbm/inventory/recipes",
+        "CokerRecipes": "com/hbm/inventory/recipes",
+        "MixerRecipes": "com/hbm/inventory/recipes",
     }
     for name, path in handler_names.items():
         singleton = "public static final " + name + " INSTANCE=new " + name + "();" if name in ("BlastFurnaceRecipes", "ChemicalPlantRecipes", "CrucibleRecipes") else ""

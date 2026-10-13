@@ -174,17 +174,17 @@ public class MachineTurbofanBlockEntity extends MachineBaseBlockEntity implement
         this.output = getGeneratedPower(getBurnValue(this.tank.getTankType()), amount, this.afterburner);
         this.power += this.output;
         this.consumption = amount;
-        // The original polluting base ignores amount; an mB multiplier would change this machine's emissions.
-        if(this.level.getGameTime() % 20 == 0) this.polluteFuel(this.tank.getTankType());
+        // As in the original, each 20-tick pollution call is scaled by five times the mB burned this tick.
+        if(this.level.getGameTime() % 20 == 0) this.polluteFuel(this.tank.getTankType(), amount * 5);
         this.setChanged();
     }
-    public void polluteFuel(FluidType type) {
+    public void polluteFuel(FluidType type, float amount) {
         if(this.level == null || this.level.isClientSide) return;
         FT_Polluting trait = type.getTrait(FT_Polluting.class);
         if(trait == null) return;
         for(Map.Entry<PollutionType, Float> entry : trait.burnMap.entrySet()) {
             FluidTank buffer = entry.getKey() == PollutionType.SOOT ? this.smoke : entry.getKey() == PollutionType.HEAVYMETAL ? this.smokeLeaded : this.smokePoison;
-            int produced = (int)Math.ceil(entry.getValue() * 100);
+            int produced = (int)Math.ceil(entry.getValue() * amount * 100);
             int total = buffer.getFill() + produced;
             buffer.setFill(Math.min(total, SMOKE_CAPACITY));
             if(total > SMOKE_CAPACITY) {

@@ -153,6 +153,14 @@ public class StrayCog extends ProjectileNT {
                     }
                 }
             }
+        } else if(bhr.getDirection() == Direction.UP) {
+            // A cog that already lies down (its support was removed) falls while lying, as in the original since upstream
+            // dropped the stand-up correction: it settles on the next top face without exploding or breaking blocks.
+            this.setPos(bhr.getLocation());
+        } else {
+            // Like an upright slow side hit: a lying cog is never held against a wall or ceiling and keeps falling.
+            this.setDeltaMovement(Vec3.ZERO);
+            return;
         }
 
         if(orientation >= 6) {
@@ -166,13 +174,7 @@ public class StrayCog extends ProjectileNT {
     @Override
     public void tick() {
 
-        if(!this.level.isClientSide) {
-            int orientation = this.getOrientation();
-            if(orientation >= 6 && !this.inGround) {
-                this.setOrientation(orientation - 6);
-            }
-        }
-
+        // No stand-up correction: once lying (orientation >= 6) a released cog keeps falling lying, as in the original.
         if(this.inGround) {
             // After a reload only the stuck position is known; the block is re-read from the level here rather than during loading.
             if(this.stuckPos != null && this.stuckBlock == null) this.stuckBlock = this.level.getBlockState(this.stuckPos).getBlock();
