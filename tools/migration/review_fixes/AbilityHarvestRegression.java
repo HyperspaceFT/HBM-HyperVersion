@@ -153,12 +153,19 @@ public class AbilityHarvestRegression {
         return new Expect(List.of(box), ability, 0);
     }
 
-    /** ServerPlayerGameMode.destroyBlock, survival branch with an uncancelled BreakEvent (contract-checked). */
+    /**
+     * ServerPlayerGameMode.destroyBlock with an uncancelled BreakEvent for the mined block (contract-checked): survival branch, and the
+     * creative branch that removes the block right after playerWillDestroy without mineBlock or playerDestroy.
+     */
     static void destroyBlock(ServerLevel level, ServerPlayer player, BlockPos pos) {
         BlockState state1 = level.getBlockState(pos);
         BlockEntity blockEntity = level.getBlockEntity(pos);
         Block block = state1.getBlock();
         BlockState state = block.playerWillDestroy(level, pos, state1, player);
+        if(player.gameMode.isCreative()) {
+            if(state.onDestroyedByPlayer(level, pos, player, false)) block.destroy(level, pos, state);
+            return;
+        }
         ItemStack itemstack = player.getMainHandItem();
         ItemStack itemstack1 = itemstack.copy();
         boolean canHarvest = state.canHarvestBlock(level, pos, player);
@@ -569,6 +576,7 @@ public class AbilityHarvestRegression {
         destroyBlockPaths();
         explosions();
         explosionMerge();
+        DropsBatchRegression.runAll();
         System.out.println("PASS " + checks + " method-level assertions; no Minecraft runtime claim");
     }
 }

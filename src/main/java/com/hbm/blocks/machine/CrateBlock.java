@@ -137,8 +137,8 @@ public class CrateBlock extends BaseEntityBlock implements IPersistentInfoProvid
     protected void spawnAfterBreak(BlockState state, ServerLevel level, BlockPos pos, ItemStack tool, boolean dropExperience) {
         super.spawnAfterBreak(state, level, pos, tool, dropExperience);
         if(level.getBlockEntity(pos) instanceof CrateBaseBlockEntity crate) {
-            // destroyBlock(true), vanilla explosions (onExplosionHit) and tool abilities emit the loot before removing the block; do not emit
-            // the crate again in onRemove. ExplosionVNT's BlockProcessorStandard pops the loot without calling spawnAfterBreak.
+            // destroyBlock(true), vanilla explosions (onExplosionHit), tool abilities and ExplosionVNT's BlockProcessorStandard (when its roll
+            // emitted any loot) emit the loot before removing the block; do not emit the crate again in onRemove.
             crate.preventDrop();
         }
     }

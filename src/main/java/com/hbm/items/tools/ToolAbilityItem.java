@@ -1,6 +1,7 @@
 package com.hbm.items.tools;
 
 import api.hbm.item.IDepthRockTool;
+import com.hbm.blocks.DummyableBlock;
 import com.hbm.config.NtmConfig;
 import com.hbm.handler.HbmKeybinds.EnumKeybind;
 import com.hbm.handler.ability.*;
@@ -42,6 +43,7 @@ import net.minecraft.world.level.block.state.BlockState;
 import net.neoforged.api.distmarker.Dist;
 import net.neoforged.api.distmarker.OnlyIn;
 import net.neoforged.neoforge.client.event.RenderGuiLayerEvent;
+import net.neoforged.neoforge.common.CommonHooks;
 import net.neoforged.neoforge.common.IShearable;
 import net.neoforged.neoforge.common.ItemAbilities;
 import net.neoforged.neoforge.common.ItemAbility;
@@ -130,7 +132,15 @@ public class ToolAbilityItem extends TieredItem implements IDepthRockTool, IItem
                     }
 
                     if (preset.harvestAbility != IToolHarvestAbility.NONE) {
-                        preset.harvestAbility.onHarvestBlock(level, pos, player, pos);
+                        if (state.getBlock() instanceof DummyableBlock dummy && dummy.findCore(level, pos) != null) {
+                            // A multiblock with a core gets its body only from DummyableBlock.playerWillDestroy, at the core, and the removal
+                            // after mineBlock clears the rest; harvesting this part would drop a second body. Wear the tool as harvestBlock does.
+                            damageTool(stack, player, 1);
+                        } else {
+                            // Also reached for a multiblock that is already gone, cleared by its own playerWillDestroy or by the area ability:
+                            // harvesting the air left there drops nothing and only wears the tool.
+                            preset.harvestAbility.onHarvestBlock(level, pos, player, pos);
+                        }
                         usedHarvestAbility = true;
                     }
                 } finally {
@@ -234,17 +244,44 @@ public class ToolAbilityItem extends TieredItem implements IDepthRockTool, IItem
         BlockState refState = level.getBlockState(refPos);
 
         if (state.isAir() || refState.isAir()) return;
-        if (!(player instanceof ServerPlayer)) return;
+        if (!(player instanceof ServerPlayer serverPlayer)) return;
+
+        // As the original (ItemToolAbility.breakExtraBlock): an empty hand does nothing, and only blocks the tool is effective for (or
+        // shears can cut) are extras; SILK passes canHarvest. Skipped blocks get no BreakEvent, no removal and no tool wear.
+        ItemStack stack = player.getMainHandItem();
+        if (stack.isEmpty()) return;
+        if (!(canHarvest(stack, state, player, level, pos) || canShearBlock(state, stack, level, pos))) return;
 
         float refStrength = refState.getDestroyProgress(player, level, refPos);
         float strength = state.getDestroyProgress(player, level, pos);
 
         if (!player.hasCorrectToolForDrops(state) || refStrength / strength > 2f) return;
 
-        Configuration config = this.getConfiguration(player.getMainHandItem());
+        // As the original posts ForgeHooks.onBlockBreakEvent for every extra block, protection and claim mods can keep this one.
+        if (CommonHooks.fireBlockBreak(level, serverPlayer.gameMode.getGameModeForPlayer(), serverPlayer, pos, state).isCanceled()) return;
+
+        if (isMinedStructure(level, pos, refPos)) {
+            // Part of the multiblock being mined, which gets its body only from DummyableBlock.playerWillDestroy: remove it without
+            // loot (the multiblock clears the rest of itself) and wear the tool as harvestBlock does.
+            level.removeBlock(pos, false);
+            damageTool(stack, player, 1);
+            return;
+        }
+
+        Configuration config = this.getConfiguration(stack);
         ToolPreset preset = config.getActivePreset();
 
         preset.harvestAbility.onHarvestBlock(level, pos, player, refPos);
+    }
+
+    /**
+     * Whether pos belongs to the same DummyableBlock multiblock as minedPos, the block the player is mining. Parts without a
+     * core never match.
+     */
+    public static boolean isMinedStructure(Level level, BlockPos pos, BlockPos minedPos) {
+        if (!(level.getBlockState(minedPos).getBlock() instanceof DummyableBlock dummy) || !level.getBlockState(pos).is(dummy)) return false;
+        BlockPos core = dummy.findCore(level, minedPos);
+        return core != null && core.equals(dummy.findCore(level, pos));
     }
 
     @Override

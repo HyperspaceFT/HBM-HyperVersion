@@ -316,7 +316,8 @@ public interface IToolAreaAbility extends IBaseAbility {
 
             ExplosionVNT vnt = new ExplosionVNT(level, pos.getX() + 0.5, pos.getY() + 0.5, pos.getZ() + 0.5, strength);
             vnt.setBlockAllocator(new BlockAllocatorStandard());
-            vnt.setBlockProcessor(new BlockProcessorStandard().setAllDrop());
+            // Every block drops except the rest of a multiblock being mined, whose body DummyableBlock.playerWillDestroy has already dropped.
+            vnt.setBlockProcessor(new BlockProcessorStandard().withChance((explosion, block, at, chance) -> ToolAbilityItem.isMinedStructure(level, at, pos) ? 0F : 1F));
             vnt.explode();
 
             level.explode(player,pos.getX() + 0.5, pos.getY() + 0.5, pos.getZ() + 0.5, 0.1F, Level.ExplosionInteraction.NONE);

@@ -85,11 +85,21 @@ public class BlockProcessorStandard implements IBlockProcessor {
                                 .withOptionalParameter(LootContextParams.BLOCK_ENTITY, level.getBlockEntity(pos));
 
                         List<ItemStack> drops = state.getDrops(builder);
+                        boolean emitted = false;
 
                         for (ItemStack drop : drops) {
                             if (serverLevel.random.nextFloat() <= dropChance) {
+                                emitted |= !drop.isEmpty();
                                 Block.popResource(serverLevel, pos, drop);
                             }
+                        }
+
+                        // Follow the loot this pass emitted with spawnAfterBreak while the block is still in place, as Block.dropResources does,
+                        // so a crate does not drop itself again from onRemove. It gets an empty tool, as in vanilla's onExplosionHit, and no
+                        // experience, which this processor has never awarded. A pass that emitted nothing (setNoDrop included) leaves the
+                        // removal drops alone: a crate then drops itself from onRemove.
+                        if (emitted) {
+                            state.spawnAfterBreak(serverLevel, pos, ItemStack.EMPTY, false);
                         }
                     }
                 }

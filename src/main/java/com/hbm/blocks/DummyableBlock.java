@@ -276,7 +276,8 @@ public abstract class DummyableBlock extends BaseEntityBlock implements ICustomB
         Containers.dropContentsOnDestroy(state, newState, level, pos);
 
         if(!state.is(newState.getBlock())) {
-            if(!safeRem) {
+            // As the original BlockDummyable.breakBlock (`if(i >= 12) { }`): a core removes nothing behind it; orphaned dummies go via neighborChanged.
+            if(!safeRem && !isCore(state)) {
                 Direction dir = state.getValue(FACING);
                 BlockPos neighborPos = pos.relative(dir.getOpposite());
 
