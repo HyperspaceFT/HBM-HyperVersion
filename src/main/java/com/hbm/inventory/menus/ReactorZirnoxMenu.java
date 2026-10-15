@@ -1,12 +1,17 @@
 package com.hbm.inventory.menus;
 
 import com.hbm.blockentity.machine.ReactorZirnoxBlockEntity;
+import com.hbm.inventory.FluidContainerRegistry;
 import com.hbm.inventory.NtmMenuTypes;
 import com.hbm.inventory.SlotTakeOnly;
+import com.hbm.inventory.fluid.Fluids;
+import com.hbm.items.machine.ZirnoxRodItem;
 import com.hbm.util.CompatExternal;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.world.entity.player.Inventory;
+import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.inventory.Slot;
+import net.minecraft.world.item.ItemStack;
 
 public class ReactorZirnoxMenu extends MenuBase<ReactorZirnoxBlockEntity> {
 
@@ -50,5 +55,41 @@ public class ReactorZirnoxMenu extends MenuBase<ReactorZirnoxBlockEntity> {
         this.addSlot(new SlotTakeOnly(be, 27, 179, 142));
 
         this.playerInv(inventory, 8, 174);
+    }
+
+    // Original ContainerReactorZirnox.transferStackInSlot (:65-109). The ranges are kept, but 1.21 moveItemStackTo
+    // checks mayPlace for empty slots, so the take-only output in each fluid range only takes a stack merged onto
+    // an identical one, where 1.7.10 could also place into an empty output.
+    @Override
+    public ItemStack quickMoveStack(Player player, int index) {
+        ItemStack ret = ItemStack.EMPTY;
+        Slot slot = this.slots.get(index);
+
+        if(slot.hasItem()) {
+            ItemStack stack = slot.getItem();
+            ret = stack.copy();
+
+            if(index <= 27) {
+                if(!this.moveItemStackTo(stack, 28, this.slots.size(), true)) return ItemStack.EMPTY;
+            } else {
+                if(FluidContainerRegistry.getFluidContent(stack, Fluids.CARBONDIOXIDE) > 0) {
+                    if(!this.moveItemStackTo(stack, 24, 26, false)) return ItemStack.EMPTY;
+                } else if(FluidContainerRegistry.getFluidContent(stack, Fluids.WATER) > 0) {
+                    if(!this.moveItemStackTo(stack, 26, 28, false)) return ItemStack.EMPTY;
+                } else if(stack.getItem() instanceof ZirnoxRodItem) {
+                    if(!this.moveItemStackTo(stack, 0, 24, true)) return ItemStack.EMPTY;
+                } else {
+                    return ItemStack.EMPTY;
+                }
+            }
+
+            if(stack.isEmpty()) {
+                slot.setByPlayer(ItemStack.EMPTY);
+            } else {
+                slot.setChanged();
+            }
+        }
+
+        return ret;
     }
 }

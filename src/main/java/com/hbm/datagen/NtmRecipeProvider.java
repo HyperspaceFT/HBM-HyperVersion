@@ -11,6 +11,7 @@ import com.hbm.items.NtmItems;
 import com.hbm.items.WireDenseItem;
 import com.hbm.items.component.NtmDataComponents;
 import com.hbm.items.machine.BatteryPackItem;
+import com.hbm.items.machine.ZirnoxRodItem.ZirnoxType;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.data.PackOutput;
@@ -491,6 +492,22 @@ public class NtmRecipeProvider extends RecipeProvider {
                 .define('R', NtmItems.COIL_TUNGSTEN.get())
                 .unlockedBy("has_cast_plate", has(NtmItems.CAST_PLATE.get()))
                 .save(recipeOutput);
+        // Original RodRecipes.java:26: zirconium nuggets around a beryllium ingot make four empty ZIRNOX rods.
+        ShapedRecipeBuilder.shaped(RecipeCategory.MISC, NtmItems.ROD_ZIRNOX_EMPTY.get(), 4)
+                .pattern("Z Z")
+                .pattern("ZBZ")
+                .pattern("Z Z")
+                .define('Z', NtmItems.NUGGET_ZIRCONIUM.get())
+                .define('B', NtmItems.INGOT_BERYLLIUM.get())
+                .unlockedBy("has_zirconium_nugget", has(NtmItems.NUGGET_ZIRCONIUM.get()))
+                .save(recipeOutput, ResourceLocation.fromNamespaceAndPath("hbmsntm", "rod_zirnox_empty"));
+        // Original RodRecipes.java:27 (addZIRNOXRod, :250-257): an empty rod and two uranium billets. Only the natural
+        // uranium fuel rod is crafted so far; the output carries no "life" data, like a fresh original rod.
+        ShapelessRecipeBuilder.shapeless(RecipeCategory.MISC, MetaHelper.newStack(NtmItems.ROD_ZIRNOX.get(), 1, ZirnoxType.NATURAL_URANIUM_FUEL.ordinal()))
+                .requires(NtmItems.ROD_ZIRNOX_EMPTY.get())
+                .requires(NtmItems.BILLET_URANIUM.get(), 2)
+                .unlockedBy("has_rod_zirnox_empty", has(NtmItems.ROD_ZIRNOX_EMPTY.get()))
+                .save(recipeOutput, ResourceLocation.fromNamespaceAndPath("hbmsntm", "rod_zirnox_natural_uranium_fuel"));
         ShapedRecipeBuilder.shaped(RecipeCategory.MISC, NtmBlocks.RED_CABLE.get(), 16)
                 .pattern(" I ")
                 .pattern("WWW")

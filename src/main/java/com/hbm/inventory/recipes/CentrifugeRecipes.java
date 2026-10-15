@@ -221,14 +221,21 @@ public class CentrifugeRecipes extends SerializableRecipe {
         setRecipe(stack(NtmItems.CRYSTAL_COBALT.get(), 1), stack(NtmItems.POWDER_COBALT.get(), 2), stack(NtmItems.POWDER_IRON.get(), 3), stack(NtmItems.POWDER_COPPER.get(), 3), stack(NtmItems.POWDER_LITHIUM_TINY.get(), 1));
     }
 
+    // Goal19C: the original rare earth chunk row (CentrifugeRecipes.java:48-52), the boron source for ass.cirnox and a
+    // further zirconium source for ZIRNOX rods.
+    // Kept last so the ore and crystal rows above keep their order.
+    private void registerChunkRecipes() {
+        setRecipe(stack(NtmItems.RARE_EARTH_ORE_CHUNK.get(), 1), stack(NtmItems.POWDER_COBALT_TINY.get(), 2), stack(NtmItems.POWDER_BORON_TINY.get(), 2), stack(NtmItems.POWDER_NIOBIUM_TINY.get(), 2), stack(NtmItems.NUGGET_ZIRCONIUM.get(), 3));
+    }
+
     }
 
     @Override public String getFileName() { return "hbmCentrifuge.json"; }
     @Override public Object getRecipeObject() { return table; }
-    @Override public void registerDefaults() { Defaults defaults = new Defaults(this); defaults.registerOreRecipes(); defaults.registerCrystalRecipes(); }
+    @Override public void registerDefaults() { Defaults defaults = new Defaults(this); defaults.registerOreRecipes(); defaults.registerCrystalRecipes(); defaults.registerChunkRecipes(); }
     @Override public void deleteRecipes() { table.clear(); }
     @Override public String getComment() {
-        return "Centrifuge recipes ported from 1.12.2, limited to ore_ blocks, crystal_ items and vanilla ore blocks. Replaces the whole table; empty disables it. Each input consumes one item regardless of configured positive count. Arrays are ID, count, META, custom-data SNBT; omitted META decodes as zero, explicit null preserves absence. Generic inputs match item/META (32767 wildcard); custom-data inputs constrain components. Outputs retain 1..4 ordered slots, including [minecraft:air,0] placeholders; at least one positive output is required.";
+        return "Centrifuge recipes ported from 1.12.2, limited to ore_ blocks, crystal_ items, the rare earth ore chunk and vanilla ore blocks. Replaces the whole table; empty disables it. Each input consumes one item regardless of configured positive count. Arrays are ID, count, META, custom-data SNBT; omitted META decodes as zero, explicit null preserves absence. Generic inputs match item/META (32767 wildcard); custom-data inputs constrain components. Outputs retain 1..4 ordered slots, including [minecraft:air,0] placeholders; at least one positive output is required.";
     }
     @Override public void readRecipe(JsonElement element) {
         try {

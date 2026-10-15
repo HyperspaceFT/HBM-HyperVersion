@@ -15,6 +15,7 @@ import net.minecraft.client.renderer.blockentity.BlockEntityRenderer;
 import net.minecraft.core.Direction;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.phys.AABB;
 
 public class RenderZirnox extends BlockEntityRendererNT<ReactorZirnoxBlockEntity> implements IBEWLRProvider {
 
@@ -50,6 +51,11 @@ public class RenderZirnox extends BlockEntityRendererNT<ReactorZirnoxBlockEntity
             return LevelRenderer.getLightColor(be.getLevel(), be.getBlockPos().above(dummy.getDimensions()[0]));
         }
         return packedLight;
+    }
+
+    @Override
+    public AABB getRenderBoundingBox(ReactorZirnoxBlockEntity be) {
+        return be.getRenderBoundingBox();
     }
 
     @Override

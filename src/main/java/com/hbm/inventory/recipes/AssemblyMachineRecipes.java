@@ -394,5 +394,30 @@ public class AssemblyMachineRecipes extends GenericRecipes<GenericRecipe> {
                         new ComparableStack(NtmItems.INGOT_DESH.get(), 4),
                         new ComparableStack(NtmItems.MOTOR.get(), 1),
                         new ComparableStack(NtmItems.CIRCUIT_INTEGRATED_BOARD.get(), 2)));
+
+        // Original normal ass.iturbine (AssemblyMachineRecipes.java:434-436), registered in every mode like the original;
+        // the expensive branch is not migrated (NEO has no item_expensive). STEEL.plate() is c:plates/steel; ntm:any_rubbers
+        // also holds bio rubber, which RUBBER.ingot() does not, so the plain rubber ingot stands in (as ass.coker);
+        // dense gold wire and the dura pipe as ass.turbofan; BASIC is the integrated circuit board.
+        this.register(new GenericRecipe("ass.iturbine").setup(200, 100).outputItems(new ItemStack(NtmBlocks.MACHINE_INDUSTRIAL_TURBINE.get(), 1))
+                .inputItems(new RecipesCommon.TagStack(NtmTags.Items.PLATES_STEEL, 16),
+                        new ComparableStack(NtmItems.INGOT_RUBBER.get(), 4),
+                        new ComparableStack(NtmItems.TURBINE_TITANIUM.get(), 2),
+                        new ComparableStack(MetaHelper.newStack(NtmItems.WIRE_DENSE.get(), 4, WireDenseItem.Type.GOLD.meta)),
+                        new ComparableStack(NtmItems.PIPE_DURA_STEEL.get(), 4),
+                        new ComparableStack(NtmItems.CIRCUIT_INTEGRATED_BOARD.get(), 2)));
+
+        // Original normal ass.cirnox (AssemblyMachineRecipes.java:524-527), registered in every mode like the original;
+        // the expensive branch is not migrated (NEO has no item_expensive). NEO keeps its machine_zirnox id for the
+        // original reactor_zirnox. B.ingot() is the boron ingot (OreDictManager.java:196); the plain rubber ingot stands
+        // in for RUBBER.ingot() as in ass.iturbine; BASIC is the integrated circuit board.
+        this.register(new GenericRecipe("ass.cirnox").setup(600, 100).outputItems(new ItemStack(NtmBlocks.REACTOR_ZIRNOX.get(), 1))
+                .inputItems(new ComparableStack(NtmItems.SHELL_STEEL.get(), 4),
+                        new ComparableStack(NtmItems.PIPE_STEEL.get(), 8),
+                        new ComparableStack(NtmItems.INGOT_BORON.get(), 8),
+                        new ComparableStack(NtmItems.INGOT_GRAPHITE.get(), 16),
+                        new ComparableStack(NtmItems.INGOT_RUBBER.get(), 16),
+                        new RecipesCommon.TagStack(ItemTags.create(ResourceLocation.fromNamespaceAndPath("ntm", "any_concrete")), 16),
+                        new ComparableStack(NtmItems.CIRCUIT_INTEGRATED_BOARD.get(), 4)));
     }
 }

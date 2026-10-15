@@ -113,6 +113,11 @@
     ],
     "subtitle": "subtitles.block.igenerator_operate"
   },
+  "block.large_turbine_running": {
+    "sounds": [
+      "hbmsntm:block/large_turbine"
+    ]
+  },
   "block.lock_open": {
     "sounds": [
       "hbmsntm:block/lock_open"

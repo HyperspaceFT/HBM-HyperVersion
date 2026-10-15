@@ -13,6 +13,7 @@ import net.minecraft.core.Direction.Axis;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.Level;
+import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.entity.BlockEntityTicker;
 import net.minecraft.world.level.block.entity.BlockEntityType;
@@ -81,5 +82,34 @@ public class ReactorZirnoxBlock extends DummyableBlock {
         this.makeExtra(level, pos.offset(dxDir - dxRot, 3, dzDir - dzRot));
         //i still don't know why the ports were such an issue all those months ago
         this.makeExtra(level, pos.offset(dxDir, 4, dzDir));
+    }
+
+    // Original ReactorZirnox.onNeighborBlockChange (:105-142): any powered surface cell of the 5x5x5 hull powers the reactor.
+    // As in the original, the empty cells of that box count too, but a change only reaches the reactor through an update
+    // to one of its own blocks, so a source touching only empty cells is picked up at the next such update.
+    @Override
+    public void neighborChanged(BlockState state, Level level, BlockPos pos, Block block, BlockPos fromPos, boolean isMoving) {
+        super.neighborChanged(state, level, pos, block, fromPos, isMoving);
+        if(level.isClientSide) return;
+        // The orphan check in super may have removed this part.
+        if(level.getBlockState(pos).getBlock() != this) return;
+
+        BlockPos core = this.findCore(level, pos);
+        if(core == null) return;
+        if(!(level.getBlockEntity(core) instanceof ReactorZirnoxBlockEntity reactor)) return;
+
+        boolean powered = false;
+        for(int dx = -2; dx <= 2 && !powered; dx++) {
+            for(int dy = 0; dy <= 4 && !powered; dy++) {
+                for(int dz = -2; dz <= 2 && !powered; dz++) {
+                    if(dx == -2 || dx == 2 || dy == 0 || dy == 4 || dz == -2 || dz == 2) {
+                        BlockPos p = core.offset(dx, dy, dz);
+                        // 1.7.10 isBlockIndirectlyGettingPowered || getBlockPowerInput > 0
+                        if(level.hasNeighborSignal(p) || level.getDirectSignalTo(p) > 0) powered = true;
+                    }
+                }
+            }
+        }
+        reactor.setRedstonePowered(powered);
     }
 }

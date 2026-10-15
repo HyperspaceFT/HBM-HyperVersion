@@ -9,6 +9,7 @@ import com.hbm.handler.MultiblockHandlerXR;
 import com.hbm.interfaces.IControlReceiver;
 import com.hbm.inventory.MetaHelper;
 import com.hbm.inventory.RecipesCommon.ComparableStack;
+import com.hbm.inventory.fluid.FluidType;
 import com.hbm.inventory.fluid.Fluids;
 import com.hbm.inventory.fluid.tank.FluidTank;
 import com.hbm.inventory.menus.ReactorZirnoxMenu;
@@ -33,6 +34,7 @@ import net.minecraft.world.inventory.AbstractContainerMenu;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level.ExplosionInteraction;
 import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.phys.AABB;
 import net.minecraft.world.phys.Vec3;
 
 import javax.annotation.Nullable;
@@ -52,6 +54,8 @@ public class ReactorZirnoxBlockEntity extends MachineBaseBlockEntity implements 
     public final FluidTank carbonDioxide;
     public final FluidTank water;
     protected int output;
+
+    private AABB renderBox;
 
     private static final int[] SLOTS_IO = new int[] { 0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23 };
 
@@ -135,6 +139,14 @@ public class ReactorZirnoxBlockEntity extends MachineBaseBlockEntity implements 
         if(!this.level.isClientSide) {
             this.checkTilt(TiltType.CONFIG, true);
 
+            int heatBefore = this.heat;
+            int pressureBefore = this.pressure;
+            boolean isOnBefore = this.isOn;
+            int steamBefore = this.steam.getFill();
+            int carbonDioxideBefore = this.carbonDioxide.getFill();
+            int waterBefore = this.water.getFill();
+            boolean rodsChanged = false;
+
             if (redstonePowered) {
                 isOn = true;
             }
@@ -151,7 +163,10 @@ public class ReactorZirnoxBlockEntity extends MachineBaseBlockEntity implements 
                 for(int i = 0; i < 24; i++) {
 
                     if(!slots.get(i).isEmpty()) {
-                        if(slots.get(i).getItem() instanceof ZirnoxRodItem) this.decay(i);
+                        if(slots.get(i).getItem() instanceof ZirnoxRodItem) {
+                            this.decay(i);
+                            rodsChanged = true;
+                        }
                         //else if(slots[i].getItem() == ModItems.meteorite_sword_bred)
                         //    slots[i] = new ItemStack(ModItems.meteorite_sword_irradiated);
                     }
@@ -176,6 +191,15 @@ public class ReactorZirnoxBlockEntity extends MachineBaseBlockEntity implements 
 
             if(!this.tilted) for(DirPos pos : this.getConPos()) {
                 this.tryProvide(steam, level, pos);
+            }
+
+            // Local strengthening: the original never marks the tile dirty while running, 1.21 only saves chunks marked
+            // unsaved, and checkTilt only does so while machine gravity is enabled (off by default). Rod decay usually
+            // advances "life" and may replace the rod (a breeding rod without fuel neighbours does not; marking it is
+            // harmless); container moves by loadTank come with a fill change.
+            if(rodsChanged || this.isOn != isOnBefore || this.heat != heatBefore || this.pressure != pressureBefore ||
+                    this.steam.getFill() != steamBefore || this.carbonDioxide.getFill() != carbonDioxideBefore || this.water.getFill() != waterBefore) {
+                this.setChanged();
             }
 
             this.checkIfMeltdown();
@@ -236,8 +260,12 @@ public class ReactorZirnoxBlockEntity extends MachineBaseBlockEntity implements 
     }
 
     public void setRedstonePowered(boolean powered) {
+        boolean wasOn = this.isOn;
+        boolean wasPowered = this.redstonePowered;
         if(!powered && this.redstonePowered) isOn = false;
         this.redstonePowered = powered;
+        // Local hardening: the original does not mark the tile dirty here.
+        if(this.redstonePowered != wasPowered || this.isOn != wasOn) this.setChanged();
     }
 
     private void generateSteam() {
@@ -306,6 +334,13 @@ public class ReactorZirnoxBlockEntity extends MachineBaseBlockEntity implements 
         if(this.pressure > maxPressure || this.heat > maxHeat) this.meltdown();
     }
 
+    /*
+     * Original TileEntityReactorZirnox.meltdown (:405-431). Not ported, because NEO lacks the infrastructure:
+     * - zirnoxDebris() (no EntityZirnoxDebris or ZIRNOX debris items),
+     * - ExplosionNukeGeneric.waste(world, x, y, z, 35) (no waste conversion),
+     * - the ZIRNOXBoom achievement for players within 100 blocks,
+     * - the "radMark" elemental flag on those players (MobConfig.enableElementals).
+     */
     private void meltdown() {
         if(this.level == null) return;
 
@@ -316,7 +351,8 @@ public class ReactorZirnoxBlockEntity extends MachineBaseBlockEntity implements 
         this.level.setBlock(this.getBlockPos(), NtmBlocks.ZIRNOX_DESTROYED.get().defaultBlockState().setValue(DummyableBlock.FACING, facing), 3);
         MultiblockHandlerXR.fillSpace(this.level, this.getBlockPos(), dimensions, NtmBlocks.ZIRNOX_DESTROYED.get(), facing);
         Vec3 position = Vec3.atBottomCenterOf(this.getBlockPos());
-        SoundUtils.playAtVec3(this.level, position, NtmSoundEvents.RBMK_EXPLOSION.get(), SoundSource.BLOCKS, 10F, 1F);
+        // The original (:414) plays the sound at y+2; NEO keeps its block-centre x/z.
+        SoundUtils.playAtVec3(this.level, position.add(0, 2, 0), NtmSoundEvents.RBMK_EXPLOSION.get(), SoundSource.BLOCKS, 10F, 1F);
         this.level.explode(null, position.x, position.y + 3, position.z, 12F, ExplosionInteraction.BLOCK);
     }
 
@@ -345,6 +381,7 @@ public class ReactorZirnoxBlockEntity extends MachineBaseBlockEntity implements 
         };
     }
 
+    // The original (:451-454) allows control from any player closer than 20 blocks; NEO uses the menu's own reach check.
     @Override
     public boolean hasPermission(Player player) {
         return this.stillValid(player);
@@ -365,6 +402,25 @@ public class ReactorZirnoxBlockEntity extends MachineBaseBlockEntity implements 
         }
     }
 
+    // Original TileEntityReactorZirnox.java:261-262: a tilted reactor neither sends nor receives fluid.
+    @Override public long getProviderSpeed(FluidType type, int pressure) { return this.tilted ? 0 : 1_000_000; }
+    @Override public long getReceiverSpeed(FluidType type, int pressure) { return this.tilted ? 0 : 1_000_000; }
+
+    // Fluid networks fill and drain the tanks outside updateEntity, so mark those changes directly.
+    @Override
+    public long transferFluid(FluidType type, int pressure, long amount) {
+        long remainder = IFluidStandardTransceiverMK2.super.transferFluid(type, pressure, amount);
+        if(remainder < amount) this.setChanged();
+        return remainder;
+    }
+
+    @Override
+    public void useUpFluid(FluidType type, int pressure, long amount) {
+        long previous = this.getFluidAvailable(type, pressure);
+        IFluidStandardTransceiverMK2.super.useUpFluid(type, pressure, amount);
+        if(this.getFluidAvailable(type, pressure) != previous) this.setChanged();
+    }
+
     @Override
     public FluidTank[] getSendingTanks() {
         return new FluidTank[] { steam };
@@ -383,5 +439,14 @@ public class ReactorZirnoxBlockEntity extends MachineBaseBlockEntity implements 
     @Override
     public AbstractContainerMenu createMenu(int id, Inventory inventory, Player player) {
         return new ReactorZirnoxMenu(id, inventory, this);
+    }
+
+    public AABB getRenderBoundingBox() {
+        if(this.renderBox == null) {
+            BlockPos pos = this.worldPosition;
+            // Original getRenderBoundingBox (:442-444).
+            this.renderBox = new AABB(pos.getX() - 2, pos.getY(), pos.getZ() - 2, pos.getX() + 3, pos.getY() + 5, pos.getZ() + 3);
+        }
+        return this.renderBox;
     }
 }

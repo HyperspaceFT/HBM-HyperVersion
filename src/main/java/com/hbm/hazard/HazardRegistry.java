@@ -1,10 +1,12 @@
 package com.hbm.hazard;
 
 import com.hbm.blocks.NtmBlocks;
+import com.hbm.hazard.modifier.HazardModifierFuelRadiation;
 import com.hbm.hazard.type.*;
 import com.hbm.inventory.MetaHelper;
 import com.hbm.items.NtmItems;
 import com.hbm.items.machine.BreedingRodItem.BreedingRodType;
+import com.hbm.items.machine.ZirnoxRodItem.ZirnoxType;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.level.block.Block;
@@ -182,6 +184,30 @@ public class HazardRegistry {
         registerBreedingRodRadiation(BreedingRodType.WASTE, wst);
         registerBreedingRodRadiation(BreedingRodType.URANIUM, u);
 
+        // Original HazardRegistry.java:232-253
+        registerOtherFuel(ROD_ZIRNOX, ZirnoxType.NATURAL_URANIUM_FUEL.ordinal(), u * rod_dual, wst * rod_dual * 11.5F, false);
+        registerOtherFuel(ROD_ZIRNOX, ZirnoxType.URANIUM_FUEL.ordinal(), uf * rod_dual, wst * rod_dual * 10F, false);
+        registerOtherFuel(ROD_ZIRNOX, ZirnoxType.TH232.ordinal(), th232 * rod_dual, thf * rod_dual, false);
+        registerOtherFuel(ROD_ZIRNOX, ZirnoxType.THORIUM_FUEL.ordinal(), thf * rod_dual, wst * rod_dual * 7.5F, false);
+        registerOtherFuel(ROD_ZIRNOX, ZirnoxType.MOX_FUEL.ordinal(), mox * rod_dual, wst * rod_dual * 10F, false);
+        registerOtherFuel(ROD_ZIRNOX, ZirnoxType.PLUTONIUM_FUEL.ordinal(), puf * rod_dual, wst * rod_dual * 12.5F, false);
+        registerOtherFuel(ROD_ZIRNOX, ZirnoxType.U233_FUEL.ordinal(), u233 * rod_dual, wst * rod_dual * 10F, false);
+        registerOtherFuel(ROD_ZIRNOX, ZirnoxType.U235_FUEL.ordinal(), u235 * rod_dual, wst * rod_dual * 11F, false);
+        registerOtherFuel(ROD_ZIRNOX, ZirnoxType.LES_FUEL.ordinal(), saf * rod_dual, wst * rod_dual * 15F, false);
+        registerOtherFuel(ROD_ZIRNOX, ZirnoxType.LITHIUM.ordinal(), 0, 0.001F * rod_dual, false);
+        registerOtherFuel(ROD_ZIRNOX, ZirnoxType.ZFB_MOX.ordinal(), mox * rod_dual, wst * rod_dual * 5F, false);
+
+        HazardSystem.register(item(ROD_ZIRNOX_NATURAL_URANIUM_FUEL_DEPLETED), makeData(RADIATION, wst * rod_dual * 11.5F));
+        HazardSystem.register(item(ROD_ZIRNOX_URANIUM_FUEL_DEPLETED), makeData(RADIATION, wst * rod_dual * 10F));
+        HazardSystem.register(item(ROD_ZIRNOX_THORIUM_FUEL_DEPLETED), makeData(RADIATION, wst * rod_dual * 7.5F));
+        HazardSystem.register(item(ROD_ZIRNOX_MOX_FUEL_DEPLETED), makeData(RADIATION, wst * rod_dual * 10F));
+        HazardSystem.register(item(ROD_ZIRNOX_PLUTONIUM_FUEL_DEPLETED), makeData(RADIATION, wst * rod_dual * 12.5F));
+        HazardSystem.register(item(ROD_ZIRNOX_U233_FUEL_DEPLETED), makeData(RADIATION, wst * rod_dual * 10F));
+        HazardSystem.register(item(ROD_ZIRNOX_U235_FUEL_DEPLETED), makeData(RADIATION, wst * rod_dual * 11F));
+        HazardSystem.register(item(ROD_ZIRNOX_LES_FUEL_DEPLETED), makeData().addEntry(RADIATION, wst * rod_dual * 15F).addEntry(BLINDING, 20F));
+        HazardSystem.register(item(ROD_ZIRNOX_TRITIUM), makeData(RADIATION, 0.001F * rod_dual));
+        HazardSystem.register(item(ROD_ZIRNOX_ZFB_MOX_DEPLETED), makeData(RADIATION, wst * rod_dual * 5F));
+
         HazardSystem.register(block(BRICK_ASBESTOS), makeData(ASBESTOS, 1F));
         HazardSystem.register(item(POWDER_COLTAN_ORE), makeData(ASBESTOS, 3F));
 
@@ -206,6 +232,13 @@ public class HazardRegistry {
         HazardSystem.register(MetaHelper.newStack(ROD, 1, type.ordinal()), makeData(RADIATION, base));
         HazardSystem.register(MetaHelper.newStack(ROD_DUAL, 1, type.ordinal()), makeData(RADIATION, base * rod_dual));
         HazardSystem.register(MetaHelper.newStack(ROD_QUAD, 1, type.ordinal()), makeData(RADIATION, base * rod_quad));
+    }
+
+    private static void registerOtherFuel(DeferredItem<Item> fuel, int meta, float base, float target, boolean blinding) {
+        HazardData data = new HazardData();
+        data.addEntry(new HazardEntry(RADIATION, base).addMod(new HazardModifierFuelRadiation(target)));
+        if(blinding) data.addEntry(BLINDING, 20F);
+        HazardSystem.register(MetaHelper.newStack(fuel, 1, meta), data);
     }
 
     private static Item item(DeferredItem<Item> item) { return item.get(); }

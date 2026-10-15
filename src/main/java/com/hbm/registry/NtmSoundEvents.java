@@ -84,6 +84,7 @@ public class NtmSoundEvents {
     public static final DeferredHolder<SoundEvent, SoundEvent> COMPRESSOR_STROKE = reg("block.compressor_stroke");
     public static final DeferredHolder<SoundEvent, SoundEvent> BOILER = reg("block.boiler"); // BLOCKS CATEGORY
     public static final DeferredHolder<SoundEvent, SoundEvent> TURBINE_LEVI_LOOP = reg("block.chungus_turbine_running");
+    public static final DeferredHolder<SoundEvent, SoundEvent> TURBINE_LARGE_LOOP = reg("block.large_turbine_running"); // BLOCKS CATEGORY; original hbm:block.largeTurbineRunning
     public static final DeferredHolder<SoundEvent, SoundEvent> BOILER_GROAN = reg("block.boilergroan"); // BLOCKS CATEGORY
     public static final DeferredHolder<SoundEvent, SoundEvent> ELECTRIC_HUM_LOOP = reg("block.electric_hum"); // BLOCKS CATEGORY; original block.electricHum, lower-cased like chungus_lever
     public static final DeferredHolder<SoundEvent, SoundEvent> ASSEMBLER_STRIKE = reg("block.assembler_strike"); // BLOCKS CATEGORY

@@ -263,7 +263,12 @@ public class NtmBlockLootTableProvider extends BlockLootSubProvider {
         this.dropSelf(NtmBlocks.MACHINE_PRESS.get());
 
         this.dropSelf(NtmBlocks.REACTOR_ZIRNOX.get());
-        this.dropSelf(NtmBlocks.ZIRNOX_DESTROYED.get());
+        // Original ZirnoxDestroyed.getDrops: 6 smooth concrete, 4 steel pipes, 2 steel grates, 6 debris_metal, 2 debris_graphite
+        // and 4 fallout. NEO has no debris_metal, debris_graphite or fallout item yet, so those three stacks are not dropped.
+        this.add(NtmBlocks.ZIRNOX_DESTROYED.get(), block -> LootTable.lootTable()
+                .withPool(this.fixedDrop(block, NtmBlocks.CONCRETE_SMOOTH.get().asItem(), 6))
+                .withPool(this.fixedDrop(block, NtmItems.PIPE_STEEL.get(), 4))
+                .withPool(this.fixedDrop(block, NtmBlocks.STEEL_GRATE.get().asItem(), 2)));
 
         this.dropSelf(NtmBlocks.RED_CABLE.get());
 
@@ -276,6 +281,7 @@ public class NtmBlockLootTableProvider extends BlockLootSubProvider {
         this.dropSelf(NtmBlocks.MACHINE_ASSEMBLY_MACHINE.get());
         this.dropSelf(NtmBlocks.MACHINE_FLUID_TANK.get());
         this.dropSelf(NtmBlocks.MACHINE_CHUNGUS.get());
+        this.dropSelf(NtmBlocks.MACHINE_INDUSTRIAL_TURBINE.get());
         this.dropSelf(NtmBlocks.MACHINE_SOLDERING_STATION.get());
         this.dropSelf(NtmBlocks.HEATER_FIREBOX.get());
         this.dropSelf(NtmBlocks.MACHINE_STIRLING.get());
@@ -415,6 +421,13 @@ public class NtmBlockLootTableProvider extends BlockLootSubProvider {
 
     private LootTable.Builder oreDrop(Block block, Item item) {
         return this.oreDrop(block, item, 1, 1);
+    }
+
+    // One whole stack per pool; an explosion keeps or loses each stack as a unit, like 1.7.10 dropBlockAsItemWithChance.
+    private LootPool.Builder fixedDrop(Block block, Item item, int count) {
+        return this.applyExplosionCondition(block, LootPool.lootPool()
+                .setRolls(ConstantValue.exactly(1))
+                .add(LootItem.lootTableItem(item).apply(SetItemCountFunction.setCount(ConstantValue.exactly(count)))));
     }
 
     private LootTable.Builder oreDrop(Block block, Item item, int min, int max) {

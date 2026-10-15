@@ -1,5 +1,6 @@
 package com.hbm.entity.effect;
 
+import com.hbm.blocks.DummyableBlock;
 import com.hbm.blocks.NtmBlocks;
 import com.hbm.blocks.generic.FalloutBlock;
 import com.hbm.config.FalloutConfigJSON;
@@ -209,7 +210,7 @@ public class FalloutRain extends ExplosionChunkLoading {
             BlockPos above = pos.above();
             BlockState aboveState = level.getBlockState(above);
 
-            if(depth == 0 && !state.is(NtmBlocks.FALLOUT.get()) && (aboveState.isAir() || (aboveState.canBeReplaced() && !aboveState.getFluidState().isEmpty()))) {
+            if(depth == 0 && !state.is(NtmBlocks.FALLOUT.get()) && (aboveState.isAir() || (aboveState.canBeReplaced() && aboveState.getFluidState().isEmpty()))) {
 
                 double d = dist / 100;
                 double chance = 0.1 - Math.pow((d - 0.7), 2);
@@ -236,7 +237,7 @@ public class FalloutRain extends ExplosionChunkLoading {
             }
 
             float hardness = state.getDestroySpeed(level, pos);
-            if(y > level.getMinBuildHeight() && dist < 65 && hardness <= Blocks.STONE_BRICKS.getExplosionResistance(state, level, pos, null) && hardness >= 0) {
+            if(y > level.getMinBuildHeight() && dist < 65 && hardness <= Blocks.STONE_BRICKS.getExplosionResistance(state, level, pos, null) && hardness >= 0 && !(state.getBlock() instanceof DummyableBlock)) {
 
                 if(level.getBlockState(pos.below()).isAir()) {
                     for(int i = 0; i <= depth; i++) {
@@ -244,7 +245,7 @@ public class FalloutRain extends ExplosionChunkLoading {
                         BlockState fallingState = level.getBlockState(fallingPos);
                         float h = fallingState.getDestroySpeed(level, fallingPos);
                         if(h <= Blocks.STONE_BRICKS.getExplosionResistance(state, level, pos, null) && h >= 0) {
-                            FallingBlockEntityNT fallingBlockEntity = FallingBlockEntityNT.fall(level, pos, fallingState);
+                            FallingBlockEntityNT fallingBlockEntity = FallingBlockEntityNT.fall(level, fallingPos, fallingState);
                             fallingBlockEntity.dropItem = false;
                         }
                     }

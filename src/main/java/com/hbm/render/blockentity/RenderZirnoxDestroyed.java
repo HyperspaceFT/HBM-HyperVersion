@@ -10,6 +10,7 @@ import net.minecraft.client.renderer.LevelRenderer;
 import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.blockentity.BlockEntityRenderer;
 import net.minecraft.core.Direction;
+import net.minecraft.world.phys.AABB;
 
 public class RenderZirnoxDestroyed extends BlockEntityRendererNT<ZirnoxDestroyedBlockEntity> {
 
@@ -39,6 +40,11 @@ public class RenderZirnoxDestroyed extends BlockEntityRendererNT<ZirnoxDestroyed
             return LevelRenderer.getLightColor(be.getLevel(), be.getBlockPos().above(dummy.getDimensions()[0]));
         }
         return packedLight;
+    }
+
+    @Override
+    public AABB getRenderBoundingBox(ZirnoxDestroyedBlockEntity be) {
+        return be.getRenderBoundingBox();
     }
 
 }

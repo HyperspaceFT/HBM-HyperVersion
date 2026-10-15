@@ -367,8 +367,9 @@ public class NtmBlocks {
     public static final DeferredBlock<Block> BARREL_TCALLOY = registerNew("barrel_tcalloy", () -> new com.hbm.blocks.machine.BarrelBlock(BlockBehaviour.Properties.of().noOcclusion().strength(0.3F, 2.5F).sound(SoundType.METAL), 24_000, false));
     public static final DeferredBlock<Block> TRANSFORMER = register("transformer", () -> new Block(BlockBehaviour.Properties.of().strength(1.5F).sound(SoundType.METAL).mapColor(MapColor.METAL)));
 
-    public static final DeferredBlock<Block> REACTOR_ZIRNOX = register("machine_zirnox", () -> new ReactorZirnoxBlock(BlockBehaviour.Properties.of().noOcclusion().strength(0.6F, 100F).sound(SoundType.METAL).mapColor(MapColor.METAL)));
-    public static final DeferredBlock<Block> ZIRNOX_DESTROYED = register("zirnox_destroyed", () -> new ZirnoxDestroyedBlock(BlockBehaviour.Properties.of().noOcclusion().strength(0.6F, 100F).sound(SoundType.METAL).mapColor(MapColor.METAL)));
+    // Original ModBlocks.java:2234-2235: reactor hardness 5 / resistance 100, wreck 100 / 800.
+    public static final DeferredBlock<Block> REACTOR_ZIRNOX = register("machine_zirnox", () -> new ReactorZirnoxBlock(BlockBehaviour.Properties.of().noOcclusion().strength(5.0F, 100F).sound(SoundType.METAL).mapColor(MapColor.METAL)));
+    public static final DeferredBlock<Block> ZIRNOX_DESTROYED = register("zirnox_destroyed", () -> new ZirnoxDestroyedBlock(BlockBehaviour.Properties.of().noOcclusion().strength(100.0F, 800.0F).sound(SoundType.METAL).mapColor(MapColor.METAL)));
 
     public static final DeferredBlock<Block> RED_CABLE = register("red_cable", () -> new CableBlock(BlockBehaviour.Properties.of().noOcclusion().strength(1.5F, 10.0F).sound(SoundType.METAL).mapColor(MapColor.COLOR_BLACK)));
 
@@ -381,6 +382,7 @@ public class NtmBlocks {
     public static final DeferredBlock<Block> MACHINE_ASSEMBLY_MACHINE = register("machine_assembly_machine", () -> new MachineAssemblyMachineBlock(BlockBehaviour.Properties.of().noOcclusion().strength(5.0F, 30.0F).sound(SoundType.METAL).mapColor(MapColor.METAL)));
     public static final DeferredBlock<Block> MACHINE_FLUID_TANK = register("machine_fluid_tank", () -> new MachineFluidTankBlock(BlockBehaviour.Properties.of().noOcclusion().strength(5.0F, 20.0F).sound(SoundType.METAL).mapColor(MapColor.METAL)));
     public static final DeferredBlock<Block> MACHINE_CHUNGUS = register("machine_chungus", () -> new MachineChungusBlock(BlockBehaviour.Properties.of().noOcclusion().strength(5.0F, 20.0F).sound(SoundType.METAL).mapColor(MapColor.METAL)));
+    public static final DeferredBlock<Block> MACHINE_INDUSTRIAL_TURBINE = register("machine_industrial_turbine", () -> new MachineIndustrialTurbineBlock(BlockBehaviour.Properties.of().strength(5.0F, 10.0F).sound(SoundType.METAL).mapColor(MapColor.METAL).requiresCorrectToolForDrops().noOcclusion()));
 
     public static final DeferredBlock<Block> MACHINE_SATLINKER = register("machine_satlinker", () -> new MachineSatLinkerBlock(BlockBehaviour.Properties.of().strength(5.0F, 10.0F).sound(SoundType.METAL).mapColor(MapColor.METAL)));
 

@@ -2,11 +2,18 @@ package com.hbm.items.machine;
 
 import com.hbm.inventory.MetaHelper;
 import com.hbm.items.EnumMultiItem;
+import com.hbm.util.BobMathUtil;
 import com.hbm.util.EnumUtil;
 import com.hbm.util.TagsUtil;
+import com.hbm.util.i18n.I18nUtil;
+import net.minecraft.ChatFormatting;
 import net.minecraft.nbt.CompoundTag;
+import net.minecraft.network.chat.Component;
 import net.minecraft.util.Mth;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.TooltipFlag;
+
+import java.util.List;
 
 public class ZirnoxRodItem extends EnumMultiItem {
 
@@ -33,19 +40,41 @@ public class ZirnoxRodItem extends EnumMultiItem {
         return TagsUtil.getCustomData(stack).getInt("life");
     }
 
-    @Override public boolean isBarVisible(ItemStack stack) { return this.getBarWidth(stack) > 0; }
+    /** Original ItemZirnoxRod.getDurabilityForDisplay (:60-63): used life over the type's max life. */
+    public static double getDepletion(ItemStack stack) {
+        ZirnoxType num = EnumUtil.grabEnumSafely(ZirnoxType.class, MetaHelper.getMeta(stack));
+        return (double) getLifeTime(stack) / (double) num.maxLife;
+    }
 
+    // Original showDurabilityBar (:56-58).
+    @Override public boolean isBarVisible(ItemStack stack) { return getDepletion(stack) > 0D; }
+
+    // 1.7.10 drew the remaining fraction (1 - durability); clamped so stray life values cannot overflow the bar.
+    // The colour follows the vanilla 1.21 hue (green to red), not 1.7.10's linear red/green blend.
     @Override
     public int getBarWidth(ItemStack stack) {
-        ZirnoxType num = EnumUtil.grabEnumSafely(theEnum, MetaHelper.getMeta(stack));
-        return getLifeTime(stack) / num.maxLife;
+        return Math.round(13F - 13F * (float) Mth.clamp(getDepletion(stack), 0D, 1D));
     }
 
     @Override
     public int getBarColor(ItemStack stack) {
-        ZirnoxType num = EnumUtil.grabEnumSafely(theEnum, MetaHelper.getMeta(stack));
-        int ratio = getLifeTime(stack) / num.maxLife;
-        return Mth.hsvToRgb(ratio / 3F, 1.0F, 1.0F);
+        return Mth.hsvToRgb(Math.max(0F, 1F - (float) Mth.clamp(getDepletion(stack), 0D, 1D)) / 3F, 1.0F, 1.0F);
+    }
+
+    // Original addInformation (:65-81). Its descriptions used %d with a String argument, a format error in 1.7.10; NEO's use %s.
+    @Override
+    public void appendHoverText(ItemStack stack, TooltipContext context, List<Component> tooltipComponents, TooltipFlag tooltipFlag) {
+        ZirnoxType num = EnumUtil.grabEnumSafely(ZirnoxType.class, MetaHelper.getMeta(stack));
+        tooltipComponents.add(Component.translatable("trait.rbmk.depletion", ((int) (getDepletion(stack) * 100000)) / 1000D + "%").withStyle(ChatFormatting.YELLOW));
+
+        String[] loc;
+        if(num.breeding) {
+            loc = I18nUtil.resolveKeyArray("item.hbmsntm.rod_zirnox.desc_breeding", BobMathUtil.getShortNumber(num.maxLife));
+        } else {
+            loc = I18nUtil.resolveKeyArray("item.hbmsntm.rod_zirnox.desc", num.heat, BobMathUtil.getShortNumber(num.maxLife));
+        }
+
+        for(String s : loc) tooltipComponents.add(Component.literal(s));
     }
 
     public enum ZirnoxType {

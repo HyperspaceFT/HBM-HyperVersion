@@ -39,7 +39,8 @@ public class ZirnoxDestroyedBlock extends DummyableBlock {
         DummyBlockType type = state.getValue(TYPE);
         return switch(type) {
             case CORE -> new ZirnoxDestroyedBlockEntity(pos, state);
-            case EXTRA -> new ProxyComboBlockEntity(pos, state).inventory().power().fluid();
+            // Original ZirnoxDestroyed.createNewTileEntity: TileEntityProxyCombo(false, true, true), no inventory proxy.
+            case EXTRA -> new ProxyComboBlockEntity(pos, state).power().fluid();
             default -> null;
         };
     }
@@ -70,6 +71,11 @@ public class ZirnoxDestroyedBlock extends DummyableBlock {
             level.setBlock(posAbove, NtmBlocks.GAS_MELTDOWN.get().defaultBlockState(), 3);
         }
 
+        // Local deviation: the original ZirnoxDestroyed schedules a single tick in onBlockAdded and never reschedules; its
+        // updateTick ends in the empty 1.7.10 Block.updateTick and the block has no random ticks, so it emits gas only once.
+        // NEO keeps rescheduling because the meltdown gas (GasMeltdownBlock: radiation contamination plus chunk radiation) is
+        // currently the wreck's only lingering hazard; the original TileEntityZirnoxDestroyed radiation (500,000/75,000 rads,
+        // range 100) is not ported. Switch to the original one-shot schedule in the same batch that ports the wreck radiation.
         level.scheduleTick(pos, this, 100 + level.random.nextInt(20));
     }
 

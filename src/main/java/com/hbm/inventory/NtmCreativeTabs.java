@@ -596,6 +596,19 @@ public class NtmCreativeTabs {
                         output.accept(NtmItems.ROD_QUAD_EMPTY);
                         addMetaItems(output, NtmItems.ROD_QUAD.get());
 
+                        output.accept(NtmItems.ROD_ZIRNOX_EMPTY);
+                        addMetaItems(output, NtmItems.ROD_ZIRNOX.get());
+                        output.accept(NtmItems.ROD_ZIRNOX_TRITIUM);
+                        output.accept(NtmItems.ROD_ZIRNOX_NATURAL_URANIUM_FUEL_DEPLETED);
+                        output.accept(NtmItems.ROD_ZIRNOX_URANIUM_FUEL_DEPLETED);
+                        output.accept(NtmItems.ROD_ZIRNOX_THORIUM_FUEL_DEPLETED);
+                        output.accept(NtmItems.ROD_ZIRNOX_MOX_FUEL_DEPLETED);
+                        output.accept(NtmItems.ROD_ZIRNOX_PLUTONIUM_FUEL_DEPLETED);
+                        output.accept(NtmItems.ROD_ZIRNOX_U233_FUEL_DEPLETED);
+                        output.accept(NtmItems.ROD_ZIRNOX_U235_FUEL_DEPLETED);
+                        output.accept(NtmItems.ROD_ZIRNOX_LES_FUEL_DEPLETED);
+                        output.accept(NtmItems.ROD_ZIRNOX_ZFB_MOX_DEPLETED);
+
                         output.accept(NtmItems.REACHER);
                         output.accept(NtmItems.MELTDOWN_TOOL);
 
@@ -804,6 +817,7 @@ public class NtmCreativeTabs {
                         output.accept(NtmBlocks.MACHINE_ELECTRIC_FURNACE);
                         output.accept(NtmBlocks.MACHINE_FLUID_TANK);
                         output.accept(NtmBlocks.MACHINE_CHUNGUS);
+                        output.accept(NtmBlocks.MACHINE_INDUSTRIAL_TURBINE);
                         output.accept(NtmBlocks.MACHINE_SOLDERING_STATION);
                         output.accept(NtmBlocks.MACHINE_WELL);
                         output.accept(NtmBlocks.MACHINE_PUMPJACK);

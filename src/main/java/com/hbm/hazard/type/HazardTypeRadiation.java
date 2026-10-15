@@ -49,6 +49,10 @@ public class HazardTypeRadiation extends HazardTypeBase {
     public void addHazardInformation(Player player, List<Component> components, float lvl, ItemStack stack, List<HazardModifier> modifiers) {
         lvl = HazardModifier.evalAllModifiers(stack, player, lvl, modifiers);
 
+        // Original HazardTypeRadiation.addHazardInformation (:56-57): no radiation lines for a negligible level,
+        // e.g. a fresh ZIRNOX lithium rod (base 0).
+        if(lvl < 1e-5) return;
+
         components.add(Component.literal("[" + I18nUtil.resolveKey("trait.radioactive") + "]").withStyle(ChatFormatting.GREEN));
 
         String rad = "" + (Math.floor(lvl * 1000) / 1000);

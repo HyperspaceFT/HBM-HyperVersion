@@ -306,6 +306,9 @@ public class NtmSoundDefinitionsProvider extends SoundDefinitionsProvider {
         this.add(NtmSoundEvents.TURBINE_LEVI_LOOP, SoundDefinition.definition()
                 .with(sound(NuclearTechMod.withDefaultNamespace("block/chungus_turbine")))
         );
+        this.add(NtmSoundEvents.TURBINE_LARGE_LOOP, SoundDefinition.definition()
+                .with(sound(NuclearTechMod.withDefaultNamespace("block/large_turbine")))
+        );
         this.add(NtmSoundEvents.ASSEMBLER_STRIKE, SoundDefinition.definition()
                 .with(
                         sound("hbmsntm:block/assembler_strike1"),

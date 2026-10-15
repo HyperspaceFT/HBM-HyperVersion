@@ -14,6 +14,7 @@ import com.hbm.items.food.DrinkItem.DrinkType;
 import com.hbm.items.machine.BatteryPackItem.BatteryPackType;
 import com.hbm.items.machine.BatterySCItem.BatterySCType;
 import com.hbm.items.machine.BreedingRodItem.BreedingRodType;
+import com.hbm.items.machine.ZirnoxRodItem.ZirnoxType;
 import com.hbm.items.special.SatelliteItem.SatType;
 import com.hbm.items.special.StarterKitItem.KitType;
 import com.hbm.main.NuclearTechMod;
@@ -1115,6 +1116,32 @@ public class NtmLanguageProvider extends LanguageProvider {
         this.add(NtmItems.ROD_QUAD, this.getName(BreedingRodType.URANIUM), "Uranium Quad Rod");
         this.add(NtmItems.ROD_QUAD, this.getName(BreedingRodType.RA226), "Radium-226 Quad Rod");
         this.add(NtmItems.ROD_QUAD, this.getName(BreedingRodType.AC227), "Actinium-227 Quad Rod");
+        this.add(NtmItems.ROD_ZIRNOX_EMPTY, "Empty ZIRNOX Rod");
+        this.add(NtmItems.ROD_ZIRNOX, this.getName(ZirnoxType.NATURAL_URANIUM_FUEL), "ZIRNOX Natural Uranium Fuel Rod");
+        this.add(NtmItems.ROD_ZIRNOX, this.getName(ZirnoxType.URANIUM_FUEL), "ZIRNOX Uranium Fuel Rod");
+        this.add(NtmItems.ROD_ZIRNOX, this.getName(ZirnoxType.TH232), "ZIRNOX Thorium-232 Rod");
+        this.add(NtmItems.ROD_ZIRNOX, this.getName(ZirnoxType.THORIUM_FUEL), "ZIRNOX Thorium Fuel Rod");
+        this.add(NtmItems.ROD_ZIRNOX, this.getName(ZirnoxType.MOX_FUEL), "ZIRNOX MOX Fuel Rod");
+        this.add(NtmItems.ROD_ZIRNOX, this.getName(ZirnoxType.PLUTONIUM_FUEL), "ZIRNOX Plutonium Fuel Rod");
+        this.add(NtmItems.ROD_ZIRNOX, this.getName(ZirnoxType.U233_FUEL), "ZIRNOX Uranium-233 Fuel Rod");
+        this.add(NtmItems.ROD_ZIRNOX, this.getName(ZirnoxType.U235_FUEL), "ZIRNOX Uranium-235 Fuel Rod");
+        this.add(NtmItems.ROD_ZIRNOX, this.getName(ZirnoxType.LES_FUEL), "ZIRNOX LES Fuel Rod");
+        this.add(NtmItems.ROD_ZIRNOX, this.getName(ZirnoxType.LITHIUM), "ZIRNOX Lithium Rod");
+        this.add(NtmItems.ROD_ZIRNOX, this.getName(ZirnoxType.ZFB_MOX), "ZIRNOX ZFB MOX Fuel Rod");
+        this.add(NtmItems.ROD_ZIRNOX_TRITIUM, "ZIRNOX Tritium Rod");
+        this.add(NtmItems.ROD_ZIRNOX_NATURAL_URANIUM_FUEL_DEPLETED, "Depleted ZIRNOX Natural Uranium Fuel Rod");
+        this.add(NtmItems.ROD_ZIRNOX_URANIUM_FUEL_DEPLETED, "Depleted ZIRNOX Uranium Fuel Rod");
+        this.add(NtmItems.ROD_ZIRNOX_THORIUM_FUEL_DEPLETED, "Depleted ZIRNOX Thorium Fuel Rod");
+        this.add(NtmItems.ROD_ZIRNOX_MOX_FUEL_DEPLETED, "Depleted ZIRNOX MOX Fuel Rod");
+        this.add(NtmItems.ROD_ZIRNOX_PLUTONIUM_FUEL_DEPLETED, "Depleted ZIRNOX Plutonium Fuel Rod");
+        this.add(NtmItems.ROD_ZIRNOX_U233_FUEL_DEPLETED, "Depleted ZIRNOX Uranium-233 Fuel Rod");
+        this.add(NtmItems.ROD_ZIRNOX_U235_FUEL_DEPLETED, "Depleted ZIRNOX Uranium-235 Fuel Rod");
+        this.add(NtmItems.ROD_ZIRNOX_LES_FUEL_DEPLETED, "Depleted ZIRNOX LES Fuel Rod");
+        this.add(NtmItems.ROD_ZIRNOX_ZFB_MOX_DEPLETED, "Depleted ZIRNOX ZFB MOX Fuel Rod");
+        // The original patterns used %d with a String argument; NEO passes the same arguments to %s.
+        this.add("item.hbmsntm.rod_zirnox.desc", "§a[ZIRNOX Fuel Rod]$§eGenerates %1$s heat per tick$§eLasts %2$s ticks");
+        this.add("item.hbmsntm.rod_zirnox.desc_breeding", "§2[ZIRNOX Breeding Rod]$§ePlace next to fuel rods to breed$§eLasts %s ticks");
+        this.add("trait.rbmk.depletion", "Depletion: %s");
 
         this.add(NtmItems.SPAWN_DUCK, "Golden Egg");
 
@@ -1707,6 +1734,11 @@ public class NtmLanguageProvider extends LanguageProvider {
         this.add(NtmBlocks.MACHINE_ELECTRIC_FURNACE, "Electric Furnace");
         this.add(NtmBlocks.MACHINE_FLUID_TANK, "Tank");
         this.add(NtmBlocks.MACHINE_CHUNGUS, "Leviathan Steam Turbine");
+        this.add(NtmBlocks.MACHINE_INDUSTRIAL_TURBINE, "Industrial Steam Turbine");
+        this.add("block.hbmsntm.machine_industrial_turbine.desc", "Efficiency: 100%%");
+        this.add("machine_industrial_turbine.compressor_locked", "Cannot change compressor setting while operational!");
+        this.add(NtmBlocks.REACTOR_ZIRNOX, "ZIRNOX Nuclear Reactor");
+        this.add(NtmBlocks.ZIRNOX_DESTROYED, "Destroyed ZIRNOX");
         this.add(NtmBlocks.MACHINE_SOLDERING_STATION, "Soldering Station");
         this.add(NtmBlocks.HEATER_FIREBOX, "Firebox");
         this.add(NtmBlocks.MACHINE_STIRLING, "Stirling Engine");
