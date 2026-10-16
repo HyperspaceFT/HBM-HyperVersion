@@ -340,7 +340,17 @@ public class NtmBlockStateProvider extends BlockStateProvider {
         this.particleOnlyBlock(NtmBlocks.MACHINE_BLAST_FURNACE, modLoc("block/block_steel"));
         this.particleOnlyBlock(NtmBlocks.MACHINE_WOOD_BURNER, modLoc("block/block_steel"));
         this.particleOnlyBlock(NtmBlocks.MACHINE_CENTRIFUGE, modLoc("block/block_steel"));
+        this.particleOnlyBlock(NtmBlocks.MACHINE_GAS_CENTRIFUGE, modLoc("block/block_steel"));
         this.particleOnlyBlock(NtmBlocks.MACHINE_CRYSTALLIZER, modLoc("block/machine_crystallizer"));
+        // Original WasteDrum.java:39-53: waste_drum on top and bottom, waste_drum_side around.
+        this.simpleBlockWithItem(
+                NtmBlocks.MACHINE_WASTE_DRUM,
+                this.models().cubeColumn(
+                        name(NtmBlocks.MACHINE_WASTE_DRUM),
+                        modLoc("block/waste_drum_side"),
+                        modLoc("block/waste_drum")
+                )
+        );
         this.particleOnlyBlock(NtmBlocks.MACHINE_CHEMICAL_PLANT, modLoc("block/block_steel"));
         this.particleOnlyBlock(NtmBlocks.MACHINE_ARC_WELDER, modLoc("block/block_steel"));
         this.particleOnlyBlock(NtmBlocks.REACTOR_ZIRNOX, modLoc("block/block_steel"));

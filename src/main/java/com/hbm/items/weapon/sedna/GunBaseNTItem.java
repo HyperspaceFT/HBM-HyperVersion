@@ -180,7 +180,7 @@ public class GunBaseNTItem extends Item implements IKeybindReceiver, IHUDItem, I
     @Override
     public void appendHoverText(ItemStack stack, TooltipContext context, List<Component> components, TooltipFlag flag) {
 
-        Player player = Minecraft.getInstance().player;
+        Player player = getClientPlayer();
         if(player == null) return;
 
         int configs = this.configs_DNA.length;
@@ -225,6 +225,12 @@ public class GunBaseNTItem extends Item implements IKeybindReceiver, IHUDItem, I
 //            list.add(EnumChatFormatting.RED + I18nUtil.resolveKey("gui.weapon.accepts") + ":");
 //            for(ComparableStack comp : this.recognizedMods) list.add(EnumChatFormatting.RED + "  " + comp.toStack().getDisplayName());
 //        }
+    }
+
+    // Kept out of appendHoverText: a LocalPlayer value in an unstripped method makes the verifier load LocalPlayer on a dedicated server.
+    @OnlyIn(Dist.CLIENT)
+    private static Player getClientPlayer() {
+        return Minecraft.getInstance().player;
     }
 
     @Override

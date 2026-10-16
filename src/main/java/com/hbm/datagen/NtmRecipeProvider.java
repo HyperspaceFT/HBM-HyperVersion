@@ -214,6 +214,19 @@ public class NtmRecipeProvider extends RecipeProvider {
                 .define('D', NtmItems.CIRCUIT_INTEGRATED_BOARD.get())
                 .unlockedBy("has_polymer", has(NtmItems.INGOT_POLYMER.get()))
                 .save(recipeOutput, ResourceLocation.fromNamespaceAndPath("hbmsntm", "upgrade_template_from_polymer"));
+        // Original CraftingManager.java:728: the gas centrifuge overclocking upgrade from an upgrade template, gold coils,
+        // niobium, rubber and a motor. The original RUBBER.ingot() ore dictionary entry maps to INGOT_RUBBER here.
+        ShapedRecipeBuilder.shaped(RecipeCategory.MISC, NtmItems.UPGRADE_GC_SPEED.get(), 1)
+                .pattern("GNG")
+                .pattern("RUR")
+                .pattern("GMG")
+                .define('G', NtmItems.COIL_GOLD.get())
+                .define('N', NtmItems.INGOT_NIOBIUM.get())
+                .define('R', NtmItems.INGOT_RUBBER.get())
+                .define('U', NtmItems.UPGRADE_TEMPLATE.get())
+                .define('M', NtmItems.MOTOR.get())
+                .unlockedBy("has_upgrade_template", has(NtmItems.UPGRADE_TEMPLATE.get()))
+                .save(recipeOutput, ResourceLocation.fromNamespaceAndPath("hbmsntm", "upgrade_gc_speed"));
         ShapedRecipeBuilder.shaped(RecipeCategory.MISC, NtmItems.CIRCUIT_PRINTED_BOARD.get(), 1)
                 .pattern(" A ")
                 .pattern(" B ")
@@ -508,6 +521,76 @@ public class NtmRecipeProvider extends RecipeProvider {
                 .requires(NtmItems.BILLET_URANIUM.get(), 2)
                 .unlockedBy("has_rod_zirnox_empty", has(NtmItems.ROD_ZIRNOX_EMPTY.get()))
                 .save(recipeOutput, ResourceLocation.fromNamespaceAndPath("hbmsntm", "rod_zirnox_natural_uranium_fuel"));
+        // Original RodRecipes.java:29 (addZIRNOXRod(TH232, TH232)): an empty rod and two thorium-232 billets make the TH232 breeding
+        // rod (Goal 20A); the output carries no "life" data. The reactor turns the depleted breeding rod into a thorium fuel rod.
+        ShapelessRecipeBuilder.shapeless(RecipeCategory.MISC, MetaHelper.newStack(NtmItems.ROD_ZIRNOX.get(), 1, ZirnoxType.TH232.ordinal()))
+                .requires(NtmItems.ROD_ZIRNOX_EMPTY.get())
+                .requires(NtmItems.BILLET_TH232.get(), 2)
+                .unlockedBy("has_rod_zirnox_empty", has(NtmItems.ROD_ZIRNOX_EMPTY.get()))
+                .save(recipeOutput, ResourceLocation.fromNamespaceAndPath("hbmsntm", "rod_zirnox_th232"));
+        // Original RodRecipes.java:28: an empty rod and two uranium fuel billets make the (low-)enriched uranium fuel rod; the
+        // output carries no "life" data.
+        ShapelessRecipeBuilder.shapeless(RecipeCategory.MISC, MetaHelper.newStack(NtmItems.ROD_ZIRNOX.get(), 1, ZirnoxType.URANIUM_FUEL.ordinal()))
+                .requires(NtmItems.ROD_ZIRNOX_EMPTY.get())
+                .requires(NtmItems.BILLET_URANIUM_FUEL.get(), 2)
+                .unlockedBy("has_rod_zirnox_empty", has(NtmItems.ROD_ZIRNOX_EMPTY.get()))
+                .save(recipeOutput, ResourceLocation.fromNamespaceAndPath("hbmsntm", "rod_zirnox_uranium_fuel"));
+        // Original RodRecipes.java:34: an empty rod and two uranium-235 billets make the U235 fuel rod; no "life" data.
+        ShapelessRecipeBuilder.shapeless(RecipeCategory.MISC, MetaHelper.newStack(NtmItems.ROD_ZIRNOX.get(), 1, ZirnoxType.U235_FUEL.ordinal()))
+                .requires(NtmItems.ROD_ZIRNOX_EMPTY.get())
+                .requires(NtmItems.BILLET_U235.get(), 2)
+                .unlockedBy("has_rod_zirnox_empty", has(NtmItems.ROD_ZIRNOX_EMPTY.get()))
+                .save(recipeOutput, ResourceLocation.fromNamespaceAndPath("hbmsntm", "rod_zirnox_u235_fuel"));
+        // Original RodRecipes.java:50-55: empty breeding rods. Recipes that fill them are not ported yet.
+        ShapedRecipeBuilder.shaped(RecipeCategory.MISC, NtmItems.ROD_EMPTY.get(), 16)
+                .pattern("SSS")
+                .pattern("L L")
+                .pattern("SSS")
+                .define('S', NtmItems.PLATE_STEEL.get())
+                .define('L', NtmItems.PLATE_LEAD.get())
+                .unlockedBy("has_steel_plate", has(NtmItems.PLATE_STEEL.get()))
+                .save(recipeOutput, ResourceLocation.fromNamespaceAndPath("hbmsntm", "rod_empty"));
+        ShapelessRecipeBuilder.shapeless(RecipeCategory.MISC, NtmItems.ROD_EMPTY.get(), 2)
+                .requires(NtmItems.ROD_DUAL_EMPTY.get())
+                .unlockedBy("has_rod_dual_empty", has(NtmItems.ROD_DUAL_EMPTY.get()))
+                .save(recipeOutput, ResourceLocation.fromNamespaceAndPath("hbmsntm", "rod_empty_from_rod_dual_empty"));
+        ShapelessRecipeBuilder.shapeless(RecipeCategory.MISC, NtmItems.ROD_DUAL_EMPTY.get(), 1)
+                .requires(NtmItems.ROD_EMPTY.get(), 2)
+                .unlockedBy("has_rod_empty", has(NtmItems.ROD_EMPTY.get()))
+                .save(recipeOutput, ResourceLocation.fromNamespaceAndPath("hbmsntm", "rod_dual_empty"));
+        ShapelessRecipeBuilder.shapeless(RecipeCategory.MISC, NtmItems.ROD_EMPTY.get(), 4)
+                .requires(NtmItems.ROD_QUAD_EMPTY.get())
+                .unlockedBy("has_rod_quad_empty", has(NtmItems.ROD_QUAD_EMPTY.get()))
+                .save(recipeOutput, ResourceLocation.fromNamespaceAndPath("hbmsntm", "rod_empty_from_rod_quad_empty"));
+        ShapelessRecipeBuilder.shapeless(RecipeCategory.MISC, NtmItems.ROD_QUAD_EMPTY.get(), 1)
+                .requires(NtmItems.ROD_EMPTY.get(), 4)
+                .unlockedBy("has_rod_empty", has(NtmItems.ROD_EMPTY.get()))
+                .save(recipeOutput, ResourceLocation.fromNamespaceAndPath("hbmsntm", "rod_quad_empty"));
+        ShapelessRecipeBuilder.shapeless(RecipeCategory.MISC, NtmItems.ROD_QUAD_EMPTY.get(), 1)
+                .requires(NtmItems.ROD_DUAL_EMPTY.get(), 2)
+                .unlockedBy("has_rod_dual_empty", has(NtmItems.ROD_DUAL_EMPTY.get()))
+                .save(recipeOutput, ResourceLocation.fromNamespaceAndPath("hbmsntm", "rod_quad_empty_from_rod_dual_empty"));
+        // Original RodRecipes.java:39-47: a depleted ZIRNOX rod splits into two hot waste items (META 1); the empty ZIRNOX rod is
+        // left in the grid as the depleted rod's crafting remainder (original setContainerItem, ModItems.java:2972-2980).
+        addWasteRecipe(recipeOutput, NtmItems.WASTE_NATURAL_URANIUM.get(), NtmItems.ROD_ZIRNOX_NATURAL_URANIUM_FUEL_DEPLETED.get());
+        addWasteRecipe(recipeOutput, NtmItems.WASTE_URANIUM.get(), NtmItems.ROD_ZIRNOX_URANIUM_FUEL_DEPLETED.get());
+        addWasteRecipe(recipeOutput, NtmItems.WASTE_THORIUM.get(), NtmItems.ROD_ZIRNOX_THORIUM_FUEL_DEPLETED.get());
+        addWasteRecipe(recipeOutput, NtmItems.WASTE_MOX.get(), NtmItems.ROD_ZIRNOX_MOX_FUEL_DEPLETED.get());
+        addWasteRecipe(recipeOutput, NtmItems.WASTE_PLUTONIUM.get(), NtmItems.ROD_ZIRNOX_PLUTONIUM_FUEL_DEPLETED.get());
+        addWasteRecipe(recipeOutput, NtmItems.WASTE_U233.get(), NtmItems.ROD_ZIRNOX_U233_FUEL_DEPLETED.get());
+        addWasteRecipe(recipeOutput, NtmItems.WASTE_U235.get(), NtmItems.ROD_ZIRNOX_U235_FUEL_DEPLETED.get());
+        addWasteRecipe(recipeOutput, NtmItems.WASTE_SCHRABIDIUM.get(), NtmItems.ROD_ZIRNOX_LES_FUEL_DEPLETED.get());
+        addWasteRecipe(recipeOutput, NtmItems.WASTE_ZFB_MOX.get(), NtmItems.ROD_ZIRNOX_ZFB_MOX_DEPLETED.get());
+        // Original CraftingManager.java:287: the spent fuel pool drum.
+        ShapedRecipeBuilder.shaped(RecipeCategory.MISC, NtmBlocks.MACHINE_WASTE_DRUM.get(), 1)
+                .pattern("LRL")
+                .pattern("BRB")
+                .pattern("LRL")
+                .define('L', NtmItems.INGOT_LEAD.get())
+                .define('B', Items.IRON_BARS)
+                .define('R', NtmItems.ROD_QUAD_EMPTY.get())
+                .unlockedBy("has_rod_quad_empty", has(NtmItems.ROD_QUAD_EMPTY.get()))
+                .save(recipeOutput, ResourceLocation.fromNamespaceAndPath("hbmsntm", "machine_waste_drum"));
         ShapedRecipeBuilder.shaped(RecipeCategory.MISC, NtmBlocks.RED_CABLE.get(), 16)
                 .pattern(" I ")
                 .pattern("WWW")
@@ -1368,7 +1451,9 @@ public class NtmRecipeProvider extends RecipeProvider {
         addOreSmelting(recipeOutput, NtmBlocks.ORE_LEAD.get(), NtmBlocks.ORE_LEAD_DEEPSLATE.get(), NtmItems.INGOT_LEAD.get(), 0.7F);
         addOreSmelting(recipeOutput, NtmBlocks.ORE_ALUMINIUM.get(), NtmBlocks.ORE_ALUMINIUM_DEEPSLATE.get(), NtmItems.INGOT_ALUMINIUM.get(), 0.7F);
         addOreSmelting(recipeOutput, NtmBlocks.ORE_ASBESTOS.get(), NtmBlocks.ORE_ASBESTOS_DEEPSLATE.get(), NtmItems.INGOT_ASBESTOS.get(), 0.7F);
-        addOreSmelting(recipeOutput, NtmBlocks.ORE_THORIUM.get(), NtmBlocks.ORE_THORIUM_DEEPSLATE.get(), NtmItems.INGOT_THORIUM_FUEL.get(), 0.7F);
+        // Original SmeltingRecipes.java:30: thorium ore smelts to the thorium-232 ingot (Goal 20A; it smelted to the thorium fuel ingot
+        // before, which the original only makes from TH232 and U233 billets, the outgasser, PUREX or SILEX). The experience stays NEO's 0.7F.
+        addOreSmelting(recipeOutput, NtmBlocks.ORE_THORIUM.get(), NtmBlocks.ORE_THORIUM_DEEPSLATE.get(), NtmItems.INGOT_TH232.get(), 0.7F);
         addOreSmelting(recipeOutput, NtmBlocks.ORE_NITER.get(), NtmBlocks.ORE_NITER_DEEPSLATE.get(), NtmItems.NITER.get(), 0.7F);
         addOreSmelting(recipeOutput, NtmBlocks.ORE_COBALT.get(), NtmBlocks.ORE_COBALT_DEEPSLATE.get(), NtmItems.FRAGMENT_COBALT.get(), 0.7F);
         addOreSmelting(recipeOutput, NtmBlocks.ORE_CINNABAR.get(), NtmBlocks.ORE_CINNABAR_DEEPSLATE.get(), NtmItems.CINNABAR.get(), 0.7F);
@@ -1542,6 +1627,17 @@ public class NtmRecipeProvider extends RecipeProvider {
                 .requires(result)
                 .unlockedBy("has_" + resultName, has(result))
                 .save(recipeOutput, recipeId);
+    }
+
+    /** One depleted ZIRNOX rod into two hot waste items (META 1); the recipe id is the waste item's id. */
+    private void addWasteRecipe(RecipeOutput recipeOutput, Item waste, Item depletedRod) {
+        String wasteName = BuiltInRegistries.ITEM.getKey(waste).getPath();
+        String rodName = BuiltInRegistries.ITEM.getKey(depletedRod).getPath();
+
+        ShapelessRecipeBuilder.shapeless(RecipeCategory.MISC, MetaHelper.newStack(waste, 2, 1))
+                .requires(depletedRod)
+                .unlockedBy("has_" + rodName, has(depletedRod))
+                .save(recipeOutput, ResourceLocation.fromNamespaceAndPath("hbmsntm", wasteName));
     }
 
     private void addOreSmelting(RecipeOutput recipeOutput, Block input, Block deepslateInput, Item result, float experience) {
@@ -1787,6 +1883,9 @@ public class NtmRecipeProvider extends RecipeProvider {
         addMaterialSmelting(recipeOutput, NtmItems.POWDER_TANTALIUM.get(), NtmItems.INGOT_TANTALIUM.get());
         addMaterialSmelting(recipeOutput, NtmItems.POWDER_TCALLOY.get(), NtmItems.INGOT_TCALLOY.get());
         addMaterialSmelting(recipeOutput, NtmItems.POWDER_TENNESSINE.get(), NtmItems.INGOT_TENNESSINE.get());
+        // Original SmeltingRecipes.java:84: thorium powder smelts to the thorium-232 ingot (Goal 20A; experience stays NEO's uniform 0.7F,
+        // the original gives 1.0F).
+        addMaterialSmelting(recipeOutput, NtmItems.POWDER_THORIUM.get(), NtmItems.INGOT_TH232.get());
         addMaterialSmelting(recipeOutput, NtmItems.POWDER_TITANIUM.get(), NtmItems.INGOT_TITANIUM.get());
         addMaterialSmelting(recipeOutput, NtmItems.POWDER_TUNGSTEN.get(), NtmItems.INGOT_TUNGSTEN.get());
         addMaterialSmelting(recipeOutput, NtmItems.POWDER_UNOBTAINIUM.get(), NtmItems.INGOT_UNOBTAINIUM.get());

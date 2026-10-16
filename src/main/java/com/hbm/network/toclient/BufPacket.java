@@ -38,25 +38,29 @@ public record BufPacket(BlockPos pos, byte[] data) implements CustomPacketPayloa
 
     @OnlyIn(Dist.CLIENT)
     public static void handleClient(BufPacket packet, IPayloadContext context) {
-        context.enqueueWork(() -> {
-            Level level = Minecraft.getInstance().level;
-            if(level == null) return;
+        context.enqueueWork(() -> applyClient(packet));
+    }
 
-            BlockEntity be = level.getBlockEntity(packet.pos);
+    // Lambda bodies are not stripped on a dedicated server, so the ClientLevel-typed local lives in this stripped method instead.
+    @OnlyIn(Dist.CLIENT)
+    private static void applyClient(BufPacket packet) {
+        Level level = Minecraft.getInstance().level;
+        if(level == null) return;
 
-            if(be instanceof IBufPacketReceiver receiver) {
-                RegistryFriendlyByteBuf buf = new RegistryFriendlyByteBuf(Unpooled.wrappedBuffer(packet.data), level.registryAccess(), ConnectionType.OTHER);
-                try {
-                    receiver.deserialize(buf);
-                } catch(Exception e) {
-                    NuclearTechMod.LOGGER.warn("A ByteBuf packet failed to be read and has thrown an error. This normally means that there was a buffer underflow and more data was read than was actually in the packet.\")");
-                    NuclearTechMod.LOGGER.warn("Block: {}", be.getBlockState().getBlock().getDescriptionId());
-                    NuclearTechMod.LOGGER.warn(e.getMessage());
-                } finally {
-                    buf.release();
-                }
+        BlockEntity be = level.getBlockEntity(packet.pos);
+
+        if(be instanceof IBufPacketReceiver receiver) {
+            RegistryFriendlyByteBuf buf = new RegistryFriendlyByteBuf(Unpooled.wrappedBuffer(packet.data), level.registryAccess(), ConnectionType.OTHER);
+            try {
+                receiver.deserialize(buf);
+            } catch(Exception e) {
+                NuclearTechMod.LOGGER.warn("A ByteBuf packet failed to be read and has thrown an error. This normally means that there was a buffer underflow and more data was read than was actually in the packet.\")");
+                NuclearTechMod.LOGGER.warn("Block: {}", be.getBlockState().getBlock().getDescriptionId());
+                NuclearTechMod.LOGGER.warn(e.getMessage());
+            } finally {
+                buf.release();
             }
-        });
+        }
     }
 
     @Override public Type<BufPacket> type() { return TYPE; }

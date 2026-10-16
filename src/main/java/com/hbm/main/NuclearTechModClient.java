@@ -22,6 +22,8 @@ import com.hbm.inventory.screens.MachineMixerScreen;
 import com.hbm.inventory.screens.MachineCombustionEngineScreen;
 import com.hbm.inventory.screens.MachineTurbofanScreen;
 import com.hbm.inventory.screens.MachineCrystallizerScreen;
+import com.hbm.inventory.screens.MachineGasCentrifugeScreen;
+import com.hbm.inventory.screens.MachineWasteDrumScreen;
 import com.hbm.inventory.MetaHelper;
 import com.hbm.inventory.fluid.FluidType;
 import com.hbm.inventory.fluid.Fluids;
@@ -29,6 +31,7 @@ import com.hbm.inventory.screens.LoadingScreenRendererNT;
 import com.hbm.items.*;
 import com.hbm.items.component.NtmDataComponents;
 import com.hbm.items.machine.BlueprintsItem;
+import com.hbm.items.machine.DepletedFuelItem;
 import com.hbm.items.special.PolaroidItem;
 import com.hbm.items.tools.ColtanCompassItem;
 import com.hbm.items.tools.GeigerCounterItem;
@@ -154,6 +157,8 @@ public class NuclearTechModClient {
         event.register(NtmMenuTypes.MACHINE_COMBUSTION_ENGINE.get(), MachineCombustionEngineScreen::new);
         event.register(NtmMenuTypes.MACHINE_TURBOFAN.get(), MachineTurbofanScreen::new);
         event.register(NtmMenuTypes.MACHINE_CRYSTALLIZER.get(), MachineCrystallizerScreen::new);
+        event.register(NtmMenuTypes.MACHINE_GAS_CENTRIFUGE.get(), MachineGasCentrifugeScreen::new);
+        event.register(NtmMenuTypes.MACHINE_WASTE_DRUM.get(), MachineWasteDrumScreen::new);
     }
 
     @SubscribeEvent
@@ -623,6 +628,19 @@ public class NuclearTechModClient {
                     default -> 0xFFFFFFFF;
                 },
                 NtmItems.BOLT.get()
+        );
+        // Original ItemDepletedFuel.getColorFromItemStack (:31-35): hot waste is tinted, cool waste is not.
+        event.register(
+                (stack, tintIndex) -> tintIndex == 0 && DepletedFuelItem.isHot(stack) ? 0xFFFFBFA5 : 0xFFFFFFFF,
+                NtmItems.WASTE_NATURAL_URANIUM.get(),
+                NtmItems.WASTE_URANIUM.get(),
+                NtmItems.WASTE_THORIUM.get(),
+                NtmItems.WASTE_MOX.get(),
+                NtmItems.WASTE_PLUTONIUM.get(),
+                NtmItems.WASTE_U233.get(),
+                NtmItems.WASTE_U235.get(),
+                NtmItems.WASTE_SCHRABIDIUM.get(),
+                NtmItems.WASTE_ZFB_MOX.get()
         );
         event.register(
                 // todo KILL TS NOW

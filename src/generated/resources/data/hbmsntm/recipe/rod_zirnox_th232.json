@@ -1,0 +1,22 @@
+{
+  "type": "minecraft:crafting_shapeless",
+  "category": "misc",
+  "ingredients": [
+    {
+      "item": "hbmsntm:rod_zirnox_empty"
+    },
+    {
+      "item": "hbmsntm:billet_th232"
+    },
+    {
+      "item": "hbmsntm:billet_th232"
+    }
+  ],
+  "result": {
+    "components": {
+      "hbmsntm:meta": 2
+    },
+    "count": 1,
+    "id": "hbmsntm:rod_zirnox"
+  }
+}

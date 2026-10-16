@@ -283,6 +283,14 @@ public class AssemblyMachineRecipes extends GenericRecipes<GenericRecipe> {
                         new RecipesCommon.TagStack(NtmTags.Items.PLATES_STEEL, 8),
                         new RecipesCommon.TagStack(NtmTags.Items.PLATES_COPPER, 4),
                         new ComparableStack(NtmItems.CIRCUIT_ANALOG_BOARD.get(), 1)));
+        // Original AssemblyMachineRecipes.java:282-283 normal branch, 400 ticks at 100 HE/t. The expensive inputItemsEx branch
+        // and the 528 pool are not migrated (NEO has no item_expensive).
+        this.register(new GenericRecipe("ass.gascent").setup(400, 100).outputItems(new ItemStack(NtmBlocks.MACHINE_GAS_CENTRIFUGE.get(), 1))
+                .inputItems(new ComparableStack(NtmItems.CENTRIFUGE_ELEMENT.get(), 4),
+                        new RecipesCommon.TagStack(ItemTags.create(ResourceLocation.fromNamespaceAndPath("ntm", "ingots_plastic")), 8),
+                        new ComparableStack(NtmItems.INGOT_DESH.get(), 2),
+                        new RecipesCommon.TagStack(NtmTags.Items.PLATES_STEEL, 8),
+                        new ComparableStack(NtmItems.CIRCUIT_MILITARY_GRADE_BOARD.get(), 1)));
 
         // Original normal turbofan/combustion/piston inputs remain available in both enable528 settings.
         this.register(new GenericRecipe("ass.turbofan").setup(300, 100).outputItems(new ItemStack(NtmBlocks.MACHINE_TURBOFAN.get(), 1))

@@ -608,6 +608,15 @@ public class NtmCreativeTabs {
                         output.accept(NtmItems.ROD_ZIRNOX_U235_FUEL_DEPLETED);
                         output.accept(NtmItems.ROD_ZIRNOX_LES_FUEL_DEPLETED);
                         output.accept(NtmItems.ROD_ZIRNOX_ZFB_MOX_DEPLETED);
+                        addMetaItems(output, NtmItems.WASTE_NATURAL_URANIUM.get());
+                        addMetaItems(output, NtmItems.WASTE_URANIUM.get());
+                        addMetaItems(output, NtmItems.WASTE_THORIUM.get());
+                        addMetaItems(output, NtmItems.WASTE_MOX.get());
+                        addMetaItems(output, NtmItems.WASTE_PLUTONIUM.get());
+                        addMetaItems(output, NtmItems.WASTE_U233.get());
+                        addMetaItems(output, NtmItems.WASTE_U235.get());
+                        addMetaItems(output, NtmItems.WASTE_SCHRABIDIUM.get());
+                        addMetaItems(output, NtmItems.WASTE_ZFB_MOX.get());
 
                         output.accept(NtmItems.REACHER);
                         output.accept(NtmItems.MELTDOWN_TOOL);
@@ -633,6 +642,7 @@ public class NtmCreativeTabs {
                         output.accept(NtmItems.UPGRADE_OVERDRIVE_1);
                         output.accept(NtmItems.UPGRADE_OVERDRIVE_2);
                         output.accept(NtmItems.UPGRADE_OVERDRIVE_3);
+                        output.accept(NtmItems.UPGRADE_GC_SPEED);
                         addMaterialControlItems(output);
 
                     }).build());
@@ -839,6 +849,8 @@ public class NtmCreativeTabs {
                         output.accept(NtmBlocks.MACHINE_DIESEL);
                         output.accept(NtmBlocks.MACHINE_WOOD_BURNER);
                         output.accept(NtmBlocks.MACHINE_CENTRIFUGE);
+                        output.accept(NtmBlocks.MACHINE_GAS_CENTRIFUGE);
+                        output.accept(NtmBlocks.MACHINE_WASTE_DRUM);
                         output.accept(NtmBlocks.MACHINE_CRYSTALLIZER);
                         output.accept(NtmBlocks.MACHINE_CHEMICAL_PLANT);
                         output.accept(NtmBlocks.HEAT_BOILER);

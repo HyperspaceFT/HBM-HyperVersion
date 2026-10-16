@@ -10,6 +10,8 @@ import net.minecraft.util.Mth;
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.Level;
+import net.neoforged.api.distmarker.Dist;
+import net.neoforged.api.distmarker.OnlyIn;
 
 public class NukeTorexCreator implements IParticleCreator {
 
@@ -33,6 +35,7 @@ public class NukeTorexCreator implements IParticleCreator {
     }
 
     @Override
+    @OnlyIn(Dist.CLIENT)
     public void makeParticle(ClientLevel level, Player player, RandomSource rand, double x, double y, double z, CompoundTag tag) {
         int type = tag.getInt("cType");
         float scale = tag.getFloat("scale");

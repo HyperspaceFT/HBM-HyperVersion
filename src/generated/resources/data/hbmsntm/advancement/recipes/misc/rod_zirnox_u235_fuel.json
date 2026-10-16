@@ -1,0 +1,32 @@
+{
+  "parent": "minecraft:recipes/root",
+  "criteria": {
+    "has_rod_zirnox_empty": {
+      "conditions": {
+        "items": [
+          {
+            "items": "hbmsntm:rod_zirnox_empty"
+          }
+        ]
+      },
+      "trigger": "minecraft:inventory_changed"
+    },
+    "has_the_recipe": {
+      "conditions": {
+        "recipe": "hbmsntm:rod_zirnox_u235_fuel"
+      },
+      "trigger": "minecraft:recipe_unlocked"
+    }
+  },
+  "requirements": [
+    [
+      "has_the_recipe",
+      "has_rod_zirnox_empty"
+    ]
+  ],
+  "rewards": {
+    "recipes": [
+      "hbmsntm:rod_zirnox_u235_fuel"
+    ]
+  }
+}

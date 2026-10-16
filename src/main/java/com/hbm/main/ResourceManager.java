@@ -64,6 +64,7 @@ public class ResourceManager {
     public static final ResourceLocation BLAST_FURNACE_TEX = NuclearTechMod.withDefaultNamespace("textures/models/machines/blast_furnace.png");
     public static final ResourceLocation WOOD_BURNER_TEX = NuclearTechMod.withDefaultNamespace("textures/models/machines/wood_burner.png");
     public static final ResourceLocation CENTRIFUGE_TEX = NuclearTechMod.withDefaultNamespace("textures/models/machines/centrifuge_new.png");
+    public static final ResourceLocation GAS_CENTRIFUGE_TEX = NuclearTechMod.withDefaultNamespace("textures/models/machines/gas_centrifuge.png");
     public static final ResourceLocation CHEMICAL_PLANT_TEX = NuclearTechMod.withDefaultNamespace("textures/models/machines/chemical_plant.png");
     public static final ResourceLocation CHEMICAL_PLANT_FLUID_TEX = NuclearTechMod.withDefaultNamespace("textures/models/machines/chemical_plant_fluid.png");
     public static final ResourceLocation BOILER_TEX = NuclearTechMod.withDefaultNamespace("textures/models/machines/boiler.png");
@@ -322,6 +323,7 @@ public class ResourceManager {
     public static IModelCustom blast_furnace;
     public static IModelCustom wood_burner;
     public static IModelCustom centrifuge;
+    public static IModelCustom gasCentrifuge;
     public static IModelCustom chemical_plant;
     public static IModelCustom boiler;
     public static IModelCustom boiler_burst;
@@ -473,6 +475,7 @@ public class ResourceManager {
         blast_furnace = new HFRWavefrontObject("models/obj/machines/blast_furnace.obj").asVBO();
         wood_burner = new HFRWavefrontObject("models/obj/machines/wood_burner.obj").asVBO();
         centrifuge = new HFRWavefrontObject("models/obj/machines/centrifuge.obj").asVBO();
+        gasCentrifuge = new HFRWavefrontObject("models/obj/machines/gas_centrifuge.obj").asVBO();
         chemical_plant = new HFRWavefrontObject("models/obj/machines/chemical_plant.obj").asVBO();
         boiler = new HFRWavefrontObject("models/obj/machines/boiler.obj").asVBO();
         boiler_burst = new HFRWavefrontObject("models/obj/machines/boiler_burst.obj").asVBO();

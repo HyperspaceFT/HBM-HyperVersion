@@ -609,6 +609,7 @@ public class NtmItems {
     public static final DeferredItem<Item> UPGRADE_OVERDRIVE_1 = ITEMS.register("upgrade_overdrive_1", () -> new MachineUpgradeItem(new Item.Properties(), MachineUpgradeItem.UpgradeType.OVERDRIVE, 1));
     public static final DeferredItem<Item> UPGRADE_OVERDRIVE_2 = ITEMS.register("upgrade_overdrive_2", () -> new MachineUpgradeItem(new Item.Properties(), MachineUpgradeItem.UpgradeType.OVERDRIVE, 2));
     public static final DeferredItem<Item> UPGRADE_OVERDRIVE_3 = ITEMS.register("upgrade_overdrive_3", () -> new MachineUpgradeItem(new Item.Properties(), MachineUpgradeItem.UpgradeType.OVERDRIVE, 3));
+    public static final DeferredItem<Item> UPGRADE_GC_SPEED = ITEMS.register("upgrade_gc_speed", () -> new MachineUpgradeItem(new Item.Properties(), MachineUpgradeItem.UpgradeType.GS_SPEED));
 
     // Breeding Rods
     public static final DeferredItem<Item> ROD_EMPTY = ITEMS.register("rod_empty", () -> new Item(new Item.Properties()));
@@ -623,15 +624,26 @@ public class NtmItems {
     public static final DeferredItem<Item> ROD_ZIRNOX_TRITIUM = ITEMS.register("rod_zirnox_tritium", () -> new Item(new Item.Properties().stacksTo(1)));
     public static final DeferredItem<Item> ROD_ZIRNOX = ITEMS.register("rod_zirnox", () -> new ZirnoxRodItem(new Item.Properties().stacksTo(1).setNoRepair()));
 
-    public static final DeferredItem<Item> ROD_ZIRNOX_NATURAL_URANIUM_FUEL_DEPLETED = ITEMS.register("rod_zirnox_natural_uranium_fuel_depleted", () -> new Item(new Item.Properties()));
-    public static final DeferredItem<Item> ROD_ZIRNOX_URANIUM_FUEL_DEPLETED = ITEMS.register("rod_zirnox_uranium_fuel_depleted", () -> new Item(new Item.Properties()));
-    public static final DeferredItem<Item> ROD_ZIRNOX_THORIUM_FUEL_DEPLETED = ITEMS.register("rod_zirnox_thorium_fuel_depleted", () -> new Item(new Item.Properties()));
-    public static final DeferredItem<Item> ROD_ZIRNOX_MOX_FUEL_DEPLETED = ITEMS.register("rod_zirnox_mox_fuel_depleted", () -> new Item(new Item.Properties()));
-    public static final DeferredItem<Item> ROD_ZIRNOX_PLUTONIUM_FUEL_DEPLETED = ITEMS.register("rod_zirnox_plutonium_fuel_depleted", () -> new Item(new Item.Properties()));
-    public static final DeferredItem<Item> ROD_ZIRNOX_U233_FUEL_DEPLETED = ITEMS.register("rod_zirnox_u233_fuel_depleted", () -> new Item(new Item.Properties()));
-    public static final DeferredItem<Item> ROD_ZIRNOX_U235_FUEL_DEPLETED = ITEMS.register("rod_zirnox_u235_fuel_depleted", () -> new Item(new Item.Properties()));
-    public static final DeferredItem<Item> ROD_ZIRNOX_LES_FUEL_DEPLETED = ITEMS.register("rod_zirnox_les_fuel_depleted", () -> new Item(new Item.Properties()));
-    public static final DeferredItem<Item> ROD_ZIRNOX_ZFB_MOX_DEPLETED = ITEMS.register("rod_zirnox_zfb_mox_depleted", () -> new Item(new Item.Properties()));
+    public static final DeferredItem<Item> ROD_ZIRNOX_NATURAL_URANIUM_FUEL_DEPLETED = ITEMS.register("rod_zirnox_natural_uranium_fuel_depleted", () -> new Item(new Item.Properties().craftRemainder(ROD_ZIRNOX_EMPTY.get())));
+    public static final DeferredItem<Item> ROD_ZIRNOX_URANIUM_FUEL_DEPLETED = ITEMS.register("rod_zirnox_uranium_fuel_depleted", () -> new Item(new Item.Properties().craftRemainder(ROD_ZIRNOX_EMPTY.get())));
+    public static final DeferredItem<Item> ROD_ZIRNOX_THORIUM_FUEL_DEPLETED = ITEMS.register("rod_zirnox_thorium_fuel_depleted", () -> new Item(new Item.Properties().craftRemainder(ROD_ZIRNOX_EMPTY.get())));
+    public static final DeferredItem<Item> ROD_ZIRNOX_MOX_FUEL_DEPLETED = ITEMS.register("rod_zirnox_mox_fuel_depleted", () -> new Item(new Item.Properties().craftRemainder(ROD_ZIRNOX_EMPTY.get())));
+    public static final DeferredItem<Item> ROD_ZIRNOX_PLUTONIUM_FUEL_DEPLETED = ITEMS.register("rod_zirnox_plutonium_fuel_depleted", () -> new Item(new Item.Properties().craftRemainder(ROD_ZIRNOX_EMPTY.get())));
+    public static final DeferredItem<Item> ROD_ZIRNOX_U233_FUEL_DEPLETED = ITEMS.register("rod_zirnox_u233_fuel_depleted", () -> new Item(new Item.Properties().craftRemainder(ROD_ZIRNOX_EMPTY.get())));
+    public static final DeferredItem<Item> ROD_ZIRNOX_U235_FUEL_DEPLETED = ITEMS.register("rod_zirnox_u235_fuel_depleted", () -> new Item(new Item.Properties().craftRemainder(ROD_ZIRNOX_EMPTY.get())));
+    public static final DeferredItem<Item> ROD_ZIRNOX_LES_FUEL_DEPLETED = ITEMS.register("rod_zirnox_les_fuel_depleted", () -> new Item(new Item.Properties().craftRemainder(ROD_ZIRNOX_EMPTY.get())));
+    public static final DeferredItem<Item> ROD_ZIRNOX_ZFB_MOX_DEPLETED = ITEMS.register("rod_zirnox_zfb_mox_depleted", () -> new Item(new Item.Properties().craftRemainder(ROD_ZIRNOX_EMPTY.get())));
+
+    // Nuclear waste from the depleted ZIRNOX rods (original ModItems.java:2982-2990); META 1 is hot, META 0 cool
+    public static final DeferredItem<Item> WASTE_NATURAL_URANIUM = ITEMS.register("waste_natural_uranium", () -> new DepletedFuelItem(new Item.Properties()));
+    public static final DeferredItem<Item> WASTE_URANIUM = ITEMS.register("waste_uranium", () -> new DepletedFuelItem(new Item.Properties()));
+    public static final DeferredItem<Item> WASTE_THORIUM = ITEMS.register("waste_thorium", () -> new DepletedFuelItem(new Item.Properties()));
+    public static final DeferredItem<Item> WASTE_MOX = ITEMS.register("waste_mox", () -> new DepletedFuelItem(new Item.Properties()));
+    public static final DeferredItem<Item> WASTE_PLUTONIUM = ITEMS.register("waste_plutonium", () -> new DepletedFuelItem(new Item.Properties()));
+    public static final DeferredItem<Item> WASTE_U233 = ITEMS.register("waste_u233", () -> new DepletedFuelItem(new Item.Properties()));
+    public static final DeferredItem<Item> WASTE_U235 = ITEMS.register("waste_u235", () -> new DepletedFuelItem(new Item.Properties()));
+    public static final DeferredItem<Item> WASTE_SCHRABIDIUM = ITEMS.register("waste_schrabidium", () -> new DepletedFuelItem(new Item.Properties()));
+    public static final DeferredItem<Item> WASTE_ZFB_MOX = ITEMS.register("waste_zfb_mox", () -> new DepletedFuelItem(new Item.Properties()));
 
     // Spawners
     public static final DeferredItem<Item> SPAWN_DUCK = ITEMS.register("spawn_duck", () -> new EntitySpawnerItem(new Item.Properties().stacksTo(16)));

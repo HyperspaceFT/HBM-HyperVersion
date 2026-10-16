@@ -50,16 +50,20 @@ public record HbmAnimation(short animType, int rec, int gun) implements CustomPa
 
     @OnlyIn(Dist.CLIENT)
     public static void handleClient(HbmAnimation packet, IPayloadContext context) {
-        context.enqueueWork(() -> {
-            LocalPlayer player = Minecraft.getInstance().player;
-            if(player == null) return;
+        context.enqueueWork(() -> applyClient(packet));
+    }
 
-            int slot = player.inventory.selected;
+    // Lambda bodies are not stripped on a dedicated server, so the LocalPlayer-typed local lives in this stripped method instead.
+    @OnlyIn(Dist.CLIENT)
+    private static void applyClient(HbmAnimation packet) {
+        LocalPlayer player = Minecraft.getInstance().player;
+        if(player == null) return;
 
-            for(ItemStack stack : InventoryUtil.getItemsFromBothHands(player)) {
-                if(stack.getItem() instanceof GunBaseNTItem) handleSedna(player, stack, slot, GunAnimation.values()[packet.animType], packet.rec, packet.gun);
-            }
-        });
+        int slot = player.inventory.selected;
+
+        for(ItemStack stack : InventoryUtil.getItemsFromBothHands(player)) {
+            if(stack.getItem() instanceof GunBaseNTItem) handleSedna(player, stack, slot, GunAnimation.values()[packet.animType], packet.rec, packet.gun);
+        }
     }
 
     @OnlyIn(Dist.CLIENT)

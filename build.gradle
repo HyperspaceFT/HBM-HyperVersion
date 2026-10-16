@@ -148,7 +148,7 @@ dependencies {
     compileOnly "dev.ryanhcode.sable:sable-sable_rapier-1.21.1:2.0.3"
 
     // Iris
-    implementation "maven.modrinth:YL57xq9U:KduFYu4t"
+    compileOnly "maven.modrinth:YL57xq9U:KduFYu4t" // kept off the dev runtime: Iris crashes without Sodium; install both yourself to test shaders
 }
 
 tasks.withType(ProcessResources).configureEach {

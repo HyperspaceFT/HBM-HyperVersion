@@ -35,7 +35,9 @@ public class NtmMenuTypes {
     public static final DeferredHolder<MenuType<?>, MenuType<MachineMixerMenu>> MACHINE_MIXER = reg("machine_mixer", MachineMixerMenu::new);
     public static final DeferredHolder<MenuType<?>, MenuType<MachineWoodBurnerMenu>> MACHINE_WOOD_BURNER = reg("machine_wood_burner", MachineWoodBurnerMenu::new);
     public static final DeferredHolder<MenuType<?>, MenuType<MachineCentrifugeMenu>> MACHINE_CENTRIFUGE = reg("machine_centrifuge", MachineCentrifugeMenu::new);
+    public static final DeferredHolder<MenuType<?>, MenuType<MachineGasCentrifugeMenu>> MACHINE_GAS_CENTRIFUGE = reg("machine_gas_centrifuge", MachineGasCentrifugeMenu::new);
     public static final DeferredHolder<MenuType<?>, MenuType<MachineCrystallizerMenu>> MACHINE_CRYSTALLIZER = reg("machine_crystallizer", MachineCrystallizerMenu::new);
+    public static final DeferredHolder<MenuType<?>, MenuType<MachineWasteDrumMenu>> MACHINE_WASTE_DRUM = reg("machine_waste_drum", MachineWasteDrumMenu::new);
     public static final DeferredHolder<MenuType<?>, MenuType<MachineChemicalPlantMenu>> MACHINE_CHEMICAL_PLANT = reg("machine_chemical_plant", MachineChemicalPlantMenu::new);
     public static final DeferredHolder<MenuType<?>, MenuType<MachineSatLinkerMenu>> SAT_LINKER = reg("sat_linker", MachineSatLinkerMenu::new);
     public static final DeferredHolder<MenuType<?>, MenuType<BarrelMenu>> BARREL = reg("barrel", BarrelMenu::new);

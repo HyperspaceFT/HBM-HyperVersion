@@ -11,6 +11,8 @@ import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.state.BlockState;
+import net.neoforged.api.distmarker.Dist;
+import net.neoforged.api.distmarker.OnlyIn;
 
 public class WasteLeavesBlock extends Block {
 
@@ -32,6 +34,7 @@ public class WasteLeavesBlock extends Block {
     }
 
     @Override
+    @OnlyIn(Dist.CLIENT)
     public void animateTick(BlockState state, Level level, BlockPos pos, RandomSource rand) {
         if (rand.nextInt(7) == 0 && level.getBlockState(pos.below()).isAir()) {
             CompoundTag tag = new CompoundTag();

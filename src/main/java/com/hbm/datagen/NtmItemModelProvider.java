@@ -730,6 +730,17 @@ public class NtmItemModelProvider extends ItemModelProvider {
         this.basicItem(NtmItems.ROD_ZIRNOX_LES_FUEL_DEPLETED.get());
         this.basicItem(NtmItems.ROD_ZIRNOX_ZFB_MOX_DEPLETED.get());
 
+        // Original ModItems.java:2982-2990: natural uranium, U233 and U235 waste reuse the uranium waste texture.
+        this.basicCustomLayerItem(NtmItems.WASTE_NATURAL_URANIUM.get(), "waste_uranium");
+        this.basicItem(NtmItems.WASTE_URANIUM.get());
+        this.basicItem(NtmItems.WASTE_THORIUM.get());
+        this.basicItem(NtmItems.WASTE_MOX.get());
+        this.basicItem(NtmItems.WASTE_PLUTONIUM.get());
+        this.basicCustomLayerItem(NtmItems.WASTE_U233.get(), "waste_uranium");
+        this.basicCustomLayerItem(NtmItems.WASTE_U235.get(), "waste_uranium");
+        this.basicItem(NtmItems.WASTE_SCHRABIDIUM.get());
+        this.basicItem(NtmItems.WASTE_ZFB_MOX.get());
+
         this.basicItem(NtmItems.SPAWN_DUCK.get());
 
         this.basicItem(NtmItems.DESIGNATOR.get());
@@ -911,6 +922,7 @@ public class NtmItemModelProvider extends ItemModelProvider {
         this.handheldItem(NtmItems.UPGRADE_OVERDRIVE_1.get());
         this.handheldItem(NtmItems.UPGRADE_OVERDRIVE_2.get());
         this.handheldItem(NtmItems.UPGRADE_OVERDRIVE_3.get());
+        this.handheldItem(NtmItems.UPGRADE_GC_SPEED.get());
 
         this.registerPolaroid();
         this.basicItem(NtmItems.BURNT_BARK.get());

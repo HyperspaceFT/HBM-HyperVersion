@@ -36,20 +36,23 @@ public record MuzzleFlashPacket(int livingId) implements CustomPacketPayload {
 
     @OnlyIn(Dist.CLIENT)
     public static void handleClient(MuzzleFlashPacket packet, IPayloadContext context) {
-        context.enqueueWork(() -> {
-            Level level = Minecraft.getInstance().level;
-            Player player = Minecraft.getInstance().player;
-            if(level == null || player == null) return;
-            Entity entity = level.getEntity(packet.livingId);
-            if(!(entity instanceof LivingEntity living) || entity == player) return; //packets are sent to the player who fired
-            ItemStack stack = living.getMainHandItem();
-            if(stack.isEmpty()) return;
+        context.enqueueWork(() -> applyClient(packet));
+    }
 
-            if(stack.getItem() instanceof GunBaseNTItem) {
-                ItemRenderWeaponBase.flashMap.put(living, System.currentTimeMillis());
-            }
+    // Lambda bodies are not stripped on a dedicated server, so the client-typed locals live in this stripped method instead.
+    @OnlyIn(Dist.CLIENT)
+    private static void applyClient(MuzzleFlashPacket packet) {
+        Level level = Minecraft.getInstance().level;
+        Player player = Minecraft.getInstance().player;
+        if(level == null || player == null) return;
+        Entity entity = level.getEntity(packet.livingId);
+        if(!(entity instanceof LivingEntity living) || entity == player) return; //packets are sent to the player who fired
+        ItemStack stack = living.getMainHandItem();
+        if(stack.isEmpty()) return;
 
-        });
+        if(stack.getItem() instanceof GunBaseNTItem) {
+            ItemRenderWeaponBase.flashMap.put(living, System.currentTimeMillis());
+        }
     }
 
     @Override public Type<MuzzleFlashPacket> type() { return TYPE; }

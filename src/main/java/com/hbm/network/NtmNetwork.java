@@ -30,6 +30,7 @@ public class NtmNetwork {
         registrar.playToClient(MixerRecipesPacket.TYPE, MixerRecipesPacket.STREAM_CODEC, MixerRecipesPacket::handleCommon);
         registrar.playToClient(CentrifugeRecipesPacket.TYPE, CentrifugeRecipesPacket.STREAM_CODEC, CentrifugeRecipesPacket::handleCommon);
         registrar.playToClient(CrystallizerRecipesPacket.TYPE, CrystallizerRecipesPacket.STREAM_CODEC, CrystallizerRecipesPacket::handleCommon);
+        registrar.playToClient(FuelPoolRecipesPacket.TYPE, FuelPoolRecipesPacket.STREAM_CODEC, FuelPoolRecipesPacket::handleCommon);
         registrar.playToClient(ParticleBurst.TYPE, ParticleBurst.STREAM_CODEC, ParticleBurst::handleClient);
         registrar.playToClient(AuxParticle.TYPE, AuxParticle.STREAM_CODEC, AuxParticle::handleClient);
         registrar.playToClient(BufPacket.TYPE, BufPacket.STREAM_CODEC, BufPacket::handleCommon);

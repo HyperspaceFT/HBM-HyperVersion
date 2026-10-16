@@ -13,12 +13,14 @@ import mezz.jei.api.recipe.IFocusGroup;
 import mezz.jei.api.recipe.RecipeType;
 import mezz.jei.api.recipe.category.IRecipeCategory;
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.gui.Font;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.network.chat.Component;
+import net.minecraft.util.FormattedCharSequence;
 
 import java.util.List;
 
-/** Ore acidizer rows: the acid icon and the input item on the left, the output on the right, duration and productivity below. */
+/** Ore acidizer rows: the acid icon and the input item on the left, the output on the right, duration above and productivity below. */
 public class CrystallizerRecipeHandler implements IRecipeCategory<CrystallizerRecipe> {
     public static final RecipeType<CrystallizerRecipe> RECIPE_TYPE = RecipeType.create(NuclearTechMod.MODID, "crystallizer", CrystallizerRecipe.class);
     private final IDrawable background;
@@ -41,9 +43,27 @@ public class CrystallizerRecipeHandler implements IRecipeCategory<CrystallizerRe
     }
     @Override public void draw(CrystallizerRecipe recipe, IRecipeSlotsView slots, GuiGraphics graphics, double mouseX, double mouseY) {
         var font = Minecraft.getInstance().font;
+        // Both lines are wider than the 166 px box in Chinese and English: the duration goes above the slots, the productivity below.
         Component time = Component.translatable("container.machine_crystallizer.jei.duration", recipe.duration, recipe.duration + 1);
-        graphics.drawString(font, time, (166 - font.width(time)) / 2, 44, 0x404040, false);
+        drawFitted(graphics, font, time, 2, 17);
         Component chance = Component.translatable("container.machine_crystallizer.jei.productivity", String.format(java.util.Locale.ROOT, "%.0f", recipe.productivity * 100F));
-        graphics.drawString(font, chance, (166 - font.width(chance)) / 2, 54, 0x404040, false);
+        drawFitted(graphics, font, chance, 40, 23);
+    }
+
+    /** Wraps the text to the box interior and shrinks it only if the wrapped lines are still taller than the band at {@code top}. */
+    private static void drawFitted(GuiGraphics graphics, Font font, Component text, int top, int height) {
+        float scale = 1F;
+        List<FormattedCharSequence> lines = font.split(text, 158);
+        for(int step = 19; step >= 10 && lines.size() * font.lineHeight - 1 > height / scale; step--) {
+            scale = step / 20F;
+            lines = font.split(text, (int) (158 / scale));
+        }
+        graphics.pose().pushPose();
+        graphics.pose().translate(83F, top + (height - (lines.size() * font.lineHeight - 1) * scale) / 2F, 0F);
+        graphics.pose().scale(scale, scale, 1F);
+        for(int i = 0; i < lines.size(); i++) {
+            graphics.drawString(font, lines.get(i), -font.width(lines.get(i)) / 2, i * font.lineHeight, 0x404040, false);
+        }
+        graphics.pose().popPose();
     }
 }

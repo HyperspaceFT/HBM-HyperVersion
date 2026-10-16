@@ -941,6 +941,9 @@ public class NtmLanguageProvider extends LanguageProvider {
         this.add(NtmItems.UPGRADE_OVERDRIVE_1, "Overdrive Upgrade Mk.I");
         this.add(NtmItems.UPGRADE_OVERDRIVE_2, "Overdrive Upgrade Mk.II");
         this.add(NtmItems.UPGRADE_OVERDRIVE_3, "Overdrive Upgrade Mk.III");
+        // Original item.upgrade_gc_speed.name and the tooltip hardcoded in ItemMachineUpgrade.java:105-109.
+        this.add(NtmItems.UPGRADE_GC_SPEED, "Gas Centrifuge Overclocking Upgrade");
+        this.add("item.hbmsntm.upgrade_gc_speed.desc", "§cGas Centrifuge Upgrade$Allows for total isotopic separation of HEUF6$§ealso your centrifuge goes sicko mode");
 
         this.add(NtmItems.PELLET_RTG, "Plutonium-238 RTG Pellet");
 
@@ -1138,6 +1141,18 @@ public class NtmLanguageProvider extends LanguageProvider {
         this.add(NtmItems.ROD_ZIRNOX_U235_FUEL_DEPLETED, "Depleted ZIRNOX Uranium-235 Fuel Rod");
         this.add(NtmItems.ROD_ZIRNOX_LES_FUEL_DEPLETED, "Depleted ZIRNOX LES Fuel Rod");
         this.add(NtmItems.ROD_ZIRNOX_ZFB_MOX_DEPLETED, "Depleted ZIRNOX ZFB MOX Fuel Rod");
+        // Original item.waste_*.name (en_US.lang:4769-4784); one name for the hot and the cool state.
+        this.add(NtmItems.WASTE_NATURAL_URANIUM, "Depleted Natural Uranium Fuel");
+        this.add(NtmItems.WASTE_URANIUM, "Depleted Uranium Fuel");
+        this.add(NtmItems.WASTE_THORIUM, "Depleted Thorium Fuel");
+        this.add(NtmItems.WASTE_MOX, "Depleted MOX Fuel");
+        this.add(NtmItems.WASTE_PLUTONIUM, "Depleted Plutonium Fuel");
+        this.add(NtmItems.WASTE_U233, "Depleted Uranium-233 Fuel");
+        this.add(NtmItems.WASTE_U235, "Depleted Uranium-235 Fuel");
+        this.add(NtmItems.WASTE_SCHRABIDIUM, "Depleted Schrabidium Fuel");
+        this.add(NtmItems.WASTE_ZFB_MOX, "Depleted ZFB MOX Fuel");
+        // Original desc.item.wasteCooling (en_US.lang:1141), key kept verbatim; shown on hot waste only.
+        this.add("desc.item.wasteCooling", "Cool in a Spent Fuel Pool Drum");
         // The original patterns used %d with a String argument; NEO passes the same arguments to %s.
         this.add("item.hbmsntm.rod_zirnox.desc", "§a[ZIRNOX Fuel Rod]$§eGenerates %1$s heat per tick$§eLasts %2$s ticks");
         this.add("item.hbmsntm.rod_zirnox.desc_breeding", "§2[ZIRNOX Breeding Rod]$§ePlace next to fuel rods to breed$§eLasts %s ticks");
@@ -1697,6 +1712,9 @@ public class NtmLanguageProvider extends LanguageProvider {
         this.add("desc.slots", "Slots: %s");
         this.add("desc.crate_slots_used", "%s/%s Slots used (%s%%)");
         this.add("desc.crate_contents", "Contains %s stacks / %s items");
+        // Original desc.gui.gasCent.enrichment and desc.gui.gasCent.output (en_US.lang:966-967), keys kept verbatim.
+        this.add("desc.gui.gasCent.enrichment", "§2Enrichment§r$Uranium enrichment requires cascades.$Two-centrifuge cascades will give$uranium fuel, four-centrifuge cascades$will give total separation.");
+        this.add("desc.gui.gasCent.output", "§6Fluid Transfer§r$Fluid can be transferred to another centrifuge$via the output port for further processing.");
 
         this.add(NtmBlocks.GEIGER, "Geiger Counter");
 
@@ -1727,6 +1745,10 @@ public class NtmLanguageProvider extends LanguageProvider {
         this.add(NtmBlocks.MACHINE_BLAST_FURNACE, "Blast Furnace");
         this.add(NtmBlocks.MACHINE_WOOD_BURNER, "Wood-Burning Generator");
         this.add(NtmBlocks.MACHINE_CENTRIFUGE, "Centrifuge");
+        // Original tile.machine_gascent.name.
+        this.add(NtmBlocks.MACHINE_GAS_CENTRIFUGE, "Gas Centrifuge");
+        // Original tile.machine_waste_drum.name.
+        this.add(NtmBlocks.MACHINE_WASTE_DRUM, "Spent Fuel Pool Drum");
         this.add(NtmBlocks.HEAT_BOILER, "Boiler");
         this.add(NtmBlocks.TRANSFORMER, "10k-20Hz Transformer");
         this.add(NtmBlocks.MACHINE_INDUSTRIAL_BOILER, "Industrial Boiler");
@@ -2114,6 +2136,14 @@ public class NtmLanguageProvider extends LanguageProvider {
         this.add("container.furnace_combination.container_unload", "Unload filled containers into a matching receiving tank; reuse the returned empties.");
         this.add("container.machine_blast_furnace", "Blast Furnace");
         this.add("container.machine_centrifuge", "Centrifuge");
+        // Original container.gasCentrifuge.
+        this.add("container.machine_gas_centrifuge", "Gas Centrifuge");
+        // Original container.wasteDrum; also the JEI spent fuel pool category title.
+        this.add("container.machine_waste_drum", "Spent Fuel Pool Drum");
+        // Original GUIWasteDrum.java:31-33 hard-coded these three lines; "$" keeps the original line breaks.
+        this.add("desc.gui.wasteDrum.info", "The drum will cool down hot nuclear$waste when submerged in water. More$water speeds up the process.");
+        // Original GasCentrifugeRecipeHandler.java:158 hardcoded "N G. Cents"; the cascade length is now a format argument.
+        this.add("gas_centrifuge.jei.cascade", "%s G. Cents");
         this.add("container.machineWoodBurner", "Wood-Burner");
         this.add("container.zirnox", "ZIRNOX Nuclear Reactor");
         this.add("container.zirnox.temp0", "Temperature:");
@@ -2332,6 +2362,16 @@ public class NtmLanguageProvider extends LanguageProvider {
         this.add("hbmfluid.xenon", "Xenon Gas");
         this.add("hbmfluid.xpjuice", "Experience Juice");
         this.add("hbmfluid.xylene", "BTX");
+
+        // Original hbmpseudofluid.* (en_US.lang:1603-1610): the gas centrifuge's pseudo-fluid tank labels.
+        this.add("hbmpseudofluid.none", "Empty");
+        this.add("hbmpseudofluid.heuf6", "Highly Enriched UF6");
+        this.add("hbmpseudofluid.meuf6", "Medium Enriched UF6");
+        this.add("hbmpseudofluid.leuf6", "Low Enriched UF6");
+        this.add("hbmpseudofluid.nuf6", "Natural UF6");
+        this.add("hbmpseudofluid.pf6", "Plutonium Hexafluoride");
+        this.add("hbmpseudofluid.mud_heavy", "Heavy Sludge Fraction");
+        this.add("hbmpseudofluid.mud", "Poisonous Sludge Gas");
 
         this.add("fluid.trait.highly_corrosive", "[Strongly Corrosive]");
         this.add("fluid.trait.corrosive", "[Corrosive]");

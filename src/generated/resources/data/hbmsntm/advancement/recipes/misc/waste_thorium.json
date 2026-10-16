@@ -1,0 +1,32 @@
+{
+  "parent": "minecraft:recipes/root",
+  "criteria": {
+    "has_rod_zirnox_thorium_fuel_depleted": {
+      "conditions": {
+        "items": [
+          {
+            "items": "hbmsntm:rod_zirnox_thorium_fuel_depleted"
+          }
+        ]
+      },
+      "trigger": "minecraft:inventory_changed"
+    },
+    "has_the_recipe": {
+      "conditions": {
+        "recipe": "hbmsntm:waste_thorium"
+      },
+      "trigger": "minecraft:recipe_unlocked"
+    }
+  },
+  "requirements": [
+    [
+      "has_the_recipe",
+      "has_rod_zirnox_thorium_fuel_depleted"
+    ]
+  ],
+  "rewards": {
+    "recipes": [
+      "hbmsntm:waste_thorium"
+    ]
+  }
+}

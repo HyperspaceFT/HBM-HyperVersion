@@ -14,6 +14,9 @@ import net.minecraft.world.level.block.Blocks;
 import net.neoforged.neoforge.registries.DeferredBlock;
 import net.neoforged.neoforge.registries.DeferredItem;
 
+import static com.hbm.blocks.NtmBlocks.BLOCK_WASTE;
+import static com.hbm.blocks.NtmBlocks.BLOCK_WASTE_PAINTED;
+import static com.hbm.blocks.NtmBlocks.BLOCK_WASTE_VITRIFIED;
 import static com.hbm.blocks.NtmBlocks.BRICK_ASBESTOS;
 import static com.hbm.blocks.NtmBlocks.NUKE_FSTBMB;
 import static com.hbm.items.NtmItems.*;
@@ -208,6 +211,25 @@ public class HazardRegistry {
         HazardSystem.register(item(ROD_ZIRNOX_TRITIUM), makeData(RADIATION, 0.001F * rod_dual));
         HazardSystem.register(item(ROD_ZIRNOX_ZFB_MOX_DEPLETED), makeData(RADIATION, wst * rod_dual * 5F));
 
+        // Original HazardRegistry.java:255-263
+        registerOtherWaste(WASTE_NATURAL_URANIUM, wst * billet * 11.5F);
+        registerOtherWaste(WASTE_URANIUM, wst * billet * 10F);
+        registerOtherWaste(WASTE_THORIUM, wst * billet * 7.5F);
+        registerOtherWaste(WASTE_MOX, wst * billet * 10F);
+        registerOtherWaste(WASTE_PLUTONIUM, wst * billet * 12.5F);
+        registerOtherWaste(WASTE_U233, wst * billet * 10F);
+        registerOtherWaste(WASTE_U235, wst * billet * 11F);
+        registerOtherWaste(WASTE_SCHRABIDIUM, wst * billet * 15F);
+        registerOtherWaste(WASTE_ZFB_MOX, wst * billet * 5F);
+
+        // Original HazardRegistry.java:208-217; yellow_barrel and the *_tiny items have no NEO identity yet.
+        HazardSystem.register(item(NUCLEAR_WASTE), makeData(RADIATION, wst * ingot));
+        HazardSystem.register(item(BILLET_NUCLEAR_WASTE), makeData(RADIATION, wst * billet));
+        HazardSystem.register(item(NUCLEAR_WASTE_VITRIFIED), makeData(RADIATION, wstv * ingot));
+        HazardSystem.register(block(BLOCK_WASTE), makeData(RADIATION, wst * block));
+        HazardSystem.register(block(BLOCK_WASTE_PAINTED), makeData(RADIATION, wst * block));
+        HazardSystem.register(block(BLOCK_WASTE_VITRIFIED), makeData(RADIATION, wstv * block));
+
         HazardSystem.register(block(BRICK_ASBESTOS), makeData(ASBESTOS, 1F));
         HazardSystem.register(item(POWDER_COLTAN_ORE), makeData(ASBESTOS, 3F));
 
@@ -239,6 +261,16 @@ public class HazardRegistry {
         data.addEntry(new HazardEntry(RADIATION, base).addMod(new HazardModifierFuelRadiation(target)));
         if(blinding) data.addEntry(BLINDING, 20F);
         HazardSystem.register(MetaHelper.newStack(fuel, 1, meta), data);
+    }
+
+    /** Original registerOtherWaste (:629-636): cool waste (META 0) keeps 7.5% of the radiation, hot waste (META 1) is also hot. */
+    private static void registerOtherWaste(DeferredItem<Item> waste, float base) {
+        HazardSystem.register(MetaHelper.newStack(waste, 1, 0), makeData(RADIATION, base * 0.075F));
+
+        HazardData data = new HazardData();
+        data.addEntry(new HazardEntry(RADIATION, base));
+        data.addEntry(new HazardEntry(HOT, 5F));
+        HazardSystem.register(MetaHelper.newStack(waste, 1, 1), data);
     }
 
     private static Item item(DeferredItem<Item> item) { return item.get(); }

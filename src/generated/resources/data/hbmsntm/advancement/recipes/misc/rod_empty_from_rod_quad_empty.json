@@ -1,0 +1,32 @@
+{
+  "parent": "minecraft:recipes/root",
+  "criteria": {
+    "has_rod_quad_empty": {
+      "conditions": {
+        "items": [
+          {
+            "items": "hbmsntm:rod_quad_empty"
+          }
+        ]
+      },
+      "trigger": "minecraft:inventory_changed"
+    },
+    "has_the_recipe": {
+      "conditions": {
+        "recipe": "hbmsntm:rod_empty_from_rod_quad_empty"
+      },
+      "trigger": "minecraft:recipe_unlocked"
+    }
+  },
+  "requirements": [
+    [
+      "has_the_recipe",
+      "has_rod_quad_empty"
+    ]
+  ],
+  "rewards": {
+    "recipes": [
+      "hbmsntm:rod_empty_from_rod_quad_empty"
+    ]
+  }
+}

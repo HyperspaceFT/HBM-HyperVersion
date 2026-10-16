@@ -8,6 +8,8 @@ import net.minecraft.nbt.CompoundTag;
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.Level;
+import net.neoforged.api.distmarker.Dist;
+import net.neoforged.api.distmarker.OnlyIn;
 
 public class FlameCreator implements IParticleCreator {
 
@@ -35,6 +37,7 @@ public class FlameCreator implements IParticleCreator {
     }
 
     @Override
+    @OnlyIn(Dist.CLIENT)
     public void makeParticle(ClientLevel level, Player player, RandomSource rand, double x, double y, double z, CompoundTag tag) {
         FlamethrowerParticle particle = new FlamethrowerParticle(level, x, y, z, tag.getInt("meta"));
 

@@ -227,6 +227,10 @@ public class NtmBlockEntityTypes {
             "machine_crystallizer",
             () -> BlockEntityType.Builder.of(MachineCrystallizerBlockEntity::new, NtmBlocks.MACHINE_CRYSTALLIZER.get()).build(null));
 
+    public static final Supplier<BlockEntityType<MachineWasteDrumBlockEntity>> MACHINE_WASTE_DRUM = BLOCK_ENTITY_TYPES.register(
+            "machine_waste_drum",
+            () -> BlockEntityType.Builder.of(MachineWasteDrumBlockEntity::new, NtmBlocks.MACHINE_WASTE_DRUM.get()).build(null));
+
     public static final Supplier<BlockEntityType<MachineDieselBlockEntity>> MACHINE_DIESEL = BLOCK_ENTITY_TYPES.register(
             "machine_diesel",
             () -> BlockEntityType.Builder.of(
@@ -246,6 +250,12 @@ public class NtmBlockEntityTypes {
             () -> BlockEntityType.Builder.of(
                             MachineCentrifugeBlockEntity::new,
                             NtmBlocks.MACHINE_CENTRIFUGE.get())
+                    .build(null));
+    public static final Supplier<BlockEntityType<MachineGasCentrifugeBlockEntity>> MACHINE_GAS_CENTRIFUGE = BLOCK_ENTITY_TYPES.register(
+            "machine_gas_centrifuge",
+            () -> BlockEntityType.Builder.of(
+                            MachineGasCentrifugeBlockEntity::new,
+                            NtmBlocks.MACHINE_GAS_CENTRIFUGE.get())
                     .build(null));
     public static final Supplier<BlockEntityType<MachineChemicalPlantBlockEntity>> MACHINE_CHEMICAL_PLANT = BLOCK_ENTITY_TYPES.register(
             "machine_chemical_plant",

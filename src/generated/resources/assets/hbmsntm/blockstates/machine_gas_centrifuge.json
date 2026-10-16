@@ -1,0 +1,7 @@
+{
+  "variants": {
+    "": {
+      "model": "hbmsntm:block/machine_gas_centrifuge_particle"
+    }
+  }
+}

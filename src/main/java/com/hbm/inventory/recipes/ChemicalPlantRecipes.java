@@ -282,8 +282,10 @@ public class ChemicalPlantRecipes extends GenericRecipes<GenericRecipe> {
                 .inputFluids(new FluidStack(Fluids.PETROLEUM, 1000))
                 .inputItems(new ComparableStack(Blocks.GLASS_PANE))
                 .outputItems(MetaHelper.newStack(NtmItems.PART_GENERIC.get(), 16, PartGenericItem.Type.GLASS_POLARIZED.ordinal())));
+        // Original ChemicalPlantRecipes.java:379-382: two uranium billets (U.billet()), two sulfur, 500 mB hydrogen peroxide (Goal 20A
+        // aligned the billets; the row took two uranium powders before).
         this.register(new GenericRecipe("chem.yellowcake").setupNamed(250, 500L)
-                .inputItems(new ComparableStack(NtmItems.POWDER_URANIUM.get(), 2), new ComparableStack(NtmItems.SULFUR.get(), 2))
+                .inputItems(new ComparableStack(NtmItems.BILLET_URANIUM.get(), 2), new ComparableStack(NtmItems.SULFUR.get(), 2))
                 .inputFluids(new FluidStack(Fluids.PEROXIDE, 500))
                 .outputItems(new ItemStack(NtmItems.POWDER_YELLOWCAKE.get())));
         this.register(new GenericRecipe("chem.uf6").setupNamed(100, 500L)

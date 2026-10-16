@@ -7,6 +7,8 @@ import com.mojang.math.Axis;
 import net.minecraft.client.Minecraft;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
+import net.neoforged.api.distmarker.Dist;
+import net.neoforged.api.distmarker.OnlyIn;
 
 @NotableComments
 public class HbmAnimations {
@@ -49,7 +51,7 @@ public class HbmAnimations {
     public static Animation getRelevantAnim() { return getRelevantAnim(0); }
     public static Animation getRelevantAnim(int index) {
 
-        Player player = Minecraft.getInstance().player;
+        Player player = getClientPlayer();
         int slot = player.getInventory().selected;
         ItemStack stack = player.getMainHandItem();
 
@@ -68,6 +70,12 @@ public class HbmAnimations {
         }
 
         return null;
+    }
+
+    // Kept out of getRelevantAnim: a LocalPlayer value in an unstripped method makes the verifier load LocalPlayer on a dedicated server.
+    @OnlyIn(Dist.CLIENT)
+    private static Player getClientPlayer() {
+        return Minecraft.getInstance().player;
     }
 
     public static float[] getRelevantTransformation(String bus) { return getRelevantTransformation(bus, 0); }

@@ -21,6 +21,7 @@ import com.hbm.inventory.recipes.BlastFurnaceRecipes;
 import com.hbm.inventory.recipes.ChemicalPlantRecipes;
 import com.hbm.inventory.recipes.CentrifugeRecipes;
 import com.hbm.inventory.recipes.CrystallizerRecipes;
+import com.hbm.inventory.recipes.FuelPoolRecipes;
 import com.hbm.inventory.recipes.CrackingRecipes;
 import com.hbm.inventory.recipes.FractionRecipes;
 import com.hbm.inventory.recipes.CompressorRecipes;
@@ -64,6 +65,7 @@ public abstract class SerializableRecipe {
         recipeHandlers.add(new ShredderRecipes());
         recipeHandlers.add(new CentrifugeRecipes());
         recipeHandlers.add(new CrystallizerRecipes());
+        recipeHandlers.add(new FuelPoolRecipes());
         recipeHandlers.add(new CrackingRecipes());
         recipeHandlers.add(new FractionRecipes());
         recipeHandlers.add(new CompressorRecipes());

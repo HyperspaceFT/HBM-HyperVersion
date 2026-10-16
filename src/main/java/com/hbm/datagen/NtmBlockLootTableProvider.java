@@ -309,7 +309,9 @@ public class NtmBlockLootTableProvider extends BlockLootSubProvider {
         this.dropSelf(NtmBlocks.MACHINE_DIESEL.get());
         this.dropSelf(NtmBlocks.MACHINE_WOOD_BURNER.get());
         this.dropSelf(NtmBlocks.MACHINE_CENTRIFUGE.get());
+        this.dropSelf(NtmBlocks.MACHINE_GAS_CENTRIFUGE.get());
         this.dropSelf(NtmBlocks.MACHINE_CRYSTALLIZER.get());
+        this.dropSelf(NtmBlocks.MACHINE_WASTE_DRUM.get());
         this.dropSelf(NtmBlocks.MACHINE_CHEMICAL_PLANT.get());
         this.dropSelf(NtmBlocks.MACHINE_ARC_WELDER.get());
         this.dropSelf(NtmBlocks.MACHINE_SHREDDER.get());
