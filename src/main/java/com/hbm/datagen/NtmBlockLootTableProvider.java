@@ -264,11 +264,14 @@ public class NtmBlockLootTableProvider extends BlockLootSubProvider {
 
         this.dropSelf(NtmBlocks.REACTOR_ZIRNOX.get());
         // Original ZirnoxDestroyed.getDrops: 6 smooth concrete, 4 steel pipes, 2 steel grates, 6 debris_metal, 2 debris_graphite
-        // and 4 fallout. NEO has no debris_metal, debris_graphite or fallout item yet, so those three stacks are not dropped.
+        // and 4 fallout (the NEO item is fallout_pile, since hbmsntm:fallout is the fallout-layer block item); all six groups are present.
         this.add(NtmBlocks.ZIRNOX_DESTROYED.get(), block -> LootTable.lootTable()
                 .withPool(this.fixedDrop(block, NtmBlocks.CONCRETE_SMOOTH.get().asItem(), 6))
                 .withPool(this.fixedDrop(block, NtmItems.PIPE_STEEL.get(), 4))
-                .withPool(this.fixedDrop(block, NtmBlocks.STEEL_GRATE.get().asItem(), 2)));
+                .withPool(this.fixedDrop(block, NtmBlocks.STEEL_GRATE.get().asItem(), 2))
+                .withPool(this.fixedDrop(block, NtmItems.DEBRIS_METAL.get(), 6))
+                .withPool(this.fixedDrop(block, NtmItems.DEBRIS_GRAPHITE.get(), 2))
+                .withPool(this.fixedDrop(block, NtmItems.FALLOUT_PILE.get(), 4)));
 
         this.dropSelf(NtmBlocks.RED_CABLE.get());
 

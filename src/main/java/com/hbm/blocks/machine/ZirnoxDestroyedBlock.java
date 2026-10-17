@@ -63,20 +63,24 @@ public class ZirnoxDestroyedBlock extends DummyableBlock {
         BlockPos posAbove = pos.above();
         BlockState stateAbove = level.getBlockState(posAbove);
 
+        // foam_layer (the original's second foam block) is not in NEO yet; deferred with the foam/extinguisher tools.
         if(stateAbove.isAir()) {
             if(random.nextInt(10) == 0) level.setBlock(posAbove, NtmBlocks.GAS_MELTDOWN.get().defaultBlockState(), 3);
+        } else if(stateAbove.is(NtmBlocks.BLOCK_FOAM.get())) {
+            if(random.nextInt(25) == 0) {
+                BlockPos core = this.findCore(level, pos);
+                // extinguish() calls setChanged so the cleared fire is saved (REVIEW-FIXES-ZIRNOX).
+                if(core != null && level.getBlockEntity(core) instanceof ZirnoxDestroyedBlockEntity wreck) wreck.extinguish();
+            }
         }
 
-        if(random.nextInt(10) == 0 && stateAbove.isAir()) {
+        // Like the original, this second roll re-reads the block above, so it cannot overwrite the gas block placed just above.
+        if(random.nextInt(10) == 0 && level.getBlockState(posAbove).isAir()) {
             level.setBlock(posAbove, NtmBlocks.GAS_MELTDOWN.get().defaultBlockState(), 3);
         }
 
-        // Local deviation: the original ZirnoxDestroyed schedules a single tick in onBlockAdded and never reschedules; its
-        // updateTick ends in the empty 1.7.10 Block.updateTick and the block has no random ticks, so it emits gas only once.
-        // NEO keeps rescheduling because the meltdown gas (GasMeltdownBlock: radiation contamination plus chunk radiation) is
-        // currently the wreck's only lingering hazard; the original TileEntityZirnoxDestroyed radiation (500,000/75,000 rads,
-        // range 100) is not ported. Switch to the original one-shot schedule in the same batch that ports the wreck radiation.
-        level.scheduleTick(pos, this, 100 + level.random.nextInt(20));
+        // The original schedules only once in onBlockAdded and never reschedules; the wreck's lingering hazard is now
+        // ZirnoxDestroyedBlockEntity.radiate. Restored to the original one-shot schedule by Goal21B (migration/GOAL21B.md).
     }
 
     @Override

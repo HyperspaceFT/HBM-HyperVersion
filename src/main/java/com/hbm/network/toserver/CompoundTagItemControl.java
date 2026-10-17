@@ -30,6 +30,9 @@ public record CompoundTagItemControl(CompoundTag tag) implements CustomPacketPay
     };
 
     public static void handleServer(CompoundTagItemControl packet, IPayloadContext context) {
+        // readNbt() yields null for an empty (TAG_End) payload; drop it before any receiver sees it, as the original NBTItemControlPacket does.
+        if(packet.tag == null) return;
+
         context.enqueueWork(() -> {
             Player player = context.player();
 

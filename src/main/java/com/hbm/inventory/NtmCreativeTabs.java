@@ -449,6 +449,7 @@ public class NtmCreativeTabs {
                         output.accept(NtmItems.OIL_TAR_WOOD);
                         output.accept(NtmItems.OIL_TAR_WAX);
                         output.accept(NtmItems.DUST);
+                        output.accept(NtmItems.FALLOUT_PILE);
                         output.accept(NtmItems.CRYSTAL_IRON);
                         output.accept(NtmItems.CRYSTAL_GOLD);
                         output.accept(NtmItems.CRYSTAL_REDSTONE);
@@ -617,6 +618,12 @@ public class NtmCreativeTabs {
                         addMetaItems(output, NtmItems.WASTE_U235.get());
                         addMetaItems(output, NtmItems.WASTE_SCHRABIDIUM.get());
                         addMetaItems(output, NtmItems.WASTE_ZFB_MOX.get());
+                        output.accept(NtmItems.DEBRIS_METAL);
+                        output.accept(NtmItems.DEBRIS_GRAPHITE);
+                        output.accept(NtmItems.DEBRIS_CONCRETE);
+                        output.accept(NtmItems.DEBRIS_EXCHANGER);
+                        output.accept(NtmItems.DEBRIS_SHRAPNEL);
+                        output.accept(NtmItems.DEBRIS_ELEMENT);
 
                         output.accept(NtmItems.REACHER);
                         output.accept(NtmItems.MELTDOWN_TOOL);

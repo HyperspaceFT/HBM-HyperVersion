@@ -63,7 +63,8 @@ public class EntityEffectHandler {
 
         if(entity.isInWater()) radiation *= NtmConfig.COMMON.CRATER_WATER_MULT.get();
 
-        if(radiation > 0) {
+        // Server only, as in the original EntityEffectHandler.onUpdate (!isRemote around the crater biome contamination)
+        if(radiation > 0 && !entity.level().isClientSide) {
             ContaminationUtil.contaminate(entity, HazardType.RADIATION, ContaminationType.CREATIVE,(float) radiation / 20F);
         }
 

@@ -386,6 +386,12 @@ public class ShredderRecipes extends SerializableRecipe {
         // Upstream's other ore fragments wait for their materials; Goal 10A restores the cobalt one.
         // Goal 12B's coltan fragment is a material recipe (registerMaterialRecipes), as upstream treats it as an ingot.
         setRecipe(new ItemStack(NtmItems.FRAGMENT_COBALT.get()), new ItemStack(NtmItems.POWDER_COBALT_TINY.get(), 1));
+        // Debris shredding, original ShredderRecipes.java:348-353. debris_concrete -> 2 scrap_nuclear (:348) and debris_element -> 4
+        // scrap_nuclear (:351) are deferred: scrap_nuclear is not registered in NEO.
+        setRecipe(new ItemStack(NtmItems.DEBRIS_SHRAPNEL.get()), new ItemStack(NtmItems.POWDER_STEEL_TINY.get(), 5));
+        setRecipe(new ItemStack(NtmItems.DEBRIS_EXCHANGER.get()), new ItemStack(NtmItems.POWDER_STEEL.get(), 3));
+        setRecipe(new ItemStack(NtmItems.DEBRIS_METAL.get()), new ItemStack(NtmItems.POWDER_STEEL_TINY.get(), 3));
+        setRecipe(new ItemStack(NtmItems.DEBRIS_GRAPHITE.get()), new ItemStack(NtmItems.POWDER_COAL.get(), 1));
     }
 
     private static void registerBasaltRecipe(OreBasaltBlock.BasaltOreType type, ItemStack output) {

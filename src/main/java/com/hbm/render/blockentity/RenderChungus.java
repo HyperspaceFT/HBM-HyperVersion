@@ -3,6 +3,7 @@ package com.hbm.render.blockentity;
 import com.hbm.blockentity.machine.ChungusBlockEntity;
 import com.hbm.blocks.DummyableBlock;
 import com.hbm.blocks.NtmBlocks;
+import com.hbm.inventory.fluid.Fluids;
 import com.hbm.main.ResourceManager;
 import com.hbm.render.item.ItemRenderBase;
 import com.hbm.render.util.RenderContext;
@@ -15,6 +16,7 @@ import net.minecraft.core.Direction;
 import net.minecraft.util.Mth;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.phys.AABB;
 
 public class RenderChungus extends BlockEntityRendererNT<ChungusBlockEntity> implements IBEWLRProvider {
 
@@ -42,7 +44,7 @@ public class RenderChungus extends BlockEntityRendererNT<ChungusBlockEntity> imp
 
         RenderContext.pushPose();
         RenderContext.translate(0F, 0F, 4.5F);
-        RenderContext.mulPose(Axis.XP.rotationDegrees(15 - (be.tanks[0].getTankType().getID() - 2) * 10));
+        RenderContext.mulPose(Axis.XP.rotationDegrees(15 - (be.tanks[0].getTankType().getID() - Fluids.STEAM.getID()) * 10));
         RenderContext.translate(0F, 0F, -4.5F);
         ResourceManager.chungus.renderPart("Lever");
         RenderContext.popPose();
@@ -62,6 +64,14 @@ public class RenderChungus extends BlockEntityRendererNT<ChungusBlockEntity> imp
         }
         return packedLight;
     }
+
+    @Override
+    public AABB getRenderBoundingBox(ChungusBlockEntity be) {
+        return be.getRenderBoundingBox();
+    }
+
+    /** Without this, 1.21 only renders the turbine while the core's chunk section is visible, whatever the bounding box. */
+    @Override public boolean shouldRenderOffScreen(ChungusBlockEntity be) { return true; }
 
     @Override
     public Item getItemForRenderer() {

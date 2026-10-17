@@ -62,8 +62,8 @@ public class MachineChungusBlock extends DummyableBlock implements ITooltipProvi
         return (lvl, pos, st, be) -> { if(be instanceof ITickable tickable) tickable.updateEntity(); };
     }
 
-    public static final MapCodec<MachineChemicalPlantBlock> CODEC = simpleCodec(MachineChemicalPlantBlock::new);
-    @Override public MapCodec<MachineChemicalPlantBlock> codec() { return CODEC; }
+    public static final MapCodec<MachineChungusBlock> CODEC = simpleCodec(MachineChungusBlock::new);
+    @Override public MapCodec<MachineChungusBlock> codec() { return CODEC; }
 
     @Override public int[] getDimensions() { return new int[] { 3, 0, 0, 3, 2, 2 }; }
     @Override public int getOffset() { return 3; }
@@ -78,7 +78,7 @@ public class MachineChungusBlock extends DummyableBlock implements ITooltipProvi
             BlockEntity blockEntity = level.getBlockEntity(corePos);
             if(blockEntity instanceof ChungusBlockEntity be) {
 
-                Direction dir = state.getValue(FACING);
+                Direction dir = level.getBlockState(corePos).getValue(FACING); //core direction; a bezel's own FACING points at the next block toward the core
                 Direction turn = dir.getCounterClockWise(Axis.Y);
 
                 BlockPos bePos = be.getBlockPos();
@@ -95,7 +95,7 @@ public class MachineChungusBlock extends DummyableBlock implements ITooltipProvi
                             SoundUtils.playAtVec3(level, Vec3.atCenterOf(pos), NtmSoundEvents.TURBINE_LEVER.get(), SoundSource.BLOCKS, 1.5F, 1F);
                             be.onLeverPull();
                         } else {
-                            player.sendSystemMessage(Component.literal("Cannot change compressor setting while operational!").withStyle(ChatFormatting.RED));
+                            player.sendSystemMessage(Component.translatable("machine_chungus.compressor_locked").withStyle(ChatFormatting.RED));
                         }
                     }
 

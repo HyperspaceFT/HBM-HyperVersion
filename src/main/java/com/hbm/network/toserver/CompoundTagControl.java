@@ -32,6 +32,9 @@ public record CompoundTagControl(CompoundTag tag, BlockPos pos) implements Custo
     };
 
     public static void handleServer(CompoundTagControl packet, IPayloadContext context) {
+        // readNbt() yields null for an empty (TAG_End) payload; drop it before any receiver sees it, as the original NBTControlPacket does.
+        if(packet.tag == null) return;
+
         context.enqueueWork(() -> {
             Player player = context.player();
 

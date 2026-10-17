@@ -56,10 +56,10 @@ public class NukeBalefireBlockEntity extends MachineBaseBlockEntity implements I
                 if (timer % 20 == 0) {
                     level.playSound(null, this.worldPosition, NtmSoundEvents.FSTBMB_PING.get(), SoundSource.PLAYERS, 5.0F, 1.0F);
                 }
-            }
 
-            if (timer <= 0) {
-                this.explode();
+                if (timer <= 0) {
+                    this.explode();
+                }
             }
 
             this.networkPackNT(250);
@@ -95,7 +95,11 @@ public class NukeBalefireBlockEntity extends MachineBaseBlockEntity implements I
             started = true;
         }
         if (tag.contains("setTimer")) {
-            timer = tag.getInt("timer") * 20;
+            // The screen clamps to 1..999, but the packet comes from the client: original TileEntityNukeBalefire.handleButtonPacket checks the range on the server.
+            int value = tag.getInt("timer");
+            if (value >= 1 && value <= 999) {
+                timer = value * 20;
+            }
         }
     }
 

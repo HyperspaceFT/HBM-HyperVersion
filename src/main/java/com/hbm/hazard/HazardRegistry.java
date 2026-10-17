@@ -5,14 +5,20 @@ import com.hbm.hazard.modifier.HazardModifierFuelRadiation;
 import com.hbm.hazard.type.*;
 import com.hbm.inventory.MetaHelper;
 import com.hbm.items.NtmItems;
+import com.hbm.items.RawIngotItem;
 import com.hbm.items.machine.BreedingRodItem.BreedingRodType;
 import com.hbm.items.machine.ZirnoxRodItem.ZirnoxType;
 import net.minecraft.world.item.Item;
+import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
+import net.minecraft.world.level.ItemLike;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.Blocks;
 import net.neoforged.neoforge.registries.DeferredBlock;
 import net.neoforged.neoforge.registries.DeferredItem;
+
+import java.util.ArrayList;
+import java.util.List;
 
 import static com.hbm.blocks.NtmBlocks.BLOCK_WASTE;
 import static com.hbm.blocks.NtmBlocks.BLOCK_WASTE_PAINTED;
@@ -84,6 +90,7 @@ public class HazardRegistry {
     public static final float u235 = 1.0F;
     public static final float u238 = 0.25F;
     public static final float uf = 0.5F;
+    public static final float uzh = 0.125F; // Original HazardRegistry.java:93
     public static final float np237 = 2.5F;
     public static final float npf = 1.5F;
     public static final float pu = 7.5F;
@@ -222,6 +229,62 @@ public class HazardRegistry {
         registerOtherWaste(WASTE_SCHRABIDIUM, wst * billet * 15F);
         registerOtherWaste(WASTE_ZFB_MOX, wst * billet * 5F);
 
+        // Original HazardRegistry.java:281-287 and :475 (the wreck debris and the fallout item); debris_fuel is deferred with RBMK.
+        HazardSystem.register(item(DEBRIS_GRAPHITE), makeData().addEntry(RADIATION, 70F).addEntry(HOT, 5F));
+        HazardSystem.register(item(DEBRIS_METAL), makeData(RADIATION, 5F));
+        HazardSystem.register(item(DEBRIS_CONCRETE), makeData(RADIATION, 30F));
+        HazardSystem.register(item(DEBRIS_EXCHANGER), makeData(RADIATION, 25F));
+        HazardSystem.register(item(DEBRIS_SHRAPNEL), makeData(RADIATION, 2.5F));
+        HazardSystem.register(item(DEBRIS_ELEMENT), makeData(RADIATION, 100F));
+        HazardSystem.register(item(FALLOUT_PILE), makeData(RADIATION, fo * powder));
+
+        // Original HazardRegistry.java:289-329, fuel nuggets, billets, ingots and blocks (item-level, no mutex)
+        HazardSystem.register(item(NUGGET_URANIUM_FUEL), makeData(RADIATION, uf * nugget)); // :289
+        HazardSystem.register(item(BILLET_URANIUM_FUEL), makeData(RADIATION, uf * billet)); // :290
+        HazardSystem.register(item(INGOT_URANIUM_FUEL), makeData(RADIATION, uf * ingot)); // :291
+        HazardSystem.register(block(NtmBlocks.BLOCK_URANIUM_FUEL), makeData(RADIATION, uf * block)); // :292
+        HazardSystem.register(item(BILLET_UZH), makeData(RADIATION, uzh * billet)); // :293
+
+        HazardSystem.register(item(NUGGET_PLUTONIUM_FUEL), makeData(RADIATION, puf * nugget)); // :295
+        HazardSystem.register(item(BILLET_PLUTONIUM_FUEL), makeData(RADIATION, puf * billet)); // :296
+        HazardSystem.register(item(INGOT_PLUTONIUM_FUEL), makeData(RADIATION, puf * ingot)); // :297
+        HazardSystem.register(block(NtmBlocks.BLOCK_PLUTONIUM_FUEL), makeData(RADIATION, puf * block)); // :298
+
+        HazardSystem.register(item(NUGGET_THORIUM_FUEL), makeData(RADIATION, thf * nugget)); // :300
+        HazardSystem.register(item(BILLET_THORIUM_FUEL), makeData(RADIATION, thf * billet)); // :301
+        HazardSystem.register(item(INGOT_THORIUM_FUEL), makeData(RADIATION, thf * ingot)); // :302
+        HazardSystem.register(block(NtmBlocks.BLOCK_THORIUM_FUEL), makeData(RADIATION, thf * block)); // :303
+
+        HazardSystem.register(item(NUGGET_NEPTUNIUM_FUEL), makeData(RADIATION, npf * nugget)); // :305
+        HazardSystem.register(item(BILLET_NEPTUNIUM_FUEL), makeData(RADIATION, npf * billet)); // :306
+        HazardSystem.register(item(INGOT_NEPTUNIUM_FUEL), makeData(RADIATION, npf * ingot)); // :307
+
+        HazardSystem.register(item(NUGGET_MOX_FUEL), makeData(RADIATION, mox * nugget)); // :309
+        HazardSystem.register(item(BILLET_MOX_FUEL), makeData(RADIATION, mox * billet)); // :310
+        HazardSystem.register(item(INGOT_MOX_FUEL), makeData(RADIATION, mox * ingot)); // :311
+        HazardSystem.register(block(NtmBlocks.BLOCK_MOX_FUEL), makeData(RADIATION, mox * block)); // :312
+
+        HazardSystem.register(item(NUGGET_AMERICIUM_FUEL), makeData(RADIATION, amf * nugget)); // :314
+        HazardSystem.register(item(BILLET_AMERICIUM_FUEL), makeData(RADIATION, amf * billet)); // :315
+        HazardSystem.register(item(INGOT_AMERICIUM_FUEL), makeData(RADIATION, amf * ingot)); // :316
+
+        HazardSystem.register(item(NUGGET_SCHRABIDIUM_FUEL), makeData().addEntry(RADIATION, saf * nugget).addEntry(BLINDING, 5F * nugget)); // :318
+        HazardSystem.register(item(BILLET_SCHRABIDIUM_FUEL), makeData().addEntry(RADIATION, saf * billet).addEntry(BLINDING, 5F * billet)); // :319
+        HazardSystem.register(item(INGOT_SCHRABIDIUM_FUEL), makeData().addEntry(RADIATION, saf * ingot).addEntry(BLINDING, 5F * ingot)); // :320
+        HazardSystem.register(block(NtmBlocks.BLOCK_SCHRABIDIUM_FUEL), makeData().addEntry(RADIATION, saf * block).addEntry(BLINDING, 5F * block)); // :321
+
+        HazardSystem.register(item(NUGGET_HES), makeData(RADIATION, saf * nugget)); // :323
+        HazardSystem.register(item(BILLET_HES), makeData(RADIATION, saf * billet)); // :324
+        HazardSystem.register(item(INGOT_HES), makeData(RADIATION, saf * ingot)); // :325
+
+        HazardSystem.register(item(NUGGET_LES), makeData(RADIATION, saf * nugget)); // :327
+        HazardSystem.register(item(BILLET_LES), makeData(RADIATION, saf * billet)); // :328
+        HazardSystem.register(item(INGOT_LES), makeData(RADIATION, saf * ingot)); // :329
+
+        // Original HazardRegistry.java:473-474, yellowcake (item-level)
+        HazardSystem.register(item(POWDER_YELLOWCAKE), makeData(RADIATION, yc * powder));
+        HazardSystem.register(block(NtmBlocks.BLOCK_YELLOWCAKE), makeData(RADIATION, yc * block * powder_mult));
+
         // Original HazardRegistry.java:208-217; yellow_barrel and the *_tiny items have no NEO identity yet.
         HazardSystem.register(item(NUCLEAR_WASTE), makeData(RADIATION, wst * ingot));
         HazardSystem.register(item(BILLET_NUCLEAR_WASTE), makeData(RADIATION, wst * billet));
@@ -248,6 +311,107 @@ public class HazardRegistry {
         HazardSystem.register(item(SOLINIUM_CORE), makeData().addEntry(RADIATION, sa327 * nugget * 8).addEntry(BLINDING, 45F));
 
         HazardSystem.register(block(NUKE_FSTBMB), makeData(DIGAMMA, 0.01F));
+
+        registerMaterials();
+    }
+
+    /**
+     * Original OreDictManager.registerOres, the DictFrame rows that carry hazards (RADIOACTIVE :344-374, HAZARDS :451-455,
+     * FISSION FRAGMENTS :487-495). NEO has no ore dictionary, so each frame is registered on the existing NEO item or block of
+     * every shape. Ore blocks are never registered (Goal21 decision 13; the original blacklists the U and TH232 ore keys at
+     * HazardRegistry.java:517-518). Shapes without a NEO identity are skipped, see migration/GOAL21D.md.
+     */
+    private static void registerMaterials() {
+        frame().rad(u).nugget(NUGGET_URANIUM).billet(BILLET_URANIUM).ingot(INGOT_URANIUM).dust(POWDER_URANIUM).block(NtmBlocks.BLOCK_URANIUM); // :347
+        frame().rad(u233).nugget(NUGGET_U233).billet(BILLET_U233).ingot(INGOT_U233).block(NtmBlocks.BLOCK_U233); // :348
+        frame().rad(u235).nugget(NUGGET_U235).billet(BILLET_U235).ingot(INGOT_U235).block(NtmBlocks.BLOCK_U235); // :349
+        frame().rad(u238).nugget(NUGGET_U238).billet(BILLET_U238).ingot(INGOT_U238).block(NtmBlocks.BLOCK_U238); // :350
+        frame().rad(th232).nugget(NUGGET_TH232).billet(BILLET_TH232).ingot(INGOT_TH232).dust(POWDER_THORIUM).block(NtmBlocks.BLOCK_THORIUM); // :351
+        frame().rad(pu).nugget(NUGGET_PLUTONIUM).billet(BILLET_PLUTONIUM).ingot(INGOT_PLUTONIUM).dust(POWDER_PLUTONIUM).block(NtmBlocks.BLOCK_PLUTONIUM); // :352
+        frame().rad(purg).nugget(NUGGET_PU_MIX).billet(BILLET_PU_MIX).ingot(INGOT_PU_MIX).block(NtmBlocks.BLOCK_PU_MIX); // :353
+        frame().rad(pu238).hot(3F).nugget(NUGGET_PU238).billet(BILLET_PU238).ingot(INGOT_PU238).block(NtmBlocks.BLOCK_PU238); // :354
+        frame().rad(pu239).nugget(NUGGET_PU239).billet(BILLET_PU239).ingot(INGOT_PU239).block(NtmBlocks.BLOCK_PU239); // :355
+        frame().rad(pu240).nugget(NUGGET_PU240).billet(BILLET_PU240).ingot(INGOT_PU240).block(NtmBlocks.BLOCK_PU240); // :356
+        frame().rad(pu241).nugget(NUGGET_PU241).billet(BILLET_PU241).ingot(INGOT_PU241); // :357, the block is commented out in the original
+        frame().rad(am241).nugget(NUGGET_AM241).billet(BILLET_AM241).ingot(INGOT_AM241); // :358
+        frame().rad(am242).nugget(NUGGET_AM242).billet(BILLET_AM242).ingot(INGOT_AM242); // :359
+        frame().rad(amrg).nugget(NUGGET_AM_MIX).billet(BILLET_AM_MIX).ingot(INGOT_AM_MIX); // :360
+        frame().rad(np237).nugget(NUGGET_NEPTUNIUM).billet(BILLET_NEPTUNIUM).ingot(INGOT_NEPTUNIUM).dust(POWDER_NEPTUNIUM).block(NtmBlocks.BLOCK_NEPTUNIUM); // :361
+        frame().rad(po210).hot(3F).nugget(NUGGET_POLONIUM).billet(BILLET_POLONIUM).ingot(INGOT_POLONIUM).dust(POWDER_POLONIUM).block(NtmBlocks.BLOCK_POLONIUM); // :362
+        frame().rad(tc99).nugget(NUGGET_TECHNETIUM).billet(BILLET_TECHNETIUM).ingot(INGOT_TECHNETIUM); // :363
+        frame().rad(ra226).nugget(NUGGET_RA226).billet(BILLET_RA226).ingot(INGOT_RA226).dust(POWDER_RA226).block(NtmBlocks.BLOCK_RA226); // :364
+        frame().rad(ac227).nugget(NUGGET_ACTINIUM).billet(BILLET_ACTINIUM).ingot(INGOT_ACTINIUM).dust(POWDER_ACTINIUM).block(NtmBlocks.BLOCK_ACTINIUM).dustSmall(POWDER_ACTINIUM_TINY); // :365
+        frame().rad(co60).hot(1F).nugget(NUGGET_CO60).billet(BILLET_CO60).ingot(INGOT_CO60).dust(POWDER_CO60); // :366
+        frame().rad(au198).hot(5F).nugget(NUGGET_AU198).billet(BILLET_AU198).ingot(INGOT_AU198).dust(POWDER_AU198); // :367
+        frame().rad(pb209).blinding(50F).hot(7F).nugget(NUGGET_PB209).billet(BILLET_PB209).ingot(INGOT_PB209); // :368
+        frame().rad(sa326).blinding(50F).nugget(NUGGET_SCHRABIDIUM).billet(BILLET_SCHRABIDIUM).ingot(INGOT_SCHRABIDIUM).dust(POWDER_SCHRABIDIUM).plate(PLATE_SCHRABIDIUM).block(NtmBlocks.BLOCK_SCHRABIDIUM); // :369, NEO has no cast plate
+        frame().rad(sa327).blinding(50F).nugget(NUGGET_SOLINIUM).billet(BILLET_SOLINIUM).ingot(INGOT_SOLINIUM).block(NtmBlocks.BLOCK_SOLINIUM); // :370
+        frame().rad(sb).blinding(50F).ingot(INGOT_SCHRABIDATE).dust(POWDER_SCHRABIDATE).block(NtmBlocks.BLOCK_SCHRABIDATE); // :371
+        frame().rad(sr).blinding(50F).ingot(INGOT_SCHRARANIUM).block(NtmBlocks.BLOCK_SCHRARANIUM); // :372
+        frame().rad(gh336).nugget(NUGGET_GH336).billet(BILLET_GH336).ingot(INGOT_GH336); // :373
+        frame().rad(mud).ingot(INGOT_MUD); // :374
+
+        // :454-455; hazNugget()/hazIngot() only register ore keys, which reach the original's autogen nugget_raw/ingot_raw of
+        // Mats.MAT_LITHIUM/MAT_SODIUM (Mats.java:135,139; OreDictManager.java:550-551). NEO has the sodium ingot as ingot_raw meta 1100
+        // and no lithium or sodium nugget.
+        frame().hydro(1F).ingot(LITHIUM).dustSmall(POWDER_LITHIUM_TINY).dust(POWDER_LITHIUM).block(NtmBlocks.BLOCK_LITHIUM); // :454
+        frame().hydro(1F).ingot(rawIngot(RawIngotItem.Type.SODIUM)).dust(POWDER_SODIUM); // :455
+
+        // :490; hazIngot() and hazNugget() reach the original's autogen strontium ingot and nugget (Mats.MAT_STRONTIUM, Mats.java:137),
+        // which are NEO's ingot_raw meta 3800 and its dedicated nugget_strontium.
+        frame().hot(1F).hydro(1F).ingot(rawIngot(RawIngotItem.Type.STRONTIUM)).dust(POWDER_STRONTIUM).nugget(NUGGET_STRONTIUM); // :490
+        frame().rad(sr90).hot(1F).hydro(1F).dustSmall(POWDER_SR90_TINY).dust(POWDER_SR90).ingot(INGOT_SR90).billet(BILLET_SR90).nugget(NUGGET_SR90); // :491
+        frame().rad(i131).hot(1F).dustSmall(POWDER_I131_TINY).dust(POWDER_I131); // :492
+        frame().rad(xe135).hot(10F).dustSmall(POWDER_XE135_TINY).dust(POWDER_XE135); // :493
+        frame().rad(cs137).hot(3F).hydro(3F).dustSmall(POWDER_CS137_TINY).dust(POWDER_CS137); // :494
+        frame().rad(at209).hot(20F).dust(POWDER_AT209); // :495
+    }
+
+    private static Frame frame() { return new Frame(); }
+    private static ItemStack rawIngot(RawIngotItem.Type type) { return MetaHelper.newStack(INGOT_RAW, type.meta); }
+
+    /**
+     * Original OreDictManager.DictFrame (:737-962): rad/hot/hydro/blinding collect the frame's entries (:791-800), each shape method
+     * sets hazMult (:838-886), and registerHazards (:933-944) registers a mutex 0b1 copy in which every entry is cloned with hazMult.
+     */
+    private static class Frame {
+        private final List<HazardEntry> hazards = new ArrayList<>();
+
+        Frame rad(float rad) { return haz(new HazardEntry(RADIATION, rad)); }
+        Frame hot(float time) { return haz(new HazardEntry(HOT, time)); }
+        Frame blinding(float time) { return haz(new HazardEntry(BLINDING, time)); }
+        Frame hydro(float h) { return haz(new HazardEntry(HYDROACTIVE, h)); }
+
+        private Frame haz(HazardEntry hazard) {
+            hazards.add(hazard);
+            return this;
+        }
+
+        Frame nugget(ItemLike... things) { return shape(HazardRegistry.nugget, things); }
+        Frame billet(ItemLike... things) { return shape(HazardRegistry.billet, things); }
+        Frame ingot(ItemLike... things) { return shape(HazardRegistry.ingot, things); }
+        Frame ingot(ItemStack... stacks) { return shape(HazardRegistry.ingot, stacks); }
+        Frame dustSmall(ItemLike... things) { return shape(powder_tiny, things); }
+        Frame dust(ItemLike... things) { return shape(powder, things); }
+        Frame plate(ItemLike... things) { return shape(HazardRegistry.plate, things); }
+        Frame block(ItemLike... things) { return shape(HazardRegistry.block, things); }
+
+        private Frame shape(float hazMult, ItemLike... things) {
+            for(ItemLike thing : things) HazardSystem.register(thing.asItem(), data(hazMult));
+            return this;
+        }
+
+        /** Meta items (ingot_raw) go to the stack map, like the original's per-meta ore dictionary entries. */
+        private Frame shape(float hazMult, ItemStack... stacks) {
+            for(ItemStack stack : stacks) HazardSystem.register(stack, data(hazMult));
+            return this;
+        }
+
+        private HazardData data(float hazMult) {
+            HazardData data = new HazardData().setMutex(0b1);
+            for(HazardEntry hazard : hazards) data.addEntry(hazard.clone(hazMult));
+            return data;
+        }
     }
 
     private static void registerBreedingRodRadiation(BreedingRodType type, float base) {

@@ -741,6 +741,14 @@ public class NtmItemModelProvider extends ItemModelProvider {
         this.basicItem(NtmItems.WASTE_SCHRABIDIUM.get());
         this.basicItem(NtmItems.WASTE_ZFB_MOX.get());
 
+        this.basicItem(NtmItems.DEBRIS_METAL.get());
+        this.basicItem(NtmItems.DEBRIS_GRAPHITE.get());
+        this.basicItem(NtmItems.DEBRIS_CONCRETE.get());
+        this.basicItem(NtmItems.DEBRIS_EXCHANGER.get());
+        this.basicItem(NtmItems.DEBRIS_SHRAPNEL.get());
+        this.basicItem(NtmItems.DEBRIS_ELEMENT.get());
+        this.basicItem(NtmItems.FALLOUT_PILE.get());
+
         this.basicItem(NtmItems.SPAWN_DUCK.get());
 
         this.basicItem(NtmItems.DESIGNATOR.get());

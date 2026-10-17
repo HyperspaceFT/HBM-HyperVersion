@@ -251,6 +251,8 @@ public class ResourceManager {
     //ZIRNOX
     public static final ResourceLocation ZIRNOX_TEX = NuclearTechMod.withDefaultNamespace("textures/models/zirnox.png");
     public static final ResourceLocation ZIRNOX_DESTROYED_TEX = NuclearTechMod.withDefaultNamespace("textures/models/zirnox_destroyed.png");
+    public static final ResourceLocation ZIRNOX_DEB_ELEMENT_TEX = NuclearTechMod.withDefaultNamespace("textures/models/machines/zirnox_deb_element.png");
+    public static final ResourceLocation BLOCK_GRAPHITE_TEX = NuclearTechMod.withDefaultNamespace("textures/block/block_graphite.png");
 
     public static final ResourceLocation WHITE_TEX = NuclearTechMod.withDefaultNamespace("textures/models/white.png");
 
@@ -412,6 +414,12 @@ public class ResourceManager {
     // ZIRNOX
     public static IModelCustom zirnox;
     public static IModelCustom zirnox_destroyed;
+    public static IModelCustom deb_zirnox_blank;
+    public static IModelCustom deb_zirnox_concrete;
+    public static IModelCustom deb_zirnox_element;
+    public static IModelCustom deb_zirnox_exchanger;
+    public static IModelCustom deb_zirnox_shrapnel;
+    public static IModelCustom deb_graphite;
 
     public static void init() {
 
@@ -557,5 +565,11 @@ public class ResourceManager {
 
         zirnox = new HFRWavefrontObject("models/obj/zirnox.obj").asVBO();
         zirnox_destroyed = new HFRWavefrontObject("models/obj/zirnox_destroyed.obj").asVBO();
+        deb_zirnox_blank = new HFRWavefrontObject("models/obj/zirnox/deb_blank.obj").asVBO();
+        deb_zirnox_concrete = new HFRWavefrontObject("models/obj/zirnox/deb_concrete.obj").asVBO();
+        deb_zirnox_element = new HFRWavefrontObject("models/obj/zirnox/deb_element.obj").asVBO();
+        deb_zirnox_exchanger = new HFRWavefrontObject("models/obj/zirnox/deb_exchanger.obj").asVBO();
+        deb_zirnox_shrapnel = new HFRWavefrontObject("models/obj/zirnox/deb_shrapnel.obj").asVBO();
+        deb_graphite = new HFRWavefrontObject("models/obj/projectiles/deb_graphite.obj").asVBO();
     }
 }

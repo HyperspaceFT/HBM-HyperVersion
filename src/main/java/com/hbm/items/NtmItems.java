@@ -645,6 +645,16 @@ public class NtmItems {
     public static final DeferredItem<Item> WASTE_SCHRABIDIUM = ITEMS.register("waste_schrabidium", () -> new DepletedFuelItem(new Item.Properties()));
     public static final DeferredItem<Item> WASTE_ZFB_MOX = ITEMS.register("waste_zfb_mox", () -> new DepletedFuelItem(new Item.Properties()));
 
+    // ZIRNOX wreck drops: original ModItems.java:1091-1097 (debris_fuel deferred with RBMK) and :461 (item `fallout`; the NEO id is
+    // fallout_pile because hbmsntm:fallout is the fallout-layer BlockItem registered by NtmBlocks.register, NtmBlocks.java:255)
+    public static final DeferredItem<Item> DEBRIS_METAL = ITEMS.register("debris_metal", () -> new Item(new Item.Properties()));
+    public static final DeferredItem<Item> DEBRIS_GRAPHITE = ITEMS.register("debris_graphite", () -> new Item(new Item.Properties()));
+    public static final DeferredItem<Item> DEBRIS_CONCRETE = ITEMS.register("debris_concrete", () -> new Item(new Item.Properties()));
+    public static final DeferredItem<Item> DEBRIS_EXCHANGER = ITEMS.register("debris_exchanger", () -> new Item(new Item.Properties()));
+    public static final DeferredItem<Item> DEBRIS_SHRAPNEL = ITEMS.register("debris_shrapnel", () -> new Item(new Item.Properties()));
+    public static final DeferredItem<Item> DEBRIS_ELEMENT = ITEMS.register("debris_element", () -> new Item(new Item.Properties()));
+    public static final DeferredItem<Item> FALLOUT_PILE = ITEMS.register("fallout_pile", () -> new Item(new Item.Properties()));
+
     // Spawners
     public static final DeferredItem<Item> SPAWN_DUCK = ITEMS.register("spawn_duck", () -> new EntitySpawnerItem(new Item.Properties().stacksTo(16)));
 

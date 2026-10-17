@@ -99,14 +99,21 @@ public class CommonEvents {
     public static void onLivingTick(EntityTickEvent.Pre event) {
         Entity entity = event.getEntity();
 
+        // Material hazards of held and worn stacks are applied on the server only, once per stack per tick, as in the original
+        // ModEventHandler: a player through updatePlayerInventory (:1023), any other living entity through updateLivingInventory
+        // (:572-576). A Player is also a LivingEntity; letting it reach updateLivingInventory as well applied its selected hotbar
+        // item, offhand and armor twice.
         if (entity instanceof Player player) {
-            HazardSystem.updatePlayerInventory(player);
+            if (!player.level().isClientSide) HazardSystem.updatePlayerInventory(player);
         }
+        // Dropped-item hazards (water reaction, burning explosive) discard the item and explode, so they are server-side only as in the
+        // original ModEventHandler.worldTick (:624). The original's ITEM_HAZARD_DROP_TICKRATE throttle is not carried over: the two
+        // item types that act are stateless checks, and NEO has no such config key.
         if (entity instanceof ItemEntity itemEntity) {
-            HazardSystem.updateDroppedItem(itemEntity);
+            if (!itemEntity.level().isClientSide) HazardSystem.updateDroppedItem(itemEntity);
         }
         if (entity instanceof LivingEntity livingEntity) {
-            HazardSystem.updateLivingInventory(livingEntity);
+            if (!(livingEntity instanceof Player) && !livingEntity.level().isClientSide) HazardSystem.updateLivingInventory(livingEntity);
             EntityEffectHandler.tick(livingEntity);
         }
     }

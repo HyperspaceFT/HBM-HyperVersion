@@ -5,6 +5,9 @@ import com.hbm.blockentity.MachineBaseBlockEntity;
 import com.hbm.blockentity.NtmBlockEntityTypes;
 import com.hbm.blocks.DummyableBlock;
 import com.hbm.blocks.NtmBlocks;
+import com.hbm.entity.projectile.ZirnoxDebris;
+import com.hbm.entity.projectile.ZirnoxDebris.DebrisType;
+import com.hbm.explosion.ExplosionNukeGeneric;
 import com.hbm.handler.MultiblockHandlerXR;
 import com.hbm.interfaces.IControlReceiver;
 import com.hbm.inventory.MetaHelper;
@@ -28,6 +31,7 @@ import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.network.chat.Component;
 import net.minecraft.sounds.SoundSource;
+import net.minecraft.util.RandomSource;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.inventory.AbstractContainerMenu;
@@ -56,6 +60,7 @@ public class ReactorZirnoxBlockEntity extends MachineBaseBlockEntity implements 
     protected int output;
 
     private AABB renderBox;
+    @Nullable private RandomSource meltdownRandom;
 
     private static final int[] SLOTS_IO = new int[] { 0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23 };
 
@@ -334,12 +339,62 @@ public class ReactorZirnoxBlockEntity extends MachineBaseBlockEntity implements 
         if(this.pressure > maxPressure || this.heat > maxHeat) this.meltdown();
     }
 
+    private void spawnDebris(DebrisType type, RandomSource random) {
+
+        BlockPos pos = this.getBlockPos();
+        ZirnoxDebris debris = new ZirnoxDebris(this.level, pos.getX() + 0.5D, pos.getY() + 4D, pos.getZ() + 0.5D, type);
+        double mx = random.nextGaussian() * 0.75D;
+        double mz = random.nextGaussian() * 0.75D;
+        double my = 0.01D + random.nextDouble() * 1.25D;
+
+        if(type == DebrisType.CONCRETE) {
+            mx *= 0.25D;
+            my += random.nextDouble();
+            mz *= 0.25D;
+        }
+
+        if(type == DebrisType.EXCHANGER) {
+            mx += 0.5D;
+            my *= 0.1D;
+            mz += 0.5D;
+        }
+
+        debris.setDeltaMovement(mx, my, mz);
+        this.level.addFreshEntity(debris);
+    }
+
+    private void zirnoxDebris(RandomSource random) {
+
+        for(int i = 0; i < 2; i++) {
+            spawnDebris(DebrisType.EXCHANGER, random);
+        }
+
+        for(int i = 0; i < 20; i++) {
+            spawnDebris(DebrisType.CONCRETE, random);
+            spawnDebris(DebrisType.BLANK, random);
+        }
+
+        for(int i = 0; i < 10; i++) {
+            spawnDebris(DebrisType.ELEMENT, random);
+            spawnDebris(DebrisType.GRAPHITE, random);
+            spawnDebris(DebrisType.SHRAPNEL, random);
+        }
+    }
+
+    /** Replaces the level random for the meltdown debris and waste rolls. Deterministic tests only; not saved. */
+    public void setMeltdownRandom(@Nullable RandomSource random) {
+        this.meltdownRandom = random;
+    }
+
+    private RandomSource meltdownRandom() {
+        return this.meltdownRandom != null ? this.meltdownRandom : this.level.random;
+    }
+
     /*
-     * Original TileEntityReactorZirnox.meltdown (:405-431). Not ported, because NEO lacks the infrastructure:
-     * - zirnoxDebris() (no EntityZirnoxDebris or ZIRNOX debris items),
-     * - ExplosionNukeGeneric.waste(world, x, y, z, 35) (no waste conversion),
-     * - the ZIRNOXBoom achievement for players within 100 blocks,
-     * - the "radMark" elemental flag on those players (MobConfig.enableElementals).
+     * Original TileEntityReactorZirnox.meltdown (:405-431). Ported up to and including the debris (after the explosion) and
+     * ExplosionNukeGeneric.waste with radius 35 (after the debris). Deferred by GOAL21.md decision 11:
+     * - the ZIRNOXBoom achievement for players within 100 blocks (MainRegistry.java:430; NEO has no advancement for it),
+     * - the "radMark" elemental flag on those players (MobConfig.enableElementals, BossSpawnHandler; NEO has no EntityRADBeast).
      */
     private void meltdown() {
         if(this.level == null) return;
@@ -354,6 +409,10 @@ public class ReactorZirnoxBlockEntity extends MachineBaseBlockEntity implements 
         // The original (:414) plays the sound at y+2; NEO keeps its block-centre x/z.
         SoundUtils.playAtVec3(this.level, position.add(0, 2, 0), NtmSoundEvents.RBMK_EXPLOSION.get(), SoundSource.BLOCKS, 10F, 1F);
         this.level.explode(null, position.x, position.y + 3, position.z, 12F, ExplosionInteraction.BLOCK);
+
+        RandomSource random = this.meltdownRandom();
+        this.zirnoxDebris(random);
+        ExplosionNukeGeneric.waste(this.level, this.getBlockPos(), 35, random);
     }
 
     private void updateConnections() {

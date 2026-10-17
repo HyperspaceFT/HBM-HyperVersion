@@ -1151,6 +1151,14 @@ public class NtmLanguageProvider extends LanguageProvider {
         this.add(NtmItems.WASTE_U235, "Depleted Uranium-235 Fuel");
         this.add(NtmItems.WASTE_SCHRABIDIUM, "Depleted Schrabidium Fuel");
         this.add(NtmItems.WASTE_ZFB_MOX, "Depleted ZFB MOX Fuel");
+        // Original en_US.lang:2672-2678 and :2803; the fallout item is fallout_pile in NEO (hbmsntm:fallout is the fallout-layer block).
+        this.add(NtmItems.DEBRIS_METAL, "Broken Metal Bar");
+        this.add(NtmItems.DEBRIS_GRAPHITE, "Hot Graphite Chunk");
+        this.add(NtmItems.DEBRIS_CONCRETE, "Broken Concrete");
+        this.add(NtmItems.DEBRIS_EXCHANGER, "Heat Exchanger Piece");
+        this.add(NtmItems.DEBRIS_SHRAPNEL, "Walkway Shrapnel");
+        this.add(NtmItems.DEBRIS_ELEMENT, "Broken ZIRNOX Fuel Element");
+        this.add(NtmItems.FALLOUT_PILE, "Pile of Fallout");
         // Original desc.item.wasteCooling (en_US.lang:1141), key kept verbatim; shown on hot waste only.
         this.add("desc.item.wasteCooling", "Cool in a Spent Fuel Pool Drum");
         // The original patterns used %d with a String argument; NEO passes the same arguments to %s.
@@ -1756,6 +1764,7 @@ public class NtmLanguageProvider extends LanguageProvider {
         this.add(NtmBlocks.MACHINE_ELECTRIC_FURNACE, "Electric Furnace");
         this.add(NtmBlocks.MACHINE_FLUID_TANK, "Tank");
         this.add(NtmBlocks.MACHINE_CHUNGUS, "Leviathan Steam Turbine");
+        this.add("machine_chungus.compressor_locked", "Cannot change compressor setting while operational!");
         this.add(NtmBlocks.MACHINE_INDUSTRIAL_TURBINE, "Industrial Steam Turbine");
         this.add("block.hbmsntm.machine_industrial_turbine.desc", "Efficiency: 100%%");
         this.add("machine_industrial_turbine.compressor_locked", "Cannot change compressor setting while operational!");
@@ -1783,6 +1792,7 @@ public class NtmLanguageProvider extends LanguageProvider {
         this.add("block.hbmsntm.pump_electric.desc", "Uses electricity to pump up groundwater$Generates up to 10,000mB/t$Needs to be placed below Y:70");
         this.add(NtmBlocks.MACHINE_CONDENSER, "Steam Condenser");
         this.add("entity.hbmsntm.stray_cog", "Stray Cog");
+        this.add("entity.hbmsntm.zirnox_debris", "ZIRNOX Debris");
         this.add("block.hbmsntm.heater_oven.desc", "Burns solid fuel to produce heat.$Accepts heat from the bottom with 50%% efficiency.");
         this.add("tile.heater_oven.desc", "Burns solid fuel to produce heat.$Accepts heat from the bottom with 50%% efficiency.");
         this.add("block.hbmsntm.heater_oilburner.desc", "Burns fluids to produce heat.$Can be configured with a screwdriver.");

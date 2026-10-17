@@ -15,6 +15,7 @@ import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.phys.AABB;
 
 public class ChungusBlockEntity extends TurbineBaseBlockEntity {
 
@@ -135,6 +136,11 @@ public class ChungusBlockEntity extends TurbineBaseBlockEntity {
     public void deserialize(RegistryFriendlyByteBuf buf) {
         super.deserialize(buf);
         this.turnTimer = buf.readInt();
+    }
+
+    /** The model spans the whole multiblock, far beyond the core block; original TileEntityChungus.getRenderBoundingBox returns INFINITE_EXTENT_AABB. */
+    public AABB getRenderBoundingBox() {
+        return AABB.INFINITE;
     }
 
     @Override
