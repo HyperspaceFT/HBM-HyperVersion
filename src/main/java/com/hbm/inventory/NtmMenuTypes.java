@@ -39,6 +39,7 @@ public class NtmMenuTypes {
     public static final DeferredHolder<MenuType<?>, MenuType<MachineCrystallizerMenu>> MACHINE_CRYSTALLIZER = reg("machine_crystallizer", MachineCrystallizerMenu::new);
     public static final DeferredHolder<MenuType<?>, MenuType<MachineWasteDrumMenu>> MACHINE_WASTE_DRUM = reg("machine_waste_drum", MachineWasteDrumMenu::new);
     public static final DeferredHolder<MenuType<?>, MenuType<MachineChemicalPlantMenu>> MACHINE_CHEMICAL_PLANT = reg("machine_chemical_plant", MachineChemicalPlantMenu::new);
+    public static final DeferredHolder<MenuType<?>, MenuType<MachinePUREXMenu>> MACHINE_PUREX = reg("machine_purex", MachinePUREXMenu::new);
     public static final DeferredHolder<MenuType<?>, MenuType<MachineSatLinkerMenu>> SAT_LINKER = reg("sat_linker", MachineSatLinkerMenu::new);
     public static final DeferredHolder<MenuType<?>, MenuType<BarrelMenu>> BARREL = reg("barrel", BarrelMenu::new);
     public static final DeferredHolder<MenuType<?>, MenuType<CrateMenu>> CRATE = reg("crate", CrateMenu::new);

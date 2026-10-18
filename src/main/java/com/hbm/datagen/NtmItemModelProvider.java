@@ -241,6 +241,7 @@ public class NtmItemModelProvider extends ItemModelProvider {
         this.basicItem(NtmItems.CHUNK_MALACHITE.get());
         this.basicItem(NtmItems.CHUNK_CRYOLITE.get());
         this.basicItem(NtmItems.NUCLEAR_WASTE.get());
+        this.basicItem(NtmItems.NUCLEAR_WASTE_TINY.get());
         this.basicItem(NtmItems.NUCLEAR_WASTE_VITRIFIED.get());
         this.basicItem(NtmItems.PLATE_IRON.get());
         this.basicItem(NtmItems.PLATE_GOLD.get());

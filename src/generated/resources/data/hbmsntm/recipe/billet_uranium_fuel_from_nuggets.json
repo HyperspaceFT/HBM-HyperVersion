@@ -1,0 +1,28 @@
+{
+  "type": "minecraft:crafting_shapeless",
+  "category": "misc",
+  "ingredients": [
+    {
+      "item": "hbmsntm:nugget_u238"
+    },
+    {
+      "item": "hbmsntm:nugget_u238"
+    },
+    {
+      "item": "hbmsntm:nugget_u238"
+    },
+    {
+      "item": "hbmsntm:nugget_u238"
+    },
+    {
+      "item": "hbmsntm:nugget_u238"
+    },
+    {
+      "item": "hbmsntm:nugget_u235"
+    }
+  ],
+  "result": {
+    "count": 1,
+    "id": "hbmsntm:billet_uranium_fuel"
+  }
+}

@@ -43,9 +43,10 @@ import java.util.List;
  * output stack after {@code duration} ticks. Rows are keyed on the input identity and the acid type, so the same item may
  * carry different rows for different acids; lookup returns the first registered row whose acid type matches and whose
  * input accepts the stack. The default table holds the fourteen hydrogen peroxide ore groups (Goal 18A) followed by the four
- * sulfuric acid ore groups (titanium, tungsten, cobalt, rare earth; Goal 18B) and the sulfuric acid uranium (stone, deepslate,
- * scorched) and thorium (stone, deepslate) ore rows (Goal 20A), 41 ore-block rows. A custom file still replaces the whole
- * table, so an existing custom table does not gain the sulfuric acid rows automatically.
+ * sulfuric acid ore groups (titanium, tungsten, cobalt, rare earth; Goal 18B), the sulfuric acid uranium (stone, deepslate,
+ * scorched) and thorium (stone, deepslate) ore rows (Goal 20A) and the sulfuric acid nether/schist uranium (and scorched) and
+ * nether plutonium ore rows (Goal 22A), 46 ore-block rows. A custom file still replaces the whole table, so an existing custom
+ * table does not gain the sulfuric acid rows automatically.
  */
 public class CrystallizerRecipes extends SerializableRecipe {
     public static final int MAX_SYNC_RECIPES = 4096;
@@ -160,14 +161,14 @@ public class CrystallizerRecipes extends SerializableRecipe {
         add(new CrystallizerRecipe(new ComparableStack(stone, 1), fluid, new ItemStack(crystal), DEFAULT_DURATION, DEFAULT_PRODUCTIVITY));
         add(new CrystallizerRecipe(new ComparableStack(deepslate, 1), fluid, new ItemStack(crystal), DEFAULT_DURATION, DEFAULT_PRODUCTIVITY));
     }
-    /** One ore block without a deepslate twin (the scorched uranium ore), same numbers as {@link #ore}. */
+    /** One ore block without a deepslate twin (the scorched, nether and schist uranium ores, the nether plutonium ore), same numbers as {@link #ore}. */
     private void single(Block ore, ItemLike crystal, FluidType acid) {
         add(new CrystallizerRecipe(new ComparableStack(ore, 1), new FluidStack(acid, DEFAULT_ACID), new ItemStack(crystal), DEFAULT_DURATION, DEFAULT_PRODUCTIVITY));
     }
 
     @Override public String getFileName() { return "hbmCrystallizer.json"; }
     @Override public Object getRecipeObject() { return table; }
-    /** Fourteen ordinary peroxide ore groups in the original table order, then the four sulfuric acid groups, then the sulfuric acid uranium and thorium ores; stone and deepslate ore blocks are separate rows. */
+    /** Fourteen ordinary peroxide ore groups in the original table order, then the four sulfuric acid groups, then the sulfuric acid uranium and thorium ores, then (Goal 22A) the nether and schist uranium ores and the nether plutonium ore; stone and deepslate ore blocks are separate rows. */
     @Override public void registerDefaults() {
         ore(Blocks.COAL_ORE, Blocks.DEEPSLATE_COAL_ORE, NtmItems.CRYSTAL_COAL.get());
         ore(Blocks.IRON_ORE, Blocks.DEEPSLATE_IRON_ORE, NtmItems.CRYSTAL_IRON.get());
@@ -189,17 +190,25 @@ public class CrystallizerRecipes extends SerializableRecipe {
         ore(NtmBlocks.ORE_RARE.get(), NtmBlocks.ORE_RARE_DEEPSLATE.get(), NtmItems.CRYSTAL_RARE.get(), Fluids.SULFURIC_ACID);
         // Original CrystallizerRecipes.java:67-68 (Goal 20A): U.ore() (OreDictManager.java:347) and every TH232 ore (:351) under the
         // :59 sulfuric acid stack, baseTime 600, prod 0.05. Ported for the named NEO uranium ores: ore_uranium (plus its deepslate
-        // variant) and ore_uranium_scorched (named, but NEO places it nowhere yet). NEO also registers ore_gneiss_uranium(_scorched) and
-        // ore_nether_uranium(_scorched) without any name, creative-tab entry or world generation, so their rows wait for that (see
-        // migration/GOAL20A.md and goal20a-materials-review.json); ore_sellafield_uranium_scorched has no NEO block. TH232 has
-        // ore_thorium and its deepslate variant. The :69 plutonium row is not ported.
+        // variant) and ore_uranium_scorched (no world generation; nuclear waste contamination turns uranium ore into it since Goal 21C).
+        // ore_sellafield_uranium_scorched has no NEO block. TH232 has ore_thorium and its deepslate variant.
         ore(NtmBlocks.ORE_URANIUM.get(), NtmBlocks.ORE_URANIUM_DEEPSLATE.get(), NtmItems.CRYSTAL_URANIUM.get(), Fluids.SULFURIC_ACID);
         single(NtmBlocks.ORE_URANIUM_SCORCHED.get(), NtmItems.CRYSTAL_URANIUM.get(), Fluids.SULFURIC_ACID);
         ore(NtmBlocks.ORE_THORIUM.get(), NtmBlocks.ORE_THORIUM_DEEPSLATE.get(), NtmItems.CRYSTAL_THORIUM.get(), Fluids.SULFURIC_ACID);
+        // Goal 22A: the remaining U.ore() members (OreDictManager.java:347) now that they are named and in the creative tab: the nether and
+        // schist uranium ores and their scorched variants (NEO generates none of them; they come from nuclear waste contamination,
+        // the creative tab or commands). Then the :69 plutonium row: PU.ore() is only ore_nether_plutonium (OreDictManager.java:352).
+        // Appended after the Goal 20A rows so the first 41 rows keep their positions; the input keys are distinct, so order does not
+        // change which row matches.
+        single(NtmBlocks.ORE_NETHER_URANIUM.get(), NtmItems.CRYSTAL_URANIUM.get(), Fluids.SULFURIC_ACID);
+        single(NtmBlocks.ORE_NETHER_URANIUM_SCORCHED.get(), NtmItems.CRYSTAL_URANIUM.get(), Fluids.SULFURIC_ACID);
+        single(NtmBlocks.ORE_GNEISS_URANIUM.get(), NtmItems.CRYSTAL_URANIUM.get(), Fluids.SULFURIC_ACID);
+        single(NtmBlocks.ORE_GNEISS_URANIUM_SCORCHED.get(), NtmItems.CRYSTAL_URANIUM.get(), Fluids.SULFURIC_ACID);
+        single(NtmBlocks.ORE_NETHER_PLUTONIUM.get(), NtmItems.CRYSTAL_PLUTONIUM.get(), Fluids.SULFURIC_ACID);
     }
     @Override public void deleteRecipes() { table.clear(); }
     @Override public String getComment() {
-        return "Ore acidizer (crystallizer) recipes. Replaces the whole table; an empty table disables the machine. Each row: input [\"item\", id, count, META] (META 32767 is a wildcard; omitted count is 1, omitted META is the wildcard) or [\"tag\", id, count]; fluid [internal acid name, mB] with 1..8000 mB; output [id, count, META|null, custom-data SNBT] (omitted or null META keeps the item without a META component); duration in ticks 1..1000000 (the machine completes after duration+1 effective sub-cycles); productivity 0..1 is the chance per Effectiveness level that the input is kept, the acid is always consumed. Rows are keyed on input identity plus acid type, so one item may have one row per acid; the first matching row in table order wins. The default table holds the fourteen hydrogen peroxide ore groups plus the four sulfuric acid ore groups (titanium, tungsten, cobalt, rare earth) and the sulfuric acid uranium (stone, deepslate, scorched) and thorium (stone, deepslate) ore rows, 41 rows; a custom file still replaces the whole table, so an existing custom table does not gain the sulfuric acid rows automatically (append their rows to keep them).";
+        return "Ore acidizer (crystallizer) recipes. Replaces the whole table; an empty table disables the machine. Each row: input [\"item\", id, count, META] (META 32767 is a wildcard; omitted count is 1, omitted META is the wildcard) or [\"tag\", id, count]; fluid [internal acid name, mB] with 1..8000 mB; output [id, count, META|null, custom-data SNBT] (omitted or null META keeps the item without a META component); duration in ticks 1..1000000 (the machine completes after duration+1 effective sub-cycles); productivity 0..1 is the chance per Effectiveness level that the input is kept, the acid is always consumed. Rows are keyed on input identity plus acid type, so one item may have one row per acid; the first matching row in table order wins. The default table holds the fourteen hydrogen peroxide ore groups plus the four sulfuric acid ore groups (titanium, tungsten, cobalt, rare earth) and the sulfuric acid uranium (stone, deepslate, scorched, nether, scorched nether, schist, scorched schist), thorium (stone, deepslate) and nether plutonium ore rows, 46 rows; a custom file still replaces the whole table, so an existing custom table does not gain the sulfuric acid rows automatically (append their rows to keep them).";
     }
     @Override public void readRecipe(JsonElement element) {
         try {

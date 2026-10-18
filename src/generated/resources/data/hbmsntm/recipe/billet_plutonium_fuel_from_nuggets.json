@@ -1,0 +1,28 @@
+{
+  "type": "minecraft:crafting_shapeless",
+  "category": "misc",
+  "ingredients": [
+    {
+      "item": "hbmsntm:nugget_pu_mix"
+    },
+    {
+      "item": "hbmsntm:nugget_pu_mix"
+    },
+    {
+      "item": "hbmsntm:nugget_u238"
+    },
+    {
+      "item": "hbmsntm:nugget_u238"
+    },
+    {
+      "item": "hbmsntm:nugget_u238"
+    },
+    {
+      "item": "hbmsntm:nugget_u238"
+    }
+  ],
+  "result": {
+    "count": 1,
+    "id": "hbmsntm:billet_plutonium_fuel"
+  }
+}

@@ -32,10 +32,10 @@ public class GasCentrifugeRecipes {
 
         public static final PseudoFluidType PF6 = new PseudoFluidType("PF6", 300, 0, NONE, false);
 
-        // Outputs deferred: nuclear_waste_tiny does not exist in NEO (original 1 powder_iron + 1 dust + 1 nuclear_waste_tiny).
-        // The empty output array makes canEnrich false, like the original's null/empty check.
+        // Original 1 powder_iron + 1 dust + 1 nuclear_waste_tiny, filled in by register() since Goal 22B added nuclear_waste_tiny.
+        // Before that the empty output array made canEnrich false, like the original's null/empty check.
         public static final PseudoFluidType MUD_HEAVY = new PseudoFluidType("MUD_HEAVY", 500, 0, NONE, false);
-        // Outputs deferred with MUD_HEAVY (original 1 powder_lead + 1 dust); WATZ is therefore not converted either.
+        // Original 1 powder_lead + 1 dust, filled in by register(). The data is complete, but WATZ is still not converted into MUD.
         public static final PseudoFluidType MUD = new PseudoFluidType("MUD", 1000, 500, MUD_HEAVY, false);
 
         public final String name;
@@ -79,11 +79,14 @@ public class GasCentrifugeRecipes {
         PseudoFluidType.LEUF6.output = new ItemStack[] { new ItemStack(NtmItems.NUGGET_U238.get(), 1), new ItemStack(NtmItems.FLUORITE.get(), 1) };
         PseudoFluidType.NUF6.output = new ItemStack[] { new ItemStack(NtmItems.NUGGET_U238.get(), 1) };
         PseudoFluidType.PF6.output = new ItemStack[] { new ItemStack(NtmItems.NUGGET_PU238.get(), 1), new ItemStack(NtmItems.NUGGET_PU_MIX.get(), 2), new ItemStack(NtmItems.FLUORITE.get(), 1) };
+        PseudoFluidType.MUD_HEAVY.output = new ItemStack[] { new ItemStack(NtmItems.POWDER_IRON.get(), 1), new ItemStack(NtmItems.DUST.get(), 1), new ItemStack(NtmItems.NUCLEAR_WASTE_TINY.get(), 1) };
+        PseudoFluidType.MUD.output = new ItemStack[] { new ItemStack(NtmItems.POWDER_LEAD.get(), 1), new ItemStack(NtmItems.DUST.get(), 1) };
 
         fluidConversions.clear();
         fluidConversions.put(Fluids.UF6, PseudoFluidType.NUF6);
         fluidConversions.put(Fluids.PUF6, PseudoFluidType.PF6);
-        // WATZ -> MUD is deferred with the MUD outputs: a WATZ identifier does not retype the machine, unlike the original.
+        // WATZ -> MUD is still deferred although the MUD outputs are complete: a WATZ identifier does not retype the machine,
+        // unlike the original, and the WATZ summary row (original :101) stays out of JEI.
 
         JEI_RECIPES.clear();
         JEI_RECIPES.add(new GasCentrifugeRecipe(Fluids.UF6, 1200, new ItemStack[] { new ItemStack(NtmItems.NUGGET_U238.get(), 11), new ItemStack(NtmItems.NUGGET_U235.get(), 1), new ItemStack(NtmItems.FLUORITE.get(), 4) }, true, 4));

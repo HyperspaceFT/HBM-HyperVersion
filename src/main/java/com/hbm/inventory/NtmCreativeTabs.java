@@ -164,6 +164,7 @@ public class NtmCreativeTabs {
                         output.accept(NtmItems.POWDER_ASH_COAL.get());
                         output.accept(NtmItems.POWDER_ASH_MISC.get());
                         output.accept(NtmItems.NUCLEAR_WASTE.get());
+                        output.accept(NtmItems.NUCLEAR_WASTE_TINY.get());
                         output.accept(NtmItems.NUCLEAR_WASTE_VITRIFIED.get());
                         output.accept(NtmItems.FRAGMENT_NIOBIUM.get());
                         output.accept(NtmItems.FRAGMENT_COLTAN.get());
@@ -758,6 +759,15 @@ public class NtmCreativeTabs {
                         output.accept(NtmBlocks.ORE_BEDROCK_OIL);
                         output.accept(NtmBlocks.ORE_URANIUM);
                         output.accept(NtmBlocks.ORE_URANIUM_DEEPSLATE);
+                        output.accept(NtmBlocks.ORE_SCHRABIDIUM);
+                        output.accept(NtmBlocks.ORE_NETHER_URANIUM);
+                        output.accept(NtmBlocks.ORE_NETHER_URANIUM_SCORCHED);
+                        output.accept(NtmBlocks.ORE_NETHER_PLUTONIUM);
+                        output.accept(NtmBlocks.ORE_NETHER_SCHRABIDIUM);
+                        output.accept(NtmBlocks.ORE_TIKITE);
+                        output.accept(NtmBlocks.ORE_GNEISS_URANIUM);
+                        output.accept(NtmBlocks.ORE_GNEISS_URANIUM_SCORCHED);
+                        output.accept(NtmBlocks.ORE_GNEISS_SCHRABIDIUM);
                         output.accept(NtmBlocks.ORE_BERYLLIUM);
                         output.accept(NtmBlocks.ORE_BERYLLIUM_DEEPSLATE);
                         output.accept(NtmBlocks.ORE_TUNGSTEN);
@@ -860,6 +870,7 @@ public class NtmCreativeTabs {
                         output.accept(NtmBlocks.MACHINE_WASTE_DRUM);
                         output.accept(NtmBlocks.MACHINE_CRYSTALLIZER);
                         output.accept(NtmBlocks.MACHINE_CHEMICAL_PLANT);
+                        output.accept(NtmBlocks.MACHINE_PUREX);
                         output.accept(NtmBlocks.HEAT_BOILER);
                         output.accept(NtmBlocks.MACHINE_INDUSTRIAL_BOILER);
                         output.accept(NtmBlocks.HEATER_OVEN);

@@ -263,6 +263,12 @@ public class NtmBlockEntityTypes {
                             MachineChemicalPlantBlockEntity::new,
                             NtmBlocks.MACHINE_CHEMICAL_PLANT.get())
                     .build(null));
+    public static final Supplier<BlockEntityType<MachinePUREXBlockEntity>> MACHINE_PUREX = BLOCK_ENTITY_TYPES.register(
+            "machine_purex",
+            () -> BlockEntityType.Builder.of(
+                            MachinePUREXBlockEntity::new,
+                            NtmBlocks.MACHINE_PUREX.get())
+                    .build(null));
 
     public static final Supplier<BlockEntityType<BarrelBlockEntity>> BARREL = BLOCK_ENTITY_TYPES.register(
             "barrel",

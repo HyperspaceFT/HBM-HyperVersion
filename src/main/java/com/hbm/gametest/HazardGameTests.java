@@ -3,6 +3,7 @@ package com.hbm.gametest;
 import com.hbm.blocks.NtmBlocks;
 import com.hbm.config.NtmConfig;
 import com.hbm.extprop.HbmLivingAttachments;
+import com.hbm.hazard.HazardData;
 import com.hbm.hazard.HazardEntry;
 import com.hbm.hazard.HazardRegistry;
 import com.hbm.hazard.HazardSystem;
@@ -57,6 +58,15 @@ import static com.hbm.gametest.SmokeTestSupport.guard;
  * is NOT exercised: no mock or fake player is created (it crashes the dedicated GameTest server) and that path is left to the unified
  * in-game acceptance. Tooltips, Geiger readings, world radiation, dropped items and rendering are untested. The tests run in their own
  * batch and remove the entities they spawn.
+ * <p>
+ * Goal22D adds the addendum rows of {@code HazardRegistry.registerMaterialAddendum} (original HazardRegistry.java:331-335, :478, :485-492 and
+ * OreDictManager.java:424, :460: five billets, caesium powder, eight crystals, the asbestos and white phosphorus frames). Real engine evidence:
+ * the registry as the running GameTest server filled it, read through {@code getHazardLevelFromStack}/{@code getHazardsFromStack} for each new
+ * row, for a sample of 20 rows that existed before the batch, and the per-tick path ({@code updateLivingInventory}, and
+ * {@code CommonEvents.onLivingTick} once) on a Pig holding crystal_schrabidium, billet_flashlead, powder_caesium, crystal_phosphorus,
+ * crystal_lithium and the asbestos items. Not evidence: the expected values are again written from the original's constants in its
+ * multiplication order, so they prove NEO matches the original's table, not the 1.7.10 game. The RTG pellet rows (deferred with the RTG modifier),
+ * the player path, tooltips, Geiger readings and the hydroactive explosion in water or rain stay untested.
  */
 @GameTestHolder(NuclearTechMod.MODID)
 @PrefixGameTestTemplate(false)
@@ -179,10 +189,16 @@ public class HazardGameTests {
                     "ore_nether_schrabidium", "ore_gneiss_schrabidium", "powder_co60_tiny", "ingot_i131")) {
                 checkExact(id, new ItemStack(registered(id, true)));
             }
-            // Out of scope for this batch; absent items are skipped.
-            for(String id : List.of("powder_caesium", "billet_balefire_gold", "billet_flashlead", "billet_po210be", "billet_ra226be", "billet_pu238be",
-                    "crystal_uranium", "crystal_thorium", "crystal_plutonium", "crystal_schraranium", "crystal_schrabidium", "crystal_phosphorus", "crystal_lithium",
-                    "crystal_trixite", "ingot_phosphorus", "block_white_phosphorus")) {
+            // Goal22D registered the rows that were out of scope here (hazard_addendum_registrations). Still without a hazard: block_white_phosphorus,
+            // block_fallout and tile_lab_broken have no NEO identity (absent items are skipped), and pellet_rtg exists but its RTG pellet row
+            // (original HazardRegistry.java:337-347) is deferred with the RTG modifier.
+            for(String id : List.of("block_white_phosphorus", "block_fallout", "tile_lab_broken", "pellet_rtg")) {
+                ItemLike item = registered(id, false);
+                if(item != Items.AIR) checkExact(id, new ItemStack(item));
+            }
+            check(registered("pellet_rtg", false) != Items.AIR, "pellet_rtg is no longer registered; the RTG deferral guard would pass vacuously");
+            // The ASBESTOS frame's ore shapes are not registered either (Goal21 decision 13); absent ids are skipped.
+            for(String id : List.of("ore_asbestos", "ore_asbestos_deepslate", "ore_gneiss_asbestos")) {
                 ItemLike item = registered(id, false);
                 if(item != Items.AIR) checkExact(id, new ItemStack(item));
             }
@@ -321,6 +337,270 @@ public class HazardGameTests {
         HbmLivingAttachments.setRadBuf(pig, 0F);
         CommonEvents.onLivingTick(new EntityTickEvent.Pre(pig));
         return new float[] { HbmLivingAttachments.getRadiation(pig), HbmLivingAttachments.getRadEnv(pig) + HbmLivingAttachments.getRadBuf(pig) };
+    }
+
+    // Goal22D addendum (HazardRegistry.registerMaterialAddendum)
+
+    /** Every Goal22D row: 14 item-level rows (billets :331-335, caesium :478, crystals :485-492) and 4 frame registrations (ASBESTOS :424, P_WHITE :460). */
+    private static final int ADDENDUM_ROWS = 18;
+    /** Rows that existed before Goal22D, written from the frozen start copy of HazardRegistry.java (build/migration/goal22d/baseline-files). */
+    private static final int SAMPLE_ROWS = 20;
+
+    /** One addendum row: the stack, its expected level per type (0 = absent) and the expected mutex (0 for item-level rows, 0b1 for frame data). */
+    private record AddendumRow(String label, ItemStack stack, float rad, float hot, float hydro, float asbestos, int mutex) {
+        float expected(HazardTypeBase type) {
+            if(type == HazardRegistry.RADIATION) return rad;
+            if(type == HazardRegistry.HOT) return hot;
+            if(type == HazardRegistry.HYDROACTIVE) return hydro;
+            if(type == HazardRegistry.ASBESTOS) return asbestos;
+            return 0F;
+        }
+    }
+
+    @GameTest(template = TEMPLATE, batch = BATCH, timeoutTicks = 100)
+    public static void hazard_addendum_registrations(GameTestHelper helper) {
+        guard(() -> {
+            List<AddendumRow> rows = addendumRows();
+            check(rows.size() == ADDENDUM_ROWS, "the addendum table has " + rows.size() + " rows, expected " + ADDENDUM_ROWS);
+            List<String> failures = new ArrayList<>();
+            for(AddendumRow row : rows) {
+                int present = 0;
+                for(HazardTypeBase type : ALL_TYPES) {
+                    float expected = row.expected(type);
+                    float actual = HazardSystem.getHazardLevelFromStack(row.stack, type);
+                    if(expected != 0F) present++;
+                    if(actual != expected) failures.add(row.label + " " + type.getClass().getSimpleName() + " is " + actual + ", expected " + expected);
+                }
+                int entries = HazardSystem.getHazardsFromStack(row.stack).size();
+                if(entries != present) failures.add(row.label + " has " + entries + " hazard entries, expected " + present);
+                HazardData data = HazardSystem.itemMap.get(row.stack.getItem());
+                if(data == null || data.getMutex() != row.mutex) failures.add(row.label + " is registered with mutex " + (data == null ? "none (not in the item map)" : data.getMutex()) + ", expected " + row.mutex);
+            }
+            LOGGER.info("[hbm-hazard] checked {} addendum rows, {} mismatches", rows.size(), failures.size());
+            check(failures.isEmpty(), failures.size() + " mismatches, first: " + failures.subList(0, Math.min(5, failures.size())));
+
+            // Entry order is the original's: radiation then hot (:332), hydroactive then hot (:478).
+            List<HazardEntry> flashlead = HazardSystem.getHazardsFromStack(new ItemStack(NtmItems.BILLET_FLASHLEAD.get()));
+            check(flashlead.get(0).getType() == HazardRegistry.RADIATION && flashlead.get(1).getType() == HazardRegistry.HOT, "billet_flashlead entries are not RADIATION, then HOT");
+            List<HazardEntry> caesium = HazardSystem.getHazardsFromStack(new ItemStack(NtmItems.POWDER_CAESIUM.get()));
+            check(caesium.get(0).getType() == HazardRegistry.HYDROACTIVE && caesium.get(1).getType() == HazardRegistry.HOT, "powder_caesium entries are not HYDROACTIVE, then HOT");
+
+            // Spot values restated as plain numbers (float32), the acceptance list of Goal22D.
+            checkLevel(new ItemStack(NtmItems.BILLET_BALEFIRE_GOLD.get()), HazardRegistry.RADIATION, 250F, "billet_balefire_gold");
+            checkLevel(new ItemStack(NtmItems.BILLET_FLASHLEAD.get()), HazardRegistry.RADIATION, 6250F, "billet_flashlead radiation");
+            checkLevel(new ItemStack(NtmItems.BILLET_FLASHLEAD.get()), HazardRegistry.HOT, 7F, "billet_flashlead hot");
+            checkLevel(new ItemStack(NtmItems.BILLET_PO210BE.get()), HazardRegistry.RADIATION, 112.5F, "billet_po210be");
+            checkLevel(new ItemStack(NtmItems.BILLET_RA226BE.get()), HazardRegistry.RADIATION, 11.25F, "billet_ra226be");
+            checkLevel(new ItemStack(NtmItems.BILLET_PU238BE.get()), HazardRegistry.RADIATION, 15F, "billet_pu238be");
+            checkLevel(new ItemStack(NtmItems.POWDER_CAESIUM.get()), HazardRegistry.HYDROACTIVE, 1F, "powder_caesium hydroactive");
+            checkLevel(new ItemStack(NtmItems.POWDER_CAESIUM.get()), HazardRegistry.HOT, 3F, "powder_caesium hot");
+            checkLevel(new ItemStack(NtmItems.CRYSTAL_URANIUM.get()), HazardRegistry.RADIATION, 3.5F, "crystal_uranium");
+            checkLevel(new ItemStack(NtmItems.CRYSTAL_THORIUM.get()), HazardRegistry.RADIATION, 1F, "crystal_thorium");
+            checkLevel(new ItemStack(NtmItems.CRYSTAL_PLUTONIUM.get()), HazardRegistry.RADIATION, 75F, "crystal_plutonium");
+            checkLevel(new ItemStack(NtmItems.CRYSTAL_SCHRARANIUM.get()), HazardRegistry.RADIATION, 15F, "crystal_schraranium");
+            checkLevel(new ItemStack(NtmItems.CRYSTAL_SCHRABIDIUM.get()), HazardRegistry.RADIATION, 150F, "crystal_schrabidium");
+            checkLevel(new ItemStack(NtmItems.CRYSTAL_PHOSPHORUS.get()), HazardRegistry.HOT, 20F, "crystal_phosphorus");
+            checkLevel(new ItemStack(NtmItems.CRYSTAL_LITHIUM.get()), HazardRegistry.HYDROACTIVE, 10F, "crystal_lithium");
+            checkLevel(new ItemStack(NtmItems.CRYSTAL_TRIXITE.get()), HazardRegistry.RADIATION, 250F, "crystal_trixite");
+            checkLevel(new ItemStack(NtmItems.INGOT_ASBESTOS.get()), HazardRegistry.ASBESTOS, 1F, "ingot_asbestos");
+            checkLevel(new ItemStack(NtmItems.POWDER_ASBESTOS.get()), HazardRegistry.ASBESTOS, 3F, "powder_asbestos");
+            checkLevel(new ItemStack(NtmBlocks.BLOCK_ASBESTOS.get()), HazardRegistry.ASBESTOS, 10F, "block_asbestos");
+            checkLevel(new ItemStack(NtmItems.INGOT_PHOSPHORUS.get()), HazardRegistry.HOT, 5F, "ingot_phosphorus");
+        }).run();
+        done(helper, "hazard_addendum_registrations");
+    }
+
+    /**
+     * The addendum rows. Item-level rows (original HazardRegistry.registerItems) carry no mutex; the ASBESTOS and P_WHITE frame data are
+     * registered by OreDictManager.DictFrame with mutex 0b1, every entry multiplied by the shape constant (clone(hazMult)).
+     * Not registered: the RTG pellets :337-347, block_fallout :477, tile_lab_broken :481, block_white_phosphorus (OreDictManager.java:460) and every
+     * ore shape; fallout :476, brick_asbestos :480 and powder_coltan_ore :482 existed before and are in hazard_existing_sample_unchanged.
+     */
+    private static List<AddendumRow> addendumRows() {
+        List<AddendumRow> rows = new ArrayList<>();
+        addendum(rows, ":331", NtmItems.BILLET_BALEFIRE_GOLD, HazardRegistry.au198 * HazardRegistry.billet, 0F, 0F, 0F, 0);
+        addendum(rows, ":332", NtmItems.BILLET_FLASHLEAD, HazardRegistry.pb209 * 1.25F * HazardRegistry.billet, 7F, 0F, 0F, 0);
+        addendum(rows, ":333", NtmItems.BILLET_PO210BE, HazardRegistry.pobe * HazardRegistry.billet, 0F, 0F, 0F, 0);
+        addendum(rows, ":334", NtmItems.BILLET_RA226BE, HazardRegistry.rabe * HazardRegistry.billet, 0F, 0F, 0F, 0);
+        addendum(rows, ":335", NtmItems.BILLET_PU238BE, HazardRegistry.pube * HazardRegistry.billet, 0F, 0F, 0F, 0);
+        addendum(rows, ":478", NtmItems.POWDER_CAESIUM, 0F, 3F, 1F, 0F, 0);
+        addendum(rows, ":485", NtmItems.CRYSTAL_URANIUM, HazardRegistry.u * HazardRegistry.crystal, 0F, 0F, 0F, 0);
+        addendum(rows, ":486", NtmItems.CRYSTAL_THORIUM, HazardRegistry.th232 * HazardRegistry.crystal, 0F, 0F, 0F, 0);
+        addendum(rows, ":487", NtmItems.CRYSTAL_PLUTONIUM, HazardRegistry.pu * HazardRegistry.crystal, 0F, 0F, 0F, 0);
+        addendum(rows, ":488", NtmItems.CRYSTAL_SCHRARANIUM, HazardRegistry.sr * HazardRegistry.crystal, 0F, 0F, 0F, 0);
+        addendum(rows, ":489", NtmItems.CRYSTAL_SCHRABIDIUM, HazardRegistry.sa326 * HazardRegistry.crystal, 0F, 0F, 0F, 0);
+        addendum(rows, ":490", NtmItems.CRYSTAL_PHOSPHORUS, 0F, 2F * HazardRegistry.crystal, 0F, 0F, 0);
+        addendum(rows, ":491", NtmItems.CRYSTAL_LITHIUM, 0F, 0F, 1F * HazardRegistry.crystal, 0F, 0);
+        addendum(rows, ":492", NtmItems.CRYSTAL_TRIXITE, HazardRegistry.trx * HazardRegistry.crystal, 0F, 0F, 0F, 0);
+        addendum(rows, "ODM:424", NtmItems.INGOT_ASBESTOS, 0F, 0F, 0F, 1F * HazardRegistry.ingot, 0b1);
+        addendum(rows, "ODM:424", NtmItems.POWDER_ASBESTOS, 0F, 0F, 0F, 1F * HazardRegistry.powder, 0b1);
+        addendum(rows, "ODM:424", NtmBlocks.BLOCK_ASBESTOS, 0F, 0F, 0F, 1F * HazardRegistry.block, 0b1);
+        addendum(rows, "ODM:460", NtmItems.INGOT_PHOSPHORUS, 0F, 5F * HazardRegistry.ingot, 0F, 0F, 0b1);
+        return rows;
+    }
+
+    private static void addendum(List<AddendumRow> rows, String line, ItemLike item, float rad, float hot, float hydro, float asbestos, int mutex) {
+        rows.add(new AddendumRow(line + " " + BuiltInRegistries.ITEM.getKey(item.asItem()).getPath(), new ItemStack(item), rad, hot, hydro, asbestos, mutex));
+    }
+
+    // Twenty rows that existed before Goal22D, all types compared exactly.
+
+    @GameTest(template = TEMPLATE, batch = BATCH, timeoutTicks = 100)
+    public static void hazard_existing_sample_unchanged(GameTestHelper helper) {
+        guard(() -> {
+            int[] n = { 0 };
+            float powder = HazardRegistry.powder, ingot = HazardRegistry.ingot, billet = HazardRegistry.billet, nugget = HazardRegistry.nugget;
+            // Values written from the start copy of HazardRegistry.java (build/migration/goal22d/baseline-files); none comes from the addendum.
+            sample(n, "fallout block", new ItemStack(NtmBlocks.FALLOUT.get()), HazardRegistry.RADIATION, 60F);
+            sample(n, "brick_asbestos", new ItemStack(NtmBlocks.BRICK_ASBESTOS.get()), HazardRegistry.ASBESTOS, 1F);
+            sample(n, "powder_coltan_ore", new ItemStack(NtmItems.POWDER_COLTAN_ORE.get()), HazardRegistry.ASBESTOS, 3F);
+            sample(n, "green wool", new ItemStack(Items.GREEN_WOOL), HazardRegistry.RADIATION, 150F);
+            sample(n, "white wool", new ItemStack(Items.WHITE_WOOL), HazardRegistry.ASBESTOS, 5F);
+            sample(n, "blaze powder", new ItemStack(Items.BLAZE_POWDER), HazardRegistry.HOT, 4F);
+            sample(n, "tnt", new ItemStack(Items.TNT), HazardRegistry.EXPLOSIVE, 4F);
+            sample(n, "particle_digamma", new ItemStack(NtmItems.PARTICLE_DIGAMMA.get()), HazardRegistry.DIGAMMA, 0.3333F);
+            // One item of each 21D frame kind: rad only, rad + hot, rad + blinding + hot, hydro only (LI), hot + hydro (SR), a fission fragment.
+            sample(n, "block_u233 (rad)", new ItemStack(NtmBlocks.BLOCK_U233.get()), HazardRegistry.RADIATION, HazardRegistry.u233 * HazardRegistry.block);
+            sample(n, "ingot_polonium (rad, hot)", new ItemStack(NtmItems.INGOT_POLONIUM.get()), HazardRegistry.RADIATION, HazardRegistry.po210 * ingot, HazardRegistry.HOT, 3F * ingot);
+            sample(n, "billet_pb209 (rad, blinding, hot)", new ItemStack(NtmItems.BILLET_PB209.get()), HazardRegistry.RADIATION, HazardRegistry.pb209 * billet,
+                    HazardRegistry.BLINDING, 50F * billet, HazardRegistry.HOT, 7F * billet);
+            sample(n, "powder_lithium (hydro)", new ItemStack(NtmItems.POWDER_LITHIUM.get()), HazardRegistry.HYDROACTIVE, 1F * powder);
+            sample(n, "nugget_strontium (hot, hydro)", new ItemStack(NtmItems.NUGGET_STRONTIUM.get()), HazardRegistry.HOT, 1F * nugget, HazardRegistry.HYDROACTIVE, 1F * nugget);
+            sample(n, "powder_xe135 (fission fragment)", new ItemStack(NtmItems.POWDER_XE135.get()), HazardRegistry.RADIATION, HazardRegistry.xe135 * powder, HazardRegistry.HOT, 10F * powder);
+            // Item-level rows and stacks.
+            sample(n, "block_yellowcake", new ItemStack(NtmBlocks.BLOCK_YELLOWCAKE.get()), HazardRegistry.RADIATION, HazardRegistry.yc * HazardRegistry.block * HazardRegistry.powder_mult);
+            sample(n, "billet_plutonium_fuel", new ItemStack(NtmItems.BILLET_PLUTONIUM_FUEL.get()), HazardRegistry.RADIATION, HazardRegistry.puf * billet);
+            sample(n, "quad rod PU239", MetaHelper.newStack(NtmItems.ROD_QUAD, 1, BreedingRodType.PU239.ordinal()), HazardRegistry.RADIATION, HazardRegistry.pu239 * HazardRegistry.rod_quad);
+            sample(n, "waste_plutonium meta 1", MetaHelper.newStack(NtmItems.WASTE_PLUTONIUM, 1, 1), HazardRegistry.RADIATION, HazardRegistry.wst * billet * 12.5F, HazardRegistry.HOT, 5F);
+            sample(n, "nuclear_waste_tiny", new ItemStack(NtmItems.NUCLEAR_WASTE_TINY.get()), HazardRegistry.RADIATION, HazardRegistry.wst * nugget);
+            sample(n, "rod_zirnox_les_fuel_depleted", new ItemStack(NtmItems.ROD_ZIRNOX_LES_FUEL_DEPLETED.get()), HazardRegistry.RADIATION, HazardRegistry.wst * HazardRegistry.rod_dual * 15F,
+                    HazardRegistry.BLINDING, 20F);
+            check(n[0] == SAMPLE_ROWS, "the sample has " + n[0] + " rows, expected " + SAMPLE_ROWS);
+        }).run();
+        done(helper, "hazard_existing_sample_unchanged");
+    }
+
+    private static void sample(int[] count, String label, ItemStack stack, Object... pairs) {
+        checkExact(label, stack, pairs);
+        count[0]++;
+    }
+
+    // Per-tick application of the new rows on a non-player living entity (HazardSystem.updateLivingInventory, as CommonEvents.onLivingTick)
+
+    @GameTest(template = TEMPLATE, batch = BATCH, timeoutTicks = 100)
+    public static void hazard_living_crystal_schrabidium(GameTestHelper helper) {
+        List<Entity> spawned = new ArrayList<>();
+        try {
+            guard(() -> {
+                requireHazardConfig();
+                Pig pig = pig(helper, spawned);
+                check(!pig.level().isClientSide, "the GameTest pig is not on the server");
+                check(!ContaminationUtil.isRadImmune(pig), "the pig is radiation immune");
+
+                // HazardTypeRadiation.onUpdate multiplies the level by the stack count and divides by 20; ContaminationUtil.contaminate then adds
+                // the amount to the environment total and, for a non-player, increments the radiation by amount * calculateRadiationMod = amount * 1
+                // (the 200-tick grace and creative checks are Player-only). 2 crystal_schrabidium: 150 * 2 / 20 = 15 rad per tick.
+                pig.setItemSlot(EquipmentSlot.MAINHAND, new ItemStack(NtmItems.CRYSTAL_SCHRABIDIUM.get(), 2));
+                float level = HazardRegistry.sa326 * HazardRegistry.crystal;
+                level *= 2;
+                float expected = level / 20F;
+                check(Math.abs(expected - 15F) <= 1e-6F, "the expected increment is " + expected + ", not 15");
+                HbmLivingAttachments.setRadiation(pig, 0F);
+                float previous = 0F;
+                for(int tick = 1; tick <= 5; tick++) {
+                    HazardSystem.updateLivingInventory(pig);
+                    float total = HbmLivingAttachments.getRadiation(pig);
+                    LOGGER.info("[hbm-hazard] tick {} with 2 crystal_schrabidium on a pig: +{} rad, expected {}", tick, total - previous, expected);
+                    check(Math.abs((total - previous) - expected) <= 1e-4F * expected, "tick " + tick + " with 2 crystal_schrabidium gave " + (total - previous) + " rad, expected " + expected);
+                    previous = total;
+                }
+                check(pig.getMainHandItem().getCount() == 2, "the crystal stack was consumed");
+                check(!pig.isOnFire(), "crystal_schrabidium set the pig on fire");
+
+                // The production event entry: one application per CommonEvents.onLivingTick call, control call with empty hands in the same tick.
+                pig.setItemSlot(EquipmentSlot.MAINHAND, ItemStack.EMPTY);
+                float[] control = tickThroughEvent(pig);
+                pig.setItemSlot(EquipmentSlot.MAINHAND, new ItemStack(NtmItems.CRYSTAL_SCHRABIDIUM.get(), 2));
+                float[] one = tickThroughEvent(pig);
+                LOGGER.info("[hbm-hazard] onLivingTick, 2 crystal_schrabidium in the main hand: +{} rad, +{} env, expected {} each", one[0] - control[0], one[1] - control[1], expected);
+                check(Math.abs(one[0] - control[0] - expected) <= 1e-4F * expected, "one event tick gave " + (one[0] - control[0]) + " rad, expected " + expected + " (twice would be " + 2 * expected + ")");
+                check(Math.abs(one[1] - control[1] - expected) <= 1e-4F * expected, "one event tick gave " + (one[1] - control[1]) + " environment rad, expected " + expected);
+                pig.setItemSlot(EquipmentSlot.MAINHAND, ItemStack.EMPTY);
+            }).run();
+        } finally {
+            cleanUp(spawned);
+        }
+        done(helper, "hazard_living_crystal_schrabidium");
+    }
+
+    @GameTest(template = TEMPLATE, batch = BATCH, timeoutTicks = 100)
+    public static void hazard_living_addendum_fire_and_asbestos(GameTestHelper helper) {
+        List<Entity> spawned = new ArrayList<>();
+        try {
+            guard(() -> {
+                requireHazardConfig();
+                check(!NtmConfig.COMMON.DISABLE_ASBESTOS.get(), "asbestos hazards are disabled in the common config");
+                Pig pig = pig(helper, spawned);
+                check(!pig.isInWaterOrRain(), "the pig stands in water or rain");
+
+                // billet_flashlead: RADIATION 6250 / 20 = 312.5 rad, HOT 7 -> HazardTypeHot sets ceil(7) * 20 = 140 fire ticks on a dry entity.
+                pig.setItemSlot(EquipmentSlot.MAINHAND, new ItemStack(NtmItems.BILLET_FLASHLEAD.get()));
+                HbmLivingAttachments.setRadiation(pig, 0F);
+                pig.clearFire();
+                HazardSystem.updateLivingInventory(pig);
+                float rad = HbmLivingAttachments.getRadiation(pig);
+                LOGGER.info("[hbm-hazard] billet_flashlead on a pig: +{} rad, {} fire ticks", rad, pig.getRemainingFireTicks());
+                check(Math.abs(rad - 312.5F) <= 1e-4F * 312.5F, "billet_flashlead gave " + rad + " rad, expected 312.5");
+                check(pig.getRemainingFireTicks() == 140, "billet_flashlead left " + pig.getRemainingFireTicks() + " fire ticks, expected 140");
+
+                // powder_caesium: HYDROACTIVE 1 only reacts in water or rain (HazardTypeHydroactive.onUpdate), so a dry pig keeps the stack; HOT 3 -> 60 fire ticks.
+                pig.setItemSlot(EquipmentSlot.MAINHAND, new ItemStack(NtmItems.POWDER_CAESIUM.get(), 4));
+                HbmLivingAttachments.setRadiation(pig, 0F);
+                pig.clearFire();
+                HazardSystem.updateLivingInventory(pig);
+                LOGGER.info("[hbm-hazard] powder_caesium on a dry pig: {} fire ticks, stack {}", pig.getRemainingFireTicks(), pig.getMainHandItem().getCount());
+                check(pig.getRemainingFireTicks() == 60, "powder_caesium left " + pig.getRemainingFireTicks() + " fire ticks, expected 60");
+                check(pig.getMainHandItem().getCount() == 4, "powder_caesium was consumed on a dry pig: " + pig.getMainHandItem().getCount());
+                check(HbmLivingAttachments.getRadiation(pig) == 0F, "powder_caesium added radiation");
+
+                // crystal_phosphorus: HOT 20 -> 400 fire ticks, no radiation.
+                pig.setItemSlot(EquipmentSlot.MAINHAND, new ItemStack(NtmItems.CRYSTAL_PHOSPHORUS.get()));
+                pig.clearFire();
+                HazardSystem.updateLivingInventory(pig);
+                check(pig.getRemainingFireTicks() == 400, "crystal_phosphorus left " + pig.getRemainingFireTicks() + " fire ticks, expected 400");
+                check(HbmLivingAttachments.getRadiation(pig) == 0F, "crystal_phosphorus added radiation");
+
+                // crystal_lithium: HYDROACTIVE 10 does nothing on a dry pig, and it has no hot entry.
+                pig.setItemSlot(EquipmentSlot.MAINHAND, new ItemStack(NtmItems.CRYSTAL_LITHIUM.get(), 3));
+                pig.clearFire();
+                HazardSystem.updateLivingInventory(pig);
+                check(!pig.isOnFire(), "crystal_lithium set the pig on fire");
+                check(pig.getMainHandItem().getCount() == 3, "crystal_lithium was consumed on a dry pig");
+
+                // The asbestos items: HazardTypeAsbestos.onUpdate adds min(level, 10) to the asbestos counter of an unprotected head (a pig wears nothing).
+                pig.clearFire();
+                int[] expected = { 1, 3, 10 };
+                ItemStack[] stacks = { new ItemStack(NtmItems.INGOT_ASBESTOS.get()), new ItemStack(NtmItems.POWDER_ASBESTOS.get()), new ItemStack(NtmBlocks.BLOCK_ASBESTOS.get()) };
+                for(int i = 0; i < stacks.length; i++) {
+                    pig.setItemSlot(EquipmentSlot.MAINHAND, stacks[i]);
+                    HbmLivingAttachments.setAsbestos(pig, 0);
+                    HazardSystem.updateLivingInventory(pig);
+                    int asbestos = HbmLivingAttachments.getAsbestos(pig);
+                    LOGGER.info("[hbm-hazard] {} on a pig: +{} asbestos", BuiltInRegistries.ITEM.getKey(stacks[i].getItem()).getPath(), asbestos);
+                    check(asbestos == expected[i], BuiltInRegistries.ITEM.getKey(stacks[i].getItem()).getPath() + " gave " + asbestos + " asbestos, expected " + expected[i]);
+                }
+                check(!pig.isOnFire(), "an asbestos item set the pig on fire");
+
+                // ingot_phosphorus: HOT 5 -> 100 fire ticks.
+                pig.setItemSlot(EquipmentSlot.MAINHAND, new ItemStack(NtmItems.INGOT_PHOSPHORUS.get()));
+                HazardSystem.updateLivingInventory(pig);
+                check(pig.getRemainingFireTicks() == 100, "ingot_phosphorus left " + pig.getRemainingFireTicks() + " fire ticks, expected 100");
+                pig.setItemSlot(EquipmentSlot.MAINHAND, ItemStack.EMPTY);
+            }).run();
+        } finally {
+            cleanUp(spawned);
+        }
+        done(helper, "hazard_living_addendum_fire_and_asbestos");
     }
 
     // The registered rows. Each line mirrors one original row; hazards are the frame's rad, hot, blinding, hydro (0 = absent),

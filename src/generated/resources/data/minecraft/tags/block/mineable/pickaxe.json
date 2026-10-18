@@ -226,6 +226,7 @@
     "hbmsntm:machine_crystallizer",
     "hbmsntm:machine_waste_drum",
     "hbmsntm:machine_chemical_plant",
+    "hbmsntm:machine_purex",
     "hbmsntm:crate_iron",
     "hbmsntm:crate_tungsten",
     "hbmsntm:crate_steel",

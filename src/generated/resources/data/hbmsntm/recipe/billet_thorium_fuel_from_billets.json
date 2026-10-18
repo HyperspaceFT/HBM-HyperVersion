@@ -1,0 +1,28 @@
+{
+  "type": "minecraft:crafting_shapeless",
+  "category": "misc",
+  "ingredients": [
+    {
+      "item": "hbmsntm:billet_th232"
+    },
+    {
+      "item": "hbmsntm:billet_th232"
+    },
+    {
+      "item": "hbmsntm:billet_th232"
+    },
+    {
+      "item": "hbmsntm:billet_th232"
+    },
+    {
+      "item": "hbmsntm:billet_th232"
+    },
+    {
+      "item": "hbmsntm:billet_u233"
+    }
+  ],
+  "result": {
+    "count": 6,
+    "id": "hbmsntm:billet_thorium_fuel"
+  }
+}

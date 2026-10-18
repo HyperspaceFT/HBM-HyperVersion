@@ -353,7 +353,9 @@ public class MachineChemicalPlantBlockEntity extends MachineBaseBlockEntity impl
         components.add(IUpgradeInfoProvider.getStandardLabel(NtmBlocks.MACHINE_CHEMICAL_PLANT.get()));
         if(type == UpgradeType.SPEED) {
             components.add(Component.translatable(KEY_SPEED, "+" + (lvl * 100 / 3) + "%").withStyle(ChatFormatting.GREEN));
-            components.add(Component.translatable(KEY_CONSUMPTION, "+" + (lvl * 50) + "%").withStyle(ChatFormatting.RED));
+            // Goal 22 decision 17: the original text says +50% per level (TileEntityMachineChemicalPlant.java:299), but the formula above
+            // adds 100% per level (:133 here, original :123); the text follows the formula.
+            components.add(Component.translatable(KEY_CONSUMPTION, "+" + (lvl * 100) + "%").withStyle(ChatFormatting.RED));
         }
         if(type == UpgradeType.POWER) {
             components.add(Component.translatable(KEY_CONSUMPTION, "-" + (lvl * 25) + "%").withStyle(ChatFormatting.GREEN));

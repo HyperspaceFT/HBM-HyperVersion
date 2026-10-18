@@ -1,0 +1,32 @@
+{
+  "parent": "minecraft:recipes/root",
+  "criteria": {
+    "has_billet_nuclear_waste": {
+      "conditions": {
+        "items": [
+          {
+            "items": "hbmsntm:billet_nuclear_waste"
+          }
+        ]
+      },
+      "trigger": "minecraft:inventory_changed"
+    },
+    "has_the_recipe": {
+      "conditions": {
+        "recipe": "hbmsntm:nuclear_waste_tiny_from_billet_nuclear_waste"
+      },
+      "trigger": "minecraft:recipe_unlocked"
+    }
+  },
+  "requirements": [
+    [
+      "has_the_recipe",
+      "has_billet_nuclear_waste"
+    ]
+  ],
+  "rewards": {
+    "recipes": [
+      "hbmsntm:nuclear_waste_tiny_from_billet_nuclear_waste"
+    ]
+  }
+}

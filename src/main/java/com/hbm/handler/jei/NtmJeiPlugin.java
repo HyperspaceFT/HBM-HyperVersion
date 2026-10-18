@@ -24,6 +24,7 @@ import com.hbm.inventory.recipes.ArcFurnaceRecipes;
 import com.hbm.inventory.recipes.ArcWelderRecipes;
 import com.hbm.inventory.recipes.BlastFurnaceRecipes;
 import com.hbm.inventory.recipes.ChemicalPlantRecipes;
+import com.hbm.inventory.recipes.PUREXRecipes;
 import com.hbm.inventory.recipes.CentrifugeRecipes;
 import com.hbm.inventory.recipes.CrystallizerRecipes;
 import com.hbm.inventory.recipes.FuelPoolRecipes;
@@ -292,6 +293,7 @@ public class NtmJeiPlugin implements IModPlugin {
                 new CrystallizerRecipeHandler(guiHelper),
                 new FuelPoolRecipeHandler(guiHelper),
                 new ChemicalPlantRecipeHandler(guiHelper),
+                new PUREXRecipeHandler(guiHelper),
                 new FurnaceCombinationRecipeHandler(guiHelper),
                 new PressRecipeHandler(guiHelper),
                 new ShredderRecipeHandler(guiHelper),
@@ -331,6 +333,7 @@ public class NtmJeiPlugin implements IModPlugin {
         this.knownFuelPoolRecipes.addAll(this.displayedFuelPoolRecipes);
         registration.addRecipes(FuelPoolRecipeHandler.RECIPE_TYPE, this.displayedFuelPoolRecipes);
         registration.addRecipes(ChemicalPlantRecipeHandler.RECIPE_TYPE, ChemicalPlantRecipes.INSTANCE.recipeOrderedList);
+        registration.addRecipes(PUREXRecipeHandler.RECIPE_TYPE, PUREXRecipes.INSTANCE.recipeOrderedList);
         registration.addRecipes(FurnaceCombinationRecipeHandler.RECIPE_TYPE, CombinationRecipes.getJeiRecipes());
         registration.addRecipes(PressRecipeHandler.RECIPE_TYPE, PressRecipeHandler.getRecipes());
         registration.addRecipes(ShredderRecipeHandler.RECIPE_TYPE, ShredderRecipes.getJeiRecipes());
@@ -422,6 +425,10 @@ public class NtmJeiPlugin implements IModPlugin {
         registration.addRecipeCatalyst(
                 NtmBlocks.MACHINE_CHEMICAL_PLANT.asItem(),
                 ChemicalPlantRecipeHandler.RECIPE_TYPE
+        );
+        registration.addRecipeCatalyst(
+                NtmBlocks.MACHINE_PUREX.asItem(),
+                PUREXRecipeHandler.RECIPE_TYPE
         );
         registration.addRecipeCatalyst(
                 NtmBlocks.FURNACE_COMBINATION.asItem(),

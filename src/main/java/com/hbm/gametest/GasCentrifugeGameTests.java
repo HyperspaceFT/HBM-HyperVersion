@@ -592,9 +592,12 @@ public class GasCentrifugeGameTests {
                 new ItemStack(NtmItems.NUGGET_U238.get(), 2), new ItemStack(NtmItems.NUGGET_U235.get(), 1), new ItemStack(NtmItems.FLUORITE.get(), 1));
         assertPseudoType(PseudoFluidType.PF6, "PF6", 300, 0, PseudoFluidType.NONE, false,
                 new ItemStack(NtmItems.NUGGET_PU238.get(), 1), new ItemStack(NtmItems.NUGGET_PU_MIX.get(), 2), new ItemStack(NtmItems.FLUORITE.get(), 1));
-        // MUD and MUD_HEAVY keep the original numbers, but their outputs are deferred and therefore empty.
-        assertPseudoType(PseudoFluidType.MUD, "MUD", 1000, 500, PseudoFluidType.MUD_HEAVY, false);
-        assertPseudoType(PseudoFluidType.MUD_HEAVY, "MUD_HEAVY", 500, 0, PseudoFluidType.NONE, false);
+        // MUD and MUD_HEAVY keep the original numbers and, since Goal 22B, the original outputs (GasCentrifugeRecipes.java:32-33). The WATZ recognizer
+        // that would produce MUD is still not converted, so the WATZ assertions above stay.
+        assertPseudoType(PseudoFluidType.MUD, "MUD", 1000, 500, PseudoFluidType.MUD_HEAVY, false,
+                new ItemStack(NtmItems.POWDER_LEAD.get(), 1), new ItemStack(NtmItems.DUST.get(), 1));
+        assertPseudoType(PseudoFluidType.MUD_HEAVY, "MUD_HEAVY", 500, 0, PseudoFluidType.NONE, false,
+                new ItemStack(NtmItems.POWDER_IRON.get(), 1), new ItemStack(NtmItems.DUST.get(), 1), new ItemStack(NtmItems.NUCLEAR_WASTE_TINY.get(), 1));
         assertPseudoType(PseudoFluidType.NONE, "NONE", 0, 0, null, false);
         helper.succeed();
     }

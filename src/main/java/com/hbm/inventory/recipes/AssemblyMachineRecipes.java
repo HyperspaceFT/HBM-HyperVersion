@@ -342,6 +342,14 @@ public class AssemblyMachineRecipes extends GenericRecipes<GenericRecipe> {
                         new ComparableStack(NtmItems.MOTOR.get(), 2),
                         new ComparableStack(NtmItems.COIL_TUNGSTEN.get(), 2),
                         new ComparableStack(NtmItems.CIRCUIT_ANALOG_BOARD.get(), 1)));
+        // Original ass.purex (AssemblyMachineRecipes.java:270-272), normal mode only and in both enable528 settings: the expensive
+        // mode uses item_expensive, which NEO does not have. The steel shell and rubber pipe ore dictionary entries are plain items.
+        this.register(new GenericRecipe("ass.purex").setup(300, 100).outputItems(new ItemStack(NtmBlocks.MACHINE_PUREX.get(), 1))
+                .inputItems(new ComparableStack(NtmItems.SHELL_STEEL.get(), 4),
+                        new ComparableStack(NtmItems.PIPE_RUBBER.get(), 8),
+                        NtmItems.castPlateIngredient(CastPlateItem.Type.LEAD, 4),
+                        new ComparableStack(NtmItems.MOTOR_DESH.get(), 1),
+                        new ComparableStack(NtmItems.CIRCUIT_INTEGRATED_BOARD.get(), 4)));
         // Original ass.crackingtower (AssemblyMachineRecipes.java:316-319), normal mode only: no setPools528, since NEO
         // has no blueprint source in survival for 528. pools (Goal 13A's booklets and blueprint chests only give alt. and
         // discover. pools), and no inputItemsEx, since NEO has no item_expensive.

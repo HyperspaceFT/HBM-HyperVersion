@@ -541,6 +541,41 @@ public class NtmRecipeProvider extends RecipeProvider {
                 .requires(NtmItems.BILLET_U235.get(), 2)
                 .unlockedBy("has_rod_zirnox_empty", has(NtmItems.ROD_ZIRNOX_EMPTY.get()))
                 .save(recipeOutput, ResourceLocation.fromNamespaceAndPath("hbmsntm", "rod_zirnox_u235_fuel"));
+        // Original RodRecipes.java:31: an empty rod and two MOX fuel billets make the MOX fuel rod (Goal 22C); no "life" data.
+        ShapelessRecipeBuilder.shapeless(RecipeCategory.MISC, MetaHelper.newStack(NtmItems.ROD_ZIRNOX.get(), 1, ZirnoxType.MOX_FUEL.ordinal()))
+                .requires(NtmItems.ROD_ZIRNOX_EMPTY.get())
+                .requires(NtmItems.BILLET_MOX_FUEL.get(), 2)
+                .unlockedBy("has_rod_zirnox_empty", has(NtmItems.ROD_ZIRNOX_EMPTY.get()))
+                .save(recipeOutput, ResourceLocation.fromNamespaceAndPath("hbmsntm", "rod_zirnox_mox_fuel"));
+        // Original RodRecipes.java:32: an empty rod and two plutonium fuel billets make the plutonium fuel rod; no "life" data.
+        ShapelessRecipeBuilder.shapeless(RecipeCategory.MISC, MetaHelper.newStack(NtmItems.ROD_ZIRNOX.get(), 1, ZirnoxType.PLUTONIUM_FUEL.ordinal()))
+                .requires(NtmItems.ROD_ZIRNOX_EMPTY.get())
+                .requires(NtmItems.BILLET_PLUTONIUM_FUEL.get(), 2)
+                .unlockedBy("has_rod_zirnox_empty", has(NtmItems.ROD_ZIRNOX_EMPTY.get()))
+                .save(recipeOutput, ResourceLocation.fromNamespaceAndPath("hbmsntm", "rod_zirnox_plutonium_fuel"));
+        // Original RodRecipes.java:33 (addZIRNOXRod(U233, U233_FUEL), :255-257): an empty rod and two uranium-233 billets make the
+        // U233 fuel rod; no "life" data.
+        ShapelessRecipeBuilder.shapeless(RecipeCategory.MISC, MetaHelper.newStack(NtmItems.ROD_ZIRNOX.get(), 1, ZirnoxType.U233_FUEL.ordinal()))
+                .requires(NtmItems.ROD_ZIRNOX_EMPTY.get())
+                .requires(NtmItems.BILLET_U233.get(), 2)
+                .unlockedBy("has_rod_zirnox_empty", has(NtmItems.ROD_ZIRNOX_EMPTY.get()))
+                .save(recipeOutput, ResourceLocation.fromNamespaceAndPath("hbmsntm", "rod_zirnox_u233_fuel"));
+        // Original RodRecipes.java:37: an empty rod, one MOX fuel billet and one zirconium billet make the ZFB MOX rod; no "life"
+        // data. The LES rod (:35, billet_les has no survival source) and the lithium rod (:36, NEO has no lithium ingot) are deferred.
+        ShapelessRecipeBuilder.shapeless(RecipeCategory.MISC, MetaHelper.newStack(NtmItems.ROD_ZIRNOX.get(), 1, ZirnoxType.ZFB_MOX.ordinal()))
+                .requires(NtmItems.ROD_ZIRNOX_EMPTY.get())
+                .requires(NtmItems.BILLET_MOX_FUEL.get())
+                .requires(NtmItems.BILLET_ZIRCONIUM.get())
+                .unlockedBy("has_rod_zirnox_empty", has(NtmItems.ROD_ZIRNOX_EMPTY.get()))
+                .save(recipeOutput, ResourceLocation.fromNamespaceAndPath("hbmsntm", "rod_zirnox_zfb_mox"));
+        // Original RodRecipes.java:30 (addZIRNOXRod(billet_thorium_fuel, THORIUM_FUEL), :250-252): an empty rod and two thorium fuel
+        // billets make the thorium fuel rod; no "life" data. The billet has survival sources since Goal 22C; the reactor also still
+        // turns a depleted TH232 breeding rod into this rod.
+        ShapelessRecipeBuilder.shapeless(RecipeCategory.MISC, MetaHelper.newStack(NtmItems.ROD_ZIRNOX.get(), 1, ZirnoxType.THORIUM_FUEL.ordinal()))
+                .requires(NtmItems.ROD_ZIRNOX_EMPTY.get())
+                .requires(NtmItems.BILLET_THORIUM_FUEL.get(), 2)
+                .unlockedBy("has_rod_zirnox_empty", has(NtmItems.ROD_ZIRNOX_EMPTY.get()))
+                .save(recipeOutput, ResourceLocation.fromNamespaceAndPath("hbmsntm", "rod_zirnox_thorium_fuel"));
         // Original RodRecipes.java:50-55: empty breeding rods. Recipes that fill them are not ported yet.
         ShapedRecipeBuilder.shaped(RecipeCategory.MISC, NtmItems.ROD_EMPTY.get(), 16)
                 .pattern("SSS")
@@ -1446,6 +1481,14 @@ public class NtmRecipeProvider extends RecipeProvider {
 
         addOreSmelting(recipeOutput, NtmBlocks.ORE_BERYLLIUM.get(), NtmBlocks.ORE_BERYLLIUM_DEEPSLATE.get(), NtmItems.INGOT_BERYLLIUM.get(), 0.7F);
         addOreSmelting(recipeOutput, NtmBlocks.ORE_URANIUM.get(), NtmBlocks.ORE_URANIUM_DEEPSLATE.get(), NtmItems.INGOT_URANIUM.get(), 0.7F);
+        // Original SmeltingRecipes.java:32-35 and :56-57 (Goal 22A): the scorched, nether and schist uranium ores smelt to the uranium ingot
+        // and the nether plutonium ore to the plutonium ingot. The experience stays NEO's 0.7F (original 6.0F, 12.0F and 24.0F).
+        addOreSmelting(recipeOutput, NtmBlocks.ORE_URANIUM_SCORCHED.get(), NtmItems.INGOT_URANIUM.get(), 0.7F);
+        addOreSmelting(recipeOutput, NtmBlocks.ORE_NETHER_URANIUM.get(), NtmItems.INGOT_URANIUM.get(), 0.7F);
+        addOreSmelting(recipeOutput, NtmBlocks.ORE_NETHER_URANIUM_SCORCHED.get(), NtmItems.INGOT_URANIUM.get(), 0.7F);
+        addOreSmelting(recipeOutput, NtmBlocks.ORE_NETHER_PLUTONIUM.get(), NtmItems.INGOT_PLUTONIUM.get(), 0.7F);
+        addOreSmelting(recipeOutput, NtmBlocks.ORE_GNEISS_URANIUM.get(), NtmItems.INGOT_URANIUM.get(), 0.7F);
+        addOreSmelting(recipeOutput, NtmBlocks.ORE_GNEISS_URANIUM_SCORCHED.get(), NtmItems.INGOT_URANIUM.get(), 0.7F);
         addOreSmelting(recipeOutput, NtmBlocks.ORE_TUNGSTEN.get(), NtmBlocks.ORE_TUNGSTEN_DEEPSLATE.get(), NtmItems.INGOT_TUNGSTEN.get(), 0.7F);
         addOreSmelting(recipeOutput, NtmBlocks.ORE_TITANIUM.get(), NtmBlocks.ORE_TITANIUM_DEEPSLATE.get(), NtmItems.INGOT_TITANIUM.get(), 0.7F);
         addOreSmelting(recipeOutput, NtmBlocks.ORE_LEAD.get(), NtmBlocks.ORE_LEAD_DEEPSLATE.get(), NtmItems.INGOT_LEAD.get(), 0.7F);
@@ -1512,6 +1555,7 @@ public class NtmRecipeProvider extends RecipeProvider {
         addNuggetCrafting(recipeOutput, NtmItems.INGOT_GH336.get(), NtmItems.NUGGET_GH336.get());
         addNuggetCrafting(recipeOutput, NtmItems.INGOT_AU198.get(), NtmItems.NUGGET_AU198.get());
         addNuggetCrafting(recipeOutput, NtmItems.INGOT_RA226.get(), NtmItems.NUGGET_RA226.get());
+        addNuggetCrafting(recipeOutput, NtmItems.NUCLEAR_WASTE.get(), NtmItems.NUCLEAR_WASTE_TINY.get());
 
         addNuggetDeCrafting(recipeOutput, NtmItems.NUGGET_URANIUM.get(), NtmItems.INGOT_URANIUM.get());
         addNuggetDeCrafting(recipeOutput, NtmItems.NUGGET_U233.get(), NtmItems.INGOT_U233.get());
@@ -1562,6 +1606,7 @@ public class NtmRecipeProvider extends RecipeProvider {
         addNuggetDeCrafting(recipeOutput, NtmItems.NUGGET_GH336.get(), NtmItems.INGOT_GH336.get());
         addNuggetDeCrafting(recipeOutput, NtmItems.NUGGET_AU198.get(), NtmItems.INGOT_AU198.get());
         addNuggetDeCrafting(recipeOutput, NtmItems.NUGGET_RA226.get(), NtmItems.INGOT_RA226.get());
+        addNuggetDeCrafting(recipeOutput, NtmItems.NUCLEAR_WASTE_TINY.get(), NtmItems.NUCLEAR_WASTE.get());
 
         addPickaxeRecipe(recipeOutput, NtmItems.STEEL_PICKAXE.get(), NtmItems.INGOT_STEEL.get(), "steel_pickaxe");
         addAxeRecipe(recipeOutput, NtmItems.STEEL_AXE.get(), NtmItems.INGOT_STEEL.get(), "steel_axe");
@@ -1702,6 +1747,7 @@ public class NtmRecipeProvider extends RecipeProvider {
     private void registerMaterialConversionRecipes(RecipeOutput recipeOutput) {
         registerMaterialBlockRecipes(recipeOutput);
         registerBilletRecipes(recipeOutput);
+        registerFuelAlloyRecipes(recipeOutput);
         registerPowderSmeltingRecipes(recipeOutput);
         registerTinyPowderRecipes(recipeOutput);
         registerCrystalSmeltingRecipes(recipeOutput);
@@ -1805,6 +1851,7 @@ public class NtmRecipeProvider extends RecipeProvider {
         addBilletRecipe(recipeOutput, NtmItems.BILLET_MOX_FUEL.get(), NtmItems.NUGGET_MOX_FUEL.get(), NtmItems.INGOT_MOX_FUEL.get());
         addBilletRecipe(recipeOutput, NtmItems.BILLET_NEPTUNIUM.get(), NtmItems.NUGGET_NEPTUNIUM.get(), NtmItems.INGOT_NEPTUNIUM.get());
         addBilletRecipe(recipeOutput, NtmItems.BILLET_NEPTUNIUM_FUEL.get(), NtmItems.NUGGET_NEPTUNIUM_FUEL.get(), NtmItems.INGOT_NEPTUNIUM_FUEL.get());
+        addBilletRecipe(recipeOutput, NtmItems.BILLET_NUCLEAR_WASTE.get(), NtmItems.NUCLEAR_WASTE_TINY.get(), NtmItems.NUCLEAR_WASTE.get());
         addBilletRecipe(recipeOutput, NtmItems.BILLET_PB209.get(), NtmItems.NUGGET_PB209.get(), NtmItems.INGOT_PB209.get());
         addBilletRecipe(recipeOutput, NtmItems.BILLET_PLUTONIUM.get(), NtmItems.NUGGET_PLUTONIUM.get(), NtmItems.INGOT_PLUTONIUM.get());
         addBilletRecipe(recipeOutput, NtmItems.BILLET_PLUTONIUM_FUEL.get(), NtmItems.NUGGET_PLUTONIUM_FUEL.get(), NtmItems.INGOT_PLUTONIUM_FUEL.get());
@@ -1830,6 +1877,80 @@ public class NtmRecipeProvider extends RecipeProvider {
         addBilletRecipe(recipeOutput, NtmItems.BILLET_URANIUM_FUEL.get(), NtmItems.NUGGET_URANIUM_FUEL.get(), NtmItems.INGOT_URANIUM_FUEL.get());
         addBilletRecipe(recipeOutput, NtmItems.BILLET_ZIRCONIUM.get(), NtmItems.NUGGET_ZIRCONIUM.get(), NtmItems.INGOT_ZIRCONIUM.get());
         addBilletRecipe(recipeOutput, NtmItems.BILLET_SILICON.get(), NtmItems.NUGGET_SILICON.get(), NtmItems.INGOT_SILICON.get());
+    }
+
+    // Fuel alloys (original MineralRecipes.java:156-178,419; Goal 22C), all shapeless. The "tiny" rows (:158,161,164,167,420) are not
+    // ported: the original registers every nugget under both "nugget<Mat>" and "tiny<Mat>" (OreDictManager.java:839), so they repeat
+    // the nugget rows with the same items and add nothing.
+    private void registerFuelAlloyRecipes(RecipeOutput recipeOutput) {
+        // :156: five thorium-232 billets and one uranium-233 billet make six thorium fuel billets.
+        ShapelessRecipeBuilder.shapeless(RecipeCategory.MISC, NtmItems.BILLET_THORIUM_FUEL.get(), 6)
+                .requires(NtmItems.BILLET_TH232.get(), 5)
+                .requires(NtmItems.BILLET_U233.get())
+                .unlockedBy("has_billet_u233", has(NtmItems.BILLET_U233.get()))
+                .save(recipeOutput, ResourceLocation.fromNamespaceAndPath("hbmsntm", "billet_thorium_fuel_from_billets"));
+        // :157: five thorium-232 nuggets and one uranium-233 nugget make one thorium fuel billet.
+        ShapelessRecipeBuilder.shapeless(RecipeCategory.MISC, NtmItems.BILLET_THORIUM_FUEL.get(), 1)
+                .requires(NtmItems.NUGGET_TH232.get(), 5)
+                .requires(NtmItems.NUGGET_U233.get())
+                .unlockedBy("has_nugget_u233", has(NtmItems.NUGGET_U233.get()))
+                .save(recipeOutput, ResourceLocation.fromNamespaceAndPath("hbmsntm", "billet_thorium_fuel_from_nuggets"));
+        // :159: five uranium-238 billets and one uranium-235 billet make six uranium fuel billets.
+        ShapelessRecipeBuilder.shapeless(RecipeCategory.MISC, NtmItems.BILLET_URANIUM_FUEL.get(), 6)
+                .requires(NtmItems.BILLET_U238.get(), 5)
+                .requires(NtmItems.BILLET_U235.get())
+                .unlockedBy("has_billet_u235", has(NtmItems.BILLET_U235.get()))
+                .save(recipeOutput, ResourceLocation.fromNamespaceAndPath("hbmsntm", "billet_uranium_fuel_from_billets"));
+        // :160: five uranium-238 nuggets and one uranium-235 nugget make one uranium fuel billet.
+        ShapelessRecipeBuilder.shapeless(RecipeCategory.MISC, NtmItems.BILLET_URANIUM_FUEL.get(), 1)
+                .requires(NtmItems.NUGGET_U238.get(), 5)
+                .requires(NtmItems.NUGGET_U235.get())
+                .unlockedBy("has_nugget_u235", has(NtmItems.NUGGET_U235.get()))
+                .save(recipeOutput, ResourceLocation.fromNamespaceAndPath("hbmsntm", "billet_uranium_fuel_from_nuggets"));
+        // :162: two uranium-238 billets and one reactor-grade plutonium billet make three plutonium fuel billets.
+        ShapelessRecipeBuilder.shapeless(RecipeCategory.MISC, NtmItems.BILLET_PLUTONIUM_FUEL.get(), 3)
+                .requires(NtmItems.BILLET_U238.get(), 2)
+                .requires(NtmItems.BILLET_PU_MIX.get())
+                .unlockedBy("has_billet_pu_mix", has(NtmItems.BILLET_PU_MIX.get()))
+                .save(recipeOutput, ResourceLocation.fromNamespaceAndPath("hbmsntm", "billet_plutonium_fuel_from_billets"));
+        // :163: two reactor-grade plutonium nuggets and four uranium-238 nuggets make one plutonium fuel billet.
+        ShapelessRecipeBuilder.shapeless(RecipeCategory.MISC, NtmItems.BILLET_PLUTONIUM_FUEL.get(), 1)
+                .requires(NtmItems.NUGGET_PU_MIX.get(), 2)
+                .requires(NtmItems.NUGGET_U238.get(), 4)
+                .unlockedBy("has_nugget_pu_mix", has(NtmItems.NUGGET_PU_MIX.get()))
+                .save(recipeOutput, ResourceLocation.fromNamespaceAndPath("hbmsntm", "billet_plutonium_fuel_from_nuggets"));
+        // :165: two plutonium-239 billets and one plutonium-240 billet make three reactor-grade plutonium billets.
+        ShapelessRecipeBuilder.shapeless(RecipeCategory.MISC, NtmItems.BILLET_PU_MIX.get(), 3)
+                .requires(NtmItems.BILLET_PU239.get(), 2)
+                .requires(NtmItems.BILLET_PU240.get())
+                .unlockedBy("has_billet_pu240", has(NtmItems.BILLET_PU240.get()))
+                .save(recipeOutput, ResourceLocation.fromNamespaceAndPath("hbmsntm", "billet_pu_mix_from_billets"));
+        // :166: four plutonium-239 nuggets and two plutonium-240 nuggets make one reactor-grade plutonium billet.
+        ShapelessRecipeBuilder.shapeless(RecipeCategory.MISC, NtmItems.BILLET_PU_MIX.get(), 1)
+                .requires(NtmItems.NUGGET_PU239.get(), 4)
+                .requires(NtmItems.NUGGET_PU240.get(), 2)
+                .unlockedBy("has_nugget_pu240", has(NtmItems.NUGGET_PU240.get()))
+                .save(recipeOutput, ResourceLocation.fromNamespaceAndPath("hbmsntm", "billet_pu_mix_from_nuggets"));
+        // :177: two uranium fuel billets and one plutonium-239 billet make three MOX fuel billets.
+        ShapelessRecipeBuilder.shapeless(RecipeCategory.MISC, NtmItems.BILLET_MOX_FUEL.get(), 3)
+                .requires(NtmItems.BILLET_URANIUM_FUEL.get(), 2)
+                .requires(NtmItems.BILLET_PU239.get())
+                .unlockedBy("has_billet_pu239", has(NtmItems.BILLET_PU239.get()))
+                .save(recipeOutput, ResourceLocation.fromNamespaceAndPath("hbmsntm", "billet_mox_fuel_from_billets"));
+        // :178: two plutonium-239 nuggets and four uranium fuel nuggets make one MOX fuel billet.
+        ShapelessRecipeBuilder.shapeless(RecipeCategory.MISC, NtmItems.BILLET_MOX_FUEL.get(), 1)
+                .requires(NtmItems.NUGGET_PU239.get(), 2)
+                .requires(NtmItems.NUGGET_URANIUM_FUEL.get(), 4)
+                .unlockedBy("has_nugget_pu239", has(NtmItems.NUGGET_PU239.get()))
+                .save(recipeOutput, ResourceLocation.fromNamespaceAndPath("hbmsntm", "billet_mox_fuel_from_nuggets"));
+        // :419: six plutonium-239 nuggets and three plutonium-240 nuggets make one reactor-grade plutonium ingot. The original spells
+        // the Pu240 ore name "nuggetPluonium240", which no item registers, so :419 itself never matches; its "tiny" duplicate :420
+        // (the same nuggets) does. NEO uses the intended plutonium-240 nugget (upstream-shared typo, recorded in UPSTREAM-REVIEWS).
+        ShapelessRecipeBuilder.shapeless(RecipeCategory.MISC, NtmItems.INGOT_PU_MIX.get(), 1)
+                .requires(NtmItems.NUGGET_PU239.get(), 6)
+                .requires(NtmItems.NUGGET_PU240.get(), 3)
+                .unlockedBy("has_nugget_pu240", has(NtmItems.NUGGET_PU240.get()))
+                .save(recipeOutput, ResourceLocation.fromNamespaceAndPath("hbmsntm", "ingot_pu_mix_from_nuggets"));
     }
 
     private void registerPowderSmeltingRecipes(RecipeOutput recipeOutput) {

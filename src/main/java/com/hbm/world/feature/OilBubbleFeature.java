@@ -135,6 +135,17 @@ public class OilBubbleFeature extends Feature<NoneFeatureConfiguration> {
         }
     }
 
+    /**
+     * The original OilSpot (OilSpot.java:21-27) scatters the spots by nextGaussian() * 7 without a write limit; a 1.21 feature may
+     * only write into the generating chunk and its direct neighbours, and WorldGenRegion drops any other write with a far-chunk
+     * error log. Skipping those writes leaves the world exactly as before (they were never written) and keeps every read and
+     * random draw unchanged.
+     */
+    private static boolean inWriteRange(BlockPos target, int xCoord, int zCoord) {
+        return Math.abs(SectionPos.blockToSectionCoord(target.getX()) - SectionPos.blockToSectionCoord(xCoord)) <= 1
+                && Math.abs(SectionPos.blockToSectionCoord(target.getZ()) - SectionPos.blockToSectionCoord(zCoord)) <= 1;
+    }
+
     private void addSurfaceSpot(WorldGenLevel level, RandomSource random, int xCoord, int zCoord) {
         int spotCount = 150;
         int spotWidth = 7;
@@ -160,10 +171,10 @@ public class OilBubbleFeature extends Feature<NoneFeatureConfiguration> {
                     var targetState = level.getBlockState(targetPos);
 
                     if(targetState.is(Blocks.GRASS_BLOCK) || targetState.is(Blocks.DIRT)) {
-                        level.setBlock(targetPos, inner ? NtmBlocks.DIRT_OILY.get().defaultBlockState() : NtmBlocks.DIRT_DEAD.get().defaultBlockState(), 3);
+                        if(inWriteRange(targetPos, xCoord, zCoord)) level.setBlock(targetPos, inner ? NtmBlocks.DIRT_OILY.get().defaultBlockState() : NtmBlocks.DIRT_DEAD.get().defaultBlockState(), 3);
                         if(!inner && oy == 0 && random.nextInt(20) == 0) {
                             BlockPos above = targetPos.above();
-                            if(level.getBlockState(above).canBeReplaced()) {
+                            if(level.getBlockState(above).canBeReplaced() && inWriteRange(above, xCoord, zCoord)) {
                                 level.setBlock(above, Blocks.DEAD_BUSH.defaultBlockState(), 3);
                             }
                         }
@@ -171,17 +182,17 @@ public class OilBubbleFeature extends Feature<NoneFeatureConfiguration> {
                     }
 
                     if(targetState.is(Blocks.SAND) || targetState.is(Blocks.RED_SAND) || targetState.is(NtmBlocks.ORE_OIL_SAND.get())) {
-                        level.setBlock(targetPos, targetState.is(Blocks.RED_SAND) ? NtmBlocks.SAND_RED_OILY.get().defaultBlockState() : NtmBlocks.SAND_OILY.get().defaultBlockState(), 3);
+                        if(inWriteRange(targetPos, xCoord, zCoord)) level.setBlock(targetPos, targetState.is(Blocks.RED_SAND) ? NtmBlocks.SAND_RED_OILY.get().defaultBlockState() : NtmBlocks.SAND_OILY.get().defaultBlockState(), 3);
                         break;
                     }
 
                     if(targetState.is(Blocks.STONE)) {
-                        level.setBlock(targetPos, NtmBlocks.STONE_CRACKED.get().defaultBlockState(), 3);
+                        if(inWriteRange(targetPos, xCoord, zCoord)) level.setBlock(targetPos, NtmBlocks.STONE_CRACKED.get().defaultBlockState(), 3);
                         break;
                     }
 
                     if(targetState.is(BlockTags.LEAVES)) {
-                        level.setBlock(targetPos, Blocks.AIR.defaultBlockState(), 3);
+                        if(inWriteRange(targetPos, xCoord, zCoord)) level.setBlock(targetPos, Blocks.AIR.defaultBlockState(), 3);
                         break;
                     }
                 }

@@ -320,6 +320,7 @@ public class NtmBlockTagProvider extends BlockTagsProvider {
                         NtmBlocks.MACHINE_CRYSTALLIZER.get(),
                         NtmBlocks.MACHINE_WASTE_DRUM.get(),
                         NtmBlocks.MACHINE_CHEMICAL_PLANT.get(),
+                        NtmBlocks.MACHINE_PUREX.get(),
                         NtmBlocks.CRATE_IRON.get(),
                         NtmBlocks.CRATE_TUNGSTEN.get(),
                         NtmBlocks.CRATE_STEEL.get(),

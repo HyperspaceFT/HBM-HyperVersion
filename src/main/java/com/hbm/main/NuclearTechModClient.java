@@ -24,6 +24,7 @@ import com.hbm.inventory.screens.MachineTurbofanScreen;
 import com.hbm.inventory.screens.MachineCrystallizerScreen;
 import com.hbm.inventory.screens.MachineGasCentrifugeScreen;
 import com.hbm.inventory.screens.MachineWasteDrumScreen;
+import com.hbm.inventory.screens.MachinePUREXScreen;
 import com.hbm.inventory.MetaHelper;
 import com.hbm.inventory.fluid.FluidType;
 import com.hbm.inventory.fluid.Fluids;
@@ -159,6 +160,7 @@ public class NuclearTechModClient {
         event.register(NtmMenuTypes.MACHINE_CRYSTALLIZER.get(), MachineCrystallizerScreen::new);
         event.register(NtmMenuTypes.MACHINE_GAS_CENTRIFUGE.get(), MachineGasCentrifugeScreen::new);
         event.register(NtmMenuTypes.MACHINE_WASTE_DRUM.get(), MachineWasteDrumScreen::new);
+        event.register(NtmMenuTypes.MACHINE_PUREX.get(), MachinePUREXScreen::new);
     }
 
     @SubscribeEvent

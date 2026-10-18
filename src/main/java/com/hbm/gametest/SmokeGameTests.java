@@ -28,12 +28,17 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.gametest.framework.GameTest;
 import net.minecraft.gametest.framework.GameTestHelper;
+import net.minecraft.locale.Language;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.RecipeHolder;
+import net.minecraft.world.item.crafting.RecipeType;
+import net.minecraft.world.item.crafting.SingleRecipeInput;
+import net.minecraft.world.item.crafting.SmeltingRecipe;
 import net.minecraft.world.level.GameType;
+import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.state.BlockState;
 import net.neoforged.neoforge.gametest.GameTestHolder;
@@ -134,7 +139,8 @@ public class SmokeGameTests {
         File custom = new File(NuclearTechMod.configDir, "hbmRecipes" + File.separator + "hbmCrystallizer.json");
         check(!custom.exists(), "a custom acidizer table is active: " + custom.getAbsolutePath());
         int rows = CrystallizerRecipes.getJeiRecipes().size();
-        check(rows == 41, "the default acidizer table has " + rows + " rows, expected 41");
+        // 41 rows through Goal 20A; Goal 22A appends the nether/schist uranium ores and the nether plutonium ore.
+        check(rows == 46, "the default acidizer table has " + rows + " rows, expected 46");
         check(CrystallizerRecipes.getOutput(new ItemStack(Blocks.IRON_ORE), Fluids.SULFURIC_ACID) == null, "iron ore must not have a sulfuric acid row");
         check(CrystallizerRecipes.getOutput(new ItemStack(NtmBlocks.ORE_URANIUM.get()), Fluids.PEROXIDE) == null, "uranium ore must not have a peroxide row");
         CrystallizerRecipe uranium = CrystallizerRecipes.getOutput(new ItemStack(NtmBlocks.ORE_URANIUM_SCORCHED.get()), Fluids.SULFURIC_ACID);
@@ -468,6 +474,43 @@ public class SmokeGameTests {
         assertCraftingResult(helper, "rod_zirnox_th232", ZirnoxType.TH232);
         assertCraftingResult(helper, "rod_zirnox_natural_uranium_fuel", ZirnoxType.NATURAL_URANIUM_FUEL);
         helper.succeed();
+    }
+
+    // Goal 22A: the nine formerly unnamed ore blocks have English names, the original smelting rows (SmeltingRecipes.java:32-35,
+    // :56-57) and the acidizer rows (CrystallizerRecipes.java:67, :69) exist.
+    @GameTest(template = TEMPLATE, timeoutTicks = 100)
+    public static void goal22a_ore_names_and_outputs(GameTestHelper helper) {
+        Block[] named = { NtmBlocks.ORE_SCHRABIDIUM.get(), NtmBlocks.ORE_NETHER_URANIUM.get(), NtmBlocks.ORE_NETHER_URANIUM_SCORCHED.get(),
+                NtmBlocks.ORE_NETHER_PLUTONIUM.get(), NtmBlocks.ORE_NETHER_SCHRABIDIUM.get(), NtmBlocks.ORE_TIKITE.get(),
+                NtmBlocks.ORE_GNEISS_URANIUM.get(), NtmBlocks.ORE_GNEISS_URANIUM_SCORCHED.get(), NtmBlocks.ORE_GNEISS_SCHRABIDIUM.get() };
+        for(Block block : named) check(Language.getInstance().has(block.getDescriptionId()), block.getDescriptionId() + " has no English name");
+
+        assertSmelting(helper, NtmBlocks.ORE_URANIUM_SCORCHED.get(), NtmItems.INGOT_URANIUM.get());
+        assertSmelting(helper, NtmBlocks.ORE_NETHER_URANIUM.get(), NtmItems.INGOT_URANIUM.get());
+        assertSmelting(helper, NtmBlocks.ORE_NETHER_URANIUM_SCORCHED.get(), NtmItems.INGOT_URANIUM.get());
+        assertSmelting(helper, NtmBlocks.ORE_NETHER_PLUTONIUM.get(), NtmItems.INGOT_PLUTONIUM.get());
+        assertSmelting(helper, NtmBlocks.ORE_GNEISS_URANIUM.get(), NtmItems.INGOT_URANIUM.get());
+        assertSmelting(helper, NtmBlocks.ORE_GNEISS_URANIUM_SCORCHED.get(), NtmItems.INGOT_URANIUM.get());
+
+        assertSulfuricRow(NtmBlocks.ORE_NETHER_URANIUM.get(), NtmItems.CRYSTAL_URANIUM.get());
+        assertSulfuricRow(NtmBlocks.ORE_NETHER_URANIUM_SCORCHED.get(), NtmItems.CRYSTAL_URANIUM.get());
+        assertSulfuricRow(NtmBlocks.ORE_GNEISS_URANIUM.get(), NtmItems.CRYSTAL_URANIUM.get());
+        assertSulfuricRow(NtmBlocks.ORE_GNEISS_URANIUM_SCORCHED.get(), NtmItems.CRYSTAL_URANIUM.get());
+        assertSulfuricRow(NtmBlocks.ORE_NETHER_PLUTONIUM.get(), NtmItems.CRYSTAL_PLUTONIUM.get());
+        helper.succeed();
+    }
+
+    private static void assertSmelting(GameTestHelper helper, Block ore, Item expected) {
+        Optional<RecipeHolder<SmeltingRecipe>> recipe = helper.getLevel().getRecipeManager().getRecipeFor(RecipeType.SMELTING, new SingleRecipeInput(new ItemStack(ore)), helper.getLevel());
+        check(recipe.isPresent(), ore.getDescriptionId() + " has no smelting recipe");
+        ItemStack result = recipe.get().value().getResultItem(helper.getLevel().registryAccess());
+        check(result.is(expected) && result.getCount() == 1, ore.getDescriptionId() + " smelts to " + result);
+    }
+
+    private static void assertSulfuricRow(Block ore, Item crystal) {
+        CrystallizerRecipe row = CrystallizerRecipes.getOutput(new ItemStack(ore), Fluids.SULFURIC_ACID);
+        check(row != null && row.output().is(crystal) && row.output().getCount() == 1 && row.acidAmount() == 500, ore.getDescriptionId() + " sulfuric acid row is wrong: " + (row == null ? null : row.output()));
+        check(CrystallizerRecipes.getOutput(new ItemStack(ore), Fluids.PEROXIDE) == null, ore.getDescriptionId() + " must not have a peroxide row");
     }
 
     private static void assertAssemblyOutput(String name, Item expected) {

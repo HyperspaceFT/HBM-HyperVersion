@@ -287,7 +287,8 @@ public class WasteDrumGameTests {
     public static void waste_item_entity(GameTestHelper helper) {
         ItemEntity hot = spawnItem(helper, new Vec3(4.5, 1, 4.5), WASTES.get(1).hot());
         ItemEntity cool = spawnItem(helper, new Vec3(8.5, 1, 8.5), WASTES.get(3).cool());
-        ItemEntity control = spawnItem(helper, new Vec3(12.5, 1, 12.5), new ItemStack(NtmItems.NUCLEAR_WASTE.get()));
+        // The control must be a plain item: nuclear_waste is a NuclearWasteItem now (invulnerable, never despawns), billet_nuclear_waste is not.
+        ItemEntity control = spawnItem(helper, new Vec3(12.5, 1, 12.5), new ItemStack(NtmItems.BILLET_NUCLEAR_WASTE.get()));
         long start = helper.getTick();
         guard(() -> {
             for(ItemEntity waste : List.of(hot, cool)) {

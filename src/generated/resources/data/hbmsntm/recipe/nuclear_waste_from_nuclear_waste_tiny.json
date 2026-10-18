@@ -1,0 +1,18 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "key": {
+    "n": {
+      "item": "hbmsntm:nuclear_waste_tiny"
+    }
+  },
+  "pattern": [
+    "nnn",
+    "nnn",
+    "nnn"
+  ],
+  "result": {
+    "count": 1,
+    "id": "hbmsntm:nuclear_waste"
+  }
+}

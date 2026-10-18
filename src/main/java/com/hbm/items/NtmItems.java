@@ -483,8 +483,9 @@ public class NtmItems {
     public static final DeferredItem<Item> OIL_TAR_WOOD = ITEMS.register("oil_tar_wood", () -> new Item(new Item.Properties()));
     public static final DeferredItem<Item> OIL_TAR_WAX = ITEMS.register("oil_tar_wax", () -> new Item(new Item.Properties()));
     public static final DeferredItem<Item> DUST = ITEMS.register("dust", () -> new Item(new Item.Properties()));
-    public static final DeferredItem<Item> NUCLEAR_WASTE = ITEMS.register("nuclear_waste", () -> new Item(new Item.Properties()));
-    public static final DeferredItem<Item> NUCLEAR_WASTE_VITRIFIED = ITEMS.register("nuclear_waste_vitrified", () -> new Item(new Item.Properties()));
+    public static final DeferredItem<Item> NUCLEAR_WASTE = ITEMS.register("nuclear_waste", () -> new NuclearWasteItem(new Item.Properties()));
+    public static final DeferredItem<Item> NUCLEAR_WASTE_TINY = ITEMS.register("nuclear_waste_tiny", () -> new NuclearWasteItem(new Item.Properties()));
+    public static final DeferredItem<Item> NUCLEAR_WASTE_VITRIFIED = ITEMS.register("nuclear_waste_vitrified", () -> new NuclearWasteItem(new Item.Properties()));
 
     // Pellets
     public static final DeferredItem<Item> PELLET_RTG = ITEMS.register("pellet_rtg", () -> new Item(new Item.Properties()));

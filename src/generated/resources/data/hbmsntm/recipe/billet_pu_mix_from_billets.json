@@ -1,0 +1,19 @@
+{
+  "type": "minecraft:crafting_shapeless",
+  "category": "misc",
+  "ingredients": [
+    {
+      "item": "hbmsntm:billet_pu239"
+    },
+    {
+      "item": "hbmsntm:billet_pu239"
+    },
+    {
+      "item": "hbmsntm:billet_pu240"
+    }
+  ],
+  "result": {
+    "count": 3,
+    "id": "hbmsntm:billet_pu_mix"
+  }
+}

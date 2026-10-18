@@ -683,6 +683,7 @@ public class NtmLanguageProvider extends LanguageProvider {
         this.add(NtmItems.OIL_TAR_WAX, "Chlorinated Petroleum Wax");
         this.add(NtmItems.DUST, "Dust");
         this.add(NtmItems.NUCLEAR_WASTE, "Nuclear Waste");
+        this.add(NtmItems.NUCLEAR_WASTE_TINY, "Tiny Pile of Nuclear Waste");
         this.add(NtmItems.NUCLEAR_WASTE_VITRIFIED, "Vitrified Nuclear Waste");
         this.add(NtmItems.CRYSTAL_IRON, "Iron Crystal");
         this.add(NtmItems.CRYSTAL_GOLD, "Gold Crystal");
@@ -831,9 +832,12 @@ public class NtmLanguageProvider extends LanguageProvider {
         this.add("item.hbmsntm.fuel_additive.deicer", "Deicer");
         this.add(NtmBlocks.REINFORCED_LAMINATE, "Reinforced Laminate");
         this.add(NtmBlocks.MACHINE_CHEMICAL_PLANT, "Chemical Plant");
+        this.add(NtmBlocks.MACHINE_PUREX, "PUREX");
+        this.add("block.hbmsntm.machine_purex.desc", "Reprocessing machine for many nuclear fuels.$Most recipes require kerosene and nitric acid.");
         this.add(NtmBlocks.MACHINE_ARC_WELDER, "Arc Welder");
         this.add(NtmBlocks.EMP_BOMB, "EMP Device");
         this.add("container.machineChemicalPlant", "Chemical Plant");
+        this.add("container.machinePUREX", "PUREX");
         this.add("container.machineArcWelder", "Arc Welder");
         this.add("subtitles.block.chemplantOperate", "Synthesizing");
         this.add("subtitles.block.warn_overspeed", "Overspeed warning");
@@ -1612,6 +1616,15 @@ public class NtmLanguageProvider extends LanguageProvider {
         this.add(NtmBlocks.ORE_URANIUM, "Uranium Ore");
         this.add(NtmBlocks.ORE_URANIUM_DEEPSLATE, "Deepslate Uranium Ore");
         this.add(NtmBlocks.ORE_URANIUM_SCORCHED, "Scorched Uranium Ore");
+        this.add(NtmBlocks.ORE_SCHRABIDIUM, "Schrabidium Ore");
+        this.add(NtmBlocks.ORE_NETHER_URANIUM, "Nether Uranium Ore");
+        this.add(NtmBlocks.ORE_NETHER_URANIUM_SCORCHED, "Scorched Nether Uranium Ore");
+        this.add(NtmBlocks.ORE_NETHER_PLUTONIUM, "Nether Plutonium Ore");
+        this.add(NtmBlocks.ORE_NETHER_SCHRABIDIUM, "Nether Schrabidium Ore");
+        this.add(NtmBlocks.ORE_TIKITE, "Trixite");
+        this.add(NtmBlocks.ORE_GNEISS_URANIUM, "Schist Uranium Ore");
+        this.add(NtmBlocks.ORE_GNEISS_URANIUM_SCORCHED, "Scorched Schist Uranium Ore");
+        this.add(NtmBlocks.ORE_GNEISS_SCHRABIDIUM, "Schist Schrabidium Ore");
         this.add(NtmBlocks.ORE_BERYLLIUM, "Beryllium Ore");
         this.add(NtmBlocks.ORE_BERYLLIUM_DEEPSLATE, "Deepslate Beryllium Ore");
         this.add(NtmBlocks.ORE_TUNGSTEN, "Tungsten Ore");
@@ -2504,6 +2517,10 @@ public class NtmLanguageProvider extends LanguageProvider {
         this.add("max", "max");
 
         this.add("autoswitch", "Part of auto switch group \"%s\"$Recipe changes based on first ingredient");
+        this.add("autoswitch.zirnox", "Reprocessing ZIRNOX Fuel");
+        this.add("autoswitch.schrab", "Schrabidium Extraction");
+        this.add("purex.recycle", "Reprocessing of %s");
+        this.add("purex.schrab", "Schrabidium extraction from %s");
     }
 
     // HELPERS //

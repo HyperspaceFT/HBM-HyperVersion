@@ -67,6 +67,7 @@ public class ResourceManager {
     public static final ResourceLocation GAS_CENTRIFUGE_TEX = NuclearTechMod.withDefaultNamespace("textures/models/machines/gas_centrifuge.png");
     public static final ResourceLocation CHEMICAL_PLANT_TEX = NuclearTechMod.withDefaultNamespace("textures/models/machines/chemical_plant.png");
     public static final ResourceLocation CHEMICAL_PLANT_FLUID_TEX = NuclearTechMod.withDefaultNamespace("textures/models/machines/chemical_plant_fluid.png");
+    public static final ResourceLocation PUREX_TEX = NuclearTechMod.withDefaultNamespace("textures/models/machines/purex.png");
     public static final ResourceLocation BOILER_TEX = NuclearTechMod.withDefaultNamespace("textures/models/machines/boiler.png");
     public static final ResourceLocation INDUSTRIAL_BOILER_TEX = NuclearTechMod.withDefaultNamespace("textures/models/machines/industrial_boiler.png");
     public static final ResourceLocation HEATER_FIREBOX_TEX = NuclearTechMod.withDefaultNamespace("textures/models/machines/firebox.png");
@@ -327,6 +328,7 @@ public class ResourceManager {
     public static IModelCustom centrifuge;
     public static IModelCustom gasCentrifuge;
     public static IModelCustom chemical_plant;
+    public static IModelCustom purex;
     public static IModelCustom boiler;
     public static IModelCustom boiler_burst;
     public static IModelCustom industrial_boiler;
@@ -485,6 +487,7 @@ public class ResourceManager {
         centrifuge = new HFRWavefrontObject("models/obj/machines/centrifuge.obj").asVBO();
         gasCentrifuge = new HFRWavefrontObject("models/obj/machines/gas_centrifuge.obj").asVBO();
         chemical_plant = new HFRWavefrontObject("models/obj/machines/chemical_plant.obj").asVBO();
+        purex = new HFRWavefrontObject("models/obj/machines/purex.obj").asVBO();
         boiler = new HFRWavefrontObject("models/obj/machines/boiler.obj").asVBO();
         boiler_burst = new HFRWavefrontObject("models/obj/machines/boiler_burst.obj").asVBO();
         industrial_boiler = new HFRWavefrontObject("models/obj/machines/industrial_boiler.obj").asVBO();

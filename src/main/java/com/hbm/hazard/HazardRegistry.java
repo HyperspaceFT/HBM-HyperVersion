@@ -285,9 +285,10 @@ public class HazardRegistry {
         HazardSystem.register(item(POWDER_YELLOWCAKE), makeData(RADIATION, yc * powder));
         HazardSystem.register(block(NtmBlocks.BLOCK_YELLOWCAKE), makeData(RADIATION, yc * block * powder_mult));
 
-        // Original HazardRegistry.java:208-217; yellow_barrel and the *_tiny items have no NEO identity yet.
+        // Original HazardRegistry.java:208-217; yellow_barrel and nuclear_waste_vitrified_tiny have no NEO identity yet.
         HazardSystem.register(item(NUCLEAR_WASTE), makeData(RADIATION, wst * ingot));
         HazardSystem.register(item(BILLET_NUCLEAR_WASTE), makeData(RADIATION, wst * billet));
+        HazardSystem.register(item(NUCLEAR_WASTE_TINY), makeData(RADIATION, wst * nugget)); // :212
         HazardSystem.register(item(NUCLEAR_WASTE_VITRIFIED), makeData(RADIATION, wstv * ingot));
         HazardSystem.register(block(BLOCK_WASTE), makeData(RADIATION, wst * block));
         HazardSystem.register(block(BLOCK_WASTE_PAINTED), makeData(RADIATION, wst * block));
@@ -313,6 +314,7 @@ public class HazardRegistry {
         HazardSystem.register(block(NUKE_FSTBMB), makeData(DIGAMMA, 0.01F));
 
         registerMaterials();
+        registerMaterialAddendum();
     }
 
     /**
@@ -367,11 +369,41 @@ public class HazardRegistry {
         frame().rad(at209).hot(20F).dust(POWDER_AT209); // :495
     }
 
+    /**
+     * 21D addendum (Goal22D): the remaining item-level rows of the original HazardRegistry.registerItems (:331-335, :478, :485-492) and the
+     * ASBESTOS and P_WHITE frames of OreDictManager.registerOres (:424, :460). Item-level rows have no mutex, like the original; the two frames
+     * go through {@link Frame} like the 21D rows. Ore blocks are never registered (Goal21 decision 13). Not registered, see migration/GOAL22D.md:
+     * block_fallout (:477), tile_lab_broken (:481) and block_white_phosphorus (OreDictManager.java:460) have no NEO identity; fallout (:476),
+     * brick_asbestos (:480) and powder_coltan_ore (:482) were registered before and stay as they are.
+     */
+    private static void registerMaterialAddendum() {
+        HazardSystem.register(item(BILLET_BALEFIRE_GOLD), makeData(RADIATION, au198 * billet)); // :331
+        HazardSystem.register(item(BILLET_FLASHLEAD), makeData().addEntry(RADIATION, pb209 * 1.25F * billet).addEntry(HOT, 7F)); // :332
+        HazardSystem.register(item(BILLET_PO210BE), makeData(RADIATION, pobe * billet)); // :333
+        HazardSystem.register(item(BILLET_RA226BE), makeData(RADIATION, rabe * billet)); // :334
+        HazardSystem.register(item(BILLET_PU238BE), makeData(RADIATION, pube * billet)); // :335
+        // :337-347, the eleven RTG pellet rows (registerRTGPellet), are deferred with the RTG modifier: NEO has no HazardModifierRTGRadiation.
+
+        HazardSystem.register(item(POWDER_CAESIUM), makeData().addEntry(HYDROACTIVE, 1F).addEntry(HOT, 3F)); // :478
+
+        HazardSystem.register(item(CRYSTAL_URANIUM), makeData(RADIATION, u * crystal)); // :485
+        HazardSystem.register(item(CRYSTAL_THORIUM), makeData(RADIATION, th232 * crystal)); // :486
+        HazardSystem.register(item(CRYSTAL_PLUTONIUM), makeData(RADIATION, pu * crystal)); // :487
+        HazardSystem.register(item(CRYSTAL_SCHRARANIUM), makeData(RADIATION, sr * crystal)); // :488
+        HazardSystem.register(item(CRYSTAL_SCHRABIDIUM), makeData(RADIATION, sa326 * crystal)); // :489
+        HazardSystem.register(item(CRYSTAL_PHOSPHORUS), makeData(HOT, 2F * crystal)); // :490
+        HazardSystem.register(item(CRYSTAL_LITHIUM), makeData(HYDROACTIVE, 1F * crystal)); // :491
+        HazardSystem.register(item(CRYSTAL_TRIXITE), makeData(RADIATION, trx * crystal)); // :492
+
+        frame().asbestos(1F).ingot(INGOT_ASBESTOS).dust(POWDER_ASBESTOS).block(NtmBlocks.BLOCK_ASBESTOS); // OreDictManager.java:424, ores not registered
+        frame().hot(5F).ingot(INGOT_PHOSPHORUS); // OreDictManager.java:460, NEO has no block_white_phosphorus
+    }
+
     private static Frame frame() { return new Frame(); }
     private static ItemStack rawIngot(RawIngotItem.Type type) { return MetaHelper.newStack(INGOT_RAW, type.meta); }
 
     /**
-     * Original OreDictManager.DictFrame (:737-962): rad/hot/hydro/blinding collect the frame's entries (:791-800), each shape method
+     * Original OreDictManager.DictFrame (:737-962): rad/hot/hydro/blinding/asbestos collect the frame's entries (:791-800), each shape method
      * sets hazMult (:838-886), and registerHazards (:933-944) registers a mutex 0b1 copy in which every entry is cloned with hazMult.
      */
     private static class Frame {
@@ -381,6 +413,7 @@ public class HazardRegistry {
         Frame hot(float time) { return haz(new HazardEntry(HOT, time)); }
         Frame blinding(float time) { return haz(new HazardEntry(BLINDING, time)); }
         Frame hydro(float h) { return haz(new HazardEntry(HYDROACTIVE, h)); }
+        Frame asbestos(float asb) { return haz(new HazardEntry(ASBESTOS, asb)); }
 
         private Frame haz(HazardEntry hazard) {
             hazards.add(hazard);
