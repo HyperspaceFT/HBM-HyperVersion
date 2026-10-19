@@ -1,0 +1,17 @@
+{
+  "type": "minecraft:crafting_shapeless",
+  "category": "misc",
+  "ingredients": [
+    {
+      "type": "neoforge:components",
+      "components": {
+        "hbmsntm:meta": 0
+      },
+      "items": "hbmsntm:pellet_rtg_depleted"
+    }
+  ],
+  "result": {
+    "count": 3,
+    "id": "hbmsntm:billet_bismuth"
+  }
+}

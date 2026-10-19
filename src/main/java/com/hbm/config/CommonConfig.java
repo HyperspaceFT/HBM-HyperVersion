@@ -100,6 +100,10 @@ public class CommonConfig {
     public final BooleanValue DISABLE_HYDROACTIVE;
     public final BooleanValue DISABLE_BLINDING;
 
+    // RTG (the two RTG keys of the original 09_machines, MachineConfig.java:14-15)
+    public final BooleanValue SCALE_RTG_POWER;
+    public final BooleanValue DO_RTGS_DECAY;
+
     // POLLUTION (16)
     public final BooleanValue ENABLE_POLLUTION;
 
@@ -455,6 +459,20 @@ public class CommonConfig {
                 .comment("When turned on, all blinding hazards are disabled.")
                 .translation("hbmsntm.configuration.disableBlinding")
                 .define("disableBlinding", false);
+
+        builder.pop();
+
+        /// RTG ///
+        builder.push("rtg");
+
+        SCALE_RTG_POWER = builder
+                .comment("Should RTG/Betavoltaic fuel power scale down as it decays?")
+                .translation("hbmsntm.configuration.scaleRTGPower")
+                .define("scaleRTGPower", false);
+        DO_RTGS_DECAY = builder
+                .comment("Should RTG/Betavoltaic fuel decay at all?")
+                .translation("hbmsntm.configuration.doRTGsDecay")
+                .define("doRTGsDecay", true);
 
         builder.pop();
 

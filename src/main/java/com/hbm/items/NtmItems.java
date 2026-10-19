@@ -19,6 +19,7 @@ import com.hbm.items.food.DrinkItem;
 import com.hbm.items.food.EnergyItem;
 import com.hbm.items.machine.*;
 import com.hbm.items.machine.StampItem.StampType;
+import com.hbm.items.machine.RTGPelletDepletedItem.DepletedRTGMaterial;
 import com.hbm.items.special.*;
 import com.hbm.items.tools.*;
 import com.hbm.items.weapon.MissileItem;
@@ -27,6 +28,8 @@ import com.hbm.items.weapon.MissileItem.MissileFuel;
 import com.hbm.items.weapon.MissileItem.MissileTier;
 import com.hbm.items.weapon.sedna.factory.GunFactory;
 import com.hbm.main.NuclearTechMod;
+import com.hbm.util.RTGUtil;
+import com.hbm.util.RTGUtil.HalfLifeType;
 import net.minecraft.world.item.*;
 import net.neoforged.bus.api.IEventBus;
 import net.neoforged.neoforge.registries.DeferredItem;
@@ -386,6 +389,8 @@ public class NtmItems {
     public static final DeferredItem<Item> MOTOR = ITEMS.register("motor", () -> new Item(new Item.Properties()));
     public static final DeferredItem<Item> MOTOR_DESH = ITEMS.register("motor_desh", () -> new Item(new Item.Properties()));
     public static final DeferredItem<Item> CENTRIFUGE_ELEMENT = ITEMS.register("centrifuge_element", () -> new Item(new Item.Properties()));
+    public static final DeferredItem<Item> THERMO_ELEMENT = ITEMS.register("thermo_element", () -> new Item(new Item.Properties())); // original ModItems.java:717,2804
+    public static final DeferredItem<Item> RTG_UNIT = ITEMS.register("rtg_unit", () -> new Item(new Item.Properties())); // original ModItems.java:563,2565
     public static final DeferredItem<Item> GEAR_LARGE = ITEMS.register("gear_large", () -> new Item(new Item.Properties()));
     public static final DeferredItem<Item> CAST_PLATE_WELDED = ITEMS.register("cast_plate_welded", () -> new CastPlateItem(new Item.Properties(), true));
     public static final DeferredItem<Item> CAST_PLATE = ITEMS.register("cast_plate", () -> new CastPlateItem(new Item.Properties(), false));
@@ -488,7 +493,23 @@ public class NtmItems {
     public static final DeferredItem<Item> NUCLEAR_WASTE_VITRIFIED = ITEMS.register("nuclear_waste_vitrified", () -> new NuclearWasteItem(new Item.Properties()));
 
     // Pellets
-    public static final DeferredItem<Item> PELLET_RTG = ITEMS.register("pellet_rtg", () -> new Item(new Item.Properties()));
+    // RTG pellets (Goal23B): original ModItems.java:2647-2656 in its construction order, which is also the RT generator's pellet list
+    // (RTGPelletItem.PELLETS). Life = RTGUtil.getLifespan(half-life, type, false) * 1.5 as in the original; the gold and lead heat reads
+    // doRTGsDecay at run time (the original read it while registering). pellet_rtg keeps its ID; stacks saved before have no
+    // PELLET_DEPLETION and count as fresh.
+    public static final DeferredItem<Item> PELLET_RTG_RADIUM = ITEMS.register("pellet_rtg_radium", () -> new RTGPelletItem(new Item.Properties(), 3).setDecays(DepletedRTGMaterial.LEAD, (long) (RTGUtil.getLifespan(16.0F, HalfLifeType.LONG, false) * 1.5))); // :2647
+    public static final DeferredItem<Item> PELLET_RTG_WEAK = ITEMS.register("pellet_rtg_weak", () -> new RTGPelletItem(new Item.Properties(), 5).setDecays(DepletedRTGMaterial.LEAD, (long) (RTGUtil.getLifespan(1.0F, HalfLifeType.LONG, false) * 1.5))); // :2648
+    public static final DeferredItem<Item> PELLET_RTG = ITEMS.register("pellet_rtg", () -> new RTGPelletItem(new Item.Properties(), 10).setDecays(DepletedRTGMaterial.LEAD, (long) (RTGUtil.getLifespan(87.7F, HalfLifeType.MEDIUM, false) * 1.5))); // :2649
+    public static final DeferredItem<Item> PELLET_RTG_STRONTIUM = ITEMS.register("pellet_rtg_strontium", () -> new RTGPelletItem(new Item.Properties(), 15).setDecays(DepletedRTGMaterial.ZIRCONIUM, (long) (RTGUtil.getLifespan(29.0F, HalfLifeType.MEDIUM, false) * 1.5))); // :2650
+    public static final DeferredItem<Item> PELLET_RTG_COBALT = ITEMS.register("pellet_rtg_cobalt", () -> new RTGPelletItem(new Item.Properties(), 15).setDecays(DepletedRTGMaterial.NICKEL, (long) (RTGUtil.getLifespan(5.3F, HalfLifeType.MEDIUM, false) * 1.5))); // :2651
+    public static final DeferredItem<Item> PELLET_RTG_ACTINIUM = ITEMS.register("pellet_rtg_actinium", () -> new RTGPelletItem(new Item.Properties(), 20).setDecays(DepletedRTGMaterial.LEAD, (long) (RTGUtil.getLifespan(21.8F, HalfLifeType.MEDIUM, false) * 1.5))); // :2652
+    public static final DeferredItem<Item> PELLET_RTG_AMERICIUM = ITEMS.register("pellet_rtg_americium", () -> new RTGPelletItem(new Item.Properties(), 20).setDecays(DepletedRTGMaterial.NEPTUNIUM, (long) (RTGUtil.getLifespan(4.7F, HalfLifeType.LONG, false) * 1.5))); // :2653
+    public static final DeferredItem<Item> PELLET_RTG_POLONIUM = ITEMS.register("pellet_rtg_polonium", () -> new RTGPelletItem(new Item.Properties(), 50).setDecays(DepletedRTGMaterial.LEAD, (long) (RTGUtil.getLifespan(138.0F, HalfLifeType.SHORT, false) * 1.5))); // :2654
+    public static final DeferredItem<Item> PELLET_RTG_GOLD = ITEMS.register("pellet_rtg_gold", () -> new RTGPelletItem(new Item.Properties(), () -> RTGUtil.rtgDecay() ? 200 : 100).setDecays(DepletedRTGMaterial.MERCURY, (long) (RTGUtil.getLifespan(2.7F, HalfLifeType.SHORT, false) * 1.5))); // :2655
+    public static final DeferredItem<Item> PELLET_RTG_LEAD = ITEMS.register("pellet_rtg_lead", () -> new RTGPelletItem(new Item.Properties(), () -> RTGUtil.rtgDecay() ? 600 : 200).setDecays(DepletedRTGMaterial.BISMUTH, (long) (RTGUtil.getLifespan(0.3F, HalfLifeType.SHORT, false) * 1.5))); // :2656
+    // :2645, setContainerItem(plate_iron): crafting with a depleted pellet returns the iron plate (1.21 puts it back into the grid slot
+    // once that slot empties, else into the inventory; the 1.7.10 original tried the inventory first).
+    public static final DeferredItem<Item> PELLET_RTG_DEPLETED = ITEMS.register("pellet_rtg_depleted", () -> new RTGPelletDepletedItem(new Item.Properties().craftRemainder(PLATE_IRON.get())));
 
     // Cells
     public static final DeferredItem<Item> CELL_EMPTY = ITEMS.register("cell_empty", () -> new Item(new Item.Properties()));

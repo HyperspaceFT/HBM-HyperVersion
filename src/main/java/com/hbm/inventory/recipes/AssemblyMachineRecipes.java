@@ -283,6 +283,20 @@ public class AssemblyMachineRecipes extends GenericRecipes<GenericRecipe> {
                         new RecipesCommon.TagStack(NtmTags.Items.PLATES_STEEL, 8),
                         new RecipesCommon.TagStack(NtmTags.Items.PLATES_COPPER, 4),
                         new ComparableStack(NtmItems.CIRCUIT_ANALOG_BOARD.get(), 1)));
+        // Original ass.thermoelement / ass.thermoelementsilicon / ass.rtgunit (AssemblyMachineRecipes.java:155-160), registered in both
+        // enable528 settings.
+        this.register(new GenericRecipe("ass.thermoelement").setup(60, 100).outputItems(new ItemStack(NtmItems.THERMO_ELEMENT.get(), 1))
+                .inputItems(new RecipesCommon.TagStack(NtmTags.Items.PLATES_STEEL, 1),
+                        new ComparableStack(NtmItems.WIRE_RED_COPPER.get(), 2),
+                        new ComparableStack(NtmItems.POWDER_QUARTZ.get(), 2)));
+        this.register(new GenericRecipe("ass.thermoelementsilicon").setup(60, 100).outputItems(new ItemStack(NtmItems.THERMO_ELEMENT.get(), 1))
+                .inputItems(new RecipesCommon.TagStack(NtmTags.Items.PLATES_STEEL, 1),
+                        new ComparableStack(NtmItems.WIRE_GOLD.get(), 2),
+                        new ComparableStack(NtmItems.BILLET_SILICON.get(), 1)));
+        this.register(new GenericRecipe("ass.rtgunit").setup(100, 100).outputItems(new ItemStack(NtmItems.RTG_UNIT.get(), 1))
+                .inputItems(NtmItems.castPlateIngredient(CastPlateItem.Type.LEAD, 2),
+                        new RecipesCommon.TagStack(NtmTags.Items.PLATES_COPPER, 4),
+                        new ComparableStack(NtmItems.THERMO_ELEMENT.get(), 2)));
         // Original AssemblyMachineRecipes.java:282-283 normal branch, 400 ticks at 100 HE/t. The expensive inputItemsEx branch
         // and the 528 pool are not migrated (NEO has no item_expensive).
         this.register(new GenericRecipe("ass.gascent").setup(400, 100).outputItems(new ItemStack(NtmBlocks.MACHINE_GAS_CENTRIFUGE.get(), 1))
@@ -328,6 +342,12 @@ public class AssemblyMachineRecipes extends GenericRecipes<GenericRecipe> {
                 .inputItems(new ComparableStack(NtmItems.SHELL_STEEL.get(), 1),
                         NtmItems.castPlateIngredient(CastPlateItem.Type.COPPER, 2),
                         new ComparableStack(NtmItems.COIL_COPPER.get(), 4)));
+        // Original ass.rtg (AssemblyMachineRecipes.java:295-296), registered in both enable528 settings.
+        this.register(new GenericRecipe("ass.rtg").setup(200, 100).outputItems(new ItemStack(NtmBlocks.MACHINE_RTG.get(), 1))
+                .inputItems(new ComparableStack(NtmItems.RTG_UNIT.get(), 3),
+                        new RecipesCommon.TagStack(NtmTags.Items.PLATES_STEEL, 4),
+                        new ComparableStack(NtmItems.WIRE_RED_COPPER.get(), 16),
+                        new RecipesCommon.TagStack(ItemTags.create(ResourceLocation.fromNamespaceAndPath("ntm", "ingots_plastic")), 4)));
 
         // Original ass.tank (normal mode only: the expensive mode uses item_expensive, which NEO does not have)
         this.register(new GenericRecipe("ass.tank").setup(200, 100).outputItems(new ItemStack(NtmBlocks.MACHINE_FLUID_TANK.get(), 1))

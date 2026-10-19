@@ -9,6 +9,7 @@ import com.hbm.hazard.HazardRegistry;
 import com.hbm.hazard.HazardSystem;
 import com.hbm.hazard.type.HazardTypeBase;
 import com.hbm.inventory.MetaHelper;
+import com.hbm.inventory.RecipesCommon.ComparableStack;
 import com.hbm.items.NtmItems;
 import com.hbm.items.RawIngotItem;
 import com.hbm.items.machine.BreedingRodItem.BreedingRodType;
@@ -17,19 +18,31 @@ import com.hbm.main.CommonEvents;
 import com.hbm.main.NuclearTechMod;
 import com.hbm.util.ContaminationUtil;
 import com.mojang.logging.LogUtils;
+import net.minecraft.core.BlockPos;
+import net.minecraft.core.Direction;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.gametest.framework.GameTest;
 import net.minecraft.gametest.framework.GameTestHelper;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.tags.DamageTypeTags;
+import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.effect.MobEffectInstance;
 import net.minecraft.world.effect.MobEffects;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.entity.animal.Pig;
+import net.minecraft.world.entity.item.ItemEntity;
+import net.minecraft.world.entity.player.Inventory;
+import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
+import net.minecraft.world.level.GameType;
 import net.minecraft.world.level.ItemLike;
+import net.minecraft.world.level.block.Blocks;
+import net.minecraft.world.level.block.SlabBlock;
+import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.phys.AABB;
 import net.minecraft.world.phys.Vec3;
 import net.neoforged.neoforge.event.tick.EntityTickEvent;
 import net.neoforged.neoforge.gametest.GameTestHolder;
@@ -65,8 +78,18 @@ import static com.hbm.gametest.SmokeTestSupport.guard;
  * row, for a sample of 20 rows that existed before the batch, and the per-tick path ({@code updateLivingInventory}, and
  * {@code CommonEvents.onLivingTick} once) on a Pig holding crystal_schrabidium, billet_flashlead, powder_caesium, crystal_phosphorus,
  * crystal_lithium and the asbestos items. Not evidence: the expected values are again written from the original's constants in its
- * multiplication order, so they prove NEO matches the original's table, not the 1.7.10 game. The RTG pellet rows (deferred with the RTG modifier),
- * the player path, tooltips, Geiger readings and the hydroactive explosion in water or rain stay untested.
+ * multiplication order, so they prove NEO matches the original's table, not the 1.7.10 game. The RTG pellet rows are registered by Goal23B's
+ * {@code registerRTGPellets} and tested in {@code RTGPelletGameTests}; the player path, tooltips, Geiger readings and the hydroactive explosion
+ * in water or rain stay untested.
+ * <p>
+ * Goal23A adds four tests. {@code hazard_register_stacks}: repeated registrations of one key stack ({@code HazardSystem.register} through
+ * {@code HazardData.merge}), alias frames yield by mutex, overrides purge, and the stack layer is still arbitrated when read; it occupies
+ * Items.DEAD_BUSH and removes its rows again. {@code hazard_hot_reacher_anywhere_in_inventory}: the real {@code HazardTypeHot} and
+ * {@code HazardSystem.updatePlayerInventory} on a mock Player that is never added to the level (inventory, offhand and armor slots; not a
+ * ticking player, not the event entry, no hazmat or radiation). {@code hazard_hydroactive_held_explodes_at_eye_height} and
+ * {@code hazard_hydroactive_dropped_item_explodes}: a NoAI pig holding powder_caesium and a dropped powder_caesium in a walled waterlogged slab,
+ * reacting through the real per-tick event on the server; the blast position is checked through which blocks break, the dropped item's
+ * blast through a witness pig. Rain, the lithium crystal's level-10 blast and client effects stay untested.
  */
 @GameTestHolder(NuclearTechMod.MODID)
 @PrefixGameTestTemplate(false)
@@ -190,13 +213,13 @@ public class HazardGameTests {
                 checkExact(id, new ItemStack(registered(id, true)));
             }
             // Goal22D registered the rows that were out of scope here (hazard_addendum_registrations). Still without a hazard: block_white_phosphorus,
-            // block_fallout and tile_lab_broken have no NEO identity (absent items are skipped), and pellet_rtg exists but its RTG pellet row
-            // (original HazardRegistry.java:337-347) is deferred with the RTG modifier.
-            for(String id : List.of("block_white_phosphorus", "block_fallout", "tile_lab_broken", "pellet_rtg")) {
+            // block_fallout and tile_lab_broken have no NEO identity (absent items are skipped). Goal23B registers the RTG pellet rows
+            // (original HazardRegistry.java:337-347), so pellet_rtg now carries its row; details in RTGPelletGameTests.
+            for(String id : List.of("block_white_phosphorus", "block_fallout", "tile_lab_broken")) {
                 ItemLike item = registered(id, false);
                 if(item != Items.AIR) checkExact(id, new ItemStack(item));
             }
-            check(registered("pellet_rtg", false) != Items.AIR, "pellet_rtg is no longer registered; the RTG deferral guard would pass vacuously");
+            checkExact("pellet_rtg", new ItemStack(registered("pellet_rtg", true)), HazardRegistry.RADIATION, HazardRegistry.pu238 * HazardRegistry.rtg, HazardRegistry.HOT, 3F);
             // The ASBESTOS frame's ore shapes are not registered either (Goal21 decision 13); absent ids are skipped.
             for(String id : List.of("ore_asbestos", "ore_asbestos_deepslate", "ore_gneiss_asbestos")) {
                 ItemLike item = registered(id, false);
@@ -413,7 +436,7 @@ public class HazardGameTests {
     /**
      * The addendum rows. Item-level rows (original HazardRegistry.registerItems) carry no mutex; the ASBESTOS and P_WHITE frame data are
      * registered by OreDictManager.DictFrame with mutex 0b1, every entry multiplied by the shape constant (clone(hazMult)).
-     * Not registered: the RTG pellets :337-347, block_fallout :477, tile_lab_broken :481, block_white_phosphorus (OreDictManager.java:460) and every
+     * Not part of this table: the RTG pellets :337-347 (registered by Goal23B's registerRTGPellets, tested in RTGPelletGameTests), block_fallout :477, tile_lab_broken :481, block_white_phosphorus (OreDictManager.java:460) and every
      * ore shape; fallout :476, brick_asbestos :480 and powder_coltan_ore :482 existed before and are in hazard_existing_sample_unchanged.
      */
     private static List<AddendumRow> addendumRows() {
@@ -603,6 +626,241 @@ public class HazardGameTests {
         done(helper, "hazard_living_addendum_fire_and_asbestos");
     }
 
+    // Goal23A-3: a repeated registration of the same key stacks (HazardSystem.register, HazardData.merge)
+
+    @GameTest(template = TEMPLATE, batch = BATCH, timeoutTicks = 100)
+    public static void hazard_register_stacks(GameTestHelper helper) {
+        guard(() -> {
+            // Items.DEAD_BUSH has no hazard row and no other test reads it; this test occupies it once and removes its rows again at the end.
+            ItemStack bush = new ItemStack(Items.DEAD_BUSH);
+            ComparableStack key = new ComparableStack(bush).makeSingular();
+            check(!HazardSystem.itemMap.containsKey(Items.DEAD_BUSH) && !HazardSystem.stackMap.containsKey(key), "dead_bush already has a hazard row");
+            checkExact("dead_bush before the test", bush);
+            try {
+                // Two item registrations stack instead of the second replacing the first, in registration order.
+                HazardSystem.register(Items.DEAD_BUSH, new HazardData().addEntry(HazardRegistry.RADIATION, 1F));
+                HazardSystem.register(Items.DEAD_BUSH, new HazardData().addEntry(HazardRegistry.HOT, 2F));
+                checkExact("dead_bush after RADIATION 1 and HOT 2", bush, HazardRegistry.RADIATION, 1F, HazardRegistry.HOT, 2F);
+                List<HazardEntry> order = HazardSystem.getHazardsFromStack(bush);
+                check(order.get(0).getType() == HazardRegistry.RADIATION && order.get(1).getType() == HazardRegistry.HOT, "dead_bush entries are not RADIATION, then HOT");
+
+                // A frame copy (mutex 0b1) stacks on rows without a mutex, as the original's oreMap frame and itemMap row did.
+                HazardSystem.register(Items.DEAD_BUSH, new HazardData().setMutex(0b1).addEntry(HazardRegistry.BLINDING, 5F));
+                checkExact("dead_bush with a frame", bush, HazardRegistry.RADIATION, 1F, HazardRegistry.HOT, 2F, HazardRegistry.BLINDING, 5F);
+                check(HazardSystem.itemMap.get(Items.DEAD_BUSH).getMutex() == 0b1, "the merged item row lost the frame's mutex");
+
+                // A second frame of the same item (an ore dictionary alias in the original) collides with the first and yields.
+                HazardSystem.register(Items.DEAD_BUSH, new HazardData().setMutex(0b1).addEntry(HazardRegistry.BLINDING, 7F).addEntry(HazardRegistry.RADIATION, 9F));
+                checkExact("dead_bush with an alias frame", bush, HazardRegistry.RADIATION, 1F, HazardRegistry.HOT, 2F, HazardRegistry.BLINDING, 5F);
+
+                // The layers are still arbitrated when the stack is read: a stack row whose mutex collides with the item row yields there,
+                HazardSystem.register(bush, new HazardData().setMutex(0b1).addEntry(HazardRegistry.ASBESTOS, 4F));
+                check(HazardSystem.stackMap.containsKey(key), "the stack registration is not in the stack map");
+                checkExact("dead_bush with a colliding stack row", bush, HazardRegistry.RADIATION, 1F, HazardRegistry.HOT, 2F, HazardRegistry.BLINDING, 5F);
+                // and an overriding stack row purges the item layer when read, while the item layer itself keeps its three entries.
+                HazardSystem.stackMap.remove(key);
+                HazardSystem.register(bush, new HazardData().addEntry(HazardRegistry.ASBESTOS, 4F, true));
+                checkExact("dead_bush with an overriding stack row", bush, HazardRegistry.ASBESTOS, 4F);
+                HazardSystem.stackMap.remove(key);
+                checkExact("dead_bush item layer after the stack rows", bush, HazardRegistry.RADIATION, 1F, HazardRegistry.HOT, 2F, HazardRegistry.BLINDING, 5F);
+
+                // An overriding registration of the same item purges the entries registered before it.
+                HazardSystem.register(Items.DEAD_BUSH, new HazardData().addEntry(HazardRegistry.COAL, 3F, true));
+                checkExact("dead_bush after an overriding item row", bush, HazardRegistry.COAL, 3F);
+            } finally {
+                HazardSystem.itemMap.remove(Items.DEAD_BUSH);
+                HazardSystem.stackMap.remove(key);
+            }
+            checkExact("dead_bush after the test", bush);
+            // The 165 Goal21D rows, the 18 Goal22D rows and the 20-row sample are read by the other tests of this batch in the same run, so a
+            // registration that now stacked where it used to replace would show there as an extra entry or a changed level.
+        }).run();
+        done(helper, "hazard_register_stacks");
+    }
+
+    // Goal23A-4: the reacher exempts a player from HOT anywhere in the main inventory (original inventory.hasItem)
+
+    @GameTest(template = TEMPLATE, batch = BATCH, timeoutTicks = 100)
+    public static void hazard_hot_reacher_anywhere_in_inventory(GameTestHelper helper) {
+        guard(() -> {
+            requireHazardConfig();
+            check(!NtmConfig.COMMON.ENABLE_528.get(), "528 mode is on in the common config; it switches the reacher exemption off");
+            // A mock Player that is never added to the level (the in-level mock player crashes the dedicated server, GOAL21B); HazardTypeHot
+            // only reads its inventory and wetness and writes its fire ticks.
+            Player player = helper.makeMockPlayer(GameType.SURVIVAL);
+            player.moveTo(helper.absoluteVec(new Vec3(8.5, 2, 8.5)));
+            check(!player.isInWaterOrRain(), "the mock player is in water or rain");
+            Inventory inventory = player.getInventory();
+            ItemStack phosphorus = new ItemStack(NtmItems.INGOT_PHOSPHORUS.get());
+            ItemStack reacher = new ItemStack(NtmItems.REACHER.get());
+            checkLevel(phosphorus, HazardRegistry.HOT, 5F, "ingot_phosphorus");
+
+            // ingot_phosphorus HOT 5 -> ceil(5) * 20 = 100 fire ticks without a reacher.
+            expectFire(player, phosphorus, 100, "no reacher");
+            inventory.setItem(20, reacher.copy());
+            expectFire(player, phosphorus, 0, "a reacher in main inventory slot 20");
+            inventory.setItem(20, ItemStack.EMPTY);
+            inventory.selected = 0;
+            inventory.setItem(8, reacher.copy());
+            expectFire(player, phosphorus, 0, "a reacher in hotbar slot 8, slot 0 selected");
+            inventory.setItem(8, ItemStack.EMPTY);
+            inventory.setItem(0, reacher.copy());
+            expectFire(player, phosphorus, 0, "a reacher in the main hand");
+            inventory.setItem(0, ItemStack.EMPTY);
+            inventory.offhand.set(0, reacher.copy());
+            expectFire(player, phosphorus, 0, "a reacher in the offhand (NEO-only)");
+            inventory.offhand.set(0, ItemStack.EMPTY);
+            // Armor slots are not part of the original's main inventory scan.
+            inventory.armor.set(3, reacher.copy());
+            expectFire(player, phosphorus, 100, "a reacher in an armor slot");
+            inventory.armor.set(3, ItemStack.EMPTY);
+
+            // The production per-player path: updatePlayerInventory applies the phosphorus in hotbar slot 0 once.
+            inventory.setItem(0, phosphorus.copy());
+            player.clearFire();
+            HazardSystem.updatePlayerInventory(player);
+            check(player.getRemainingFireTicks() == 100, "updatePlayerInventory without a reacher left " + player.getRemainingFireTicks() + " fire ticks, expected 100");
+            inventory.setItem(35, reacher.copy());
+            player.clearFire();
+            HazardSystem.updatePlayerInventory(player);
+            check(player.getRemainingFireTicks() == 0, "updatePlayerInventory with a reacher in slot 35 left " + player.getRemainingFireTicks() + " fire ticks, expected 0");
+            inventory.clearContent();
+        }).run();
+        done(helper, "hazard_hot_reacher_anywhere_in_inventory");
+    }
+
+    private static void expectFire(Player player, ItemStack stack, int expected, String label) {
+        player.clearFire();
+        HazardSystem.applyHazards(stack, player);
+        LOGGER.info("[hbm-hazard] ingot_phosphorus on a mock player, {}: {} fire ticks", label, player.getRemainingFireTicks());
+        check(player.getRemainingFireTicks() == expected, label + ": " + player.getRemainingFireTicks() + " fire ticks, expected " + expected);
+    }
+
+    // Goal23A-4: hydroactive explosions. Original HazardTypeHydroactive: newExplosion(..., false, true), breaking blocks, at eye height for a
+    // holder and at half the entity's height for a dropped item. Both tests use powder_caesium (HYDROACTIVE 1) so the blast stays in the structure.
+
+    @GameTest(template = TEMPLATE, batch = BATCH, timeoutTicks = 100)
+    public static void hazard_hydroactive_held_explodes_at_eye_height(GameTestHelper helper) {
+        List<Entity> spawned = new ArrayList<>();
+        List<BlockPos> placed = new ArrayList<>();
+        BlockPos slab = new BlockPos(4, 1, 4);
+        // The pig stands on the waterlogged slab, in water, with its eye (1.5 + 0.765) in the air cell above: the yellow wool ring around
+        // that cell is in reach of a power-1 blast centred there, the wool three cells above the slab is not (it would be from the old y + 2).
+        BlockPos[] eyeRing = { slab.above().north(), slab.above().east(), slab.above().south(), slab.above().west() };
+        BlockPos high = slab.above(3);
+        ItemStack caesium = new ItemStack(NtmItems.POWDER_CAESIUM.get());
+        Pig[] pig = new Pig[1];
+        long[] start = new long[1];
+        guard(() -> {
+            requireHydroactive();
+            checkLevel(caesium, HazardRegistry.HYDROACTIVE, 1F, "powder_caesium");
+            waterCell(helper, placed, slab);
+            for(BlockPos pos : eyeRing) place(helper, placed, pos, Blocks.YELLOW_WOOL.defaultBlockState());
+            place(helper, placed, high, Blocks.YELLOW_WOOL.defaultBlockState());
+            pig[0] = pig(helper, spawned, new Vec3(4.5, 1.5, 4.5));
+            pig[0].setItemSlot(EquipmentSlot.MAINHAND, caesium);
+            start[0] = helper.getTick();
+        }).run();
+
+        // The real CommonEvents.onLivingTick of the pig applies the hazard once the pig is wet.
+        helper.startSequence()
+                .thenWaitUntil(guard(() -> check(caesium.isEmpty(), "the pig still holds the caesium powder after " + (helper.getTick() - start[0]) + " ticks")))
+                .thenExecute(guard(() -> {
+                    long ticks = helper.getTick() - start[0];
+                    int broken = 0;
+                    for(BlockPos pos : eyeRing) if(helper.getBlockState(pos).isAir()) broken++;
+                    DamageSource last = pig[0].getLastDamageSource();
+                    LOGGER.info("[hbm-hazard] held powder_caesium in water: reacted after {} ticks, {} of 4 eye-level wool blocks broken, pig damage {}, eye y {}",
+                            ticks, broken, last, pig[0].getEyeY() - helper.absoluteVec(Vec3.ZERO).y);
+                    check(ticks <= 3, "the caesium powder reacted only after " + ticks + " ticks");
+                    check(pig[0].isInWater() || pig[0].isRemoved() || pig[0].isDeadOrDying(), "the pig was not in water");
+                    check(broken > 0, "no eye-level block was broken: the blast does not break blocks, or is not at eye height");
+                    check(helper.getBlockState(high).is(Blocks.YELLOW_WOOL), "the wool three cells above the slab was broken: the blast is above eye height");
+                    BlockState cell = helper.getBlockState(slab);
+                    check(cell.is(Blocks.STONE_SLAB) && cell.getValue(SlabBlock.WATERLOGGED), "the water cell was broken: " + cell);
+                    // Explosion.explode skips an entity whose eye is exactly at the centre (its distance check d != 0), so a blast centred on the
+                    // holder's eye leaves the holder itself unhurt; any other centre within reach would have damaged it.
+                    check(last == null || !last.is(DamageTypeTags.IS_EXPLOSION), "the pig took explosion damage, so the blast was not centred on its eye: " + last);
+                }))
+                .thenExecute(() -> cleanUpCell(helper, spawned, placed))
+                .thenExecute(() -> LOGGER.info("[hbm-hazard] hazard_hydroactive_held_explodes_at_eye_height passed"))
+                .thenSucceed();
+    }
+
+    @GameTest(template = TEMPLATE, batch = BATCH, timeoutTicks = 100)
+    public static void hazard_hydroactive_dropped_item_explodes(GameTestHelper helper) {
+        List<Entity> spawned = new ArrayList<>();
+        List<BlockPos> placed = new ArrayList<>();
+        BlockPos slab = new BlockPos(10, 1, 10);
+        BlockPos dry = new BlockPos(13, 0, 13);
+        ItemEntity[] wet = new ItemEntity[1], control = new ItemEntity[1];
+        Pig[] witness = new Pig[1];
+        long[] start = new long[1];
+        guard(() -> {
+            requireHydroactive();
+            waterCell(helper, placed, slab);
+            place(helper, placed, dry, Blocks.STONE.defaultBlockState());
+            // A witness pig on the stone east of the water cell takes the blast; the blast itself is centred in the water and breaks nothing,
+            // as the original's newExplosion in water does not either.
+            witness[0] = pig(helper, spawned, new Vec3(11.5, 2, 10.5));
+            wet[0] = dropItem(helper, spawned, new Vec3(10.5, 1.5, 10.5), new ItemStack(NtmItems.POWDER_CAESIUM.get()));
+            control[0] = dropItem(helper, spawned, new Vec3(13.5, 1, 13.5), new ItemStack(NtmItems.POWDER_CAESIUM.get()));
+            start[0] = helper.getTick();
+        }).run();
+
+        // The real CommonEvents.onLivingTick of the item entity applies HazardSystem.updateDroppedItem once the item is wet.
+        helper.startSequence()
+                .thenWaitUntil(guard(() -> check(wet[0].isRemoved(), "the wet caesium powder is still there after " + (helper.getTick() - start[0]) + " ticks")))
+                .thenExecute(guard(() -> {
+                    long ticks = helper.getTick() - start[0];
+                    DamageSource last = witness[0].getLastDamageSource();
+                    LOGGER.info("[hbm-hazard] dropped powder_caesium in water: removed after {} ticks, witness health {} / {}, damage {}",
+                            ticks, witness[0].getHealth(), witness[0].getMaxHealth(), last);
+                    check(ticks <= 3, "the wet caesium powder reacted only after " + ticks + " ticks");
+                    check(last != null && last.is(DamageTypeTags.IS_EXPLOSION) && witness[0].getHealth() < witness[0].getMaxHealth(),
+                            "the witness pig took no explosion damage: " + last);
+                    check(!control[0].isRemoved() && control[0].getItem().getCount() == 1 && !control[0].isInWaterOrRain(), "the dry caesium powder reacted");
+                    BlockState cell = helper.getBlockState(slab);
+                    check(cell.is(Blocks.STONE_SLAB) && cell.getValue(SlabBlock.WATERLOGGED), "the water cell was broken: " + cell);
+                }))
+                .thenExecute(() -> cleanUpCell(helper, spawned, placed))
+                .thenExecute(() -> LOGGER.info("[hbm-hazard] hazard_hydroactive_dropped_item_explodes passed"))
+                .thenSucceed();
+    }
+
+    /** A waterlogged bottom slab with stone below and on four sides (the water cannot flow); an entity on it is in water, its eye above it. */
+    private static void waterCell(GameTestHelper helper, List<BlockPos> placed, BlockPos slab) {
+        place(helper, placed, slab.below(), Blocks.STONE.defaultBlockState());
+        for(Direction dir : SmokeTestSupport.HORIZONTALS) place(helper, placed, slab.relative(dir), Blocks.STONE.defaultBlockState());
+        place(helper, placed, slab, Blocks.STONE_SLAB.defaultBlockState().setValue(SlabBlock.WATERLOGGED, true));
+    }
+
+    private static void place(GameTestHelper helper, List<BlockPos> placed, BlockPos pos, BlockState state) {
+        helper.setBlock(pos, state);
+        placed.add(pos);
+    }
+
+    private static ItemEntity dropItem(GameTestHelper helper, List<Entity> spawned, Vec3 relative, ItemStack stack) {
+        Vec3 pos = helper.absoluteVec(relative);
+        ItemEntity entity = new ItemEntity(helper.getLevel(), pos.x, pos.y, pos.z, stack);
+        entity.setDeltaMovement(Vec3.ZERO);
+        check(helper.getLevel().addFreshEntity(entity), "could not add " + stack);
+        spawned.add(entity);
+        return entity;
+    }
+
+    /** Removes the test's entities, its blocks (the water cell first, so no water flows) and every item the blast dropped in the structure. */
+    private static void cleanUpCell(GameTestHelper helper, List<Entity> spawned, List<BlockPos> placed) {
+        cleanUp(spawned);
+        for(int i = placed.size() - 1; i >= 0; i--) helper.setBlock(placed.get(i), Blocks.AIR);
+        AABB structure = new AABB(helper.absoluteVec(Vec3.ZERO), helper.absoluteVec(new Vec3(16, 12, 16)));
+        for(ItemEntity drop : helper.getLevel().getEntitiesOfClass(ItemEntity.class, structure)) drop.discard();
+    }
+
+    private static void requireHydroactive() {
+        check(!NtmConfig.COMMON.DISABLE_HYDROACTIVE.get(), "hydroactive hazards are disabled in the common config");
+    }
+
     // The registered rows. Each line mirrors one original row; hazards are the frame's rad, hot, blinding, hydro (0 = absent),
     // each shape multiplies them by the original's shape constant.
 
@@ -783,7 +1041,11 @@ public class HazardGameTests {
     }
 
     private static Pig pig(GameTestHelper helper, List<Entity> spawned) {
-        Pig pig = helper.spawn(EntityType.PIG, new Vec3(8.5, 1, 8.5));
+        return pig(helper, spawned, new Vec3(8.5, 1, 8.5));
+    }
+
+    private static Pig pig(GameTestHelper helper, List<Entity> spawned, Vec3 relative) {
+        Pig pig = helper.spawn(EntityType.PIG, relative);
         pig.setNoAi(true);
         spawned.add(pig);
         return pig;

@@ -74,6 +74,7 @@ public class ResourceManager {
     public static final ResourceLocation STIRLING_TEX = NuclearTechMod.withDefaultNamespace("textures/models/machines/stirling.png");
     public static final ResourceLocation STEAM_ENGINE_TEX = NuclearTechMod.withDefaultNamespace("textures/models/machines/steam_engine.png");
     public static final ResourceLocation diesel_tex = NuclearTechMod.withDefaultNamespace("textures/models/machines/dieselgen.png");
+    public static final ResourceLocation RTG_TEX = NuclearTechMod.withDefaultNamespace("textures/models/machines/rtg.png");
     public static final ResourceLocation compressor_tex = NuclearTechMod.withDefaultNamespace("textures/models/machines/compressor.png");
     public static final ResourceLocation coker_tex = NuclearTechMod.withDefaultNamespace("textures/models/machines/coker.png");
     public static final ResourceLocation mixer_tex = NuclearTechMod.withDefaultNamespace("textures/models/machines/mixer.png");
@@ -336,6 +337,7 @@ public class ResourceManager {
     public static IModelCustom stirling;
     public static IModelCustom steam_engine;
     public static IModelCustom diesel;
+    public static IModelCustom rtg;
     public static IModelCustom compressor;
     public static IModelCustom coker;
     public static IModelCustom mixer;
@@ -495,6 +497,7 @@ public class ResourceManager {
         stirling = new HFRWavefrontObject("models/obj/machines/stirling.obj").asVBO();
         steam_engine = new HFRWavefrontObject("models/obj/machines/steam_engine.obj").asVBO();
         diesel = new HFRWavefrontObject("models/obj/machines/dieselgen.obj").asVBO();
+        rtg = new HFRWavefrontObject("models/obj/machines/rtg.obj").asVBO();
         compressor = new HFRWavefrontObject("models/obj/machines/compressor.obj").asVBO();
         coker = new HFRWavefrontObject("models/obj/machines/coker.obj").asVBO();
         mixer = new HFRWavefrontObject("models/obj/machines/mixer.obj").asVBO();

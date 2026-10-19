@@ -37,20 +37,20 @@ public class FT_Polluting extends FluidTrait {
 
     @Override
     public void addInfo(List<Component> info) {
-        info.add(ChatBuilder.start("[").nextTranslation("fluids.trait.polluting").next("]").colorAll(ChatFormatting.GOLD).flush());
+        info.add(ChatBuilder.start("[").nextTranslation("hbmfluid.trait.polluting").next("]").colorAll(ChatFormatting.GOLD).flush());
     }
 
     @Override
     public void addInfoHidden(List<Component> info) {
 
         if(!this.releaseMap.isEmpty()) {
-            info.add(ChatBuilder.startTranslation("fluids.trait.spilled").next(":").colorAll(ChatFormatting.GREEN).flush());
-            for(Entry<PollutionType, Float> entry : releaseMap.entrySet()) info.add(ChatBuilder.start(" - ").next(entry.getValue().toString() + " ").nextTranslation("pollution.trait." + entry.getKey().name().toLowerCase(Locale.US)).next(" ").nextTranslation("fluid.trait.perMB").colorAll(ChatFormatting.GREEN).flush());
+            info.add(ChatBuilder.startTranslation("hbmfluid.trait.spilled").next(":").colorAll(ChatFormatting.GREEN).flush());
+            for(Entry<PollutionType, Float> entry : releaseMap.entrySet()) info.add(ChatBuilder.start(" - ").next(entry.getValue().toString() + " ").nextTranslation("pollution.trait." + entry.getKey().name().toLowerCase(Locale.US)).next(" ").nextTranslation("hbmfluid.trait.perMB").colorAll(ChatFormatting.GREEN).flush());
         }
 
         if(!this.burnMap.isEmpty()) {
-            info.add(ChatBuilder.startTranslation("fluids.trait.burned").next(":").colorAll(ChatFormatting.RED).flush());
-            for(Entry<PollutionType, Float> entry : burnMap.entrySet()) info.add(ChatBuilder.start(" - ").next(entry.getValue().toString() + " ").nextTranslation("pollution.trait." + entry.getKey().name().toLowerCase(Locale.US)).next(" ").nextTranslation("fluid.trait.perMB").colorAll(ChatFormatting.RED).flush());
+            info.add(ChatBuilder.startTranslation("hbmfluid.trait.burned").next(":").colorAll(ChatFormatting.RED).flush());
+            for(Entry<PollutionType, Float> entry : burnMap.entrySet()) info.add(ChatBuilder.start(" - ").next(entry.getValue().toString() + " ").nextTranslation("pollution.trait." + entry.getKey().name().toLowerCase(Locale.US)).next(" ").nextTranslation("hbmfluid.trait.perMB").colorAll(ChatFormatting.RED).flush());
         }
     }
 

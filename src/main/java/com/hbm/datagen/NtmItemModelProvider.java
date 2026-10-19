@@ -378,6 +378,8 @@ public class NtmItemModelProvider extends ItemModelProvider {
         this.basicItem(NtmItems.MOTOR.get());
         this.basicItem(NtmItems.MOTOR_DESH.get());
         this.basicItem(NtmItems.CENTRIFUGE_ELEMENT.get());
+        this.basicItem(NtmItems.THERMO_ELEMENT.get());
+        this.basicItem(NtmItems.RTG_UNIT.get());
         this.basicItem(NtmItems.GEAR_LARGE.get());
         this.basicItem(NtmItems.CAST_PLATE_WELDED.get());
         this.basicItem(NtmItems.CAST_PLATE.get());
@@ -632,6 +634,16 @@ public class NtmItemModelProvider extends ItemModelProvider {
         this.basicItem(NtmItems.CRYSTAL_XEN.get());
 
         this.basicItem(NtmItems.PELLET_RTG.get());
+        // Goal23B RTG pellets; pellet_rtg_depleted (EnumMultiItem) gets its meta overrides from the ICustomItemModelRegister loop above.
+        this.basicItem(NtmItems.PELLET_RTG_RADIUM.get());
+        this.basicItem(NtmItems.PELLET_RTG_WEAK.get());
+        this.basicItem(NtmItems.PELLET_RTG_STRONTIUM.get());
+        this.basicItem(NtmItems.PELLET_RTG_COBALT.get());
+        this.basicItem(NtmItems.PELLET_RTG_ACTINIUM.get());
+        this.basicItem(NtmItems.PELLET_RTG_AMERICIUM.get());
+        this.basicItem(NtmItems.PELLET_RTG_POLONIUM.get());
+        this.basicItem(NtmItems.PELLET_RTG_GOLD.get());
+        this.basicItem(NtmItems.PELLET_RTG_LEAD.get());
 
         this.basicItem(NtmItems.CELL_EMPTY.get());
         this.basicItem(NtmItems.CELL_UF6.get());

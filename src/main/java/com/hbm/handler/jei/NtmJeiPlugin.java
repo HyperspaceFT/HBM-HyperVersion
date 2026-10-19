@@ -504,6 +504,9 @@ public class NtmJeiPlugin implements IModPlugin {
                 NtmItems.ROD_DUAL.get(),
                 NtmItems.ROD_QUAD.get(),
 
+                // The six depleted RTG pellets are separate JEI ingredients; the ten pellets stay one entry each, whatever their remaining life.
+                NtmItems.PELLET_RTG_DEPLETED.get(),
+
                 // Hot (META 1) and cool (META 0) waste are separate JEI ingredients, so the drum rows show both states.
                 NtmItems.WASTE_NATURAL_URANIUM.get(),
                 NtmItems.WASTE_URANIUM.get(),

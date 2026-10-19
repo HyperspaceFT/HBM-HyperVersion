@@ -299,6 +299,7 @@ public class NtmCreativeTabs {
                         output.accept(NtmItems.MOTOR.get());
                         output.accept(NtmItems.MOTOR_DESH.get());
                         output.accept(NtmItems.CENTRIFUGE_ELEMENT.get());
+                        output.accept(NtmItems.RTG_UNIT.get());
                         output.accept(NtmItems.GEAR_LARGE.get());
                         addMetaItems(output, NtmItems.CAST_PLATE_WELDED.get());
                         addMetaItems(output, NtmItems.CAST_PLATE.get());
@@ -586,6 +587,22 @@ public class NtmCreativeTabs {
                         output.accept(NtmItems.INF_WATER.get());
                         output.accept(NtmItems.INF_WATER_MK2.get());
 
+                        // Goal23B: the RTG pellets in construction order (ModItems.java:2647-2656, the order of RTGPelletItem.PELLETS),
+                        // then the six depleted pellets; the original registers them before its batteries and rods (ModItems.java:5039-5049),
+                        // where polonium comes before americium.
+                        output.accept(NtmItems.PELLET_RTG_RADIUM);
+                        output.accept(NtmItems.PELLET_RTG_WEAK);
+                        output.accept(NtmItems.PELLET_RTG);
+                        output.accept(NtmItems.PELLET_RTG_STRONTIUM);
+                        output.accept(NtmItems.PELLET_RTG_COBALT);
+                        output.accept(NtmItems.PELLET_RTG_ACTINIUM);
+                        output.accept(NtmItems.PELLET_RTG_AMERICIUM);
+                        output.accept(NtmItems.PELLET_RTG_POLONIUM);
+                        output.accept(NtmItems.PELLET_RTG_GOLD);
+                        output.accept(NtmItems.PELLET_RTG_LEAD);
+                        addMetaItems(output, NtmItems.PELLET_RTG_DEPLETED.get());
+                        output.accept(NtmItems.THERMO_ELEMENT);
+
                         addMetaItems(output, NtmItems.BATTERY_PACK.get());
                         addMetaItems(output, NtmItems.BATTERY_SC.get());
 
@@ -864,6 +881,7 @@ public class NtmCreativeTabs {
                         output.accept(NtmBlocks.MACHINE_COMBUSTION_ENGINE);
                         output.accept(NtmBlocks.MACHINE_TURBOFAN);
                         output.accept(NtmBlocks.MACHINE_DIESEL);
+                        output.accept(NtmBlocks.MACHINE_RTG);
                         output.accept(NtmBlocks.MACHINE_WOOD_BURNER);
                         output.accept(NtmBlocks.MACHINE_CENTRIFUGE);
                         output.accept(NtmBlocks.MACHINE_GAS_CENTRIFUGE);

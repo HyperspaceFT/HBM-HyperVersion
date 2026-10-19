@@ -192,6 +192,7 @@ public class ClientProxy extends ServerProxy {
         BlockEntityRenderers.register(NtmBlockEntityTypes.MACHINE_STIRLING.get(), new RenderStirling());
         BlockEntityRenderers.register(NtmBlockEntityTypes.MACHINE_STEAM_ENGINE.get(), new RenderSteamEngine());
         BlockEntityRenderers.register(NtmBlockEntityTypes.MACHINE_DIESEL.get(), new RenderDieselGen());
+        BlockEntityRenderers.register(NtmBlockEntityTypes.MACHINE_RTG.get(), new RenderRTG());
         BlockEntityRenderers.register(NtmBlockEntityTypes.MACHINE_COMBUSTION_ENGINE.get(), new RenderCombustionEngine());
         BlockEntityRenderers.register(NtmBlockEntityTypes.MACHINE_TURBOFAN.get(), new RenderTurbofan());
         BlockEntityRenderers.register(NtmBlockEntityTypes.PUMP_ELECTRIC.get(), new RenderPumpElectric());

@@ -46,6 +46,31 @@ public class HazardData {
         return this;
     }
 
+    /**
+     * A copy of this data with a later registration of the same key folded in, by the same rule HazardSystem.getHazardsFromStack applies to
+     * the layers in chronological order: an overriding registration purges the entries loaded before it, and one whose mutex bits collide
+     * with those already taken yields. The original kept ore dictionary frames (oreMap) and item rows (itemMap) in separate layers that add
+     * up when queried; NEO registers its frames as items, so a second registration of an item stacks on the first instead of replacing it.
+     */
+    public HazardData merge(HazardData later) {
+        HazardData merged = new HazardData();
+        merged.doesOverride = this.doesOverride;
+        merged.mutexBits = this.mutexBits;
+        merged.entries.addAll(this.entries);
+
+        if(later.doesOverride) {
+            merged.entries.clear();
+            merged.doesOverride = true;
+        }
+
+        if((later.mutexBits & merged.mutexBits) == 0) {
+            merged.entries.addAll(later.entries);
+            merged.mutexBits |= later.mutexBits;
+        }
+
+        return merged;
+    }
+
     public int getMutex() {
         return mutexBits;
     }

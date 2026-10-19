@@ -19,9 +19,10 @@ public class HazardTypeHydroactive extends HazardTypeBase {
     public void onUpdate(LivingEntity target, float level, ItemStack stack) {
         if (NtmConfig.COMMON.DISABLE_HYDROACTIVE.get()) return;
 
+        // Original: newExplosion(null, posX, posY + getEyeHeight() - getYOffset(), posZ, level, false, true), at eye height and breaking blocks.
         if (target.isInWaterOrRain() && stack.getCount() > 0) {
             stack.setCount(0);
-            target.level().explode(null, target.getX(), target.getY() + 2, target.getZ(), level,false, Level.ExplosionInteraction.NONE);
+            target.level().explode(null, target.getX(), target.getEyeY(), target.getZ(), level, false, Level.ExplosionInteraction.TNT);
         }
     }
 
@@ -29,9 +30,10 @@ public class HazardTypeHydroactive extends HazardTypeBase {
     public void updateEntity(ItemEntity item, float lvl) {
         if (NtmConfig.COMMON.DISABLE_HYDROACTIVE.get()) return;
 
+        // Original: newExplosion(null, posX, posY + height * 0.5, posZ, level, false, true), at half the entity's height.
         if (item.isInWaterOrRain()) {
             item.discard();
-            item.level().explode(null, item.getX(), item.getY(), item.getZ(), lvl, false, Level.ExplosionInteraction.TNT);
+            item.level().explode(null, item.getX(), item.getY() + item.getBbHeight() * 0.5, item.getZ(), lvl, false, Level.ExplosionInteraction.TNT);
         }
     }
 

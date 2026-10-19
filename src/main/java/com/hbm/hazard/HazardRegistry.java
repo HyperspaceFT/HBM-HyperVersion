@@ -2,11 +2,13 @@ package com.hbm.hazard;
 
 import com.hbm.blocks.NtmBlocks;
 import com.hbm.hazard.modifier.HazardModifierFuelRadiation;
+import com.hbm.hazard.modifier.HazardModifierRTGRadiation;
 import com.hbm.hazard.type.*;
 import com.hbm.inventory.MetaHelper;
 import com.hbm.items.NtmItems;
 import com.hbm.items.RawIngotItem;
 import com.hbm.items.machine.BreedingRodItem.BreedingRodType;
+import com.hbm.items.machine.RTGPelletDepletedItem.DepletedRTGMaterial;
 import com.hbm.items.machine.ZirnoxRodItem.ZirnoxType;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
@@ -315,6 +317,7 @@ public class HazardRegistry {
 
         registerMaterials();
         registerMaterialAddendum();
+        registerRTGPellets();
     }
 
     /**
@@ -382,7 +385,7 @@ public class HazardRegistry {
         HazardSystem.register(item(BILLET_PO210BE), makeData(RADIATION, pobe * billet)); // :333
         HazardSystem.register(item(BILLET_RA226BE), makeData(RADIATION, rabe * billet)); // :334
         HazardSystem.register(item(BILLET_PU238BE), makeData(RADIATION, pube * billet)); // :335
-        // :337-347, the eleven RTG pellet rows (registerRTGPellet), are deferred with the RTG modifier: NEO has no HazardModifierRTGRadiation.
+        // :337-347, the eleven RTG pellet rows (registerRTGPellet), are registered in registerRTGPellets (Goal23B).
 
         HazardSystem.register(item(POWDER_CAESIUM), makeData().addEntry(HYDROACTIVE, 1F).addEntry(HOT, 3F)); // :478
 
@@ -397,6 +400,25 @@ public class HazardRegistry {
 
         frame().asbestos(1F).ingot(INGOT_ASBESTOS).dust(POWDER_ASBESTOS).block(NtmBlocks.BLOCK_ASBESTOS); // OreDictManager.java:424, ores not registered
         frame().hot(5F).ingot(INGOT_PHOSPHORUS); // OreDictManager.java:460, NEO has no block_white_phosphorus
+    }
+
+    /**
+     * Goal23B: the RTG pellet rows of the original HazardRegistry.registerItems (:337-347). The ten pellets go through registerRTGPellet,
+     * whose radiation falls linearly toward the target (0 for all) as the pellet decays (HazardModifierRTGRadiation); the depleted neptunium
+     * pellet is a meta stack row. No pellet has a frame row, so the merge order of HazardSystem.register (Goal23A) plays no part.
+     */
+    private static void registerRTGPellets() {
+        registerRTGPellet(PELLET_RTG, pu238 * rtg, 0, 3F); // :337
+        registerRTGPellet(PELLET_RTG_RADIUM, ra226 * rtg, 0); // :338
+        registerRTGPellet(PELLET_RTG_WEAK, (pu238 + (u238 * 2)) * billet, 0); // :339
+        registerRTGPellet(PELLET_RTG_STRONTIUM, sr90 * rtg, 0); // :340
+        registerRTGPellet(PELLET_RTG_COBALT, co60 * rtg, 0); // :341
+        registerRTGPellet(PELLET_RTG_ACTINIUM, ac227 * rtg, 0); // :342
+        registerRTGPellet(PELLET_RTG_POLONIUM, po210 * rtg, 0, 3F); // :343
+        registerRTGPellet(PELLET_RTG_LEAD, pb209 * rtg, 0, 7F, 50F); // :344
+        registerRTGPellet(PELLET_RTG_GOLD, au198 * rtg, 0, 5F); // :345
+        registerRTGPellet(PELLET_RTG_AMERICIUM, am241 * rtg, 0); // :346
+        HazardSystem.register(MetaHelper.newStack(PELLET_RTG_DEPLETED, 1, DepletedRTGMaterial.NEPTUNIUM.ordinal()), makeData(RADIATION, np237 * rtg)); // :347
     }
 
     private static Frame frame() { return new Frame(); }
@@ -458,6 +480,18 @@ public class HazardRegistry {
         data.addEntry(new HazardEntry(RADIATION, base).addMod(new HazardModifierFuelRadiation(target)));
         if(blinding) data.addEntry(BLINDING, 20F);
         HazardSystem.register(MetaHelper.newStack(fuel, 1, meta), data);
+    }
+
+    private static void registerRTGPellet(DeferredItem<Item> pellet, float base, float target) { registerRTGPellet(pellet, base, target, 0, 0); }
+    private static void registerRTGPellet(DeferredItem<Item> pellet, float base, float target, float hot) { registerRTGPellet(pellet, base, target, hot, 0); }
+
+    /** Original registerRTGPellet (:618-627). */
+    private static void registerRTGPellet(DeferredItem<Item> pellet, float base, float target, float hot, float blinding) {
+        HazardData data = new HazardData();
+        data.addEntry(new HazardEntry(RADIATION, base).addMod(new HazardModifierRTGRadiation(target)));
+        if(hot > 0) data.addEntry(new HazardEntry(HOT, hot));
+        if(blinding > 0) data.addEntry(new HazardEntry(BLINDING, blinding));
+        HazardSystem.register(pellet.get(), data);
     }
 
     /** Original registerOtherWaste (:629-636): cool waste (META 0) keeps 7.5% of the radiation, hot waste (META 1) is also hot. */

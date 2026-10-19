@@ -48,18 +48,19 @@ public class HazardSystem {
     public static final List<HazardTransformerBase> trafos = new ArrayList<>();
 
     /**
-     * Automatically casts the first parameter and registers it to the HazSys
+     * Automatically casts the first parameter and registers it to the HazSys. A repeated item, block or stack registration is merged into
+     * the earlier one ({@link HazardData#merge}) instead of replacing it; the tag map keeps the original's replacing put.
      */
     @SuppressWarnings("unchecked")
     public static void register(Object o, HazardData data) {
 
         if(o instanceof TagKey<?> tagKey && tagKey.isFor(Registries.ITEM)) tagMap.put((TagKey<Item>) tagKey, data);
 
-        if(o instanceof Item item)   itemMap.put(item, data);
-        if(o instanceof Block block) itemMap.put(block.asItem(), data);
+        if(o instanceof Item item)   itemMap.merge(item, data, HazardData::merge);
+        if(o instanceof Block block) itemMap.merge(block.asItem(), data, HazardData::merge);
 
-        if(o instanceof ItemStack stack)       stackMap.put(new ComparableStack(stack), data);
-        if(o instanceof ComparableStack stack) stackMap.put(stack, data);
+        if(o instanceof ItemStack stack)       stackMap.merge(new ComparableStack(stack), data, HazardData::merge);
+        if(o instanceof ComparableStack stack) stackMap.merge(stack, data, HazardData::merge);
     }
 
     /**

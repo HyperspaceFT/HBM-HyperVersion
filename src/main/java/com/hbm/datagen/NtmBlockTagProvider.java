@@ -310,6 +310,7 @@ public class NtmBlockTagProvider extends BlockTagsProvider {
                         NtmBlocks.MACHINE_BLAST_FURNACE.get(),
                         NtmBlocks.MACHINE_COMBUSTION_ENGINE.get(),
                         NtmBlocks.MACHINE_DIESEL.get(),
+                        NtmBlocks.MACHINE_RTG.get(),
                         NtmBlocks.MACHINE_TURBOFAN.get(),
                         NtmBlocks.MACHINE_WOOD_BURNER.get(),
                         NtmBlocks.FURNACE_COMBINATION.get(),

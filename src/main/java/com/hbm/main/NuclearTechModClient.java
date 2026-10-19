@@ -16,6 +16,7 @@ import com.hbm.interfaces.IHoldableWeapon;
 import com.hbm.interfaces.Spaghetti;
 import com.hbm.inventory.NtmMenuTypes;
 import com.hbm.inventory.screens.MachineDieselScreen;
+import com.hbm.inventory.screens.MachineRTGScreen;
 import com.hbm.inventory.screens.MachineCompressorScreen;
 import com.hbm.inventory.screens.MachineCokerScreen;
 import com.hbm.inventory.screens.MachineMixerScreen;
@@ -152,6 +153,7 @@ public class NuclearTechModClient {
     @SubscribeEvent
     public static void registerScreens(RegisterMenuScreensEvent event) {
         event.register(NtmMenuTypes.MACHINE_DIESEL.get(), MachineDieselScreen::new);
+        event.register(NtmMenuTypes.MACHINE_RTG.get(), MachineRTGScreen::new);
         event.register(NtmMenuTypes.MACHINE_COMPRESSOR.get(), MachineCompressorScreen::new);
         event.register(NtmMenuTypes.MACHINE_COKER.get(), MachineCokerScreen::new);
         event.register(NtmMenuTypes.MACHINE_MIXER.get(), MachineMixerScreen::new);

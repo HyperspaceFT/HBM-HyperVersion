@@ -34,7 +34,7 @@ public class FT_VentRadiation extends FluidTrait {
 
     @Override
     public void addInfo(List<Component> info) {
-        info.add(ChatBuilder.start("[").nextTranslation("fluids.trait.radioactive").next("]").colorAll(ChatFormatting.YELLOW).flush());
+        info.add(ChatBuilder.start("[").nextTranslation("hbmfluid.trait.radioactive").next("]").colorAll(ChatFormatting.YELLOW).flush());
     }
 
     @Override

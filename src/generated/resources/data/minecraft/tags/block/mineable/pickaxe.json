@@ -216,6 +216,7 @@
     "hbmsntm:machine_blast_furnace",
     "hbmsntm:machine_combustion_engine",
     "hbmsntm:machine_diesel",
+    "hbmsntm:machine_rtg",
     "hbmsntm:machine_turbofan",
     "hbmsntm:machine_wood_burner",
     "hbmsntm:furnace_combination",

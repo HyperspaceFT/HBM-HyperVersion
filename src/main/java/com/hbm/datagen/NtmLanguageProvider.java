@@ -14,6 +14,7 @@ import com.hbm.items.food.DrinkItem.DrinkType;
 import com.hbm.items.machine.BatteryPackItem.BatteryPackType;
 import com.hbm.items.machine.BatterySCItem.BatterySCType;
 import com.hbm.items.machine.BreedingRodItem.BreedingRodType;
+import com.hbm.items.machine.RTGPelletDepletedItem.DepletedRTGMaterial;
 import com.hbm.items.machine.ZirnoxRodItem.ZirnoxType;
 import com.hbm.items.special.SatelliteItem.SatType;
 import com.hbm.items.special.StarterKitItem.KitType;
@@ -785,6 +786,8 @@ public class NtmLanguageProvider extends LanguageProvider {
         this.add(NtmItems.COIL_TUNGSTEN, "Heating Coil");
         this.add(NtmItems.MOTOR, "Motor");
         this.add(NtmItems.CENTRIFUGE_ELEMENT, "Centrifuge Element");
+        this.add(NtmItems.THERMO_ELEMENT, "Thermoelectric Element");
+        this.add(NtmItems.RTG_UNIT, "RTG Unit");
         this.add(NtmItems.MOTOR_DESH, "Desh Motor");
         this.add(NtmItems.GEAR_LARGE, "Large Gear");
         this.add(NtmItems.CAST_PLATE_WELDED, "Welded Plate");
@@ -950,6 +953,57 @@ public class NtmLanguageProvider extends LanguageProvider {
         this.add("item.hbmsntm.upgrade_gc_speed.desc", "§cGas Centrifuge Upgrade$Allows for total isotopic separation of HEUF6$§ealso your centrifuge goes sicko mode");
 
         this.add(NtmItems.PELLET_RTG, "Plutonium-238 RTG Pellet");
+        // RTG pellets (Goal23B, original en_US.lang:3843-3870). The original's pellet_rtg_berkelium has no item and is not ported.
+        this.add(NtmItems.PELLET_RTG, DESC, "RTG fuel pellet for infinite energy! (almost)");
+        this.add(NtmItems.PELLET_RTG_RADIUM, "Radium-226 RTG Pellet");
+        this.add(NtmItems.PELLET_RTG_RADIUM, DESC, "Great starter pellet, sourced from all-natural radium!");
+        this.add(NtmItems.PELLET_RTG_WEAK, "Weak Uranium RTG Pellet");
+        this.add(NtmItems.PELLET_RTG_WEAK, DESC, "Cheaper and weaker pellet, now with more U238!");
+        this.add(NtmItems.PELLET_RTG_STRONTIUM, "Strontium-90 RTG Pellet");
+        this.add(NtmItems.PELLET_RTG_STRONTIUM, DESC, "Known to the State of California...");
+        this.add(NtmItems.PELLET_RTG_COBALT, "Cobalt-60 RTG Pellet");
+        this.add(NtmItems.PELLET_RTG_COBALT, DESC, "Not the best as an RTG, but great for gamma radiation!");
+        this.add(NtmItems.PELLET_RTG_ACTINIUM, "Actinium-227 RTG Pellet");
+        this.add(NtmItems.PELLET_RTG_ACTINIUM, DESC, "A glow of blue light and beta rays.");
+        this.add(NtmItems.PELLET_RTG_AMERICIUM, "Americium-241 RTG Pellet");
+        this.add(NtmItems.PELLET_RTG_AMERICIUM, DESC, "Rare and reliable, good old Americium!");
+        this.add(NtmItems.PELLET_RTG_POLONIUM, "Polonium-210 RTG Pellet");
+        this.add(NtmItems.PELLET_RTG_POLONIUM, DESC, "More powerful RTG pellet, made from finest polonium!");
+        this.add(NtmItems.PELLET_RTG_GOLD, "Gold-198 RTG Pellet");
+        this.add(NtmItems.PELLET_RTG_GOLD, DESC, "Made from a rare, highly unstable gold isotope.");
+        this.add(NtmItems.PELLET_RTG_LEAD, "Lead-209 RTG Pellet");
+        this.add(NtmItems.PELLET_RTG_LEAD, DESC, "Exposure will result in immediate death.");
+        this.add(NtmItems.PELLET_RTG_DEPLETED, this.getName(DepletedRTGMaterial.BISMUTH), "Decayed Bismuth RTG Pellet");
+        this.add(NtmItems.PELLET_RTG_DEPLETED, this.getName(DepletedRTGMaterial.MERCURY), "Decayed Mercury RTG Pellet");
+        this.add(NtmItems.PELLET_RTG_DEPLETED, this.getName(DepletedRTGMaterial.NEPTUNIUM), "Decayed Neptunium RTG Pellet");
+        this.add(NtmItems.PELLET_RTG_DEPLETED, this.getName(DepletedRTGMaterial.LEAD), "Decayed Lead RTG Pellet");
+        this.add(NtmItems.PELLET_RTG_DEPLETED, this.getName(DepletedRTGMaterial.ZIRCONIUM), "Decayed Zirconium RTG Pellet");
+        this.add(NtmItems.PELLET_RTG_DEPLETED, this.getName(DepletedRTGMaterial.NICKEL), "Decayed Nickel RTG Pellet");
+        // Original desc.item.rtgHeat and desc.item.rtgDecay (en_US.lang:1124-1125).
+        this.add("desc.item.rtgHeat", "Power Level: %s");
+        this.add("desc.item.rtgDecay", "Decays to: %s");
+        // NEO keys for text the original hardcodes in English: the advanced tooltip lines (ItemRTGPellet.java:159-164) and the sixteen
+        // pellet_rtg facts (:40-57, shown on right click). The facts escape % as %% because NEO sends them through Component.translatable.
+        this.add("desc.item.rtgExtended", "EXTENDED INFO:");
+        this.add("desc.item.rtgTicks", "%s / %s ticks");
+        this.add("desc.item.rtgRemaining", "Time remaining: %s y, %s d, %s h");
+        this.add("desc.item.rtgMaxLife", "Maximum life: %s y, %s d, %s h");
+        this.add("desc.item.pellet_rtg.fact.1", "One gram of Pu-238 costs $8,000.");
+        this.add("desc.item.pellet_rtg.fact.2", "One gram of Pu-238 produces just under half a Watt of decay heat.");
+        this.add("desc.item.pellet_rtg.fact.3", "The typical plutonium RTG contains close to eight kilograms of Pu-238.");
+        this.add("desc.item.pellet_rtg.fact.4", "Pu-238's half life is 87.7 years.");
+        this.add("desc.item.pellet_rtg.fact.5", "A plutonium RTG was used to power the New Horizons probe that visited Pluto in 2015.");
+        this.add("desc.item.pellet_rtg.fact.6", "Po-210 can also be used for RTGs as it generates 140 W/g of decay heat due to its 138 day half life.");
+        this.add("desc.item.pellet_rtg.fact.7", "Pa-231 is an isotope of protactinium that easily fissions, but it isn't quite fissile.");
+        this.add("desc.item.pellet_rtg.fact.8", "Muons generated by matter-antimatter reactions can trigger nuclear fusion reactions at room temperature.");
+        this.add("desc.item.pellet_rtg.fact.9", "Roughly 20%% of U-235 nuclei will fail to fission when hit by a neutron. They become U-236 nuclei instead.");
+        this.add("desc.item.pellet_rtg.fact.10", "Thorium reactors are really uranium reactors that convert thorium into U-233.");
+        this.add("desc.item.pellet_rtg.fact.11", "Natural uranium consists of 99.284%% U-238, 0.711%% U-235, and 0.0055%% U-234.");
+        this.add("desc.item.pellet_rtg.fact.12", "Most nuclear reactors use uranium that has been enriched to 3-5%% U-235.");
+        this.add("desc.item.pellet_rtg.fact.13", "Uranium-based nuclear weapons require uranium enriched to at least 85-90%% U-235.");
+        this.add("desc.item.pellet_rtg.fact.14", "Depleted uranium is uranium that has had most of its U-235 removed. It is effectively pure U-238.");
+        this.add("desc.item.pellet_rtg.fact.15", "In the 1920s, uranium was considered a useless byproduct of the production of radium.");
+        this.add("desc.item.pellet_rtg.fact.16", "The Manhattan Project referred to refined natural uranium as tuballoy, enriched uranium as oralloy, and depleted uranium as depletalloy.");
 
         this.add(NtmItems.CELL_EMPTY, "Empty Cell");
         this.add(NtmItems.CELL_UF6, "Uranium Hexafluoride Cell");
@@ -1937,6 +1991,14 @@ public class NtmLanguageProvider extends LanguageProvider {
         this.add("container.machine_arc_furnace", "Arc Furnace");
         this.add("block.hbmsntm.machine_diesel", "Diesel Generator");
         this.add("container.machine_diesel", "Diesel Generator");
+        // RT generator (Goal23C): original tile.machine_rtg_grey.name, container.rtg and desc.gui.rtg.* (en_US.lang:5907,808,989-992).
+        // desc.gui.rtg.pelletHeat is defined by the original but its GUI only uses pelletPower; kept for parity.
+        this.add("block.hbmsntm.machine_rtg", "RT Generator");
+        this.add("container.rtg", "RT Generator");
+        this.add("desc.gui.rtg.heat", "§eCurrent heat level: %s");
+        this.add("desc.gui.rtg.pellets", "Accepted Pellets:");
+        this.add("desc.gui.rtg.pelletHeat", "%s (%s heat)");
+        this.add("desc.gui.rtg.pelletPower", "%s (%s HE/tick)");
         this.add("machine_diesel.efficiency", "Fuel efficiency:");
         this.add("machine_diesel.efficiency.grade", "%s: %s%%");
         this.add("machine_diesel.warning.full", "Consumes fuel even when the energy buffer is full.");
@@ -2065,6 +2127,21 @@ public class NtmLanguageProvider extends LanguageProvider {
         this.add("hbmfluid.trait.fuel.high", "High");
         this.add("hbmfluid.trait.fuel.aviation", "Aviation");
         this.add("hbmfluid.trait.fuel.gaseous", "Gaseous");
+        // FT_Combustible, FT_Polluting and FT_VentRadiation tooltips, original en_US.lang:6536-6570,6581-6583; pollution.trait.fallout is NEO-local
+        // (the original PollutionType has FALLOUT but no language key).
+        this.add("hbmfluid.trait.combustible", "Combustible");
+        this.add("hbmfluid.trait.provides", "Provides");
+        this.add("hbmfluid.trait.perBucket", "per bucket");
+        this.add("hbmfluid.trait.fuelGrade", "Fuel grade");
+        this.add("hbmfluid.trait.polluting", "Polluting");
+        this.add("hbmfluid.trait.spilled", "When spilled");
+        this.add("hbmfluid.trait.burned", "When burned");
+        this.add("hbmfluid.trait.perMB", "per mB");
+        this.add("hbmfluid.trait.radioactive", "Radioactive");
+        this.add("pollution.trait.soot", "SOOT");
+        this.add("pollution.trait.poison", "POISON");
+        this.add("pollution.trait.heavymetal", "HEAVY METAL");
+        this.add("pollution.trait.fallout", "FALLOUT");
         this.add("machine_combustion_engine.action.toggle", "Click to toggle ignition");
         this.add("machine_combustion_engine.throttle", "Throttle: %s / 30");
         this.add("machine_combustion_engine.fuel_rate", "Fuel consumption: %s mB/t");

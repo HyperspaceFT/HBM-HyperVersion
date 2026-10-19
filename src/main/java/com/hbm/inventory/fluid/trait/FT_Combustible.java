@@ -27,10 +27,10 @@ public class FT_Combustible extends FluidTrait {
     public void addInfo(List<Component> info) {
         super.addInfo(info);
 
-        info.add(ChatBuilder.start("[").nextTranslation("fluids.trait.combustible").next("]").colorAll(ChatFormatting.GOLD).flush());
+        info.add(ChatBuilder.start("[").nextTranslation("hbmfluid.trait.combustible").next("]").colorAll(ChatFormatting.GOLD).flush());
 
         if(combustionEnergy > 0) {
-            info.add(Component.translatable("hbmfluid.trait.provides").withStyle(ChatFormatting.GOLD).append(" ").append(BobMathUtil.getShortNumber(combustionEnergy) + "HE ").withStyle(ChatFormatting.GOLD).append(this.fuelGrade.getLocalizedName()).append(Component.translatable("hbmfluid.trait.perBucket").withStyle(ChatFormatting.GOLD)));
+            info.add(Component.translatable("hbmfluid.trait.provides").append(" ").withStyle(ChatFormatting.GOLD).append(Component.literal(BobMathUtil.getShortNumber(combustionEnergy) + "HE ").withStyle(ChatFormatting.RED)).append(Component.translatable("hbmfluid.trait.perBucket").withStyle(ChatFormatting.GOLD)));
             info.add(Component.translatable("hbmfluid.trait.fuelGrade").append(": ").withStyle(ChatFormatting.GOLD).append(this.fuelGrade.getLocalizedName().withStyle(ChatFormatting.RED)));
         }
     }

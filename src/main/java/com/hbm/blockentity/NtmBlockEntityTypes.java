@@ -238,6 +238,13 @@ public class NtmBlockEntityTypes {
                             NtmBlocks.MACHINE_DIESEL.get())
                     .build(null));
 
+    public static final Supplier<BlockEntityType<MachineRTGBlockEntity>> MACHINE_RTG = BLOCK_ENTITY_TYPES.register(
+            "machine_rtg",
+            () -> BlockEntityType.Builder.of(
+                            MachineRTGBlockEntity::new,
+                            NtmBlocks.MACHINE_RTG.get())
+                    .build(null));
+
     public static final Supplier<BlockEntityType<MachineWoodBurnerBlockEntity>> MACHINE_WOOD_BURNER = BLOCK_ENTITY_TYPES.register(
             "machine_wood_burner",
             () -> BlockEntityType.Builder.of(

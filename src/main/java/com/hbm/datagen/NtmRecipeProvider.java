@@ -11,6 +11,7 @@ import com.hbm.items.NtmItems;
 import com.hbm.items.WireDenseItem;
 import com.hbm.items.component.NtmDataComponents;
 import com.hbm.items.machine.BatteryPackItem;
+import com.hbm.items.machine.RTGPelletDepletedItem.DepletedRTGMaterial;
 import com.hbm.items.machine.ZirnoxRodItem.ZirnoxType;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.core.HolderLookup;
@@ -28,6 +29,7 @@ import net.minecraft.world.level.block.Blocks;
 import net.neoforged.neoforge.common.crafting.DataComponentIngredient;
 import net.neoforged.neoforge.common.Tags;
 
+import java.util.Locale;
 import java.util.concurrent.CompletableFuture;
 import java.util.stream.Stream;
 
@@ -1747,6 +1749,7 @@ public class NtmRecipeProvider extends RecipeProvider {
     private void registerMaterialConversionRecipes(RecipeOutput recipeOutput) {
         registerMaterialBlockRecipes(recipeOutput);
         registerBilletRecipes(recipeOutput);
+        registerRTGPelletRecipes(recipeOutput);
         registerFuelAlloyRecipes(recipeOutput);
         registerPowderSmeltingRecipes(recipeOutput);
         registerTinyPowderRecipes(recipeOutput);
@@ -1877,6 +1880,50 @@ public class NtmRecipeProvider extends RecipeProvider {
         addBilletRecipe(recipeOutput, NtmItems.BILLET_URANIUM_FUEL.get(), NtmItems.NUGGET_URANIUM_FUEL.get(), NtmItems.INGOT_URANIUM_FUEL.get());
         addBilletRecipe(recipeOutput, NtmItems.BILLET_ZIRCONIUM.get(), NtmItems.NUGGET_ZIRCONIUM.get(), NtmItems.INGOT_ZIRCONIUM.get());
         addBilletRecipe(recipeOutput, NtmItems.BILLET_SILICON.get(), NtmItems.NUGGET_SILICON.get(), NtmItems.INGOT_SILICON.get());
+    }
+
+    // RTG pellets (original MineralRecipes.java:205-226; Goal 23B), all shapeless. Each pellet is three billets and an iron plate
+    // (the original's IRON.plate() ore name, NEO's plate_iron); the recipe id is the pellet's id.
+    private void registerRTGPelletRecipes(RecipeOutput recipeOutput) {
+        addRTGPelletRecipe(recipeOutput, NtmItems.PELLET_RTG.get(), NtmItems.BILLET_PU238.get(), NtmItems.BILLET_PU238.get(), NtmItems.BILLET_PU238.get()); // :205
+        addRTGPelletRecipe(recipeOutput, NtmItems.PELLET_RTG_RADIUM.get(), NtmItems.BILLET_RA226.get(), NtmItems.BILLET_RA226.get(), NtmItems.BILLET_RA226.get()); // :206
+        addRTGPelletRecipe(recipeOutput, NtmItems.PELLET_RTG_WEAK.get(), NtmItems.BILLET_U238.get(), NtmItems.BILLET_U238.get(), NtmItems.BILLET_PU238.get()); // :207
+        addRTGPelletRecipe(recipeOutput, NtmItems.PELLET_RTG_STRONTIUM.get(), NtmItems.BILLET_SR90.get(), NtmItems.BILLET_SR90.get(), NtmItems.BILLET_SR90.get()); // :208
+        addRTGPelletRecipe(recipeOutput, NtmItems.PELLET_RTG_COBALT.get(), NtmItems.BILLET_CO60.get(), NtmItems.BILLET_CO60.get(), NtmItems.BILLET_CO60.get()); // :209
+        addRTGPelletRecipe(recipeOutput, NtmItems.PELLET_RTG_ACTINIUM.get(), NtmItems.BILLET_ACTINIUM.get(), NtmItems.BILLET_ACTINIUM.get(), NtmItems.BILLET_ACTINIUM.get()); // :210
+        addRTGPelletRecipe(recipeOutput, NtmItems.PELLET_RTG_POLONIUM.get(), NtmItems.BILLET_POLONIUM.get(), NtmItems.BILLET_POLONIUM.get(), NtmItems.BILLET_POLONIUM.get()); // :211
+        addRTGPelletRecipe(recipeOutput, NtmItems.PELLET_RTG_LEAD.get(), NtmItems.BILLET_PB209.get(), NtmItems.BILLET_PB209.get(), NtmItems.BILLET_PB209.get()); // :212
+        addRTGPelletRecipe(recipeOutput, NtmItems.PELLET_RTG_GOLD.get(), NtmItems.BILLET_AU198.get(), NtmItems.BILLET_AU198.get(), NtmItems.BILLET_AU198.get()); // :213
+        addRTGPelletRecipe(recipeOutput, NtmItems.PELLET_RTG_AMERICIUM.get(), NtmItems.BILLET_AM241.get(), NtmItems.BILLET_AM241.get(), NtmItems.BILLET_AM241.get()); // :214
+
+        // :216-226, recycling a decayed pellet. The input matches pellet_rtg_depleted by its hbmsntm:meta only (not strict, like the
+        // original's meta stack); the depleted pellet's craftRemainder (ModItems.java:2645) returns the iron plate.
+        addRTGRecyclingRecipe(recipeOutput, DepletedRTGMaterial.BISMUTH, NtmItems.BILLET_BISMUTH.get(), 3); // :217
+        addRTGRecyclingRecipe(recipeOutput, DepletedRTGMaterial.LEAD, NtmItems.INGOT_LEAD.get(), 2); // :218
+        // :219; the original's ingot_mercury is registered as nugget_mercury ("Drop of Mercury", ModItems.java:2281-2282), NEO's
+        // NUGGET_MERCURY (Goal 23 decision 9 revision, ported in 23C)
+        addRTGRecyclingRecipe(recipeOutput, DepletedRTGMaterial.MERCURY, NtmItems.NUGGET_MERCURY.get(), 2);
+        addRTGRecyclingRecipe(recipeOutput, DepletedRTGMaterial.NEPTUNIUM, NtmItems.BILLET_NEPTUNIUM.get(), 3); // :220
+        addRTGRecyclingRecipe(recipeOutput, DepletedRTGMaterial.ZIRCONIUM, NtmItems.BILLET_ZIRCONIUM.get(), 3); // :221
+        // :222-226, nickel -> 2 of the first "ingotNickel" ore, only if another mod adds one: NEO has no nickel (Goal 23 decision 9).
+    }
+
+    private void addRTGPelletRecipe(RecipeOutput recipeOutput, Item pellet, Item first, Item second, Item third) {
+        String pelletName = BuiltInRegistries.ITEM.getKey(pellet).getPath();
+        ShapelessRecipeBuilder.shapeless(RecipeCategory.MISC, pellet, 1)
+                .requires(first)
+                .requires(second)
+                .requires(third)
+                .requires(NtmItems.PLATE_IRON.get())
+                .unlockedBy("has_" + BuiltInRegistries.ITEM.getKey(third).getPath(), has(third))
+                .save(recipeOutput, ResourceLocation.fromNamespaceAndPath("hbmsntm", pelletName));
+    }
+
+    private void addRTGRecyclingRecipe(RecipeOutput recipeOutput, DepletedRTGMaterial material, Item result, int count) {
+        ShapelessRecipeBuilder.shapeless(RecipeCategory.MISC, result, count)
+                .requires(DataComponentIngredient.of(false, NtmDataComponents.META, material.ordinal(), NtmItems.PELLET_RTG_DEPLETED.get()))
+                .unlockedBy("has_pellet_rtg_depleted", has(NtmItems.PELLET_RTG_DEPLETED.get()))
+                .save(recipeOutput, ResourceLocation.fromNamespaceAndPath("hbmsntm", "pellet_rtg_depleted_" + material.name().toLowerCase(Locale.US)));
     }
 
     // Fuel alloys (original MineralRecipes.java:156-178,419; Goal 22C), all shapeless. The "tiny" rows (:158,161,164,167,420) are not
