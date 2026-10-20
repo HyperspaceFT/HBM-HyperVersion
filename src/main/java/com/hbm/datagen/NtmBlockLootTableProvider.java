@@ -109,6 +109,8 @@ public class NtmBlockLootTableProvider extends BlockLootSubProvider {
         this.dropSelf(NtmBlocks.DECO_LEAD.get());
         this.dropSelf(NtmBlocks.DECO_RED_COPPER.get());
         this.dropSelf(NtmBlocks.DECO_STEEL.get());
+        this.dropSelf(NtmBlocks.DECO_RBMK.get());
+        this.dropSelf(NtmBlocks.DECO_RBMK_SMOOTH.get());
         this.dropSelf(NtmBlocks.DECO_ALUMINIUM.get());
         this.dropSelf(NtmBlocks.DECO_RUSTY_STEEL.get());
         this.dropSelf(NtmBlocks.DECO_TITANIUM.get());
@@ -272,6 +274,28 @@ public class NtmBlockLootTableProvider extends BlockLootSubProvider {
                 .withPool(this.fixedDrop(block, NtmItems.DEBRIS_METAL.get(), 6))
                 .withPool(this.fixedDrop(block, NtmItems.DEBRIS_GRAPHITE.get(), 2))
                 .withPool(this.fixedDrop(block, NtmItems.FALLOUT_PILE.get(), 4)));
+
+        // RBMK columns drop themselves like ZIRNOX (DummyableBlock drops the core's loot once); the original debris blocks have
+        // no getItemDropped override, so each drops itself (1.7.10 Block default).
+        this.dropSelf(NtmBlocks.RBMK_BLANK.get());
+        this.dropSelf(NtmBlocks.RBMK_REFLECTOR.get());
+        this.dropSelf(NtmBlocks.RBMK_ABSORBER.get());
+        this.dropSelf(NtmBlocks.RBMK_MODERATOR.get());
+        this.dropSelf(NtmBlocks.PRIBRIS.get());
+        this.dropSelf(NtmBlocks.PRIBRIS_BURNING.get());
+        this.dropSelf(NtmBlocks.PRIBRIS_RADIATING.get());
+        this.dropSelf(NtmBlocks.RBMK_ROD.get());
+        this.dropSelf(NtmBlocks.RBMK_ROD_MOD.get());
+        this.dropSelf(NtmBlocks.RBMK_CONTROL.get());
+        this.dropSelf(NtmBlocks.RBMK_CONTROL_MOD.get());
+        this.dropSelf(NtmBlocks.RBMK_CONTROL_AUTO.get());
+        this.dropSelf(NtmBlocks.RBMK_BOILER.get());
+        this.dropSelf(NtmBlocks.RBMK_HEATER.get());
+        this.dropSelf(NtmBlocks.RBMK_COOLER.get());
+        this.dropSelf(NtmBlocks.RBMK_LOADER.get());
+        this.dropSelf(NtmBlocks.RBMK_CONSOLE.get());
+        // The original corium_block is a fluid block and drops nothing.
+        this.add(NtmBlocks.CORIUM_BLOCK.get(), noDrop());
 
         this.dropSelf(NtmBlocks.RED_CABLE.get());
 

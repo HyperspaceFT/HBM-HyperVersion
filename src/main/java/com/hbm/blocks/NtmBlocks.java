@@ -1,5 +1,6 @@
 package com.hbm.blocks;
 
+import com.hbm.blockentity.NtmBlockEntityTypes;
 import com.hbm.blocks.bomb.*;
 import com.hbm.blocks.fluids.RadLiquidBlock;
 import com.hbm.blocks.fluids.VolcanicLiquidBlock;
@@ -7,6 +8,7 @@ import com.hbm.blocks.gas.*;
 import com.hbm.blocks.generic.*;
 import com.hbm.blocks.machine.*;
 import com.hbm.blocks.machine.heater.*;
+import com.hbm.blocks.machine.rbmk.*;
 import com.hbm.blocks.network.*;
 import com.hbm.fluids.NtmFluids;
 import com.hbm.items.NtmItems;
@@ -292,6 +294,9 @@ public class NtmBlocks {
     public static final DeferredBlock<Block> DECO_LEAD = register("deco_lead", () -> new Block(BlockBehaviour.Properties.of().strength(1.5F).sound(SoundType.METAL).mapColor(MapColor.METAL)));
     public static final DeferredBlock<Block> DECO_RED_COPPER = register("deco_red_copper", () -> new Block(BlockBehaviour.Properties.of().strength(1.5F).sound(SoundType.METAL).mapColor(MapColor.METAL)));
     public static final DeferredBlock<Block> DECO_STEEL = register("deco_steel", () -> new Block(BlockBehaviour.Properties.of().strength(1.5F).sound(SoundType.METAL).mapColor(MapColor.METAL)));
+    // Original ModBlocks.java:1443-1444: Material.iron, hardness 5 / resistance 100.
+    public static final DeferredBlock<Block> DECO_RBMK = register("deco_rbmk", () -> new Block(BlockBehaviour.Properties.of().strength(5.0F, 100.0F).sound(SoundType.METAL).mapColor(MapColor.METAL).requiresCorrectToolForDrops()));
+    public static final DeferredBlock<Block> DECO_RBMK_SMOOTH = register("deco_rbmk_smooth", () -> new Block(BlockBehaviour.Properties.of().strength(5.0F, 100.0F).sound(SoundType.METAL).mapColor(MapColor.METAL).requiresCorrectToolForDrops()));
     public static final DeferredBlock<Block> DECO_RUSTY_STEEL = register("deco_rusty_steel", () -> new Block(BlockBehaviour.Properties.of().strength(1.5F).sound(SoundType.METAL).mapColor(MapColor.METAL)));
     public static final DeferredBlock<Block> DECO_TITANIUM = register("deco_titanium", () -> new Block(BlockBehaviour.Properties.of().strength(1.5F).sound(SoundType.METAL).mapColor(MapColor.METAL)));
     public static final DeferredBlock<Block> DECO_TUNGSTEN = register("deco_tungsten", () -> new Block(BlockBehaviour.Properties.of().strength(1.5F).sound(SoundType.METAL).mapColor(MapColor.METAL)));
@@ -375,6 +380,35 @@ public class NtmBlocks {
     // Original ModBlocks.java:2234-2235: reactor hardness 5 / resistance 100, wreck 100 / 800.
     public static final DeferredBlock<Block> REACTOR_ZIRNOX = register("machine_zirnox", () -> new ReactorZirnoxBlock(BlockBehaviour.Properties.of().noOcclusion().strength(5.0F, 100F).sound(SoundType.METAL).mapColor(MapColor.METAL)));
     public static final DeferredBlock<Block> ZIRNOX_DESTROYED = register("zirnox_destroyed", () -> new ZirnoxDestroyedBlock(BlockBehaviour.Properties.of().noOcclusion().strength(100.0F, 800.0F).sound(SoundType.METAL).mapColor(MapColor.METAL)));
+
+    // RBMK: original ModBlocks.java:2122-2126 (passive columns, hardness 3 / resistance 30 from RBMKBase.java:52-56, Material.iron)
+    // and :2146-2148 (meltdown debris, hardness 50 / resistance 600).
+    // Fuel channels: original ModBlocks.java:2113-2114, registered before the blank (:3107-3116). RBMKRod.isOpaqueCube is false.
+    public static final DeferredBlock<Block> RBMK_ROD = register("rbmk_rod", () -> new RBMKRodBlock(BlockBehaviour.Properties.of().noOcclusion().strength(3.0F, 30.0F).sound(SoundType.METAL).mapColor(MapColor.METAL).requiresCorrectToolForDrops(), false));
+    public static final DeferredBlock<Block> RBMK_ROD_MOD = register("rbmk_rod_mod", () -> new RBMKRodBlock(BlockBehaviour.Properties.of().noOcclusion().strength(3.0F, 30.0F).sound(SoundType.METAL).mapColor(MapColor.METAL).requiresCorrectToolForDrops(), true));
+    // Control rods: original ModBlocks.java:2117-2119, registered after the fuel channels (:3111-3113). Opaque full cubes as the passive columns.
+    public static final DeferredBlock<Block> RBMK_CONTROL = register("rbmk_control", () -> new RBMKControlBlock(BlockBehaviour.Properties.of().strength(3.0F, 30.0F).sound(SoundType.METAL).mapColor(MapColor.METAL).requiresCorrectToolForDrops(), false));
+    public static final DeferredBlock<Block> RBMK_CONTROL_MOD = register("rbmk_control_mod", () -> new RBMKControlBlock(BlockBehaviour.Properties.of().strength(3.0F, 30.0F).sound(SoundType.METAL).mapColor(MapColor.METAL).requiresCorrectToolForDrops(), true));
+    public static final DeferredBlock<Block> RBMK_CONTROL_AUTO = register("rbmk_control_auto", () -> new RBMKControlAutoBlock(BlockBehaviour.Properties.of().strength(3.0F, 30.0F).sound(SoundType.METAL).mapColor(MapColor.METAL).requiresCorrectToolForDrops()));
+    public static final DeferredBlock<Block> RBMK_BLANK = register("rbmk_blank", () -> new RBMKPassiveBlock(BlockBehaviour.Properties.of().strength(3.0F, 30.0F).sound(SoundType.METAL).mapColor(MapColor.METAL).requiresCorrectToolForDrops(), NtmBlockEntityTypes.RBMK_BLANK));
+    // Steam channel, cooler and fluid heater: original ModBlocks.java:2123, :2129-2130, registered at :3117 and :3123-3124. Opaque full cubes as the passive columns.
+    public static final DeferredBlock<Block> RBMK_BOILER = register("rbmk_boiler", () -> new RBMKBoilerBlock(BlockBehaviour.Properties.of().strength(3.0F, 30.0F).sound(SoundType.METAL).mapColor(MapColor.METAL).requiresCorrectToolForDrops()));
+    public static final DeferredBlock<Block> RBMK_REFLECTOR = register("rbmk_reflector", () -> new RBMKPassiveBlock(BlockBehaviour.Properties.of().strength(3.0F, 30.0F).sound(SoundType.METAL).mapColor(MapColor.METAL).requiresCorrectToolForDrops(), NtmBlockEntityTypes.RBMK_REFLECTOR));
+    public static final DeferredBlock<Block> RBMK_ABSORBER = register("rbmk_absorber", () -> new RBMKPassiveBlock(BlockBehaviour.Properties.of().strength(3.0F, 30.0F).sound(SoundType.METAL).mapColor(MapColor.METAL).requiresCorrectToolForDrops(), NtmBlockEntityTypes.RBMK_ABSORBER));
+    public static final DeferredBlock<Block> RBMK_MODERATOR = register("rbmk_moderator", () -> new RBMKPassiveBlock(BlockBehaviour.Properties.of().strength(3.0F, 30.0F).sound(SoundType.METAL).mapColor(MapColor.METAL).requiresCorrectToolForDrops(), NtmBlockEntityTypes.RBMK_MODERATOR));
+    public static final DeferredBlock<Block> RBMK_COOLER = register("rbmk_cooler", () -> new RBMKCoolerBlock(BlockBehaviour.Properties.of().strength(3.0F, 30.0F).sound(SoundType.METAL).mapColor(MapColor.METAL).requiresCorrectToolForDrops()));
+    public static final DeferredBlock<Block> RBMK_HEATER = register("rbmk_heater", () -> new RBMKHeaterBlock(BlockBehaviour.Properties.of().strength(3.0F, 30.0F).sound(SoundType.METAL).mapColor(MapColor.METAL).requiresCorrectToolForDrops()));
+    // Steam connector: original ModBlocks.java:2143 (RBMKLoader, Material.iron, hardness 50 / resistance 60), registered at :3137.
+    public static final DeferredBlock<Block> RBMK_LOADER = register("rbmk_loader", () -> new RBMKLoaderBlock(BlockBehaviour.Properties.of().strength(50.0F, 60.0F).sound(SoundType.METAL).mapColor(MapColor.METAL).requiresCorrectToolForDrops()));
+    // Console: original ModBlocks.java:2131 (RBMKConsole, Material.iron, hardness 3 / resistance 30), registered at :3125.
+    public static final DeferredBlock<Block> RBMK_CONSOLE = register("rbmk_console", () -> new RBMKConsoleBlock(BlockBehaviour.Properties.of().noOcclusion().strength(3.0F, 30.0F).sound(SoundType.METAL).mapColor(MapColor.METAL).requiresCorrectToolForDrops()));
+    public static final DeferredBlock<Block> PRIBRIS = register("pribris", () -> new RBMKDebrisBlock(BlockBehaviour.Properties.of().noOcclusion().strength(50.0F, 600.0F).sound(SoundType.METAL).mapColor(MapColor.METAL).requiresCorrectToolForDrops()));
+    public static final DeferredBlock<Block> PRIBRIS_BURNING = register("pribris_burning", () -> new RBMKDebrisBurningBlock(BlockBehaviour.Properties.of().noOcclusion().strength(50.0F, 600.0F).sound(SoundType.METAL).mapColor(MapColor.METAL).requiresCorrectToolForDrops()));
+    public static final DeferredBlock<Block> PRIBRIS_RADIATING = register("pribris_radiating", () -> new RBMKDebrisRadiatingBlock(BlockBehaviour.Properties.of().noOcclusion().strength(50.0F, 600.0F).sound(SoundType.METAL).mapColor(MapColor.METAL).requiresCorrectToolForDrops()));
+    // Original corium_block (ModBlocks.java:2337, CoriumFinite): material fluidcorium (:1185, brown, immovable), resistance 500,
+    // hardness 100 as block_corium. Light 10 is the corium fluid's luminosity (:2335) at the block's quanta meta 5 (unconfirmed: the Forge fluid source is
+    // not available offline). A static solid block in NEO (GOAL24 decision 15).
+    public static final DeferredBlock<Block> CORIUM_BLOCK = register("corium_block", () -> new CoriumBlock(BlockBehaviour.Properties.of().strength(100.0F, 500.0F).mapColor(MapColor.COLOR_BROWN).lightLevel(state -> 10).pushReaction(PushReaction.BLOCK).requiresCorrectToolForDrops()));
 
     public static final DeferredBlock<Block> RED_CABLE = register("red_cable", () -> new CableBlock(BlockBehaviour.Properties.of().noOcclusion().strength(1.5F, 10.0F).sound(SoundType.METAL).mapColor(MapColor.COLOR_BLACK)));
 

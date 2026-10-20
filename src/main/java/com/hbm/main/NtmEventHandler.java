@@ -5,6 +5,8 @@ import com.hbm.blockentity.machine.MachineRadarBlockEntity;
 import com.hbm.blockentity.network.RTTYSystem;
 import com.hbm.config.NtmConfig;
 import com.hbm.extprop.HbmPlayerAttachments;
+import com.hbm.handler.neutron.NeutronHandler;
+import com.hbm.handler.neutron.NeutronNodeWorld;
 import com.hbm.network.toclient.InformPlayer;
 import com.hbm.saveddata.satellite.SatelliteDetector;
 import com.hbm.uninos.UniNodespace;
@@ -56,6 +58,8 @@ public class NtmEventHandler {
         MachineRadarBlockEntity.updateSystem(event.getServer());
         // Meteor strike handling
         MeteorStrikeSystem.update(event.getServer());
+        // RBMK neutron streams of the last tick (original NeutronHandler on ServerTickEvent START)
+        NeutronHandler.onServerTick(event.getServer());
     }
 
     @SubscribeEvent
@@ -69,6 +73,8 @@ public class NtmEventHandler {
         if(event.getLevel() instanceof Level level) {
             UniNodespace.removeLevel(level);
             BlockEntityAccessCache.clearLevel(level);
+            // Neutron streams and nodes of the level (original ModEventHandler.onUnload)
+            NeutronNodeWorld.removeWorld(level);
         }
     }
 
@@ -76,5 +82,7 @@ public class NtmEventHandler {
     public static void onServerStopped(ServerStoppedEvent event) {
         for(Level level : new ArrayList<>(UniNodespace.levels.keySet())) UniNodespace.removeLevel(level);
         BlockEntityAccessCache.cache.clear();
+        // NEO-only: the original never clears the neutron cache on stop; an integrated server would keep its stale levels
+        NeutronNodeWorld.removeAllWorlds();
     }
 }

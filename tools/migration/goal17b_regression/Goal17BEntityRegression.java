@@ -47,7 +47,7 @@ public class Goal17BEntityRegression extends Goal17BMachineRegression {
             check(b.blood.getFill()==24000&&b.showBlood,"post-hit predicate includes already dead hurt false, cap24000");
             for(int mode=0;mode<4;mode++){
                 scenario();l=fresh();b=turbine(l,0,f,3,mode==2?Fluids.WATER:Fluids.KEROSENE,mode==1?0:10);living=at(new LivingEntity(),f,3.6);l.testEntities.add(living);
-                if(mode==0)l.powered.add(b.getConPos()[0].makeCompat());if(mode==3)l.isClientSide=true;step(l,b);
+                if(mode==0)l.powered.add(MachineTurbofanBlockEntity.getPortProxies(b.getBlockPos(),f)[0].makeCompat());if(mode==3)l.isClientSide=true;step(l,b);
                 check(living.damageAmounts.isEmpty()&&living.slowCalls==0&&living.getDeltaMovement().equals(Vec3.ZERO)&&b.blood.getFill()==0,"stopped/empty/nonAERO/client no hazard mode"+mode);
             }
         }

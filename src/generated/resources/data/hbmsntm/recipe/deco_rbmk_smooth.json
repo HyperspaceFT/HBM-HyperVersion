@@ -1,0 +1,16 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "building",
+  "key": {
+    "R": {
+      "item": "hbmsntm:deco_rbmk"
+    }
+  },
+  "pattern": [
+    "R"
+  ],
+  "result": {
+    "count": 1,
+    "id": "hbmsntm:deco_rbmk_smooth"
+  }
+}

@@ -34,7 +34,9 @@ public class NtmGeometry implements IUnbakedGeometry<NtmGeometry> {
         CABLE,
         DET_CORD,
         PIPE,
-        ANVIL
+        ANVIL,
+        RBMK_DEBRIS,
+        RBMK_ELEMENT
     }
 
     private final BakedModelType type;
@@ -60,6 +62,13 @@ public class NtmGeometry implements IUnbakedGeometry<NtmGeometry> {
             case DET_CORD -> new DetCordBakedModel(new HFRWavefrontObject("models/obj/block/cable_neo.obj"), textureSprite);
             case PIPE -> new PipeNeoBakedModel(new HFRWavefrontObject("models/obj/block/pipe_neo.obj"), textureSprite, overlaySprite);
             case ANVIL -> new AnvilBakedModel(new HFRWavefrontObject("models/obj/block/anvil.obj"), textureSprite);
+            case RBMK_DEBRIS -> new SimpleWavefrontBakedModel(new HFRWavefrontObject("models/obj/rbmk/debris.obj"), textureSprite);
+            // The fuel channel body; "fuel" is the rod texture of its item form. The display transforms come from the model's parent.
+            // rbmk_element.obj mixes triangles and quads inside its "Cap" group, so it is read in mixed mode as the original
+            // ResourceManager.java:1675 does; the baker emits each face by its own vertex count (Goal 24 acceptance D1).
+            case RBMK_ELEMENT -> new RBMKElementBakedModel(new HFRWavefrontObject("models/obj/rbmk/rbmk_element.obj", true), new HFRWavefrontObject("models/obj/rbmk/rbmk_element_rods.obj"),
+                    spriteGetter.apply(context.getMaterial("side")), spriteGetter.apply(context.getMaterial("top")), spriteGetter.apply(context.getMaterial("inner")),
+                    spriteGetter.apply(context.getMaterial("fuel")), context.getTransforms());
         };
     }
 }

@@ -105,7 +105,9 @@ public abstract class LockableBaseBlockEntity extends LoadedBaseBlockEntity {
         ItemStack stack = player.getMainHandItem();
         double chanceOfSuccess = this.lockMod * 100;
 
-        if (stack.is(NtmItems.PIN.get()) && (player.getInventory().contains(new ItemStack(NtmItems.SCREWDRIVER.get())) || player.getInventory().contains(new ItemStack(NtmItems.SCREWDRIVER_DESH.get())))) {
+        // Item identity like the original inventory.hasItem (TileEntityLockableBase.java:112): the screwdriver has durability,
+        // so a stack comparison with components would miss a used one. Unlike hasItem this also scans armour and offhand (NEO-only).
+        if (stack.is(NtmItems.PIN.get()) && player.getInventory().contains(s -> s.is(NtmItems.SCREWDRIVER.get()) || s.is(NtmItems.SCREWDRIVER_DESH.get()))) {
 
             stack.shrink(1);
             canPick = true;

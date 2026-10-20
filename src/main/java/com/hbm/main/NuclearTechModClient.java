@@ -26,6 +26,12 @@ import com.hbm.inventory.screens.MachineCrystallizerScreen;
 import com.hbm.inventory.screens.MachineGasCentrifugeScreen;
 import com.hbm.inventory.screens.MachineWasteDrumScreen;
 import com.hbm.inventory.screens.MachinePUREXScreen;
+import com.hbm.inventory.screens.RBMKRodScreen;
+import com.hbm.inventory.screens.RBMKControlScreen;
+import com.hbm.inventory.screens.RBMKControlAutoScreen;
+import com.hbm.inventory.screens.RBMKBoilerScreen;
+import com.hbm.inventory.screens.RBMKHeaterScreen;
+import com.hbm.inventory.screens.RBMKConsoleScreen;
 import com.hbm.inventory.MetaHelper;
 import com.hbm.inventory.fluid.FluidType;
 import com.hbm.inventory.fluid.Fluids;
@@ -34,6 +40,7 @@ import com.hbm.items.*;
 import com.hbm.items.component.NtmDataComponents;
 import com.hbm.items.machine.BlueprintsItem;
 import com.hbm.items.machine.DepletedFuelItem;
+import com.hbm.items.machine.RBMKPelletItem;
 import com.hbm.items.special.PolaroidItem;
 import com.hbm.items.tools.ColtanCompassItem;
 import com.hbm.items.tools.GeigerCounterItem;
@@ -163,6 +170,12 @@ public class NuclearTechModClient {
         event.register(NtmMenuTypes.MACHINE_GAS_CENTRIFUGE.get(), MachineGasCentrifugeScreen::new);
         event.register(NtmMenuTypes.MACHINE_WASTE_DRUM.get(), MachineWasteDrumScreen::new);
         event.register(NtmMenuTypes.MACHINE_PUREX.get(), MachinePUREXScreen::new);
+        event.register(NtmMenuTypes.RBMK_ROD.get(), RBMKRodScreen::new);
+        event.register(NtmMenuTypes.RBMK_CONTROL.get(), RBMKControlScreen::new);
+        event.register(NtmMenuTypes.RBMK_CONTROL_AUTO.get(), RBMKControlAutoScreen::new);
+        event.register(NtmMenuTypes.RBMK_BOILER.get(), RBMKBoilerScreen::new);
+        event.register(NtmMenuTypes.RBMK_HEATER.get(), RBMKHeaterScreen::new);
+        event.register(NtmMenuTypes.RBMK_CONSOLE.get(), RBMKConsoleScreen::new);
     }
 
     @SubscribeEvent
@@ -185,6 +198,14 @@ public class NuclearTechModClient {
 
                 if(item instanceof EnumMultiItem multiItem) {
                     if(multiItem.multiTexture) ItemProperties.register(item, NuclearTechMod.withDefaultNamespace("item_meta"), (itemStack, level, livingEntity, seed) -> MetaHelper.getMeta(itemStack));
+                }
+                // RBMK pellets pick their depletion/xenon overlay model by META (RBMKPelletItem.registerItemModel). The tier follows rectify(META)
+                // as in the original render passes (ItemRBMKPellet.java:102-111); pellets without xenon models fall back to their META % 5 look.
+                if(item instanceof RBMKPelletItem pellet) {
+                    ItemProperties.register(item, NuclearTechMod.withDefaultNamespace("item_meta"), (itemStack, level, livingEntity, seed) -> {
+                        int meta = RBMKPelletItem.rectify(MetaHelper.getMeta(itemStack));
+                        return pellet.isXenonEnabled() ? meta : meta % 5;
+                    });
                 }
             });
             NtmBlocks.BLOCKS.getEntries().forEach(holder -> {
@@ -1011,6 +1032,10 @@ public class NuclearTechModClient {
                     player.hurtDuration = 15;
                     player.hurtDir = 0.0F;
                 }
+            }
+
+            if ("rbmksteam".equals(type)) {
+                ParticleEngineNT.INSTANCE.add(new RBMKSteamParticle(level, x, y, z));
             }
 
             if ("rbmkmush".equals(type)) {

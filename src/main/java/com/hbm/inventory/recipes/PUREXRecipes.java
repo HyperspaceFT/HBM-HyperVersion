@@ -11,10 +11,9 @@ import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 
 /**
- * Original PUREXRecipes.java (59 rows, 2 of them only with a naquadria nugget in the ore dictionary). The defaults register the 11
- * rows NEO content can close. Not registered, each waiting for its system:
+ * Original PUREXRecipes.java (59 rows, 2 of them only with a naquadria nugget in the ore dictionary). The defaults register the 12
+ * rows NEO content can close, purex.uzh (:44-48, RBMK uzh billet) since Goal24B. Not registered, each waiting for its system:
  * <ul>
- *     <li>:44-48 purex.uzh (RBMK uzh billet)</li>
  *     <li>:50-60 purex.flashgold, purex.flashlead (balefire gold and flashlead billets)</li>
  *     <li>:62-87 purex.pilepu239, pilergp, pilethorium, pilewaste (Chicago Pile rods)</li>
  *     <li>:171-234 purex.platemox, platepu238be, platepu239, platera226be, platesa326, plateu233, plateu235 (research reactor plate fuel)</li>
@@ -146,6 +145,14 @@ public class PUREXRecipes extends GenericRecipes<GenericRecipe> {
                         new ItemStack(NtmItems.NUGGET_TECHNETIUM.get(), 3),
                         new ItemStack(NtmItems.NUCLEAR_WASTE_TINY.get(), 4))
                 .setIconToFirstIngredient());
+
+        // RBMK uzh billet (original :44-48, Goal24B); the original's OreDictStack(ZR.billet(), 3) is NEO's zirconium billet item.
+        // Like the original it has no name wrapper or icon: the name is the display name of the first output.
+        this.register(new GenericRecipe("purex.uzh").setup(600, 1_000)
+                .inputItems(new ComparableStack(NtmItems.BILLET_URANIUM_FUEL.get()),
+                        new ComparableStack(NtmItems.BILLET_ZIRCONIUM.get(), 3))
+                .inputFluids(new FluidStack(Fluids.NITRIC_ACID, 1_000), new FluidStack(Fluids.HYDROGEN, 4_000))
+                .outputItems(new ItemStack(NtmItems.BILLET_UZH.get(), 4)));
     }
 
     /**

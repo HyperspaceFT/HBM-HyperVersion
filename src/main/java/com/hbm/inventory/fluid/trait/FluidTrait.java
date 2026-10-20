@@ -23,8 +23,6 @@ public class FluidTrait {
         //complex traits with values
         registerTrait("corrosive", FT_Corrosive.class);
         registerTrait("flammable", FT_Flammable.class);
-        registerTrait("heatable", FT_Heatable.class);
-        registerTrait("coolable", FT_Coolable.class);
         registerTrait("combustible", FT_Combustible.class);
         registerTrait("polluting", FT_Polluting.class);
         registerTrait("heatable", FT_Heatable.class);

@@ -1,0 +1,32 @@
+{
+  "parent": "minecraft:recipes/root",
+  "criteria": {
+    "has_tank_steel": {
+      "conditions": {
+        "items": [
+          {
+            "items": "hbmsntm:tank_steel"
+          }
+        ]
+      },
+      "trigger": "minecraft:inventory_changed"
+    },
+    "has_the_recipe": {
+      "conditions": {
+        "recipe": "hbmsntm:rbmk_loader"
+      },
+      "trigger": "minecraft:recipe_unlocked"
+    }
+  },
+  "requirements": [
+    [
+      "has_the_recipe",
+      "has_tank_steel"
+    ]
+  ],
+  "rewards": {
+    "recipes": [
+      "hbmsntm:rbmk_loader"
+    ]
+  }
+}

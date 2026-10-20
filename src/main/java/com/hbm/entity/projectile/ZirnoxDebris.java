@@ -1,5 +1,6 @@
 package com.hbm.entity.projectile;
 
+import com.hbm.blockentity.machine.rbmk.RBMKDials;
 import com.hbm.entity.NtmEntityTypes;
 import com.hbm.items.NtmItems;
 import com.hbm.lib.ModEffect;
@@ -27,10 +28,6 @@ import java.util.function.Predicate;
 
 /** Wreckage flung out of a melting ZIRNOX reactor. */
 public class ZirnoxDebris extends DebrisBase {
-
-    // The original reads RBMKDials.dialEnablePermaScrap, which defaults to true (RBMKDials.java:25). The RBMK dial system is
-    // deferred in NEO, so debris never despawns, as with the original's default; there is no config for it.
-    private static final boolean PERMA_SCRAP = true;
 
     public ZirnoxDebris(EntityType<? extends ZirnoxDebris> type, Level level) {
         super(type, level);
@@ -176,7 +173,9 @@ public class ZirnoxDebris extends DebrisBase {
                 }
             }
 
-            if(!PERMA_SCRAP && this.tickCount > this.getLifetime() + this.getId() % 50) this.discard();
+            // The original reads RBMKDials.dialEnablePermaScrap (RBMKDials.java:25), default true; NEO reads the same dial from the
+            // "rbmk" config section, so by default debris keeps the original's behaviour of never despawning.
+            if(!RBMKDials.getPermaScrap() && this.tickCount > this.getLifetime() + this.getId() % 50) this.discard();
         }
     }
 

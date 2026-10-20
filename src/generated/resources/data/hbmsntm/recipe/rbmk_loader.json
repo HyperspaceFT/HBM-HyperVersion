@@ -1,0 +1,29 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "key": {
+    "B": {
+      "item": "hbmsntm:tank_steel"
+    },
+    "C": [
+      {
+        "item": "hbmsntm:ingot_copper"
+      },
+      {
+        "item": "minecraft:copper_ingot"
+      }
+    ],
+    "S": {
+      "tag": "c:plates/steel"
+    }
+  },
+  "pattern": [
+    "SCS",
+    "CBC",
+    "SCS"
+  ],
+  "result": {
+    "count": 1,
+    "id": "hbmsntm:rbmk_loader"
+  }
+}

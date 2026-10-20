@@ -1,7 +1,9 @@
 package com.hbm.items;
 
 import api.hbm.block.IToolable.ToolType;
+import com.hbm.blockentity.machine.rbmk.IRBMKFluxReceiver.NType;
 import com.hbm.blocks.NtmBlocks;
+import com.hbm.blocks.machine.rbmk.RBMKBaseBlock.LidType;
 import com.hbm.handler.ability.IToolAreaAbility;
 import com.hbm.handler.ability.IToolHarvestAbility;
 import com.hbm.handler.ability.IWeaponAbility;
@@ -18,6 +20,8 @@ import com.hbm.items.food.ConserveItem;
 import com.hbm.items.food.DrinkItem;
 import com.hbm.items.food.EnergyItem;
 import com.hbm.items.machine.*;
+import com.hbm.items.machine.RBMKRodItem.EnumBurnFunc;
+import com.hbm.items.machine.RBMKRodItem.EnumDepleteFunc;
 import com.hbm.items.machine.StampItem.StampType;
 import com.hbm.items.machine.RTGPelletDepletedItem.DepletedRTGMaterial;
 import com.hbm.items.special.*;
@@ -601,8 +605,9 @@ public class NtmItems {
     // Machine Items
     //by using these in crafting table recipes, i'm running the risk of making my recipes too greg-ian (which i don't like)
     //in the event that i forget about the meaning of the word "sparingly", please throw a brick at my head
-    public static final DeferredItem<Item> SCREWDRIVER = ITEMS.register("screwdriver", () -> new Item(new Item.Properties().stacksTo(8)));
-    public static final DeferredItem<Item> SCREWDRIVER_DESH = ITEMS.register("screwdriver_desh", () -> new Item(new Item.Properties().stacksTo(8)));
+    // Original ModItems.java:3709-3710: ItemTooling(SCREWDRIVER, 100) and (SCREWDRIVER, 0), the desh one unbreakable.
+    public static final DeferredItem<Item> SCREWDRIVER = ITEMS.register("screwdriver", () -> new ToolingItem(ToolType.SCREWDRIVER, new Item.Properties().durability(100)));
+    public static final DeferredItem<Item> SCREWDRIVER_DESH = ITEMS.register("screwdriver_desh", () -> new ToolingItem(ToolType.SCREWDRIVER, new Item.Properties()));
     public static final DeferredItem<Item> BLOWTORCH = ITEMS.register("blowtorch", () -> new BlowtorchItem(new Item.Properties().stacksTo(1)));
     public static final DeferredItem<Item> ACETYLENE_TORCH = ITEMS.register("acetylene_torch", () -> new BlowtorchItem(new Item.Properties().stacksTo(1)));
     public static final DeferredItem<Item> BLADES_STEEL = ITEMS.register("blades_steel", () -> new Item(new Item.Properties().stacksTo(1).durability(256)));
@@ -667,15 +672,314 @@ public class NtmItems {
     public static final DeferredItem<Item> WASTE_SCHRABIDIUM = ITEMS.register("waste_schrabidium", () -> new DepletedFuelItem(new Item.Properties()));
     public static final DeferredItem<Item> WASTE_ZFB_MOX = ITEMS.register("waste_zfb_mox", () -> new DepletedFuelItem(new Item.Properties()));
 
-    // ZIRNOX wreck drops: original ModItems.java:1091-1097 (debris_fuel deferred with RBMK) and :461 (item `fallout`; the NEO id is
-    // fallout_pile because hbmsntm:fallout is the fallout-layer BlockItem registered by NtmBlocks.register, NtmBlocks.java:255)
+    // ZIRNOX and RBMK wreck drops: original ModItems.java:1091-1097 (debris_fuel arrived with the RBMK core, Goal24A) and :461 (item
+    // `fallout`; the NEO id is fallout_pile because hbmsntm:fallout is the fallout-layer BlockItem registered by NtmBlocks.register,
+    // NtmBlocks.java:255)
     public static final DeferredItem<Item> DEBRIS_METAL = ITEMS.register("debris_metal", () -> new Item(new Item.Properties()));
     public static final DeferredItem<Item> DEBRIS_GRAPHITE = ITEMS.register("debris_graphite", () -> new Item(new Item.Properties()));
     public static final DeferredItem<Item> DEBRIS_CONCRETE = ITEMS.register("debris_concrete", () -> new Item(new Item.Properties()));
     public static final DeferredItem<Item> DEBRIS_EXCHANGER = ITEMS.register("debris_exchanger", () -> new Item(new Item.Properties()));
     public static final DeferredItem<Item> DEBRIS_SHRAPNEL = ITEMS.register("debris_shrapnel", () -> new Item(new Item.Properties()));
     public static final DeferredItem<Item> DEBRIS_ELEMENT = ITEMS.register("debris_element", () -> new Item(new Item.Properties()));
+    public static final DeferredItem<Item> DEBRIS_FUEL = ITEMS.register("debris_fuel", () -> new Item(new Item.Properties()));
     public static final DeferredItem<Item> FALLOUT_PILE = ITEMS.register("fallout_pile", () -> new Item(new Item.Properties()));
+
+    // RBMK column lids (original ModItems.java:3025-3026)
+    public static final DeferredItem<Item> RBMK_LID = ITEMS.register("rbmk_lid", () -> new RBMKLidItem(new Item.Properties(), LidType.STANDARD));
+    public static final DeferredItem<Item> RBMK_LID_GLASS = ITEMS.register("rbmk_lid_glass", () -> new RBMKLidItem(new Item.Properties(), LidType.GLASS));
+
+    // RBMK fuel (original ModItems.java:3028-3058 pellets, :3076 empty rod, :3077-3317 rods; rbmk_fuel_drx and rbmk_fuel_test are not migrated, GOAL24 decision 5)
+    // The pellets and the empty rod are registered before the rods, whose suppliers resolve them.
+    public static final DeferredItem<Item> RBMK_PELLET_UEU = ITEMS.register("rbmk_pellet_ueu", () -> new RBMKPelletItem(new Item.Properties())); // :3028
+    public static final DeferredItem<Item> RBMK_PELLET_MEU = ITEMS.register("rbmk_pellet_meu", () -> new RBMKPelletItem(new Item.Properties())); // :3029
+    public static final DeferredItem<Item> RBMK_PELLET_HEU233 = ITEMS.register("rbmk_pellet_heu233", () -> new RBMKPelletItem(new Item.Properties())); // :3030
+    public static final DeferredItem<Item> RBMK_PELLET_HEU235 = ITEMS.register("rbmk_pellet_heu235", () -> new RBMKPelletItem(new Item.Properties())); // :3031
+    public static final DeferredItem<Item> RBMK_PELLET_UZH = ITEMS.register("rbmk_pellet_uzh", () -> new RBMKPelletItem(new Item.Properties())); // :3032
+    public static final DeferredItem<Item> RBMK_PELLET_THMEU = ITEMS.register("rbmk_pellet_thmeu", () -> new RBMKPelletItem(new Item.Properties())); // :3033
+    public static final DeferredItem<Item> RBMK_PELLET_LEP = ITEMS.register("rbmk_pellet_lep", () -> new RBMKPelletItem(new Item.Properties())); // :3034
+    public static final DeferredItem<Item> RBMK_PELLET_MEP = ITEMS.register("rbmk_pellet_mep", () -> new RBMKPelletItem(new Item.Properties())); // :3035
+    public static final DeferredItem<Item> RBMK_PELLET_HEP239 = ITEMS.register("rbmk_pellet_hep239", () -> new RBMKPelletItem(new Item.Properties())); // :3036
+    public static final DeferredItem<Item> RBMK_PELLET_HEP241 = ITEMS.register("rbmk_pellet_hep241", () -> new RBMKPelletItem(new Item.Properties())); // :3037
+    public static final DeferredItem<Item> RBMK_PELLET_LEA = ITEMS.register("rbmk_pellet_lea", () -> new RBMKPelletItem(new Item.Properties())); // :3038
+    public static final DeferredItem<Item> RBMK_PELLET_MEA = ITEMS.register("rbmk_pellet_mea", () -> new RBMKPelletItem(new Item.Properties())); // :3039
+    public static final DeferredItem<Item> RBMK_PELLET_HEA241 = ITEMS.register("rbmk_pellet_hea241", () -> new RBMKPelletItem(new Item.Properties())); // :3040
+    public static final DeferredItem<Item> RBMK_PELLET_HEA242 = ITEMS.register("rbmk_pellet_hea242", () -> new RBMKPelletItem(new Item.Properties())); // :3041
+    public static final DeferredItem<Item> RBMK_PELLET_MEN = ITEMS.register("rbmk_pellet_men", () -> new RBMKPelletItem(new Item.Properties())); // :3042
+    public static final DeferredItem<Item> RBMK_PELLET_HEN = ITEMS.register("rbmk_pellet_hen", () -> new RBMKPelletItem(new Item.Properties())); // :3043
+    public static final DeferredItem<Item> RBMK_PELLET_MOX = ITEMS.register("rbmk_pellet_mox", () -> new RBMKPelletItem(new Item.Properties())); // :3044
+    public static final DeferredItem<Item> RBMK_PELLET_LES = ITEMS.register("rbmk_pellet_les", () -> new RBMKPelletItem(new Item.Properties())); // :3045
+    public static final DeferredItem<Item> RBMK_PELLET_MES = ITEMS.register("rbmk_pellet_mes", () -> new RBMKPelletItem(new Item.Properties())); // :3046
+    public static final DeferredItem<Item> RBMK_PELLET_HES = ITEMS.register("rbmk_pellet_hes", () -> new RBMKPelletItem(new Item.Properties())); // :3047
+    public static final DeferredItem<Item> RBMK_PELLET_LEAUS = ITEMS.register("rbmk_pellet_leaus", () -> new RBMKPelletItem(new Item.Properties())); // :3048
+    public static final DeferredItem<Item> RBMK_PELLET_HEAUS = ITEMS.register("rbmk_pellet_heaus", () -> new RBMKPelletItem(new Item.Properties())); // :3049
+    public static final DeferredItem<Item> RBMK_PELLET_PO210BE = ITEMS.register("rbmk_pellet_po210be", () -> new RBMKPelletItem(new Item.Properties()).disableXenon()); // :3050
+    public static final DeferredItem<Item> RBMK_PELLET_RA226BE = ITEMS.register("rbmk_pellet_ra226be", () -> new RBMKPelletItem(new Item.Properties()).disableXenon()); // :3051
+    public static final DeferredItem<Item> RBMK_PELLET_PU238BE = ITEMS.register("rbmk_pellet_pu238be", () -> new RBMKPelletItem(new Item.Properties())); // :3052
+    public static final DeferredItem<Item> RBMK_PELLET_BALEFIRE_GOLD = ITEMS.register("rbmk_pellet_balefire_gold", () -> new RBMKPelletItem(new Item.Properties()).disableXenon()); // :3053
+    public static final DeferredItem<Item> RBMK_PELLET_FLASHLEAD = ITEMS.register("rbmk_pellet_flashlead", () -> new RBMKPelletItem(new Item.Properties()).disableXenon()); // :3054
+    public static final DeferredItem<Item> RBMK_PELLET_BALEFIRE = ITEMS.register("rbmk_pellet_balefire", () -> new RBMKPelletItem(new Item.Properties()).disableXenon()); // :3055
+    public static final DeferredItem<Item> RBMK_PELLET_ZFB_BISMUTH = ITEMS.register("rbmk_pellet_zfb_bismuth", () -> new RBMKPelletItem(new Item.Properties())); // :3056
+    public static final DeferredItem<Item> RBMK_PELLET_ZFB_PU241 = ITEMS.register("rbmk_pellet_zfb_pu241", () -> new RBMKPelletItem(new Item.Properties())); // :3057
+    public static final DeferredItem<Item> RBMK_PELLET_ZFB_AM_MIX = ITEMS.register("rbmk_pellet_zfb_am_mix", () -> new RBMKPelletItem(new Item.Properties())); // :3058
+
+    // Original ModItems.java:3061-3073 (tintDRX belongs to the deferred DRX rod)
+    private static final int tintUranium = 0x868D82;
+    private static final int tintNeptunium = 0x757E73;
+    private static final int tintPlutonium = 0x656E6B;
+    private static final int tintAmericium = 0xA88A8F;
+    private static final int tintThorium = 0x665448;
+    private static final int tintZirconium = 0xAAA36A;
+    private static final int tintSchrabidium = 0x2D9A94;
+    private static final int tintPolonium = 0x563A26;
+    private static final int tintRadium = 0xB3B6AD;
+    private static final int tintAustralium = 0xFFEE00;
+    private static final int tintFlashgold = 0xDC9613;
+    private static final int tintFlashlead = 0x7B7B87;
+    private static final int tintBalefire = 0xB2FF1B;
+
+    public static final DeferredItem<Item> RBMK_FUEL_EMPTY = ITEMS.register("rbmk_fuel_empty", () -> new Item(new Item.Properties())); // :3076
+    public static final DeferredItem<Item> RBMK_FUEL_UEU = ITEMS.register("rbmk_fuel_ueu", () -> new RBMKRodItem(rbmkRodProperties(), rbmkPellet(RBMK_PELLET_UEU))
+            .setYield(100_000_000D)
+            .setStats(15)
+            .setFunction(EnumBurnFunc.LOG_TEN)
+            .setDepletionFunction(EnumDepleteFunc.RAISING_SLOPE)
+            .setHeat(0.65) //0.5 is too much of a nerf in heat; pu239 buildup justifies it being on par with MEU ig
+            .setMeltingPoint(2865)
+            .setTint(tintUranium)); // :3077-3084
+    public static final DeferredItem<Item> RBMK_FUEL_MEU = ITEMS.register("rbmk_fuel_meu", () -> new RBMKRodItem(rbmkRodProperties(), rbmkPellet(RBMK_PELLET_MEU))
+            .setYield(100_000_000D)
+            .setStats(20)
+            .setFunction(EnumBurnFunc.LOG_TEN)
+            .setDepletionFunction(EnumDepleteFunc.RAISING_SLOPE)
+            .setHeat(0.65) //0.75 was a bit too much...
+            .setMeltingPoint(2865)
+            .setTint(tintUranium)); // :3085-3092
+    public static final DeferredItem<Item> RBMK_FUEL_HEU233 = ITEMS.register("rbmk_fuel_heu233", () -> new RBMKRodItem(rbmkRodProperties(), rbmkPellet(RBMK_PELLET_HEU233))
+            .setYield(100_000_000D)
+            .setStats(27.5D)
+            .setFunction(EnumBurnFunc.LINEAR)
+            .setHeat(1.25D)
+            .setMeltingPoint(2865)
+            .setTint(tintUranium)); // :3093-3099
+    public static final DeferredItem<Item> RBMK_FUEL_HEU235 = ITEMS.register("rbmk_fuel_heu235", () -> new RBMKRodItem(rbmkRodProperties(), rbmkPellet(RBMK_PELLET_HEU235))
+            .setYield(100_000_000D)
+            .setStats(50) //Consistency with HEN; its critical mass is too high to justify a linear function
+            .setFunction(EnumBurnFunc.SQUARE_ROOT)
+            .setMeltingPoint(2865)
+            .setTint(tintUranium)); // :3100-3105
+    public static final DeferredItem<Item> RBMK_FUEL_UZH = ITEMS.register("rbmk_fuel_uzh", () -> new RBMKRodItem(rbmkRodProperties(), rbmkPellet(RBMK_PELLET_UZH))
+            .setYield(50_000_000D)
+            .setStats(30)
+            .setFunction(EnumBurnFunc.LOG_TEN)
+            .setDepletionFunction(EnumDepleteFunc.GENTLE_SLOPE)
+            .setHeat(0.75)
+            .setHeatCoeff(1_000D, 500D)
+            .setDiffusion(0.1D)
+            .setMeltingPoint(1845)
+            .setTint(0x7077AF)); // :3106-3115
+    public static final DeferredItem<Item> RBMK_FUEL_THMEU = ITEMS.register("rbmk_fuel_thmeu", () -> new RBMKRodItem(rbmkRodProperties(), rbmkPellet(RBMK_PELLET_THMEU))
+            .setYield(100000000D)
+            .setStats(20)
+            .setFunction(EnumBurnFunc.PLATEU)
+            .setDepletionFunction(EnumDepleteFunc.BOOSTED_SLOPE)
+            .setHeat(0.65D) //Consistency with MEU
+            .setMeltingPoint(3350)
+            .setTint(tintThorium)); // :3116-3123
+    public static final DeferredItem<Item> RBMK_FUEL_LEP = ITEMS.register("rbmk_fuel_lep", () -> new RBMKRodItem(rbmkRodProperties(), rbmkPellet(RBMK_PELLET_LEP))
+            .setYield(100000000D)
+            .setStats(35)
+            .setFunction(EnumBurnFunc.LOG_TEN)
+            .setDepletionFunction(EnumDepleteFunc.RAISING_SLOPE)
+            .setHeat(0.75D)
+            .setMeltingPoint(2744)
+            .setTint(tintPlutonium)); // :3124-3131
+    public static final DeferredItem<Item> RBMK_FUEL_MEP = ITEMS.register("rbmk_fuel_mep", () -> new RBMKRodItem(rbmkRodProperties(), rbmkPellet(RBMK_PELLET_MEP))
+            .setYield(100000000D)
+            .setStats(35)
+            .setFunction(EnumBurnFunc.SQUARE_ROOT)
+            .setMeltingPoint(2744)
+            .setTint(tintPlutonium)); // :3132-3137
+    // The original unlocalized and texture name is rbmk_fuel_hep (:3144); the NEO id keeps the field name.
+    public static final DeferredItem<Item> RBMK_FUEL_HEP239 = ITEMS.register("rbmk_fuel_hep239", () -> new RBMKRodItem(rbmkRodProperties(), rbmkPellet(RBMK_PELLET_HEP239))
+            .setYield(100000000D)
+            .setStats(30)
+            .setFunction(EnumBurnFunc.LINEAR)
+            .setHeat(1.25D)
+            .setMeltingPoint(2744)
+            .setTint(tintPlutonium)); // :3138-3144
+    public static final DeferredItem<Item> RBMK_FUEL_HEP241 = ITEMS.register("rbmk_fuel_hep241", () -> new RBMKRodItem(rbmkRodProperties(), rbmkPellet(RBMK_PELLET_HEP241))
+            .setYield(100000000D)
+            .setStats(40)
+            .setFunction(EnumBurnFunc.LINEAR)
+            .setHeat(1.75D)
+            .setMeltingPoint(2744)
+            .setTint(tintPlutonium)); // :3145-3151
+    public static final DeferredItem<Item> RBMK_FUEL_LEA = ITEMS.register("rbmk_fuel_lea", () -> new RBMKRodItem(rbmkRodProperties(), rbmkPellet(RBMK_PELLET_LEA))
+            .setYield(100000000D)
+            .setStats(60, 10)
+            .setFunction(EnumBurnFunc.SQUARE_ROOT)
+            .setDepletionFunction(EnumDepleteFunc.RAISING_SLOPE)
+            .setHeat(1.5D)
+            .setMeltingPoint(2386)
+            .setTint(tintAmericium)); // :3152-3159
+    public static final DeferredItem<Item> RBMK_FUEL_MEA = ITEMS.register("rbmk_fuel_mea", () -> new RBMKRodItem(rbmkRodProperties(), rbmkPellet(RBMK_PELLET_MEA))
+            .setYield(100000000D)
+            .setStats(35D, 20)
+            .setFunction(EnumBurnFunc.ARCH)
+            .setHeat(1.75D)
+            .setMeltingPoint(2386)
+            .setTint(tintAmericium)); // :3160-3166
+    public static final DeferredItem<Item> RBMK_FUEL_HEA241 = ITEMS.register("rbmk_fuel_hea241", () -> new RBMKRodItem(rbmkRodProperties(), rbmkPellet(RBMK_PELLET_HEA241))
+            .setYield(100000000D)
+            .setStats(65, 15)
+            .setFunction(EnumBurnFunc.SQUARE_ROOT)
+            .setHeat(1.85D)
+            .setMeltingPoint(2386)
+            .setNeutronTypes(NType.FAST, NType.FAST)
+            .setTint(tintAmericium)); // :3167-3174
+    public static final DeferredItem<Item> RBMK_FUEL_HEA242 = ITEMS.register("rbmk_fuel_hea242", () -> new RBMKRodItem(rbmkRodProperties(), rbmkPellet(RBMK_PELLET_HEA242))
+            .setYield(100000000D)
+            .setStats(45)
+            .setFunction(EnumBurnFunc.LINEAR)
+            .setHeat(2D)
+            .setMeltingPoint(2386)
+            .setTint(tintAmericium)); // :3175-3181
+    public static final DeferredItem<Item> RBMK_FUEL_MEN = ITEMS.register("rbmk_fuel_men", () -> new RBMKRodItem(rbmkRodProperties(), rbmkPellet(RBMK_PELLET_MEN))
+            .setYield(100000000D)
+            .setStats(30)
+            .setFunction(EnumBurnFunc.SQUARE_ROOT)
+            .setDepletionFunction(EnumDepleteFunc.RAISING_SLOPE)
+            .setHeat(0.75)
+            .setMeltingPoint(2800)
+            .setNeutronTypes(NType.ANY, NType.FAST) //Build-up of Pu-239 leads to both speeds of neutrons grooving
+            .setTint(tintNeptunium)); // :3182-3190
+    public static final DeferredItem<Item> RBMK_FUEL_HEN = ITEMS.register("rbmk_fuel_hen", () -> new RBMKRodItem(rbmkRodProperties(), rbmkPellet(RBMK_PELLET_HEN))
+            .setYield(100000000D)
+            .setStats(40)
+            .setFunction(EnumBurnFunc.SQUARE_ROOT)
+            .setMeltingPoint(2800)
+            .setNeutronTypes(NType.FAST, NType.FAST)
+            .setTint(tintNeptunium)); // :3191-3197
+    public static final DeferredItem<Item> RBMK_FUEL_MOX = ITEMS.register("rbmk_fuel_mox", () -> new RBMKRodItem(rbmkRodProperties(), rbmkPellet(RBMK_PELLET_MOX))
+            .setYield(100000000D)
+            .setStats(40)
+            .setFunction(EnumBurnFunc.LOG_TEN)
+            .setDepletionFunction(EnumDepleteFunc.RAISING_SLOPE)
+            .setMeltingPoint(2815)
+            .setTint(tintUranium)); // :3198-3204
+    public static final DeferredItem<Item> RBMK_FUEL_LES = ITEMS.register("rbmk_fuel_les", () -> new RBMKRodItem(rbmkRodProperties(), rbmkPellet(RBMK_PELLET_LES))
+            .setYield(100000000D)
+            .setStats(50)
+            .setFunction(EnumBurnFunc.SQUARE_ROOT)
+            .setHeat(1.25D)
+            .setMeltingPoint(2500)
+            .setNeutronTypes(NType.SLOW, NType.SLOW) //Beryllium Moderation
+            .setTint(tintSchrabidium)); // :3205-3212
+    public static final DeferredItem<Item> RBMK_FUEL_MES = ITEMS.register("rbmk_fuel_mes", () -> new RBMKRodItem(rbmkRodProperties(), rbmkPellet(RBMK_PELLET_MES))
+            .setYield(100000000D)
+            .setStats(75D)
+            .setFunction(EnumBurnFunc.ARCH)
+            .setHeat(1.5D)
+            .setMeltingPoint(2750)
+            .setTint(tintSchrabidium)); // :3213-3219
+    public static final DeferredItem<Item> RBMK_FUEL_HES = ITEMS.register("rbmk_fuel_hes", () -> new RBMKRodItem(rbmkRodProperties(), rbmkPellet(RBMK_PELLET_HES))
+            .setYield(100000000D)
+            .setStats(90)
+            .setFunction(EnumBurnFunc.LINEAR)
+            .setDepletionFunction(EnumDepleteFunc.LINEAR)
+            .setHeat(1.75D)
+            .setMeltingPoint(3000)
+            .setTint(tintSchrabidium)); // :3220-3227
+    public static final DeferredItem<Item> RBMK_FUEL_LEAUS = ITEMS.register("rbmk_fuel_leaus", () -> new RBMKRodItem(rbmkRodProperties(), rbmkPellet(RBMK_PELLET_LEAUS))
+            .setYield(100000000D)
+            .setStats(30)
+            .setFunction(EnumBurnFunc.SIGMOID)
+            .setDepletionFunction(EnumDepleteFunc.LINEAR)
+            .setXenon(0.05D, 50D)
+            .setHeat(1.5D)
+            .setTint(tintAustralium).setMeltingPoint(7029)); // :3228-3235
+    public static final DeferredItem<Item> RBMK_FUEL_HEAUS = ITEMS.register("rbmk_fuel_heaus", () -> new RBMKRodItem(rbmkRodProperties(), rbmkPellet(RBMK_PELLET_HEAUS))
+            .setYield(100000000D)
+            .setStats(35)
+            .setFunction(EnumBurnFunc.LINEAR)
+            .setXenon(0.05D, 50D)
+            .setHeat(1.5D)
+            .setTint(tintAustralium).setMeltingPoint(5211)); // :3236-3242
+    public static final DeferredItem<Item> RBMK_FUEL_PO210BE = ITEMS.register("rbmk_fuel_po210be", () -> new RBMKRodItem(rbmkRodProperties(), rbmkPellet(RBMK_PELLET_PO210BE))
+            .setYield(25000000D)
+            .setStats(0D, 50)
+            .setFunction(EnumBurnFunc.PASSIVE)
+            .setDepletionFunction(EnumDepleteFunc.LINEAR)
+            .setXenon(0.0D, 50D)
+            .setHeat(0.1D)
+            .setDiffusion(0.05D)
+            .setMeltingPoint(1287)
+            .setNeutronTypes(NType.SLOW, NType.SLOW) //Beryllium Moderation
+            .setTint(tintPolonium)); // :3243-3253
+    public static final DeferredItem<Item> RBMK_FUEL_RA226BE = ITEMS.register("rbmk_fuel_ra226be", () -> new RBMKRodItem(rbmkRodProperties(), rbmkPellet(RBMK_PELLET_RA226BE))
+            .setYield(100000000D)
+            .setStats(0D, 20)
+            .setFunction(EnumBurnFunc.PASSIVE)
+            .setDepletionFunction(EnumDepleteFunc.LINEAR)
+            .setXenon(0.0D, 50D)
+            .setHeat(0.035D)
+            .setDiffusion(0.5D)
+            .setMeltingPoint(700)
+            .setNeutronTypes(NType.SLOW, NType.SLOW) //Beryllium Moderation
+            .setTint(tintRadium)); // :3254-3264
+    public static final DeferredItem<Item> RBMK_FUEL_PU238BE = ITEMS.register("rbmk_fuel_pu238be", () -> new RBMKRodItem(rbmkRodProperties(), rbmkPellet(RBMK_PELLET_PU238BE))
+            .setYield(50000000D)
+            .setStats(40, 40)
+            .setFunction(EnumBurnFunc.SQUARE_ROOT)
+            .setHeat(0.1D)
+            .setDiffusion(0.05D)
+            .setMeltingPoint(1287)
+            .setNeutronTypes(NType.SLOW, NType.SLOW) //Beryllium Moderation
+            .setTint(tintPlutonium)); // :3265-3273
+    public static final DeferredItem<Item> RBMK_FUEL_BALEFIRE_GOLD = ITEMS.register("rbmk_fuel_balefire_gold", () -> new RBMKRodItem(rbmkRodProperties(), rbmkPellet(RBMK_PELLET_BALEFIRE_GOLD))
+            .setYield(100000000D)
+            .setStats(50, 10)
+            .setFunction(EnumBurnFunc.ARCH)
+            .setDepletionFunction(EnumDepleteFunc.LINEAR)
+            .setXenon(0.0D, 50D)
+            .setMeltingPoint(2000)
+            .setTint(tintFlashgold)); // :3274-3281
+    public static final DeferredItem<Item> RBMK_FUEL_FLASHLEAD = ITEMS.register("rbmk_fuel_flashlead", () -> new RBMKRodItem(rbmkRodProperties(), rbmkPellet(RBMK_PELLET_FLASHLEAD))
+            .setYield(250000000D)
+            .setStats(40, 50)
+            .setFunction(EnumBurnFunc.ARCH)
+            .setDepletionFunction(EnumDepleteFunc.LINEAR)
+            .setXenon(0.0D, 50D)
+            .setMeltingPoint(2050)
+            .setTint(tintFlashlead)); // :3282-3289
+    public static final DeferredItem<Item> RBMK_FUEL_BALEFIRE = ITEMS.register("rbmk_fuel_balefire", () -> new RBMKRodItem(rbmkRodProperties(), rbmkPellet(RBMK_PELLET_BALEFIRE))
+            .setYield(100000000D)
+            .setStats(100, 35)
+            .setFunction(EnumBurnFunc.LINEAR)
+            .setXenon(0.0D, 50D)
+            .setHeat(3D)
+            .setMeltingPoint(3652)
+            .setTint(tintBalefire)); // :3290-3297
+    public static final DeferredItem<Item> RBMK_FUEL_ZFB_BISMUTH = ITEMS.register("rbmk_fuel_zfb_bismuth", () -> new RBMKRodItem(rbmkRodProperties(), rbmkPellet(RBMK_PELLET_ZFB_BISMUTH))
+            .setYield(50000000D)
+            .setStats(20)
+            .setFunction(EnumBurnFunc.SQUARE_ROOT)
+            .setHeat(1.75D)
+            .setMeltingPoint(2744)
+            .setTint(tintZirconium)); // :3298-3304
+    public static final DeferredItem<Item> RBMK_FUEL_ZFB_PU241 = ITEMS.register("rbmk_fuel_zfb_pu241", () -> new RBMKRodItem(rbmkRodProperties(), rbmkPellet(RBMK_PELLET_ZFB_PU241))
+            .setYield(50000000D)
+            .setStats(20)
+            .setFunction(EnumBurnFunc.SQUARE_ROOT)
+            .setMeltingPoint(2865)
+            .setTint(tintZirconium)); // :3305-3310
+    public static final DeferredItem<Item> RBMK_FUEL_ZFB_AM_MIX = ITEMS.register("rbmk_fuel_zfb_am_mix", () -> new RBMKRodItem(rbmkRodProperties(), rbmkPellet(RBMK_PELLET_ZFB_AM_MIX))
+            .setYield(50000000D)
+            .setStats(20)
+            .setFunction(EnumBurnFunc.LINEAR)
+            .setHeat(1.75D)
+            .setMeltingPoint(2744)
+            .setTint(tintZirconium)); // :3311-3317
 
     // Spawners
     public static final DeferredItem<Item> SPAWN_DUCK = ITEMS.register("spawn_duck", () -> new EntitySpawnerItem(new Item.Properties().stacksTo(16)));
@@ -906,6 +1210,8 @@ public class NtmItems {
     public static final DeferredItem<Item> DEFUSER = ITEMS.register("defuser", () -> new ToolingItem(ToolType.DEFUSER, new Item.Properties().durability(100)));
     public static final DeferredItem<Item> REACHER = ITEMS.register("reacher", () -> new Item(new Item.Properties().stacksTo(1)));
     public static final DeferredItem<Item> MELTDOWN_TOOL = ITEMS.register("meltdown_tool", () -> new DyatlovItem(new Item.Properties().stacksTo(1)));
+    // Original ModItems.java:3838; the +2 attack damage modifier is added by RBMKToolItem.
+    public static final DeferredItem<Item> RBMK_TOOL = ITEMS.register("rbmk_tool", () -> new RBMKToolItem(new Item.Properties().stacksTo(1)));
     public static final DeferredItem<Item> DRILL_TITANIUM = ITEMS.register("drill_titanium", () -> new Item(new Item.Properties()));
 
     // Wands, Tools, Other Crap
@@ -1096,6 +1402,15 @@ public class NtmItems {
 
     private static DeferredItem<Item> registerNugget(String name) {
         return ITEMS.register(name, () -> new Item(new Item.Properties()));
+    }
+
+    /** Original ItemRBMKRod constructor (:75-76): one rod per stack, the empty rod stays behind after crafting. */
+    private static Item.Properties rbmkRodProperties() {
+        return new Item.Properties().stacksTo(1).craftRemainder(RBMK_FUEL_EMPTY.get());
+    }
+
+    private static RBMKPelletItem rbmkPellet(DeferredItem<Item> pellet) {
+        return (RBMKPelletItem) pellet.get();
     }
 
     private static DeferredItem<Item> registerPickaxe(String name, Tier tier, int damage, float speed) {

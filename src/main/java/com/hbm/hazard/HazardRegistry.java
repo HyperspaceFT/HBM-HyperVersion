@@ -2,6 +2,8 @@ package com.hbm.hazard;
 
 import com.hbm.blocks.NtmBlocks;
 import com.hbm.hazard.modifier.HazardModifierFuelRadiation;
+import com.hbm.hazard.modifier.HazardModifierRBMKHot;
+import com.hbm.hazard.modifier.HazardModifierRBMKRadiation;
 import com.hbm.hazard.modifier.HazardModifierRTGRadiation;
 import com.hbm.hazard.type.*;
 import com.hbm.inventory.MetaHelper;
@@ -170,12 +172,7 @@ public class HazardRegistry {
         HazardSystem.register(item(EGG_BALEFIRE_SHARD), makeData(RADIATION, bf * nugget));
         HazardSystem.register(item(EGG_BALEFIRE), makeData(RADIATION, bf * ingot));
 
-        HazardSystem.register(Items.GOLD_INGOT, makeData(BLINDING, 4F));
-
-        HazardSystem.register(Items.BLAZE_POWDER, makeData(HOT, 4F));
-        HazardSystem.register(Blocks.GREEN_WOOL, makeData(RADIATION, 150F));
-        HazardSystem.register(Blocks.WHITE_WOOL, makeData(ASBESTOS, 5F));
-        HazardSystem.register(Items.COAL, makeData(COAL, 1F));
+        // Goal24A-2: five NEO-only vanilla rows (gold ingot, blaze powder, green and white wool, coal) removed by user decision 2026-10-19; the original HazardRegistry has no such rows.
 
         HazardSystem.register(NtmBlocks.FALLOUT.get(), makeData(RADIATION, 60F));
 
@@ -231,9 +228,10 @@ public class HazardRegistry {
         registerOtherWaste(WASTE_SCHRABIDIUM, wst * billet * 15F);
         registerOtherWaste(WASTE_ZFB_MOX, wst * billet * 5F);
 
-        // Original HazardRegistry.java:281-287 and :475 (the wreck debris and the fallout item); debris_fuel is deferred with RBMK.
+        // Original HazardRegistry.java:281-287 and :475 (the wreck debris and the fallout item); debris_fuel arrived with the RBMK core (Goal24A).
         HazardSystem.register(item(DEBRIS_GRAPHITE), makeData().addEntry(RADIATION, 70F).addEntry(HOT, 5F));
         HazardSystem.register(item(DEBRIS_METAL), makeData(RADIATION, 5F));
+        HazardSystem.register(item(DEBRIS_FUEL), makeData().addEntry(RADIATION, 500F).addEntry(HOT, 5F)); // :283
         HazardSystem.register(item(DEBRIS_CONCRETE), makeData(RADIATION, 30F));
         HazardSystem.register(item(DEBRIS_EXCHANGER), makeData(RADIATION, 25F));
         HazardSystem.register(item(DEBRIS_SHRAPNEL), makeData(RADIATION, 2.5F));
@@ -282,6 +280,10 @@ public class HazardRegistry {
         HazardSystem.register(item(NUGGET_LES), makeData(RADIATION, saf * nugget)); // :327
         HazardSystem.register(item(BILLET_LES), makeData(RADIATION, saf * billet)); // :328
         HazardSystem.register(item(INGOT_LES), makeData(RADIATION, saf * ingot)); // :329
+
+        // Original HazardRegistry.java:379-444 (there after the billet, RTG, pile and breeding rod rows and before the watz/PWR and yellowcake
+        // rows); here after the item-level fuel billet rows and before the yellowcake rows, while the RTG rows follow in registerRTGPellets()
+        registerRBMKFuels();
 
         // Original HazardRegistry.java:473-474, yellowcake (item-level)
         HazardSystem.register(item(POWDER_YELLOWCAKE), makeData(RADIATION, yc * powder));
@@ -421,6 +423,77 @@ public class HazardRegistry {
         HazardSystem.register(MetaHelper.newStack(PELLET_RTG_DEPLETED, 1, DepletedRTGMaterial.NEPTUNIUM.ordinal()), makeData(RADIATION, np237 * rtg)); // :347
     }
 
+    /**
+     * Goal24B: the RBMK fuel rod and pellet rows of the original HazardRegistry.registerItems (:379-443). The radiation rises from the
+     * base toward the depleted value with the rod's depletion or the pellet's META tier (HazardModifierRBMKRadiation), plus xenon; rods
+     * are also hot from a 100 °C hull on (HazardModifierRBMKHot). rbmk_fuel_drx (:410) and rbmk_pellet_drx (:444) are deferred with DRX.
+     */
+    private static void registerRBMKFuels() {
+        registerRBMKRod(RBMK_FUEL_UEU, u * rod_rbmk, wst * rod_rbmk * 20F); // :379
+        registerRBMKRod(RBMK_FUEL_MEU, uf * rod_rbmk, wst * rod_rbmk * 21.5F); // :380
+        registerRBMKRod(RBMK_FUEL_HEU233, u233 * rod_rbmk, wst * rod_rbmk * 31F); // :381
+        registerRBMKRod(RBMK_FUEL_HEU235, u235 * rod_rbmk, wst * rod_rbmk * 30F); // :382
+        registerRBMKRod(RBMK_FUEL_UZH, uzh * rod_rbmk, wst * rod_rbmk * 20F); // :383
+        registerRBMKRod(RBMK_FUEL_THMEU, thf * rod_rbmk, wst * rod_rbmk * 17.5F); // :384
+        registerRBMKRod(RBMK_FUEL_LEP, puf * rod_rbmk, wst * rod_rbmk * 25F); // :385
+        registerRBMKRod(RBMK_FUEL_MEP, purg * rod_rbmk, wst * rod_rbmk * 30F); // :386
+        registerRBMKRod(RBMK_FUEL_HEP239, pu239 * rod_rbmk, wst * rod_rbmk * 32.5F); // :387
+        registerRBMKRod(RBMK_FUEL_HEP241, pu241 * rod_rbmk, wst * rod_rbmk * 35F); // :388
+        registerRBMKRod(RBMK_FUEL_LEA, amf * rod_rbmk, wst * rod_rbmk * 26F); // :389
+        registerRBMKRod(RBMK_FUEL_MEA, amrg * rod_rbmk, wst * rod_rbmk * 30.5F); // :390
+        registerRBMKRod(RBMK_FUEL_HEA241, am241 * rod_rbmk, wst * rod_rbmk * 33.5F); // :391
+        registerRBMKRod(RBMK_FUEL_HEA242, am242 * rod_rbmk, wst * rod_rbmk * 34F); // :392
+        registerRBMKRod(RBMK_FUEL_MEN, npf * rod_rbmk, wst * rod_rbmk * 22.5F); // :393
+        registerRBMKRod(RBMK_FUEL_HEN, np237 * rod_rbmk, wst * rod_rbmk * 30F); // :394
+        registerRBMKRod(RBMK_FUEL_MOX, mox * rod_rbmk, wst * rod_rbmk * 25.5F); // :395
+        registerRBMKRod(RBMK_FUEL_LES, saf * rod_rbmk, wst * rod_rbmk * 24.5F); // :396
+        registerRBMKRod(RBMK_FUEL_MES, saf * rod_rbmk, wst * rod_rbmk * 30F); // :397
+        registerRBMKRod(RBMK_FUEL_HES, saf * rod_rbmk, wst * rod_rbmk * 50F); // :398
+        registerRBMKRod(RBMK_FUEL_LEAUS, 0F, wst * rod_rbmk * 37.5F); // :399
+        registerRBMKRod(RBMK_FUEL_HEAUS, 0F, wst * rod_rbmk * 32.5F); // :400
+        registerRBMKRod(RBMK_FUEL_PO210BE, pobe * rod_rbmk, pobe * rod_rbmk * 0.1F, true); // :401
+        registerRBMKRod(RBMK_FUEL_RA226BE, rabe * rod_rbmk, rabe * rod_rbmk * 0.4F, true); // :402
+        registerRBMKRod(RBMK_FUEL_PU238BE, pube * rod_rbmk, wst * rod_rbmk * 2.5F); // :403
+        registerRBMKRod(RBMK_FUEL_BALEFIRE_GOLD, au198 * rod_rbmk, bf * rod_rbmk * 0.5F, true); // :404
+        registerRBMKRod(RBMK_FUEL_FLASHLEAD, pb209 * 1.25F * rod_rbmk, pb209 * nugget * 0.05F * rod_rbmk, true); // :405
+        registerRBMKRod(RBMK_FUEL_BALEFIRE, bf * rod_rbmk, bf * rod_rbmk * 100F, true); // :406
+        registerRBMKRod(RBMK_FUEL_ZFB_BISMUTH, pu241 * rod_rbmk * 0.1F, wst * rod_rbmk * 5F); // :407
+        registerRBMKRod(RBMK_FUEL_ZFB_PU241, pu239 * rod_rbmk * 0.1F, wst * rod_rbmk * 7.5F); // :408
+        registerRBMKRod(RBMK_FUEL_ZFB_AM_MIX, pu241 * rod_rbmk * 0.1F, wst * rod_rbmk * 10F); // :409
+
+        registerRBMKPellet(RBMK_PELLET_UEU, u * billet, wst * billet * 20F); // :413
+        registerRBMKPellet(RBMK_PELLET_MEU, uf * billet, wst * billet * 21.5F); // :414
+        registerRBMKPellet(RBMK_PELLET_HEU233, u233 * billet, wst * billet * 31F); // :415
+        registerRBMKPellet(RBMK_PELLET_HEU235, u235 * billet, wst * billet * 30F); // :416
+        registerRBMKPellet(RBMK_PELLET_UZH, uzh * billet, wst * billet * 20F); // :417
+        registerRBMKPellet(RBMK_PELLET_THMEU, thf * billet, wst * billet * 17.5F); // :418
+        registerRBMKPellet(RBMK_PELLET_LEP, puf * billet, wst * billet * 25F); // :419
+        registerRBMKPellet(RBMK_PELLET_MEP, purg * billet, wst * billet * 30F); // :420
+        registerRBMKPellet(RBMK_PELLET_HEP239, pu239 * billet, wst * billet * 32.5F); // :421
+        registerRBMKPellet(RBMK_PELLET_HEP241, pu241 * billet, wst * billet * 35F); // :422
+        registerRBMKPellet(RBMK_PELLET_LEA, amf * billet, wst * billet * 26F); // :423
+        registerRBMKPellet(RBMK_PELLET_MEA, amrg * billet, wst * billet * 30.5F); // :424
+        registerRBMKPellet(RBMK_PELLET_HEA241, am241 * billet, wst * billet * 33.5F); // :425
+        registerRBMKPellet(RBMK_PELLET_HEA242, am242 * billet, wst * billet * 34F); // :426
+        registerRBMKPellet(RBMK_PELLET_MEN, npf * billet, wst * billet * 22.5F); // :427
+        registerRBMKPellet(RBMK_PELLET_HEN, np237 * billet, wst * billet * 30F); // :428
+        registerRBMKPellet(RBMK_PELLET_MOX, mox * billet, wst * billet * 25.5F); // :429
+        registerRBMKPellet(RBMK_PELLET_LES, saf * billet, wst * billet * 24.5F); // :430
+        registerRBMKPellet(RBMK_PELLET_MES, saf * billet, wst * billet * 30F); // :431
+        registerRBMKPellet(RBMK_PELLET_HES, saf * billet, wst * billet * 50F); // :432
+        registerRBMKPellet(RBMK_PELLET_LEAUS, 0F, wst * billet * 37.5F); // :433
+        registerRBMKPellet(RBMK_PELLET_HEAUS, 0F, wst * billet * 32.5F); // :434
+        registerRBMKPellet(RBMK_PELLET_PO210BE, pobe * billet, pobe * billet * 0.1F, true); // :435
+        registerRBMKPellet(RBMK_PELLET_RA226BE, rabe * billet, rabe * billet * 0.4F, true); // :436
+        registerRBMKPellet(RBMK_PELLET_PU238BE, pube * billet, wst * 1.5F); // :437, no billet factor in the original
+        registerRBMKPellet(RBMK_PELLET_BALEFIRE_GOLD, au198 * billet, bf * billet * 0.5F, true); // :438
+        registerRBMKPellet(RBMK_PELLET_FLASHLEAD, pb209 * 1.25F * billet, pb209 * nugget * 0.05F, true); // :439
+        registerRBMKPellet(RBMK_PELLET_BALEFIRE, bf * billet, bf * billet * 100F, true); // :440
+        registerRBMKPellet(RBMK_PELLET_ZFB_BISMUTH, pu241 * billet * 0.1F, wst * billet * 5F); // :441
+        registerRBMKPellet(RBMK_PELLET_ZFB_PU241, pu239 * billet * 0.1F, wst * billet * 7.5F); // :442
+        registerRBMKPellet(RBMK_PELLET_ZFB_AM_MIX, pu241 * billet * 0.1F, wst * billet * 10F); // :443
+    }
+
     private static Frame frame() { return new Frame(); }
     private static ItemStack rawIngot(RawIngotItem.Type type) { return MetaHelper.newStack(INGOT_RAW, type.meta); }
 
@@ -492,6 +565,34 @@ public class HazardRegistry {
         if(hot > 0) data.addEntry(new HazardEntry(HOT, hot));
         if(blinding > 0) data.addEntry(new HazardEntry(BLINDING, blinding));
         HazardSystem.register(pellet.get(), data);
+    }
+
+    private static void registerRBMKPellet(DeferredItem<Item> pellet, float base, float dep) { registerRBMKPellet(pellet, base, dep, false, 0F, 0F); }
+    private static void registerRBMKPellet(DeferredItem<Item> pellet, float base, float dep, boolean linear) { registerRBMKPellet(pellet, base, dep, linear, 0F, 0F); }
+
+    /** Original registerRBMKPellet (:569-578). */
+    private static void registerRBMKPellet(DeferredItem<Item> pellet, float base, float dep, boolean linear, float blinding, float digamma) {
+
+        HazardData data = new HazardData();
+        data.addEntry(new HazardEntry(RADIATION, base).addMod(new HazardModifierRBMKRadiation(dep, linear)));
+        if(blinding > 0) data.addEntry(new HazardEntry(BLINDING, blinding));
+        if(digamma > 0) data.addEntry(new HazardEntry(DIGAMMA, digamma));
+        HazardSystem.register(pellet.get(), data);
+    }
+
+    private static void registerRBMKRod(DeferredItem<Item> rod, float base, float dep) { registerRBMK(rod, base, dep, true, false, 0F, 0F); }
+    private static void registerRBMKRod(DeferredItem<Item> rod, float base, float dep, float blinding) { registerRBMK(rod, base, dep, true, false, blinding, 0F); }
+    private static void registerRBMKRod(DeferredItem<Item> rod, float base, float dep, boolean linear) { registerRBMK(rod, base, dep, true, linear, 0F, 0F); }
+
+    /** Original registerRBMK (:580-592). */
+    private static void registerRBMK(DeferredItem<Item> rod, float base, float dep, boolean hot, boolean linear, float blinding, float digamma) {
+
+        HazardData data = new HazardData();
+        data.addEntry(new HazardEntry(RADIATION, base).addMod(new HazardModifierRBMKRadiation(dep, linear)));
+        if(hot) data.addEntry(new HazardEntry(HOT, 0).addMod(new HazardModifierRBMKHot()));
+        if(blinding > 0) data.addEntry(new HazardEntry(BLINDING, blinding));
+        if(digamma > 0) data.addEntry(new HazardEntry(DIGAMMA, digamma));
+        HazardSystem.register(rod.get(), data);
     }
 
     /** Original registerOtherWaste (:629-636): cool waste (META 0) keeps 7.5% of the radiation, hot waste (META 1) is also hot. */

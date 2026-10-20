@@ -43,6 +43,7 @@ import com.hbm.inventory.screens.MachineArcWelderScreen;
 import com.hbm.inventory.screens.MachineSolderingStationScreen;
 import com.hbm.items.NtmItems;
 import com.hbm.items.machine.FluidIconItem;
+import com.hbm.items.machine.RBMKPelletItem;
 import com.hbm.main.NuclearTechMod;
 import mezz.jei.api.IModPlugin;
 import mezz.jei.api.JeiPlugin;
@@ -557,6 +558,12 @@ public class NtmJeiPlugin implements IModPlugin {
         for(Item item : ignoreMeta) {
             registration.registerSubtypeInterpreter(item, MetaSubtypeInterpreter.INSTANCE);
         }
+
+        // The ten depletion/xenon METAs of each RBMK pellet (five without xenon) are separate JEI ingredients. The rods have no
+        // interpreter: their custom data state does not split JEI entries.
+        NtmItems.ITEMS.getEntries().forEach(holder -> {
+            if(holder.get() instanceof RBMKPelletItem pellet) registration.registerSubtypeInterpreter(pellet, MetaSubtypeInterpreter.INSTANCE);
+        });
 
         registration.registerSubtypeInterpreter(NtmItems.BATTERY_PACK.get(), BatterySubtypeInterpreter.INSTANCE);
         registration.registerSubtypeInterpreter(NtmItems.SCRAPS.get(), ScrapsSubtypeInterpreter.INSTANCE);

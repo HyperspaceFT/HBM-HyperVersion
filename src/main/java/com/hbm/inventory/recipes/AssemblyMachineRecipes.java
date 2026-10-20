@@ -455,5 +455,13 @@ public class AssemblyMachineRecipes extends GenericRecipes<GenericRecipe> {
                         new ComparableStack(NtmItems.INGOT_RUBBER.get(), 16),
                         new RecipesCommon.TagStack(ItemTags.create(ResourceLocation.fromNamespaceAndPath("ntm", "any_concrete")), 16),
                         new ComparableStack(NtmItems.CIRCUIT_INTEGRATED_BOARD.get(), 4)));
+
+        // Original normal ass.rbmk (AssemblyMachineRecipes.java:528-530): the RBMK structural column. The expensive branch
+        // (inputItemsEx) and the 528 pools are not migrated; the plain rubber ingot stands in for RUBBER.ingot() as above.
+        this.register(new GenericRecipe("ass.rbmk").setup(100, 100).outputItems(new ItemStack(NtmBlocks.RBMK_BLANK.get(), 1))
+                .inputItems(new ComparableStack(NtmBlocks.CONCRETE_ASBESTOS.get(), 4),
+                        NtmItems.castPlateIngredient(CastPlateItem.Type.STEEL, 2),
+                        new ComparableStack(NtmItems.PLATE_COPPER.get(), 4),
+                        new ComparableStack(NtmItems.INGOT_RUBBER.get(), 2)));
     }
 }

@@ -90,10 +90,14 @@ def main():
     be_path='com/hbm/blockentity/machine/MachineTurbofanBlockEntity.java'
     be_text=(SOURCE/be_path).read_text(encoding='utf-8')
     charge='this.power = Library.chargeItemsFromTE(this.slots, SLOT_BATTERY, this.power, this.power);'
+    # Goal24A: upstream aee05a40f probes the port cells; reverting to the connection cells must fail the port-cell redstone checks.
+    probe='for(DirPos pos : getPortProxies(this.worldPosition, this.getBlockState().getValue(DummyableBlock.FACING))) {'
+    if probe not in be_text:raise SystemExit('Mutation anchor missing: redstone_probe_at_connections')
     mutations={
         'clamp_before_charge':(be_text.replace(charge,'this.power = Math.min(this.power, MAX_POWER); '+charge),'Goal17BMachineRegression'),
         'smoke_unscaled_by_fuel':(be_text.replace('Math.ceil(entry.getValue() * amount * 100)','Math.ceil(entry.getValue() * 100)'),'Goal17BMachineRegression'),
         'omit_client_web':(be_text.replace('this.updateAnimation(); this.updateLocalPlayer();','this.updateAnimation();'),'Goal17BEntityRegression'),
+        'redstone_probe_at_connections':(be_text.replace(probe,'for(DirPos pos : this.getConPos()) {'),'Goal17BMachineRegression'),
         'omit_client_exhaust_push':(be_text.replace('        if(box.intersects(getExhaustBox(this.worldPosition, facing))) {\n            player.setDeltaMovement(player.getDeltaMovement().add(-intake.getStepX() * 0.2D, 0D, -intake.getStepZ() * 0.2D));\n        }\n',''),'Goal17BEntityRegression')}
     report['mutations']=[]
     for label,(mutated,main_class) in mutations.items():

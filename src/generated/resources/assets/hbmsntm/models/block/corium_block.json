@@ -1,0 +1,8 @@
+{
+  "parent": "minecraft:block/cube_bottom_top",
+  "textures": {
+    "bottom": "hbmsntm:block/corium_still",
+    "side": "hbmsntm:block/corium_flowing",
+    "top": "hbmsntm:block/corium_still"
+  }
+}

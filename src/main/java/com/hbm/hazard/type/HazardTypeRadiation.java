@@ -23,8 +23,17 @@ public class HazardTypeRadiation extends HazardTypeBase {
     public void onUpdate(LivingEntity target, float level, ItemStack stack) {
         boolean reacher = false;
 
+        // Original: inventory.hasItem(ModItems.reacher), a reacher of any NBT anywhere in the 36 main inventory slots (same scan as
+        // HazardTypeHot; Inventory.contains(new ItemStack(...)) also compared components, so a renamed reacher did not count).
+        // The offhand counts too, NEO-only (1.7.10 had no offhand); armor slots do not, as in the original.
         if (target instanceof Player player) {
-            reacher = player.getInventory().contains(new ItemStack(NtmItems.REACHER.get()));
+            for (ItemStack held : player.getInventory().items) {
+                if (held.is(NtmItems.REACHER.get())) {
+                    reacher = true;
+                    break;
+                }
+            }
+            if (player.getOffhandItem().is(NtmItems.REACHER.get())) reacher = true;
         }
 
         level *= stack.getCount();

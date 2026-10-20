@@ -26,9 +26,9 @@ public class FT_Pheromone extends  FluidTrait{
     public void addInfo(List<Component> info) {
 
         if(type == 1) {
-            info.add(ChatBuilder.start("[").nextTranslation("fluids.trait.glyphidPheromones").next("]").colorAll(ChatFormatting.AQUA).flush());
+            info.add(ChatBuilder.start("[").nextTranslation("hbmfluid.trait.glyphidPheromones").next("]").colorAll(ChatFormatting.AQUA).flush());
         } else {
-            info.add(ChatBuilder.start("[").nextTranslation("fluids.trait.modifiedPheromones").next("]").colorAll(ChatFormatting.BLUE).flush());
+            info.add(ChatBuilder.start("[").nextTranslation("hbmfluid.trait.modifiedPheromones").next("]").colorAll(ChatFormatting.BLUE).flush());
         }
     }
 

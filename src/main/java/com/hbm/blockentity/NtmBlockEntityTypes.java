@@ -13,6 +13,7 @@ import com.hbm.blockentity.machine.oil.MachineFrackingTowerBlockEntity;
 import com.hbm.blockentity.machine.oil.MachineOilWellBlockEntity;
 import com.hbm.blockentity.machine.oil.MachinePumpjackBlockEntity;
 import com.hbm.blockentity.machine.oil.MachineRefineryBlockEntity;
+import com.hbm.blockentity.machine.rbmk.*;
 import com.hbm.blockentity.machine.storage.*;
 import com.hbm.blockentity.network.CableBaseBlockEntity;
 import com.hbm.blockentity.network.PipeBaseBlockEntity;
@@ -148,6 +149,20 @@ public class NtmBlockEntityTypes {
 
     public static final Supplier<BlockEntityType<ReactorZirnoxBlockEntity>> REACTOR_ZIRNOX = BLOCK_ENTITY_TYPES.register("machine_zirnox", () -> BlockEntityType.Builder.of(ReactorZirnoxBlockEntity::new, NtmBlocks.REACTOR_ZIRNOX.get()).build(null));
     public static final Supplier<BlockEntityType<ZirnoxDestroyedBlockEntity>> ZIRNOX_DESTROYED = BLOCK_ENTITY_TYPES.register("zirnox_destroyed", () -> BlockEntityType.Builder.of(ZirnoxDestroyedBlockEntity::new, NtmBlocks.ZIRNOX_DESTROYED.get()).build(null));
+
+    public static final Supplier<BlockEntityType<RBMKBlankBlockEntity>> RBMK_BLANK = BLOCK_ENTITY_TYPES.register("rbmk_blank", () -> BlockEntityType.Builder.of(RBMKBlankBlockEntity::new, NtmBlocks.RBMK_BLANK.get()).build(null));
+    public static final Supplier<BlockEntityType<RBMKReflectorBlockEntity>> RBMK_REFLECTOR = BLOCK_ENTITY_TYPES.register("rbmk_reflector", () -> BlockEntityType.Builder.of(RBMKReflectorBlockEntity::new, NtmBlocks.RBMK_REFLECTOR.get()).build(null));
+    public static final Supplier<BlockEntityType<RBMKAbsorberBlockEntity>> RBMK_ABSORBER = BLOCK_ENTITY_TYPES.register("rbmk_absorber", () -> BlockEntityType.Builder.of(RBMKAbsorberBlockEntity::new, NtmBlocks.RBMK_ABSORBER.get()).build(null));
+    public static final Supplier<BlockEntityType<RBMKModeratorBlockEntity>> RBMK_MODERATOR = BLOCK_ENTITY_TYPES.register("rbmk_moderator", () -> BlockEntityType.Builder.of(RBMKModeratorBlockEntity::new, NtmBlocks.RBMK_MODERATOR.get()).build(null));
+    // One type for both fuel channels, as the original's single TileEntityRBMKRod (TileMappings "tileentity_rbmk_rod").
+    public static final Supplier<BlockEntityType<RBMKRodBlockEntity>> RBMK_ROD = BLOCK_ENTITY_TYPES.register("rbmk_rod", () -> BlockEntityType.Builder.of(RBMKRodBlockEntity::new, NtmBlocks.RBMK_ROD.get(), NtmBlocks.RBMK_ROD_MOD.get()).build(null));
+    // One type for both manual control rods, as the original's single TileEntityRBMKControlManual.
+    public static final Supplier<BlockEntityType<RBMKControlManualBlockEntity>> RBMK_CONTROL = BLOCK_ENTITY_TYPES.register("rbmk_control", () -> BlockEntityType.Builder.of(RBMKControlManualBlockEntity::new, NtmBlocks.RBMK_CONTROL.get(), NtmBlocks.RBMK_CONTROL_MOD.get()).build(null));
+    public static final Supplier<BlockEntityType<RBMKControlAutoBlockEntity>> RBMK_CONTROL_AUTO = BLOCK_ENTITY_TYPES.register("rbmk_control_auto", () -> BlockEntityType.Builder.of(RBMKControlAutoBlockEntity::new, NtmBlocks.RBMK_CONTROL_AUTO.get()).build(null));
+    public static final Supplier<BlockEntityType<RBMKBoilerBlockEntity>> RBMK_BOILER = BLOCK_ENTITY_TYPES.register("rbmk_boiler", () -> BlockEntityType.Builder.of(RBMKBoilerBlockEntity::new, NtmBlocks.RBMK_BOILER.get()).build(null));
+    public static final Supplier<BlockEntityType<RBMKHeaterBlockEntity>> RBMK_HEATER = BLOCK_ENTITY_TYPES.register("rbmk_heater", () -> BlockEntityType.Builder.of(RBMKHeaterBlockEntity::new, NtmBlocks.RBMK_HEATER.get()).build(null));
+    public static final Supplier<BlockEntityType<RBMKCoolerBlockEntity>> RBMK_COOLER = BLOCK_ENTITY_TYPES.register("rbmk_cooler", () -> BlockEntityType.Builder.of(RBMKCoolerBlockEntity::new, NtmBlocks.RBMK_COOLER.get()).build(null));
+    public static final Supplier<BlockEntityType<RBMKConsoleBlockEntity>> RBMK_CONSOLE = BLOCK_ENTITY_TYPES.register("rbmk_console", () -> BlockEntityType.Builder.of(RBMKConsoleBlockEntity::new, NtmBlocks.RBMK_CONSOLE.get()).build(null));
 
     public static final Supplier<BlockEntityType<RadioTorchReceiverBlockEntity>> RADIO_TORCH_RECEIVER = BLOCK_ENTITY_TYPES.register("radio_torch_receiver", () -> BlockEntityType.Builder.of(RadioTorchReceiverBlockEntity::new, NtmBlocks.RADIO_TORCH_RECEIVER.get()).build(null));
     public static final Supplier<BlockEntityType<RadioTorchSenderBlockEntity>> RADIO_TORCH_SENDER = BLOCK_ENTITY_TYPES.register("radio_torch_sender", () -> BlockEntityType.Builder.of(RadioTorchSenderBlockEntity::new, NtmBlocks.RADIO_TORCH_SENDER.get()).build(null));

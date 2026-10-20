@@ -1,6 +1,7 @@
 package com.hbm.inventory.fluid;
 
 import api.hbm.fluidmk2.FluidNetMK2;
+import com.hbm.blocks.ITooltipProvider;
 import com.hbm.main.NuclearTechMod;
 import com.hbm.inventory.fluid.tank.FluidTank;
 import com.hbm.inventory.fluid.trait.FT_Corrosive;
@@ -243,11 +244,7 @@ public class FluidType {
         }
 
         if (!hidden.isEmpty() && !shiftHeld) {
-            info.add(
-                    Component.literal("Hold <").withStyle(ChatFormatting.DARK_GRAY, ChatFormatting.ITALIC)
-                            .append(Component.literal("LSHIFT").withStyle(ChatFormatting.YELLOW, ChatFormatting.ITALIC))
-                            .append(Component.literal("> to display more info").withStyle(ChatFormatting.DARK_GRAY, ChatFormatting.ITALIC))
-            );
+            info.add(ITooltipProvider.holdShiftHint());
         }
     }
 

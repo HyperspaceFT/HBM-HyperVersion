@@ -104,6 +104,29 @@ public class CommonConfig {
     public final BooleanValue SCALE_RTG_POWER;
     public final BooleanValue DO_RTGS_DECAY;
 
+    // RBMK (the original's per-world RBMK dial game rules, RBMKDials.java:17-51; read through RBMKDials)
+    public final DoubleValue DIAL_PASSIVE_COOLING;
+    public final DoubleValue DIAL_PASSIVE_COOLING_INNER;
+    public final DoubleValue DIAL_COLUMN_HEAT_FLOW;
+    public final DoubleValue DIAL_DIFFUSION_MOD;
+    public final DoubleValue DIAL_HEAT_PROVISION;
+    public final IntValue DIAL_COLUMN_HEIGHT;
+    public final BooleanValue DIAL_ENABLE_PERMA_SCRAP;
+    public final DoubleValue DIAL_BOILER_HEAT_CONSUMPTION;
+    public final DoubleValue DIAL_CONTROL_SPEED;
+    public final DoubleValue DIAL_REACTIVITY_MOD;
+    public final DoubleValue DIAL_OUTGASSER_SPEED_MOD;
+    public final DoubleValue DIAL_CONTROL_SURGE_MOD;
+    public final IntValue DIAL_FLUX_RANGE;
+    public final BooleanValue DIAL_DISABLE_MELTDOWNS;
+    public final BooleanValue DIAL_ENABLE_MELTDOWN_OVERPRESSURE;
+    public final DoubleValue DIAL_MODERATOR_EFFICIENCY;
+    public final DoubleValue DIAL_ABSORBER_EFFICIENCY;
+    public final DoubleValue DIAL_REFLECTOR_EFFICIENCY;
+    public final BooleanValue DIAL_DISABLE_DEPLETION;
+    public final BooleanValue DIAL_DISABLE_XENON;
+    public final DoubleValue DIAL_ABSORBER_HEAT_CONVERSION;
+
     // POLLUTION (16)
     public final BooleanValue ENABLE_POLLUTION;
 
@@ -253,8 +276,8 @@ public class CommonConfig {
                 .defineInRange("meteorStrikeChance", 40000, 1, Integer.MAX_VALUE);
         METEOR_SHOWER_CHACE = builder
                 .comment("The probability of a meteor spawning during meteor shower (an average of once every nTH ticks).")
-                .translation("hbmsntm.configuration.meteorStrikeChance")
-                .defineInRange("meteorStrikeChance", 18000, 1, Integer.MAX_VALUE);
+                .translation("hbmsntm.configuration.meteorShowerChance")
+                .defineInRange("meteorShowerChance", 18000, 1, Integer.MAX_VALUE);
         METEOR_SHOWER_DURATION = builder
                 .comment("Max duration of meteor shower in ticks.")
                 .translation("hbmsntm.configuration.meteorShowerDuration")
@@ -473,6 +496,99 @@ public class CommonConfig {
                 .comment("Should RTG/Betavoltaic fuel decay at all?")
                 .translation("hbmsntm.configuration.doRTGsDecay")
                 .define("doRTGsDecay", true);
+
+        builder.pop();
+
+        /// RBMK ///
+        // Original RBMKDials (:17-51 keys and defaults, :91-114 clamps, :157-375 comments): per-world game rules there, one
+        // server config here. dialSaveDials does not apply; the three ReaSim dials are deferred with ReaSim.
+        builder.push("rbmk");
+
+        DIAL_PASSIVE_COOLING = builder
+                .comment("Returns the amount of heat per tick removed from components passively, when at an edge")
+                .translation("hbmsntm.configuration.dialPassiveCooling")
+                .defineInRange("dialPassiveCooling", 2.5D, 0D, Double.MAX_VALUE);
+        DIAL_PASSIVE_COOLING_INNER = builder
+                .comment("Returns the amount of heat per tick removed from components passively, when surrounded by other components")
+                .translation("hbmsntm.configuration.dialPassiveCoolingInner")
+                .defineInRange("dialPassiveCoolingInner", 0.1D, 0D, Double.MAX_VALUE);
+        DIAL_COLUMN_HEAT_FLOW = builder
+                .comment("Returns the percentual step size how quickly neighboring component heat equalizes. 1 is instant, 0.5 is in 50% steps, et cetera.")
+                .translation("hbmsntm.configuration.dialColumnHeatFlow")
+                .defineInRange("dialColumnHeatFlow", 0.2D, 0D, 1D);
+        DIAL_DIFFUSION_MOD = builder
+                .comment("Returns a modifier for fuel rod diffusion, i.e. how quickly the core and hull temperatures equalize.")
+                .translation("hbmsntm.configuration.dialDiffusionMod")
+                .defineInRange("dialDiffusionMod", 1.0D, 0D, Double.MAX_VALUE);
+        DIAL_HEAT_PROVISION = builder
+                .comment("Returns the percentual step size how quickly the fuel hull heat and the component heat equalizes. 1 is instant, 0.5 is in 50% steps, et cetera.")
+                .translation("hbmsntm.configuration.dialHeatProvision")
+                .defineInRange("dialHeatProvision", 0.2D, 0D, 1D);
+        DIAL_COLUMN_HEIGHT = builder
+                .comment("Simple integer that decides how tall the structure is.", "Changing it does not resize columns that are already placed.")
+                .translation("hbmsntm.configuration.dialColumnHeight")
+                .defineInRange("dialColumnHeight", 4, 2, 16);
+        DIAL_ENABLE_PERMA_SCRAP = builder
+                .comment("Whether or not scrap entities despawn on their own or remain alive until picked up.")
+                .translation("hbmsntm.configuration.dialEnablePermaScrap")
+                .define("dialEnablePermaScrap", true);
+        DIAL_BOILER_HEAT_CONSUMPTION = builder
+                .comment("How many heat units are consumed per mB water used.")
+                .translation("hbmsntm.configuration.dialBoilerHeatConsumption")
+                .defineInRange("dialBoilerHeatConsumption", 0.1D, 0D, Double.MAX_VALUE);
+        DIAL_CONTROL_SPEED = builder
+                .comment("A multiplier for how quickly the control rods move.")
+                .translation("hbmsntm.configuration.dialControlSpeed")
+                .defineInRange("dialControlSpeed", 1.0D, 0D, Double.MAX_VALUE);
+        DIAL_REACTIVITY_MOD = builder
+                .comment("A multiplier for how much flux the rods give out.")
+                .translation("hbmsntm.configuration.dialReactivityMod")
+                .defineInRange("dialReactivityMod", 1.0D, 0D, Double.MAX_VALUE);
+        // The original repeats the reactivity comment for the outgasser dial (RBMKDials.java:247-254).
+        DIAL_OUTGASSER_SPEED_MOD = builder
+                .comment("A multiplier for how much flux the rods give out.")
+                .translation("hbmsntm.configuration.dialOutgasserSpeedMod")
+                .defineInRange("dialOutgasserSpeedMod", 1.0D, 0D, Double.MAX_VALUE);
+        DIAL_CONTROL_SURGE_MOD = builder
+                .comment("A multiplier for how high the power surge goes when inserting control rods.")
+                .translation("hbmsntm.configuration.dialControlSurgeMod")
+                .defineInRange("dialControlSurgeMod", 1.0D, 0D, Double.MAX_VALUE);
+        DIAL_FLUX_RANGE = builder
+                .comment("Simple integer that decides how far the flux of a normal fuel rod reaches.")
+                .translation("hbmsntm.configuration.dialFluxRange")
+                .defineInRange("dialFluxRange", 5, 1, 100);
+        DIAL_DISABLE_MELTDOWNS = builder
+                .comment("Whether or not fuel columns should initiate a meltdown when overheating")
+                .translation("hbmsntm.configuration.dialDisableMeltdowns")
+                .define("dialDisableMeltdowns", false);
+        DIAL_ENABLE_MELTDOWN_OVERPRESSURE = builder
+                .comment("Whether or not connected pipes and turbines should explode when the reactor undergoes a meltdown.")
+                .translation("hbmsntm.configuration.dialEnableMeltdownOverpressure")
+                .define("dialEnableMeltdownOverpressure", false);
+        DIAL_MODERATOR_EFFICIENCY = builder
+                .comment("The percentage of neutrons to moderate from fast to slow when they pass through a moderator.")
+                .translation("hbmsntm.configuration.dialModeratorEfficiency")
+                .defineInRange("dialModeratorEfficiency", 1.0D, 0D, 1D);
+        DIAL_ABSORBER_EFFICIENCY = builder
+                .comment("The percentage of neutrons to be absorbed when a stream hits an absorber column.")
+                .translation("hbmsntm.configuration.dialAbsorberEfficiency")
+                .defineInRange("dialAbsorberEfficiency", 1.0D, 0D, 1D);
+        DIAL_REFLECTOR_EFFICIENCY = builder
+                .comment("The percentage of neutron to reflect when a stream hits a reflector column.")
+                .translation("hbmsntm.configuration.dialReflectorEfficiency")
+                .defineInRange("dialReflectorEfficiency", 1.0D, 0D, 1D);
+        DIAL_DISABLE_DEPLETION = builder
+                .comment("Whether fuel rods should deplete, disabling this makes rods last forever")
+                .translation("hbmsntm.configuration.dialDisableDepletion")
+                .define("dialDisableDepletion", false);
+        DIAL_DISABLE_XENON = builder
+                .comment("Whether xenon poison should be calculated")
+                .translation("hbmsntm.configuration.dialDisableXenon")
+                .define("dialDisableXenon", false);
+        DIAL_ABSORBER_HEAT_CONVERSION = builder
+                .comment("How many °C are generated per one flux that hits an absorber.")
+                .translation("hbmsntm.configuration.dialAbsorberHeatConversion")
+                .defineInRange("dialAbsorberHeatConversion", 0.05D, 0D, 1D);
 
         builder.pop();
 

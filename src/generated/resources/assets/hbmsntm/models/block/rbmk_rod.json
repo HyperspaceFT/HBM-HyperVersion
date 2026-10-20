@@ -1,0 +1,11 @@
+{
+  "type": "rbmk_element",
+  "parent": "minecraft:block/block",
+  "loader": "hbmsntm:ntm_geometry_loader",
+  "textures": {
+    "fuel": "hbmsntm:block/rbmk/rbmk_element_fuel",
+    "inner": "hbmsntm:block/rbmk/rbmk_element_inner",
+    "side": "hbmsntm:block/rbmk/rbmk_element_side",
+    "top": "hbmsntm:block/rbmk/rbmk_element_top"
+  }
+}

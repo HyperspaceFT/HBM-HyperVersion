@@ -1,0 +1,7 @@
+{
+  "parent": "minecraft:block/cube_column",
+  "textures": {
+    "end": "hbmsntm:block/rbmk/rbmk_blank_top",
+    "side": "hbmsntm:block/rbmk/rbmk_blank_side"
+  }
+}

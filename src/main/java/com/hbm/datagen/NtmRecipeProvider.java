@@ -530,6 +530,260 @@ public class NtmRecipeProvider extends RecipeProvider {
                 .requires(NtmItems.BILLET_TH232.get(), 2)
                 .unlockedBy("has_rod_zirnox_empty", has(NtmItems.ROD_ZIRNOX_EMPTY.get()))
                 .save(recipeOutput, ResourceLocation.fromNamespaceAndPath("hbmsntm", "rod_zirnox_th232"));
+
+        // RBMK: original CraftingManager.java:752-758 (lids and passive columns) and :788-791 (deco blocks). Not registered: both
+        // rbmk_lid_glass rows (:753-754, NEO has no glass_lead or glass_boron) and the rbmk_moderator row (:756, NEO has no graphite
+        // block). The control rods (:760-762) follow the fuel channel below.
+        ShapedRecipeBuilder.shaped(RecipeCategory.MISC, NtmItems.RBMK_LID.get(), 4)
+                .pattern("PPP")
+                .pattern("CCC")
+                .pattern("PPP")
+                .define('P', NtmTags.Items.PLATES_STEEL)
+                .define('C', NtmBlocks.CONCRETE_ASBESTOS.get())
+                .unlockedBy("has_concrete_asbestos", has(NtmBlocks.CONCRETE_ASBESTOS.get()))
+                .save(recipeOutput, ResourceLocation.fromNamespaceAndPath("hbmsntm", "rbmk_lid"));
+        ShapedRecipeBuilder.shaped(RecipeCategory.MISC, NtmBlocks.RBMK_ABSORBER.get(), 1)
+                .pattern("GGG")
+                .pattern("GRG")
+                .pattern("GGG")
+                .define('G', NtmItems.INGOT_BORON.get())
+                .define('R', NtmBlocks.RBMK_BLANK.get())
+                .unlockedBy("has_rbmk_blank", has(NtmBlocks.RBMK_BLANK.get()))
+                .save(recipeOutput, ResourceLocation.fromNamespaceAndPath("hbmsntm", "rbmk_absorber"));
+        ShapedRecipeBuilder.shaped(RecipeCategory.MISC, NtmBlocks.RBMK_REFLECTOR.get(), 1)
+                .pattern("GGG")
+                .pattern("GRG")
+                .pattern("GGG")
+                .define('G', NtmItems.NEUTRON_REFLECTOR.get())
+                .define('R', NtmBlocks.RBMK_BLANK.get())
+                .unlockedBy("has_rbmk_blank", has(NtmBlocks.RBMK_BLANK.get()))
+                .save(recipeOutput, ResourceLocation.fromNamespaceAndPath("hbmsntm", "rbmk_reflector"));
+        ShapedRecipeBuilder.shaped(RecipeCategory.BUILDING_BLOCKS, NtmBlocks.DECO_RBMK.get(), 8)
+                .pattern("R")
+                .define('R', NtmBlocks.RBMK_BLANK.get())
+                .unlockedBy("has_rbmk_blank", has(NtmBlocks.RBMK_BLANK.get()))
+                .save(recipeOutput, ResourceLocation.fromNamespaceAndPath("hbmsntm", "deco_rbmk"));
+        ShapedRecipeBuilder.shaped(RecipeCategory.BUILDING_BLOCKS, NtmBlocks.DECO_RBMK_SMOOTH.get(), 1)
+                .pattern("R")
+                .define('R', NtmBlocks.DECO_RBMK.get())
+                .unlockedBy("has_deco_rbmk", has(NtmBlocks.DECO_RBMK.get()))
+                .save(recipeOutput, ResourceLocation.fromNamespaceAndPath("hbmsntm", "deco_rbmk_smooth"));
+        ShapedRecipeBuilder.shaped(RecipeCategory.MISC, NtmBlocks.RBMK_BLANK.get(), 1)
+                .pattern("RRR")
+                .pattern("R R")
+                .pattern("RRR")
+                .define('R', NtmBlocks.DECO_RBMK.get())
+                .unlockedBy("has_deco_rbmk", has(NtmBlocks.DECO_RBMK.get()))
+                .save(recipeOutput, ResourceLocation.fromNamespaceAndPath("hbmsntm", "rbmk_blank_from_deco_rbmk"));
+        ShapedRecipeBuilder.shaped(RecipeCategory.MISC, NtmBlocks.RBMK_BLANK.get(), 1)
+                .pattern("RRR")
+                .pattern("R R")
+                .pattern("RRR")
+                .define('R', NtmBlocks.DECO_RBMK_SMOOTH.get())
+                .unlockedBy("has_deco_rbmk_smooth", has(NtmBlocks.DECO_RBMK_SMOOTH.get()))
+                .save(recipeOutput, ResourceLocation.fromNamespaceAndPath("hbmsntm", "rbmk_blank_from_deco_rbmk_smooth"));
+        // RBMK fuel channel (Goal24C): original CraftingManager.java:991 (the !enable528 branch); STEEL.shell() is NEO's shell_steel
+        // item (no shell tag). Not registered: rbmk_rod_mod (:992, needs GRAPHITE.block(); NEO has no graphite block, as rbmk_moderator)
+        // and the two tier-4 anvil recycling rows (AnvilRecipes.java:927-938; the 4-tier anvil is unreachable in NEO).
+        ShapedRecipeBuilder.shaped(RecipeCategory.MISC, NtmBlocks.RBMK_ROD.get(), 1)
+                .pattern("C")
+                .pattern("R")
+                .pattern("C")
+                .define('C', NtmItems.SHELL_STEEL.get())
+                .define('R', NtmBlocks.RBMK_BLANK.get())
+                .unlockedBy("has_rbmk_blank", has(NtmBlocks.RBMK_BLANK.get()))
+                .save(recipeOutput, ResourceLocation.fromNamespaceAndPath("hbmsntm", "rbmk_rod"));
+        // RBMK control rods (Goal24D): original CraftingManager.java:760 and :762 (the !enable528 branch); the ADVANCED circuit is NEO's
+        // circuit_military_grade_board. Not registered: rbmk_control_mod (:761, needs GRAPHITE.block(); NEO has no graphite block, as
+        // rbmk_moderator and rbmk_rod_mod), the ReaSim rows (:764-765, Goal 26) and the tier-4 anvil recycling rows
+        // (AnvilRecipes.java:885-901; the 4-tier anvil is unreachable in NEO).
+        ShapedRecipeBuilder.shaped(RecipeCategory.MISC, NtmBlocks.RBMK_CONTROL.get(), 1)
+                .pattern(" B ")
+                .pattern("GRG")
+                .pattern(" B ")
+                .define('G', NtmItems.INGOT_GRAPHITE.get())
+                .define('B', NtmItems.MOTOR.get())
+                .define('R', NtmBlocks.RBMK_ABSORBER.get())
+                .unlockedBy("has_rbmk_absorber", has(NtmBlocks.RBMK_ABSORBER.get()))
+                .save(recipeOutput, ResourceLocation.fromNamespaceAndPath("hbmsntm", "rbmk_control"));
+        ShapedRecipeBuilder.shaped(RecipeCategory.MISC, NtmBlocks.RBMK_CONTROL_AUTO.get(), 1)
+                .pattern("C")
+                .pattern("R")
+                .pattern("D")
+                .define('C', NtmItems.CIRCUIT_MILITARY_GRADE_BOARD.get())
+                .define('R', NtmBlocks.RBMK_CONTROL.get())
+                .define('D', NtmItems.CRT_DISPLAY.get())
+                .unlockedBy("has_rbmk_control", has(NtmBlocks.RBMK_CONTROL.get()))
+                .save(recipeOutput, ResourceLocation.fromNamespaceAndPath("hbmsntm", "rbmk_control_auto"));
+        // RBMK steam connector, steam channel, fluid heater and cooler (Goal24D): original CraftingManager.java:771 (outside the 528
+        // branch) and :993-995 (the !enable528 branch). CU.ingot() is either copper ingot (as for gear_large), CU.pipe(), CU.shell()
+        // and STEEL.shell() are NEO's pipe_copper, shell_copper and shell_steel items (no tags), ANY_PLASTIC.ingot() is the
+        // ntm:ingots_plastic tag (as for screwdriver_desh). Not registered: the tier-4 anvil recycling rows of these columns
+        // (AnvilRecipes.java:868-953; the 4-tier anvil is unreachable in NEO) and the ReaSim steam inlet/outlet rows (Goal 26).
+        ShapedRecipeBuilder.shaped(RecipeCategory.MISC, NtmBlocks.RBMK_LOADER.get(), 1)
+                .pattern("SCS")
+                .pattern("CBC")
+                .pattern("SCS")
+                .define('S', NtmTags.Items.PLATES_STEEL)
+                .define('C', Ingredient.of(NtmItems.INGOT_COPPER.get(), Items.COPPER_INGOT))
+                .define('B', NtmItems.TANK_STEEL.get())
+                .unlockedBy("has_tank_steel", has(NtmItems.TANK_STEEL.get()))
+                .save(recipeOutput, ResourceLocation.fromNamespaceAndPath("hbmsntm", "rbmk_loader"));
+        ShapedRecipeBuilder.shaped(RecipeCategory.MISC, NtmBlocks.RBMK_BOILER.get(), 1)
+                .pattern("CPC")
+                .pattern("CRC")
+                .pattern("CPC")
+                .define('C', NtmItems.PIPE_COPPER.get())
+                .define('P', NtmItems.SHELL_COPPER.get())
+                .define('R', NtmBlocks.RBMK_BLANK.get())
+                .unlockedBy("has_rbmk_blank", has(NtmBlocks.RBMK_BLANK.get()))
+                .save(recipeOutput, ResourceLocation.fromNamespaceAndPath("hbmsntm", "rbmk_boiler"));
+        ShapedRecipeBuilder.shaped(RecipeCategory.MISC, NtmBlocks.RBMK_HEATER.get(), 1)
+                .pattern("CIC")
+                .pattern("PRP")
+                .pattern("CIC")
+                .define('C', NtmItems.PIPE_COPPER.get())
+                .define('P', NtmItems.SHELL_STEEL.get())
+                .define('R', NtmBlocks.RBMK_BLANK.get())
+                .define('I', ItemTags.create(ResourceLocation.fromNamespaceAndPath("ntm", "ingots_plastic")))
+                .unlockedBy("has_rbmk_blank", has(NtmBlocks.RBMK_BLANK.get()))
+                .save(recipeOutput, ResourceLocation.fromNamespaceAndPath("hbmsntm", "rbmk_heater"));
+        ShapedRecipeBuilder.shaped(RecipeCategory.MISC, NtmBlocks.RBMK_COOLER.get(), 1)
+                .pattern("IGI")
+                .pattern("GCG")
+                .pattern("IGI")
+                .define('C', NtmBlocks.RBMK_BLANK.get())
+                .define('I', NtmItems.PLATE_POLYMER.get())
+                .define('G', NtmBlocks.STEEL_GRATE.get())
+                .unlockedBy("has_rbmk_blank", has(NtmBlocks.RBMK_BLANK.get()))
+                .save(recipeOutput, ResourceLocation.fromNamespaceAndPath("hbmsntm", "rbmk_cooler"));
+        // RBMK console and linking device (Goal24E): original CraftingManager.java:989 (the !enable528 branch; B.ingot() is the boron
+        // ingot, KEY_ANYPANE any glass pane, the ANALOG circuit NEO's circuit_analog_board) and ToolRecipes.java:133 (PB.ingot() lead,
+        // IRON.ingot() iron).
+        ShapedRecipeBuilder.shaped(RecipeCategory.MISC, NtmBlocks.RBMK_CONSOLE.get(), 1)
+                .pattern("BBB")
+                .pattern("DGD")
+                .pattern("DCD")
+                .define('B', NtmItems.INGOT_BORON.get())
+                .define('D', NtmBlocks.DECO_RBMK.get())
+                .define('G', Tags.Items.GLASS_PANES)
+                .define('C', NtmItems.CIRCUIT_ANALOG_BOARD.get())
+                .unlockedBy("has_deco_rbmk", has(NtmBlocks.DECO_RBMK.get()))
+                .save(recipeOutput, ResourceLocation.fromNamespaceAndPath("hbmsntm", "rbmk_console"));
+        ShapedRecipeBuilder.shaped(RecipeCategory.TOOLS, NtmItems.RBMK_TOOL.get(), 1)
+                .pattern(" A ")
+                .pattern(" IA")
+                .pattern("I  ")
+                .define('A', NtmItems.INGOT_LEAD.get())
+                .define('I', Items.IRON_INGOT)
+                .unlockedBy("has_ingot_lead", has(NtmItems.INGOT_LEAD.get()))
+                .save(recipeOutput, ResourceLocation.fromNamespaceAndPath("hbmsntm", "rbmk_tool"));
+        // RBMK fuel rods (Goal24B): original RodRecipes.java:89 (empty rod) and :90-120 (addRBMKRod, :242-247: an empty rod and eight
+        // billets). The original's ore dictionary billets (U, U233, U235, PURG, PU239, PU241, AMRG, AM241, AM242, NP237) are NEO's
+        // billet items; rbmk_fuel_drx (:121) is deferred with DRX.
+        ShapedRecipeBuilder.shaped(RecipeCategory.MISC, NtmItems.RBMK_FUEL_EMPTY.get(), 1)
+                .pattern("ZRZ")
+                .pattern("Z Z")
+                .pattern("ZRZ")
+                .define('Z', NtmItems.INGOT_ZIRCONIUM.get())
+                .define('R', NtmItems.ROD_QUAD_EMPTY.get())
+                .unlockedBy("has_rod_quad_empty", has(NtmItems.ROD_QUAD_EMPTY.get()))
+                .save(recipeOutput, ResourceLocation.fromNamespaceAndPath("hbmsntm", "rbmk_fuel_empty"));
+        addRBMKRod(recipeOutput, NtmItems.BILLET_URANIUM.get(), NtmItems.RBMK_FUEL_UEU.get());
+        addRBMKRod(recipeOutput, NtmItems.BILLET_URANIUM_FUEL.get(), NtmItems.RBMK_FUEL_MEU.get());
+        addRBMKRod(recipeOutput, NtmItems.BILLET_U233.get(), NtmItems.RBMK_FUEL_HEU233.get());
+        addRBMKRod(recipeOutput, NtmItems.BILLET_U235.get(), NtmItems.RBMK_FUEL_HEU235.get());
+        addRBMKRod(recipeOutput, NtmItems.BILLET_UZH.get(), NtmItems.RBMK_FUEL_UZH.get());
+        addRBMKRod(recipeOutput, NtmItems.BILLET_THORIUM_FUEL.get(), NtmItems.RBMK_FUEL_THMEU.get());
+        addRBMKRod(recipeOutput, NtmItems.BILLET_MOX_FUEL.get(), NtmItems.RBMK_FUEL_MOX.get());
+        addRBMKRod(recipeOutput, NtmItems.BILLET_PLUTONIUM_FUEL.get(), NtmItems.RBMK_FUEL_LEP.get());
+        addRBMKRod(recipeOutput, NtmItems.BILLET_PU_MIX.get(), NtmItems.RBMK_FUEL_MEP.get());
+        addRBMKRod(recipeOutput, NtmItems.BILLET_PU239.get(), NtmItems.RBMK_FUEL_HEP239.get());
+        addRBMKRod(recipeOutput, NtmItems.BILLET_PU241.get(), NtmItems.RBMK_FUEL_HEP241.get());
+        addRBMKRod(recipeOutput, NtmItems.BILLET_AMERICIUM_FUEL.get(), NtmItems.RBMK_FUEL_LEA.get());
+        addRBMKRod(recipeOutput, NtmItems.BILLET_AM_MIX.get(), NtmItems.RBMK_FUEL_MEA.get());
+        addRBMKRod(recipeOutput, NtmItems.BILLET_AM241.get(), NtmItems.RBMK_FUEL_HEA241.get());
+        addRBMKRod(recipeOutput, NtmItems.BILLET_AM242.get(), NtmItems.RBMK_FUEL_HEA242.get());
+        addRBMKRod(recipeOutput, NtmItems.BILLET_NEPTUNIUM_FUEL.get(), NtmItems.RBMK_FUEL_MEN.get());
+        addRBMKRod(recipeOutput, NtmItems.BILLET_NEPTUNIUM.get(), NtmItems.RBMK_FUEL_HEN.get());
+        addRBMKRod(recipeOutput, NtmItems.BILLET_PO210BE.get(), NtmItems.RBMK_FUEL_PO210BE.get());
+        addRBMKRod(recipeOutput, NtmItems.BILLET_RA226BE.get(), NtmItems.RBMK_FUEL_RA226BE.get());
+        addRBMKRod(recipeOutput, NtmItems.BILLET_PU238BE.get(), NtmItems.RBMK_FUEL_PU238BE.get());
+        addRBMKRod(recipeOutput, NtmItems.BILLET_AUSTRALIUM_LESSER.get(), NtmItems.RBMK_FUEL_LEAUS.get());
+        addRBMKRod(recipeOutput, NtmItems.BILLET_AUSTRALIUM_GREATER.get(), NtmItems.RBMK_FUEL_HEAUS.get());
+        addRBMKRod(recipeOutput, NtmItems.EGG_BALEFIRE_SHARD.get(), NtmItems.RBMK_FUEL_BALEFIRE.get());
+        addRBMKRod(recipeOutput, NtmItems.BILLET_LES.get(), NtmItems.RBMK_FUEL_LES.get());
+        addRBMKRod(recipeOutput, NtmItems.BILLET_SCHRABIDIUM_FUEL.get(), NtmItems.RBMK_FUEL_MES.get());
+        addRBMKRod(recipeOutput, NtmItems.BILLET_HES.get(), NtmItems.RBMK_FUEL_HES.get());
+        addRBMKRod(recipeOutput, NtmItems.BILLET_BALEFIRE_GOLD.get(), NtmItems.RBMK_FUEL_BALEFIRE_GOLD.get());
+        addRBMKRod(recipeOutput, NtmItems.BILLET_FLASHLEAD.get(), NtmItems.RBMK_FUEL_FLASHLEAD.get());
+        addRBMKRod(recipeOutput, NtmItems.BILLET_ZFB_BISMUTH.get(), NtmItems.RBMK_FUEL_ZFB_BISMUTH.get());
+        addRBMKRod(recipeOutput, NtmItems.BILLET_ZFB_PU241.get(), NtmItems.RBMK_FUEL_ZFB_PU241.get());
+        addRBMKRod(recipeOutput, NtmItems.BILLET_ZFB_AM_MIX.get(), NtmItems.RBMK_FUEL_ZFB_AM_MIX.get());
+        // Beryllium neutron source billets, original MineralRecipes.java:183-191: three Po-210/Pu-238/Ra-226 and three beryllium
+        // nuggets make one billet, one billet each make two, three each make six.
+        addBerylliumSource(recipeOutput, "po210be", NtmItems.NUGGET_POLONIUM.get(), NtmItems.BILLET_POLONIUM.get(), NtmItems.BILLET_PO210BE.get());
+        addBerylliumSource(recipeOutput, "pu238be", NtmItems.NUGGET_PU238.get(), NtmItems.BILLET_PU238.get(), NtmItems.BILLET_PU238BE.get());
+        addBerylliumSource(recipeOutput, "ra226be", NtmItems.NUGGET_RA226.get(), NtmItems.BILLET_RA226.get(), NtmItems.BILLET_RA226BE.get());
+        // Zirconium fast breeder billets, original MineralRecipes.java:193-198: six nuggets make one billet, six billets make six.
+        // The original's U.nugget()/U.billet() is natural uranium.
+        ShapelessRecipeBuilder.shapeless(RecipeCategory.MISC, NtmItems.BILLET_ZFB_BISMUTH.get(), 1)
+                .requires(NtmItems.NUGGET_ZIRCONIUM.get(), 3)
+                .requires(NtmItems.NUGGET_URANIUM.get())
+                .requires(NtmItems.NUGGET_PU241.get())
+                .requires(NtmItems.NUGGET_BISMUTH.get())
+                .unlockedBy("has_nugget_zirconium", has(NtmItems.NUGGET_ZIRCONIUM.get()))
+                .save(recipeOutput, ResourceLocation.fromNamespaceAndPath("hbmsntm", "billet_zfb_bismuth_from_nuggets"));
+        ShapelessRecipeBuilder.shapeless(RecipeCategory.MISC, NtmItems.BILLET_ZFB_PU241.get(), 1)
+                .requires(NtmItems.NUGGET_ZIRCONIUM.get(), 3)
+                .requires(NtmItems.NUGGET_U235.get())
+                .requires(NtmItems.NUGGET_PU240.get())
+                .requires(NtmItems.NUGGET_PU241.get())
+                .unlockedBy("has_nugget_zirconium", has(NtmItems.NUGGET_ZIRCONIUM.get()))
+                .save(recipeOutput, ResourceLocation.fromNamespaceAndPath("hbmsntm", "billet_zfb_pu241_from_nuggets"));
+        ShapelessRecipeBuilder.shapeless(RecipeCategory.MISC, NtmItems.BILLET_ZFB_AM_MIX.get(), 1)
+                .requires(NtmItems.NUGGET_ZIRCONIUM.get(), 3)
+                .requires(NtmItems.NUGGET_PU241.get(), 2)
+                .requires(NtmItems.NUGGET_AM_MIX.get())
+                .unlockedBy("has_nugget_zirconium", has(NtmItems.NUGGET_ZIRCONIUM.get()))
+                .save(recipeOutput, ResourceLocation.fromNamespaceAndPath("hbmsntm", "billet_zfb_am_mix_from_nuggets"));
+        ShapelessRecipeBuilder.shapeless(RecipeCategory.MISC, NtmItems.BILLET_ZFB_BISMUTH.get(), 6)
+                .requires(NtmItems.BILLET_ZIRCONIUM.get(), 3)
+                .requires(NtmItems.BILLET_URANIUM.get())
+                .requires(NtmItems.BILLET_PU241.get())
+                .requires(NtmItems.BILLET_BISMUTH.get())
+                .unlockedBy("has_billet_zirconium", has(NtmItems.BILLET_ZIRCONIUM.get()))
+                .save(recipeOutput, ResourceLocation.fromNamespaceAndPath("hbmsntm", "billet_zfb_bismuth_from_billets"));
+        ShapelessRecipeBuilder.shapeless(RecipeCategory.MISC, NtmItems.BILLET_ZFB_PU241.get(), 6)
+                .requires(NtmItems.BILLET_ZIRCONIUM.get(), 3)
+                .requires(NtmItems.BILLET_U235.get())
+                .requires(NtmItems.BILLET_PU240.get())
+                .requires(NtmItems.BILLET_PU241.get())
+                .unlockedBy("has_billet_zirconium", has(NtmItems.BILLET_ZIRCONIUM.get()))
+                .save(recipeOutput, ResourceLocation.fromNamespaceAndPath("hbmsntm", "billet_zfb_pu241_from_billets"));
+        ShapelessRecipeBuilder.shapeless(RecipeCategory.MISC, NtmItems.BILLET_ZFB_AM_MIX.get(), 6)
+                .requires(NtmItems.BILLET_ZIRCONIUM.get(), 3)
+                .requires(NtmItems.BILLET_PU241.get(), 2)
+                .requires(NtmItems.BILLET_AM_MIX.get())
+                .unlockedBy("has_billet_zirconium", has(NtmItems.BILLET_ZIRCONIUM.get()))
+                .save(recipeOutput, ResourceLocation.fromNamespaceAndPath("hbmsntm", "billet_zfb_am_mix_from_billets"));
+        // Screwdrivers, original ToolRecipes.java:139-140; ANY_PLASTIC.ingot() is the ntm:ingots_plastic tag (polymer and bakelite).
+        ShapedRecipeBuilder.shaped(RecipeCategory.TOOLS, NtmItems.SCREWDRIVER.get(), 1)
+                .pattern("  I")
+                .pattern(" I ")
+                .pattern("S  ")
+                .define('I', Items.IRON_INGOT)
+                .define('S', NtmItems.INGOT_STEEL.get())
+                .unlockedBy("has_ingot_steel", has(NtmItems.INGOT_STEEL.get()))
+                .save(recipeOutput, ResourceLocation.fromNamespaceAndPath("hbmsntm", "screwdriver"));
+        ShapedRecipeBuilder.shaped(RecipeCategory.TOOLS, NtmItems.SCREWDRIVER_DESH.get(), 1)
+                .pattern("  I")
+                .pattern(" I ")
+                .pattern("S  ")
+                .define('I', NtmItems.INGOT_DESH.get())
+                .define('S', ItemTags.create(ResourceLocation.fromNamespaceAndPath("ntm", "ingots_plastic")))
+                .unlockedBy("has_ingot_desh", has(NtmItems.INGOT_DESH.get()))
+                .save(recipeOutput, ResourceLocation.fromNamespaceAndPath("hbmsntm", "screwdriver_desh"));
         // Original RodRecipes.java:28: an empty rod and two uranium fuel billets make the (low-)enriched uranium fuel rod; the
         // output carries no "life" data.
         ShapelessRecipeBuilder.shapeless(RecipeCategory.MISC, MetaHelper.newStack(NtmItems.ROD_ZIRNOX.get(), 1, ZirnoxType.URANIUM_FUEL.ordinal()))
@@ -1649,6 +1903,34 @@ public class NtmRecipeProvider extends RecipeProvider {
         addHoeRecipe(recipeOutput, NtmItems.SCHRABIDIUM_HOE.get(), NtmItems.INGOT_SCHRABIDIUM.get(), "schrabidium_hoe");
 
         registerMaterialConversionRecipes(recipeOutput);
+    }
+
+    /** Original RodRecipes.addRBMKRod (:242-247); the recipe id is the rod's item id. */
+    private void addRBMKRod(RecipeOutput recipeOutput, Item billet, Item rod) {
+        ShapelessRecipeBuilder.shapeless(RecipeCategory.MISC, rod, 1)
+                .requires(NtmItems.RBMK_FUEL_EMPTY.get())
+                .requires(billet, 8)
+                .unlockedBy("has_rbmk_fuel_empty", has(NtmItems.RBMK_FUEL_EMPTY.get()))
+                .save(recipeOutput, ResourceLocation.fromNamespaceAndPath("hbmsntm", BuiltInRegistries.ITEM.getKey(rod).getPath()));
+    }
+
+    /** Original MineralRecipes.java:183-191, the three rows of one beryllium neutron source billet. */
+    private void addBerylliumSource(RecipeOutput recipeOutput, String name, Item nugget, Item billet, Item result) {
+        ShapelessRecipeBuilder.shapeless(RecipeCategory.MISC, result, 1)
+                .requires(nugget, 3)
+                .requires(NtmItems.NUGGET_BERYLLIUM.get(), 3)
+                .unlockedBy("has_nugget_beryllium", has(NtmItems.NUGGET_BERYLLIUM.get()))
+                .save(recipeOutput, ResourceLocation.fromNamespaceAndPath("hbmsntm", "billet_" + name + "_from_nuggets"));
+        ShapelessRecipeBuilder.shapeless(RecipeCategory.MISC, result, 2)
+                .requires(billet)
+                .requires(NtmItems.BILLET_BERYLLIUM.get())
+                .unlockedBy("has_billet_beryllium", has(NtmItems.BILLET_BERYLLIUM.get()))
+                .save(recipeOutput, ResourceLocation.fromNamespaceAndPath("hbmsntm", "billet_" + name + "_from_billet"));
+        ShapelessRecipeBuilder.shapeless(RecipeCategory.MISC, result, 6)
+                .requires(billet, 3)
+                .requires(NtmItems.BILLET_BERYLLIUM.get(), 3)
+                .unlockedBy("has_billet_beryllium", has(NtmItems.BILLET_BERYLLIUM.get()))
+                .save(recipeOutput, ResourceLocation.fromNamespaceAndPath("hbmsntm", "billet_" + name + "_from_billets"));
     }
 
     private void addNuggetCrafting(RecipeOutput recipeOutput, Item result, Item nugget) {

@@ -19,13 +19,14 @@ public interface ITooltipProvider {
                 tooltip.add(Component.literal(s).withStyle(ChatFormatting.YELLOW));
             }
         } else {
-            tooltip.add(
-                    Component.literal("Hold <")
-                            .withStyle(ChatFormatting.DARK_GRAY, ChatFormatting.ITALIC)
-                            .append(Component.literal("LSHIFT").withStyle(ChatFormatting.YELLOW, ChatFormatting.ITALIC))
-                            .append(Component.literal("> to display more info").withStyle(ChatFormatting.DARK_GRAY, ChatFormatting.ITALIC))
-            );
+            tooltip.add(holdShiftHint());
         }
+    }
+
+    /** "Hold <LSHIFT> to display more info": hard-coded English in the original (FluidType, ITooltipProvider); one NEO-local key. */
+    static Component holdShiftHint() {
+        return Component.translatable("desc.misc.holdShiftMoreInfo", Component.literal("LSHIFT").withStyle(ChatFormatting.YELLOW, ChatFormatting.ITALIC))
+                .withStyle(ChatFormatting.DARK_GRAY, ChatFormatting.ITALIC);
     }
 
     static String[] getDescription(ItemStack stack) {

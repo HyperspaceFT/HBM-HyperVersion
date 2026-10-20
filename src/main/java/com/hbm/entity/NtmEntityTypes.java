@@ -99,6 +99,7 @@ public class NtmEntityTypes {
     // 8 chunks = 128 blocks, matching DebrisBase's render distance (the original tracked it at 1000 blocks, EntityMappings.java:134).
     // Fire immune: the original debris never runs the vanilla entity update, so it never burns.
     public static final DeferredHolder<EntityType<?>, EntityType<ZirnoxDebris>> ZIRNOX_DEBRIS = ENTITY_TYPES.register("zirnox_debris", () -> EntityType.Builder.<ZirnoxDebris>of(ZirnoxDebris::new, MobCategory.MISC).sized(0.5F, 0.5F).clientTrackingRange(8).fireImmune().build("zirnox_debris"));
+    public static final DeferredHolder<EntityType<?>, EntityType<RBMKDebris>> RBMK_DEBRIS = ENTITY_TYPES.register("rbmk_debris", () -> EntityType.Builder.<RBMKDebris>of(RBMKDebris::new, MobCategory.MISC).sized(0.5F, 0.5F).clientTrackingRange(8).fireImmune().build("rbmk_debris"));
     public static final DeferredHolder<EntityType<?>, EntityType<StrayCog>> STRAY_COG = ENTITY_TYPES.register("stray_cog", () -> EntityType.Builder.<StrayCog>of(StrayCog::new, MobCategory.MISC).sized(1.0F, 1.0F).build("stray_cog"));
 
     public static final DeferredHolder<EntityType<?>, EntityType<Rocket>> ROCKET = ENTITY_TYPES.register("rocket", () -> EntityType.Builder.of(Rocket::new, MobCategory.MISC).sized(0.5F, 0.5F).build("rocket"));

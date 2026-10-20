@@ -151,7 +151,8 @@ public class MachineTurbofanBlockEntity extends MachineBaseBlockEntity implement
         this.upgradeManager.checkSlots(this.slots, SLOT_AFTERBURNER, SLOT_AFTERBURNER);
         this.afterburner = this.upgradeManager.getLevel(UpgradeType.AFTERBURN);
         this.redstonePowered = false;
-        for(DirPos pos : this.getConPos()) {
+        // Upstream aee05a40f probes the port cells themselves; pipes and cables still connect at getConPos, one block further out.
+        for(DirPos pos : getPortProxies(this.worldPosition, this.getBlockState().getValue(DummyableBlock.FACING))) {
             if(this.level.hasChunkAt(pos.makeCompat()) && this.level.hasNeighborSignal(pos.makeCompat())) { this.redstonePowered = true; break; }
         }
         this.generate(this.redstonePowered);

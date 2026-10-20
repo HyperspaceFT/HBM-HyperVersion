@@ -165,7 +165,8 @@ public class ContaminationUtil {
         }
 
         if(entity instanceof Player player) {
-            if(player.isCreative() || player.isSpectator() && type != ContaminationType.NONE && type != ContaminationType.DIGAMMA_ROBE) return;
+            // Original: creative mode exempts every type except NONE and DIGAMMA2 (NEO DIGAMMA_ROBE); spectators likewise (NEO-only).
+            if((player.isCreative() || player.isSpectator()) && type != ContaminationType.NONE && type != ContaminationType.DIGAMMA_ROBE) return;
             if(player.tickCount < 200) return;
         }
 

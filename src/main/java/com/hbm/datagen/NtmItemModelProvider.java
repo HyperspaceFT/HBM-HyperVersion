@@ -760,6 +760,42 @@ public class NtmItemModelProvider extends ItemModelProvider {
         this.basicItem(NtmItems.DEBRIS_EXCHANGER.get());
         this.basicItem(NtmItems.DEBRIS_SHRAPNEL.get());
         this.basicItem(NtmItems.DEBRIS_ELEMENT.get());
+        this.basicItem(NtmItems.DEBRIS_FUEL.get());
+        this.basicItem(NtmItems.RBMK_LID.get());
+        this.basicItem(NtmItems.RBMK_LID_GLASS.get());
+        // RBMK fuel (Goal24B); the pellets use ICustomItemModelRegister (RBMKPelletItem).
+        this.basicItem(NtmItems.RBMK_FUEL_EMPTY.get());
+        this.basicItem(NtmItems.RBMK_FUEL_UEU.get());
+        this.basicItem(NtmItems.RBMK_FUEL_MEU.get());
+        this.basicItem(NtmItems.RBMK_FUEL_HEU233.get());
+        this.basicItem(NtmItems.RBMK_FUEL_HEU235.get());
+        this.basicItem(NtmItems.RBMK_FUEL_UZH.get());
+        this.basicItem(NtmItems.RBMK_FUEL_THMEU.get());
+        this.basicItem(NtmItems.RBMK_FUEL_LEP.get());
+        this.basicItem(NtmItems.RBMK_FUEL_MEP.get());
+        this.basicCustomLayerItem(NtmItems.RBMK_FUEL_HEP239.get(), "rbmk_fuel_hep"); // original texture name, ModItems.java:3144
+        this.basicItem(NtmItems.RBMK_FUEL_HEP241.get());
+        this.basicItem(NtmItems.RBMK_FUEL_LEA.get());
+        this.basicItem(NtmItems.RBMK_FUEL_MEA.get());
+        this.basicItem(NtmItems.RBMK_FUEL_HEA241.get());
+        this.basicItem(NtmItems.RBMK_FUEL_HEA242.get());
+        this.basicItem(NtmItems.RBMK_FUEL_MEN.get());
+        this.basicItem(NtmItems.RBMK_FUEL_HEN.get());
+        this.basicItem(NtmItems.RBMK_FUEL_MOX.get());
+        this.basicItem(NtmItems.RBMK_FUEL_LES.get());
+        this.basicItem(NtmItems.RBMK_FUEL_MES.get());
+        this.basicItem(NtmItems.RBMK_FUEL_HES.get());
+        this.basicItem(NtmItems.RBMK_FUEL_LEAUS.get());
+        this.basicItem(NtmItems.RBMK_FUEL_HEAUS.get());
+        this.basicItem(NtmItems.RBMK_FUEL_PO210BE.get());
+        this.basicItem(NtmItems.RBMK_FUEL_RA226BE.get());
+        this.basicItem(NtmItems.RBMK_FUEL_PU238BE.get());
+        this.basicItem(NtmItems.RBMK_FUEL_BALEFIRE_GOLD.get());
+        this.basicItem(NtmItems.RBMK_FUEL_FLASHLEAD.get());
+        this.basicItem(NtmItems.RBMK_FUEL_BALEFIRE.get());
+        this.basicItem(NtmItems.RBMK_FUEL_ZFB_BISMUTH.get());
+        this.basicItem(NtmItems.RBMK_FUEL_ZFB_PU241.get());
+        this.basicItem(NtmItems.RBMK_FUEL_ZFB_AM_MIX.get());
         this.basicItem(NtmItems.FALLOUT_PILE.get());
 
         this.basicItem(NtmItems.SPAWN_DUCK.get());
@@ -920,6 +956,7 @@ public class NtmItemModelProvider extends ItemModelProvider {
         this.handheldItem(NtmItems.DEFUSER.get());
         this.handheldItem(NtmItems.REACHER.get());
         this.basicItem(NtmItems.MELTDOWN_TOOL.get());
+        this.basicItem(NtmItems.RBMK_TOOL.get());
         this.handheldItem(NtmItems.DRILL_TITANIUM.get());
 
         this.handheldItem(NtmItems.UPGRADE_TEMPLATE.get());

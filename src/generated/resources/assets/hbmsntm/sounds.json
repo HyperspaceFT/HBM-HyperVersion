@@ -154,6 +154,14 @@
       "hbmsntm:block/rbmk_explosion"
     ]
   },
+  "block.shutdown": {
+    "sounds": [
+      {
+        "name": "hbmsntm:block/shutdown",
+        "stream": true
+      }
+    ]
+  },
   "block.sonar_ping": {
     "sounds": [
       "hbmsntm:block/sonar_ping"

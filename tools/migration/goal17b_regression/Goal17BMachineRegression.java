@@ -57,8 +57,11 @@ public class Goal17BMachineRegression extends Goal14CMachineRegression {
         check(b.tank.getFill()==0&&b.power==0&&b.wasOn,"noncombustible still consumed");
         for(Direction facing:new Direction[]{Direction.NORTH,Direction.SOUTH,Direction.EAST,Direction.WEST}){
             for(int port=0;port<4;port++){
-                scenario();l=fresh();b=turbine(l,0,facing,3,Fluids.KEROSENE,10);l.powered.add(b.getConPos()[port].makeCompat());step(l,b);
-                check(b.tank.getFill()==10&&b.power==0&&!b.wasOn&&b.redstonePowered,"each external redstone stops burn "+facing+port);
+                // Goal24A: upstream aee05a40f moved the redstone probe to the port cells; connections stay at getConPos.
+                scenario();l=fresh();b=turbine(l,0,facing,3,Fluids.KEROSENE,10);l.powered.add(MachineTurbofanBlockEntity.getPortProxies(b.getBlockPos(),facing)[port].makeCompat());step(l,b);
+                check(b.tank.getFill()==10&&b.power==0&&!b.wasOn&&b.redstonePowered,"each port-cell redstone stops burn "+facing+port);
+                scenario();l=fresh();b=turbine(l,0,facing,3,Fluids.KEROSENE,4);l.powered.add(b.getConPos()[port].makeCompat());step(l,b);
+                check(b.output==30800&&!b.redstonePowered,"connection cell 2 out no longer redstone input (aee05a40f) "+facing+port);
             }
             scenario();l=fresh();b=turbine(l,0,facing,3,Fluids.KEROSENE,4);l.powered.add(b.getBlockPos());step(l,b);
             check(b.output==30800,"core position is not external redstone input "+facing);
@@ -87,7 +90,7 @@ public class Goal17BMachineRegression extends Goal14CMachineRegression {
             check(b.smoke.getFill()==produced&&b.smokeLeaded.getFill()==0&&b.smokePoison.getFill()==0&&PollutionHandler.CALLS.isEmpty(),"ceil real soot scaled by burnt mB*5 A"+a);
             b.smoke.setFill(150-produced);l.time=39;step(l,b);check(b.smoke.getFill()==150&&PollutionHandler.CALLS.isEmpty(),"exact full has no pollution");
             l.time=59;step(l,b);check(b.smoke.getFill()==150&&PollutionHandler.CALLS.size()==1&&Math.abs(PollutionHandler.CALLS.get(0).amount()-produced/100F)<1e-6,"only the call's "+produced+"mB overflow /100");
-            l.powered.add(b.getConPos()[0].makeCompat());l.time=79;step(l,b);check(PollutionHandler.CALLS.size()==1,"redstone20 no pollution");
+            l.powered.add(MachineTurbofanBlockEntity.getPortProxies(b.getBlockPos(),Direction.NORTH)[0].makeCompat());l.time=79;step(l,b);check(PollutionHandler.CALLS.size()==1,"redstone20 no pollution");
         }
         scenario();Level l=fresh();Fluids.WATER.addTraits(new FT_Polluting().burn(PollutionType.SOOT,.000605F).burn(PollutionType.HEAVYMETAL,.0745F).burn(PollutionType.POISON,.07505F));
         var b=turbine(l,0,Direction.NORTH,3,Fluids.WATER,100);l.time=19;step(l,b);
@@ -109,7 +112,7 @@ public class Goal17BMachineRegression extends Goal14CMachineRegression {
         check(PACK.getCharge(b.slots.get(3))==123,"shift keeps real battery component");
         check(!b.canPlaceItem(2,upgrade(UpgradeType.AFTERBURN,0))&&!b.canPlaceItem(2,upgrade(UpgradeType.AFTERBURN,4))&&!b.canPlaceItem(2,upgrade(UpgradeType.SPEED,3)),"ordinary afterburn only1..3");
         for(Direction d:Direction.values())check(b.getSlotsForFace(d).length==0&&!b.canTakeItemThroughFace(3,values[3],d),"original no sided slots "+d);
-        full.set(NtmDataComponents.COLTAN_Z.get(),7);scenario();l=fresh();b=turbine(l,0,Direction.NORTH,0,Fluids.KEROSENE,0);l.powered.add(b.getConPos()[0].makeCompat());b.slots.set(0,full.copy());b.dirty=0;step(l,b);
+        full.set(NtmDataComponents.COLTAN_Z.get(),7);scenario();l=fresh();b=turbine(l,0,Direction.NORTH,0,Fluids.KEROSENE,0);l.powered.add(MachineTurbofanBlockEntity.getPortProxies(b.getBlockPos(),Direction.NORTH)[0].makeCompat());b.slots.set(0,full.copy());b.dirty=0;step(l,b);
         check(b.tank.getFill()==1000&&b.slots.get(0).isEmpty()&&!b.slots.get(1).isEmpty()&&Objects.equals(b.slots.get(1).get(NtmDataComponents.COLTAN_Z.get()),7)&&b.dirty>0,"container loads while redstone stopped and saves components");
         for(ItemStack bad:new ItemStack[]{new ItemStack(NtmItems.FLUID_TANK_EMPTY.get(),64),new ItemStack(Items.STICK)}){
             scenario();b.slots.set(0,full.copy());b.slots.set(1,bad);step(l,b);check(b.tank.getFill()==1000&&!b.slots.get(0).isEmpty(),"atomic wrong/full return");

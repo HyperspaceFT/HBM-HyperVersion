@@ -230,6 +230,22 @@ public class ClientProxy extends ServerProxy {
         //ZIRNOX
         BlockEntityRenderers.register(NtmBlockEntityTypes.REACTOR_ZIRNOX.get(), new RenderZirnox());
         BlockEntityRenderers.register(NtmBlockEntityTypes.ZIRNOX_DESTROYED.get(), new RenderZirnoxDestroyed());
+        //RBMK lids
+        BlockEntityRenderers.register(NtmBlockEntityTypes.RBMK_BLANK.get(), new RenderRBMKLid<>());
+        BlockEntityRenderers.register(NtmBlockEntityTypes.RBMK_MODERATOR.get(), new RenderRBMKLid<>());
+        BlockEntityRenderers.register(NtmBlockEntityTypes.RBMK_ABSORBER.get(), new RenderRBMKLid<>());
+        BlockEntityRenderers.register(NtmBlockEntityTypes.RBMK_REFLECTOR.get(), new RenderRBMKLid<>());
+        BlockEntityRenderers.register(NtmBlockEntityTypes.RBMK_COOLER.get(), new RenderRBMKLid<>());
+        //RBMK fuel channels: lid, rods and Cherenkov glow
+        BlockEntityRenderers.register(NtmBlockEntityTypes.RBMK_ROD.get(), new RenderRBMKRod());
+        //RBMK control rods: pipe stubs and the moving rod head
+        BlockEntityRenderers.register(NtmBlockEntityTypes.RBMK_CONTROL.get(), new RenderRBMKControl());
+        BlockEntityRenderers.register(NtmBlockEntityTypes.RBMK_CONTROL_AUTO.get(), new RenderRBMKControl());
+        //RBMK steam channel and fluid heater: pipe stubs without a lid, the lid with one
+        BlockEntityRenderers.register(NtmBlockEntityTypes.RBMK_BOILER.get(), new RenderRBMKPiped<>());
+        BlockEntityRenderers.register(NtmBlockEntityTypes.RBMK_HEATER.get(), new RenderRBMKPiped<>());
+        //RBMK console: model, column squares and screen texts
+        BlockEntityRenderers.register(NtmBlockEntityTypes.RBMK_CONSOLE.get(), new RenderRBMKConsole());
         //missile blocks
         BlockEntityRenderers.register(NtmBlockEntityTypes.LAUNCH_PAD.get(), new RenderLaunchPad());
         BlockEntityRenderers.register(NtmBlockEntityTypes.LAUNCH_PAD_LARGE.get(), new RenderLaunchPadLarge());
@@ -248,6 +264,7 @@ public class ClientProxy extends ServerProxy {
         EntityRenderers.register(NtmEntityTypes.RUBBLE.get(), RenderRubble::new);
         EntityRenderers.register(NtmEntityTypes.SHRAPNEL.get(), RenderShrapnel::new);
         EntityRenderers.register(NtmEntityTypes.ZIRNOX_DEBRIS.get(), RenderZirnoxDebris::new);
+        EntityRenderers.register(NtmEntityTypes.RBMK_DEBRIS.get(), RenderRBMKDebris::new);
         EntityRenderers.register(NtmEntityTypes.STRAY_COG.get(), RenderStrayCog::new);
         EntityRenderers.register(NtmEntityTypes.ROCKET.get(), ThrownItemRenderer::new);
         EntityRenderers.register(NtmEntityTypes.EMP.get(), EmptyEntityRenderer::new);

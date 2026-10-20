@@ -1,0 +1,32 @@
+{
+  "parent": "minecraft:recipes/root",
+  "criteria": {
+    "has_deco_rbmk_smooth": {
+      "conditions": {
+        "items": [
+          {
+            "items": "hbmsntm:deco_rbmk_smooth"
+          }
+        ]
+      },
+      "trigger": "minecraft:inventory_changed"
+    },
+    "has_the_recipe": {
+      "conditions": {
+        "recipe": "hbmsntm:rbmk_blank_from_deco_rbmk_smooth"
+      },
+      "trigger": "minecraft:recipe_unlocked"
+    }
+  },
+  "requirements": [
+    [
+      "has_the_recipe",
+      "has_deco_rbmk_smooth"
+    ]
+  ],
+  "rewards": {
+    "recipes": [
+      "hbmsntm:rbmk_blank_from_deco_rbmk_smooth"
+    ]
+  }
+}

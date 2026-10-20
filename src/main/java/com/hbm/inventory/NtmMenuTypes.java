@@ -54,6 +54,12 @@ public class NtmMenuTypes {
     public static final DeferredHolder<MenuType<?>, MenuType<MachinePressMenu>> PRESS = reg("press", MachinePressMenu::new);
 
     public static final DeferredHolder<MenuType<?>, MenuType<ReactorZirnoxMenu>> REACTOR_ZIRNOX = reg("machine_zirnox", ReactorZirnoxMenu::new);
+    public static final DeferredHolder<MenuType<?>, MenuType<RBMKRodMenu>> RBMK_ROD = reg("rbmk_rod", RBMKRodMenu::new);
+    public static final DeferredHolder<MenuType<?>, MenuType<RBMKControlMenu>> RBMK_CONTROL = reg("rbmk_control", RBMKControlMenu::new);
+    public static final DeferredHolder<MenuType<?>, MenuType<RBMKControlAutoMenu>> RBMK_CONTROL_AUTO = reg("rbmk_control_auto", RBMKControlAutoMenu::new);
+    public static final DeferredHolder<MenuType<?>, MenuType<RBMKBoilerMenu>> RBMK_BOILER = reg("rbmk_boiler", RBMKBoilerMenu::new);
+    public static final DeferredHolder<MenuType<?>, MenuType<RBMKHeaterMenu>> RBMK_HEATER = reg("rbmk_heater", RBMKHeaterMenu::new);
+    public static final DeferredHolder<MenuType<?>, MenuType<RBMKConsoleMenu>> RBMK_CONSOLE = reg("rbmk_console", RBMKConsoleMenu::new);
 
     public static final DeferredHolder<MenuType<?>, MenuType<MachineFluidTankMenu>> FLUID_TANK = reg("fluid_tank", MachineFluidTankMenu::new);
 

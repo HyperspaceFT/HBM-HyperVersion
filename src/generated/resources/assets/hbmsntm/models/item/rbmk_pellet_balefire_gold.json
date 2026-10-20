@@ -1,0 +1,39 @@
+{
+  "parent": "minecraft:item/generated",
+  "overrides": [
+    {
+      "model": "hbmsntm:item/rbmk_pellet_balefire_gold_0",
+      "predicate": {
+        "hbmsntm:item_meta": 0.0
+      }
+    },
+    {
+      "model": "hbmsntm:item/rbmk_pellet_balefire_gold_1",
+      "predicate": {
+        "hbmsntm:item_meta": 1.0
+      }
+    },
+    {
+      "model": "hbmsntm:item/rbmk_pellet_balefire_gold_2",
+      "predicate": {
+        "hbmsntm:item_meta": 2.0
+      }
+    },
+    {
+      "model": "hbmsntm:item/rbmk_pellet_balefire_gold_3",
+      "predicate": {
+        "hbmsntm:item_meta": 3.0
+      }
+    },
+    {
+      "model": "hbmsntm:item/rbmk_pellet_balefire_gold_4",
+      "predicate": {
+        "hbmsntm:item_meta": 4.0
+      }
+    }
+  ],
+  "textures": {
+    "layer0": "hbmsntm:item/rbmk_pellet_balefire_gold",
+    "layer1": "hbmsntm:item/rbmk_pellet_overlay_e0"
+  }
+}

@@ -1,0 +1,69 @@
+{
+  "parent": "minecraft:item/generated",
+  "overrides": [
+    {
+      "model": "hbmsntm:item/rbmk_pellet_mes_0",
+      "predicate": {
+        "hbmsntm:item_meta": 0.0
+      }
+    },
+    {
+      "model": "hbmsntm:item/rbmk_pellet_mes_1",
+      "predicate": {
+        "hbmsntm:item_meta": 1.0
+      }
+    },
+    {
+      "model": "hbmsntm:item/rbmk_pellet_mes_2",
+      "predicate": {
+        "hbmsntm:item_meta": 2.0
+      }
+    },
+    {
+      "model": "hbmsntm:item/rbmk_pellet_mes_3",
+      "predicate": {
+        "hbmsntm:item_meta": 3.0
+      }
+    },
+    {
+      "model": "hbmsntm:item/rbmk_pellet_mes_4",
+      "predicate": {
+        "hbmsntm:item_meta": 4.0
+      }
+    },
+    {
+      "model": "hbmsntm:item/rbmk_pellet_mes_5",
+      "predicate": {
+        "hbmsntm:item_meta": 5.0
+      }
+    },
+    {
+      "model": "hbmsntm:item/rbmk_pellet_mes_6",
+      "predicate": {
+        "hbmsntm:item_meta": 6.0
+      }
+    },
+    {
+      "model": "hbmsntm:item/rbmk_pellet_mes_7",
+      "predicate": {
+        "hbmsntm:item_meta": 7.0
+      }
+    },
+    {
+      "model": "hbmsntm:item/rbmk_pellet_mes_8",
+      "predicate": {
+        "hbmsntm:item_meta": 8.0
+      }
+    },
+    {
+      "model": "hbmsntm:item/rbmk_pellet_mes_9",
+      "predicate": {
+        "hbmsntm:item_meta": 9.0
+      }
+    }
+  ],
+  "textures": {
+    "layer0": "hbmsntm:item/rbmk_pellet_mes",
+    "layer1": "hbmsntm:item/rbmk_pellet_overlay_e0"
+  }
+}

@@ -256,6 +256,27 @@ public class ResourceManager {
     public static final ResourceLocation ZIRNOX_DEB_ELEMENT_TEX = NuclearTechMod.withDefaultNamespace("textures/models/machines/zirnox_deb_element.png");
     public static final ResourceLocation BLOCK_GRAPHITE_TEX = NuclearTechMod.withDefaultNamespace("textures/block/block_graphite.png");
 
+    //RBMK debris (original RenderRBMKDebris tex_*)
+    public static final ResourceLocation RBMK_DEB_BASE_TEX = NuclearTechMod.withDefaultNamespace("textures/block/rbmk/rbmk_side.png");
+    public static final ResourceLocation RBMK_DEB_ELEMENT_TEX = NuclearTechMod.withDefaultNamespace("textures/block/rbmk/rbmk_fuel.png");
+    public static final ResourceLocation RBMK_DEB_CONTROL_TEX = NuclearTechMod.withDefaultNamespace("textures/block/rbmk/rbmk_control.png");
+    public static final ResourceLocation RBMK_DEB_BLANK_TEX = NuclearTechMod.withDefaultNamespace("textures/block/rbmk/rbmk_blank_side.png");
+    public static final ResourceLocation RBMK_DEB_LID_TEX = NuclearTechMod.withDefaultNamespace("textures/block/rbmk/rbmk_blank_cover_top.png");
+    //RBMK fuel channel rods (original RenderRBMKFuelChannel texture_rods, the same for both channel variants)
+    public static final ResourceLocation RBMK_ELEMENT_FUEL_TEX = NuclearTechMod.withDefaultNamespace("textures/block/rbmk/rbmk_element_fuel.png");
+    //RBMK control rod heads (original RenderRBMKControlRod): no colour group, the automatic rod, and the five colour groups by ordinal
+    public static final ResourceLocation RBMK_CONTROL_TEX = NuclearTechMod.withDefaultNamespace("textures/block/rbmk/rbmk_control.png");
+    public static final ResourceLocation RBMK_CONTROL_AUTO_TEX = NuclearTechMod.withDefaultNamespace("textures/block/rbmk/rbmk_control_auto.png");
+    public static final ResourceLocation[] RBMK_CONTROL_COLOR_TEX = new ResourceLocation[] {
+            NuclearTechMod.withDefaultNamespace("textures/block/rbmk/rbmk_control_red.png"),
+            NuclearTechMod.withDefaultNamespace("textures/block/rbmk/rbmk_control_yellow.png"),
+            NuclearTechMod.withDefaultNamespace("textures/block/rbmk/rbmk_control_green.png"),
+            NuclearTechMod.withDefaultNamespace("textures/block/rbmk/rbmk_control_blue.png"),
+            NuclearTechMod.withDefaultNamespace("textures/block/rbmk/rbmk_control_purple.png")
+    };
+    //RBMK console (original rbmk_console_tex, :1694)
+    public static final ResourceLocation RBMK_CONSOLE_TEX = NuclearTechMod.withDefaultNamespace("textures/models/machines/rbmk_control.png");
+
     public static final ResourceLocation WHITE_TEX = NuclearTechMod.withDefaultNamespace("textures/models/white.png");
 
     // Landmines
@@ -424,6 +445,14 @@ public class ResourceManager {
     public static IModelCustom deb_zirnox_exchanger;
     public static IModelCustom deb_zirnox_shrapnel;
     public static IModelCustom deb_graphite;
+    public static IModelCustom deb_blank;
+    public static IModelCustom deb_element;
+    public static IModelCustom deb_fuel;
+    public static IModelCustom deb_rod;
+    public static IModelCustom deb_lid;
+    public static IModelCustom rbmk_element_rods;
+    public static IModelCustom rbmk_rods;
+    public static IModelCustom rbmk_console;
 
     public static void init() {
 
@@ -577,5 +606,15 @@ public class ResourceManager {
         deb_zirnox_exchanger = new HFRWavefrontObject("models/obj/zirnox/deb_exchanger.obj").asVBO();
         deb_zirnox_shrapnel = new HFRWavefrontObject("models/obj/zirnox/deb_shrapnel.obj").asVBO();
         deb_graphite = new HFRWavefrontObject("models/obj/projectiles/deb_graphite.obj").asVBO();
+        deb_blank = new HFRWavefrontObject("models/obj/projectiles/deb_blank.obj").asVBO();
+        deb_element = new HFRWavefrontObject("models/obj/projectiles/deb_element.obj").asVBO();
+        deb_fuel = new HFRWavefrontObject("models/obj/projectiles/deb_fuel.obj").asVBO();
+        deb_rod = new HFRWavefrontObject("models/obj/projectiles/deb_rod.obj").asVBO();
+        deb_lid = new HFRWavefrontObject("models/obj/projectiles/deb_lid.obj").asVBO();
+        rbmk_element_rods = new HFRWavefrontObject("models/obj/rbmk/rbmk_element_rods.obj").asVBO();
+        // The original rbmk_rods_vbo is loaded with noSmooth().
+        rbmk_rods = new HFRWavefrontObject("models/obj/rbmk/rbmk_rods.obj").noSmooth().asVBO();
+        // Original :1683, smoothed as loaded there.
+        rbmk_console = new HFRWavefrontObject("models/obj/rbmk/rbmk_console.obj").asVBO();
     }
 }

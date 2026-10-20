@@ -1,0 +1,21 @@
+{
+  "type": "minecraft:block",
+  "pools": [
+    {
+      "bonus_rolls": 0.0,
+      "conditions": [
+        {
+          "condition": "minecraft:survives_explosion"
+        }
+      ],
+      "entries": [
+        {
+          "type": "minecraft:item",
+          "name": "hbmsntm:rbmk_rod_mod"
+        }
+      ],
+      "rolls": 1.0
+    }
+  ],
+  "random_sequence": "hbmsntm:blocks/rbmk_rod_mod"
+}

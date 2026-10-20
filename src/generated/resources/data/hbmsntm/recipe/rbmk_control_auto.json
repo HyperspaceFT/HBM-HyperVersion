@@ -1,0 +1,24 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "key": {
+    "C": {
+      "item": "hbmsntm:circuit_military_grade_board"
+    },
+    "D": {
+      "item": "hbmsntm:crt_display"
+    },
+    "R": {
+      "item": "hbmsntm:rbmk_control"
+    }
+  },
+  "pattern": [
+    "C",
+    "R",
+    "D"
+  ],
+  "result": {
+    "count": 1,
+    "id": "hbmsntm:rbmk_control_auto"
+  }
+}

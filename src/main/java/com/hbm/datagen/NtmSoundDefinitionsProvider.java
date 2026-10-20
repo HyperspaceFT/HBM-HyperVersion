@@ -253,6 +253,10 @@ public class NtmSoundDefinitionsProvider extends SoundDefinitionsProvider {
         this.add(NtmSoundEvents.RBMK_AZ5_COVER, SoundDefinition.definition()
                 .with(sound(NuclearTechMod.withDefaultNamespace("block/rbmk_az5_cover")))
         );
+        // Original sounds.json:7, streamed.
+        this.add(NtmSoundEvents.SHUTDOWN, SoundDefinition.definition()
+                .with(sound(NuclearTechMod.withDefaultNamespace("block/shutdown")).stream())
+        );
         this.add(NtmSoundEvents.TURBINE_LEVER, SoundDefinition.definition()
                 .with(sound(NuclearTechMod.withDefaultNamespace("block/chungus_lever")))
         );

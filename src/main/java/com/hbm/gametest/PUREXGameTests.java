@@ -301,7 +301,10 @@ public class PUREXGameTests {
                 .thenSucceed();
     }
 
-    /** The loaded table is the eleven task-book rows, in order, with their setup values; cold-only inputs; no deferred row. */
+    /**
+     * The loaded table is the eleven task-book rows, in order, with their setup values, then purex.uzh (Goal24B, checked in
+     * RBMKFuelGameTests.rbmk_fuel_purex_uzh); cold-only inputs; no deferred row.
+     */
     @GameTest(template = TEMPLATE, timeoutTicks = 100)
     public static void purex_recipe_table(GameTestHelper helper) {
         guard(() -> {
@@ -309,7 +312,8 @@ public class PUREXGameTests {
             List<Row> rows = rows();
             check(set.inputItemLimit() == 3 && set.inputFluidLimit() == 3 && set.outputItemLimit() == 6 && set.outputFluidLimit() == 1, "the PUREX table limits are not 3/3/6/1");
             check(set.getFileName().equals("hbmPUREX.json"), "the PUREX table file is " + set.getFileName());
-            check(set.recipeOrderedList.size() == 11 && set.recipeNameMap.size() == 11, "the PUREX table has " + set.recipeOrderedList.size() + " ordered and " + set.recipeNameMap.size() + " named rows, expected 11");
+            check(set.recipeOrderedList.size() == 12 && set.recipeNameMap.size() == 12, "the PUREX table has " + set.recipeOrderedList.size() + " ordered and " + set.recipeNameMap.size() + " named rows, expected 12");
+            check(set.recipeOrderedList.get(11).getInternalName().equals("purex.uzh"), "row 11 is " + set.recipeOrderedList.get(11).getInternalName() + ", expected purex.uzh");
             for(int i = 0; i < rows.size(); i++) {
                 Row row = rows.get(i);
                 GenericRecipe recipe = set.recipeOrderedList.get(i);
@@ -354,7 +358,7 @@ public class PUREXGameTests {
             check(schrab != null && schrab.size() == 1 && schrab.get(0).getInternalName().equals("purex.schrabzirnox"), "autoswitch.schrab is " + schrab);
             check(set.autoSwitchGroups.size() == 2, "the PUREX table has " + set.autoSwitchGroups.size() + " groups, expected 2");
 
-            for(String deferred : List.of("purex.uzh", "purex.flashgold", "purex.flashlead", "purex.pilepu239", "purex.platemox", "purex.pwrmeu", "purex.thoriumsalt", "purex.watzschrab",
+            for(String deferred : List.of("purex.flashgold", "purex.flashlead", "purex.pilepu239", "purex.platemox", "purex.pwrmeu", "purex.thoriumsalt", "purex.watzschrab",
                     "purex.watznaqadah", "purex.icf", "purex.vitliquid", "purex.schrabpwr", "purex.schrabmen")) {
                 check(!set.recipeNameMap.containsKey(deferred), "the deferred row " + deferred + " is registered");
             }
@@ -771,7 +775,7 @@ public class PUREXGameTests {
             check(be.purexModule.recipe.equals("purex.zirnoxthmeu"), "an unknown name selected " + be.purexModule.recipe);
             be.receiveControl(control(0, "ass.purex"));
             check(be.purexModule.recipe.equals("purex.zirnoxthmeu"), "a name from another recipe table selected " + be.purexModule.recipe);
-            be.receiveControl(control(0, "purex.uzh"));
+            be.receiveControl(control(0, "purex.flashgold"));
             check(be.purexModule.recipe.equals("purex.zirnoxthmeu"), "a deferred original row selected " + be.purexModule.recipe);
             be.receiveControl(control(1, "purex.zirnoxnu"));
             check(be.purexModule.recipe.equals("purex.zirnoxthmeu"), "index 1 selected " + be.purexModule.recipe);

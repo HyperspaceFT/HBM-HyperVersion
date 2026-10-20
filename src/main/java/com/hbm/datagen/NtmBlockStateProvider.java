@@ -356,6 +356,7 @@ public class NtmBlockStateProvider extends BlockStateProvider {
         this.particleOnlyBlock(NtmBlocks.MACHINE_ARC_WELDER, modLoc("block/block_steel"));
         this.particleOnlyBlock(NtmBlocks.REACTOR_ZIRNOX, modLoc("block/block_steel"));
         this.particleOnlyBlock(NtmBlocks.ZIRNOX_DESTROYED, modLoc("block/block_steel"));
+        this.registerRBMK();
         this.simpleBlockWithItem(
                 NtmBlocks.EMP_BOMB,
                 this.models().cubeColumn(
@@ -414,6 +415,56 @@ public class NtmBlockStateProvider extends BlockStateProvider {
 
         this.simpleCubeAllBlock(NtmBlocks.TAINT);
         this.registerMaterialBlocks();
+    }
+
+    /**
+     * RBMK columns: every block of a column (core, dummies, extra; any lid) is a full cube with the column's _side texture around
+     * and _top on top and bottom (original RenderRBMKReflector.renderWorldBlock and RBMKBase.getIcon); the lid is drawn by
+     * RenderRBMKLid. The control rod columns (Goal24D) are the same cube; their pipe stubs and rod head are drawn by RenderRBMKControl,
+     * and their item is that cube (the original's four-segment inventory render with pipes and head is not ported). So are the steam
+     * channel, fluid heater (pipe stubs or lid by RenderRBMKPiped) and cooler (lid by RenderRBMKLid) of Goal24D. The debris
+     * blocks bake models/obj/rbmk/debris.obj with their own texture (original RenderPribris); their items use a flat icon of that
+     * texture.
+     * The fuel channels bake the rbmk_element model (RBMKElementBakedModel, original RenderRBMKRod) for every block of the column
+     * and for the item, with the display transforms of minecraft:block/block; rods and lid are drawn by RenderRBMKRod. corium_block
+     * shows corium_still on top and bottom and corium_flowing around (original GenericFiniteFluid.getIcon).
+     */
+    private void registerRBMK() {
+        for(DeferredBlock<? extends Block> column : new DeferredBlock[] {NtmBlocks.RBMK_BLANK, NtmBlocks.RBMK_MODERATOR, NtmBlocks.RBMK_ABSORBER, NtmBlocks.RBMK_REFLECTOR,
+                NtmBlocks.RBMK_CONTROL, NtmBlocks.RBMK_CONTROL_MOD, NtmBlocks.RBMK_CONTROL_AUTO,
+                NtmBlocks.RBMK_BOILER, NtmBlocks.RBMK_HEATER, NtmBlocks.RBMK_COOLER}) {
+            String name = name(column);
+            this.simpleBlockWithItem(column.get(), this.models().cubeColumn(name, modLoc("block/rbmk/" + name + "_side"), modLoc("block/rbmk/" + name + "_top")));
+        }
+        // Original setBlockTextureName rbmk_loader (ModBlocks.java:2143): one texture on every face.
+        this.simpleBlockWithItem(NtmBlocks.RBMK_LOADER.get(), this.models().cubeAll(name(NtmBlocks.RBMK_LOADER), modLoc("block/rbmk_loader")));
+        // The console is drawn by RenderRBMKConsole (block and item); its block icon rbmk/rbmk_console (ModBlocks.java:2131) is the break particle.
+        this.particleOnlyBlock(NtmBlocks.RBMK_CONSOLE, modLoc("block/rbmk/rbmk_console"));
+
+        this.simpleBlockWithItem(NtmBlocks.DECO_RBMK.get(), this.models().cubeAll(name(NtmBlocks.DECO_RBMK), modLoc("block/rbmk/rbmk_top")));
+        this.simpleBlockWithItem(NtmBlocks.DECO_RBMK_SMOOTH.get(), this.models().cubeAll(name(NtmBlocks.DECO_RBMK_SMOOTH), modLoc("block/rbmk/rbmk_blank_top")));
+
+        this.rbmkDebris(NtmBlocks.PRIBRIS, "rbmk_debris");
+        this.rbmkDebris(NtmBlocks.PRIBRIS_BURNING, "rbmk_debris_burning");
+        this.rbmkDebris(NtmBlocks.PRIBRIS_RADIATING, "rbmk_debris_radiating");
+
+        // Original setBlockTextureName rbmk/rbmk_element and rbmk/rbmk_element_mod (ModBlocks.java:2113-2114).
+        this.rbmkElement(NtmBlocks.RBMK_ROD, "rbmk_element");
+        this.rbmkElement(NtmBlocks.RBMK_ROD_MOD, "rbmk_element_mod");
+
+        this.simpleBlockWithItem(NtmBlocks.CORIUM_BLOCK.get(), this.models().cubeBottomTop(name(NtmBlocks.CORIUM_BLOCK), modLoc("block/corium_flowing"), modLoc("block/corium_still"), modLoc("block/corium_still")));
+    }
+
+    private void rbmkElement(DeferredBlock<? extends Block> block, String texture) {
+        String base = "block/rbmk/" + texture;
+        this.simpleBlockWithItem(block.get(), this.models().withExistingParent(name(block), mcLoc("block/block")).customLoader(RBMKElementLoaderBuilder::new)
+                .texture("side", modLoc(base + "_side")).texture("top", modLoc(base + "_top")).texture("inner", modLoc(base + "_inner")).texture("fuel", modLoc(base + "_fuel")).end());
+    }
+
+    private void rbmkDebris(DeferredBlock<? extends Block> block, String texture) {
+        ResourceLocation tex = modLoc("block/rbmk/" + texture);
+        this.simpleBlock(block.get(), this.models().getBuilder(name(block)).customLoader(RBMKDebrisLoaderBuilder::new).texture("texture", tex).end());
+        this.itemModels().withExistingParent(name(block), mcLoc("item/generated")).texture("layer0", tex);
     }
 
     private void registerOreBasalt() {
@@ -884,6 +935,18 @@ public class NtmBlockStateProvider extends BlockStateProvider {
             super(parent, helper);
         }
         @Override public BakedModelType getType() { return BakedModelType.SPIKES; }
+    }
+    protected static class RBMKDebrisLoaderBuilder extends BlockModelBuilderBase {
+        public RBMKDebrisLoaderBuilder(BlockModelBuilder parent, ExistingFileHelper helper) {
+            super(parent, helper);
+        }
+        @Override public BakedModelType getType() { return BakedModelType.RBMK_DEBRIS; }
+    }
+    protected static class RBMKElementLoaderBuilder extends BlockModelBuilderBase {
+        public RBMKElementLoaderBuilder(BlockModelBuilder parent, ExistingFileHelper helper) {
+            super(parent, helper);
+        }
+        @Override public BakedModelType getType() { return BakedModelType.RBMK_ELEMENT; }
     }
     public static class AnvilLoaderBuilder extends BlockModelBuilderBase {
         public AnvilLoaderBuilder(BlockModelBuilder parent, ExistingFileHelper helper) {

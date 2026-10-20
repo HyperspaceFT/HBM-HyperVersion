@@ -1,7 +1,9 @@
 package com.hbm.items.tools;
 
 import com.hbm.blockentity.machine.ReactorZirnoxBlockEntity;
+import com.hbm.blockentity.machine.rbmk.RBMKBaseBlockEntity;
 import com.hbm.blocks.machine.ReactorZirnoxBlock;
+import com.hbm.blocks.machine.rbmk.RBMKBaseBlock;
 import net.minecraft.core.BlockPos;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.item.Item;
@@ -23,6 +25,16 @@ public class DyatlovItem extends Item {
 
         if(!level.isClientSide) {
             Block block = level.getBlockState(pos).getBlock();
+
+            // Original ItemDyatlov.java:23-39: melts the whole connected RBMK.
+            if(block instanceof RBMKBaseBlock rbmk) {
+                BlockPos corePos = rbmk.findCore(level, pos);
+
+                if(corePos != null) {
+                    BlockEntity be = level.getBlockEntity(corePos);
+                    if(be instanceof RBMKBaseBlockEntity rbmkBlockEntity) rbmkBlockEntity.meltdown();
+                }
+            }
 
             if(block instanceof ReactorZirnoxBlock zirnox) {
                 BlockPos corePos = zirnox.findCore(level, pos);

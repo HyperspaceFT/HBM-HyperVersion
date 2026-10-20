@@ -16,13 +16,16 @@ import com.hbm.items.machine.BreedingRodItem.BreedingRodType;
 import com.hbm.items.machine.ZirnoxRodItem.ZirnoxType;
 import com.hbm.main.CommonEvents;
 import com.hbm.main.NuclearTechMod;
+import com.hbm.util.BobMathUtil;
 import com.hbm.util.ContaminationUtil;
 import com.mojang.logging.LogUtils;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
+import net.minecraft.core.component.DataComponents;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.gametest.framework.GameTest;
 import net.minecraft.gametest.framework.GameTestHelper;
+import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.tags.DamageTypeTags;
 import net.minecraft.world.damagesource.DamageSource;
@@ -177,9 +180,11 @@ public class HazardGameTests {
             checkExact("cell_tritium", new ItemStack(NtmItems.CELL_TRITIUM.get()), HazardRegistry.RADIATION, 0.001F);
             checkExact("cell_sas3", new ItemStack(NtmItems.CELL_SAS3.get()), HazardRegistry.RADIATION, HazardRegistry.sas3, HazardRegistry.BLINDING, 60F);
             checkExact("egg_balefire", new ItemStack(NtmItems.EGG_BALEFIRE.get()), HazardRegistry.RADIATION, HazardRegistry.bf * HazardRegistry.ingot);
-            checkExact("gold_ingot", new ItemStack(Items.GOLD_INGOT), HazardRegistry.BLINDING, 4F);
-            checkExact("blaze_powder", new ItemStack(Items.BLAZE_POWDER), HazardRegistry.HOT, 4F);
-            checkExact("coal", new ItemStack(Items.COAL), HazardRegistry.COAL, 1F);
+            // Goal24A removed the gold_ingot, blaze_powder and coal rows (hazard_removed_vanilla_rows); these three replace them, written from
+            // the start copy build/migration/goal24a/baseline-files/src/main/java/com/hbm/hazard/HazardRegistry.java.
+            checkExact("cell_balefire", new ItemStack(NtmItems.CELL_BALEFIRE.get()), HazardRegistry.RADIATION, 50F);
+            checkExact("gunpowder", new ItemStack(Items.GUNPOWDER), HazardRegistry.EXPLOSIVE, 1F);
+            checkExact("debris_concrete", new ItemStack(NtmItems.DEBRIS_CONCRETE.get()), HazardRegistry.RADIATION, 30F);
             checkExact("fallout block", new ItemStack(NtmBlocks.FALLOUT.get()), HazardRegistry.RADIATION, 60F);
             checkExact("breeding rod U235", MetaHelper.newStack(NtmItems.ROD, 1, BreedingRodType.U235.ordinal()), HazardRegistry.RADIATION, HazardRegistry.u235);
             checkClose("fresh zirnox rod", MetaHelper.newStack(NtmItems.ROD_ZIRNOX, 1, ZirnoxType.NATURAL_URANIUM_FUEL.ordinal()), HazardRegistry.RADIATION,
@@ -477,9 +482,10 @@ public class HazardGameTests {
             sample(n, "fallout block", new ItemStack(NtmBlocks.FALLOUT.get()), HazardRegistry.RADIATION, 60F);
             sample(n, "brick_asbestos", new ItemStack(NtmBlocks.BRICK_ASBESTOS.get()), HazardRegistry.ASBESTOS, 1F);
             sample(n, "powder_coltan_ore", new ItemStack(NtmItems.POWDER_COLTAN_ORE.get()), HazardRegistry.ASBESTOS, 3F);
-            sample(n, "green wool", new ItemStack(Items.GREEN_WOOL), HazardRegistry.RADIATION, 150F);
-            sample(n, "white wool", new ItemStack(Items.WHITE_WOOL), HazardRegistry.ASBESTOS, 5F);
-            sample(n, "blaze powder", new ItemStack(Items.BLAZE_POWDER), HazardRegistry.HOT, 4F);
+            // Goal24A replacements for the removed green wool, white wool and blaze powder rows (goal24a start copy).
+            sample(n, "pumpkin pie", new ItemStack(Items.PUMPKIN_PIE), HazardRegistry.EXPLOSIVE, 1F);
+            sample(n, "debris_exchanger", new ItemStack(NtmItems.DEBRIS_EXCHANGER.get()), HazardRegistry.RADIATION, 25F);
+            sample(n, "egg_balefire_shard", new ItemStack(NtmItems.EGG_BALEFIRE_SHARD.get()), HazardRegistry.RADIATION, HazardRegistry.bf * nugget);
             sample(n, "tnt", new ItemStack(Items.TNT), HazardRegistry.EXPLOSIVE, 4F);
             sample(n, "particle_digamma", new ItemStack(NtmItems.PARTICLE_DIGAMMA.get()), HazardRegistry.DIGAMMA, 0.3333F);
             // One item of each 21D frame kind: rad only, rad + hot, rad + blinding + hot, hydro only (LI), hot + hydro (SR), a fission fragment.
@@ -734,6 +740,96 @@ public class HazardGameTests {
         HazardSystem.applyHazards(stack, player);
         LOGGER.info("[hbm-hazard] ingot_phosphorus on a mock player, {}: {} fire ticks", label, player.getRemainingFireTicks());
         check(player.getRemainingFireTicks() == expected, label + ": " + player.getRemainingFireTicks() + " fire ticks, expected " + expected);
+    }
+
+    // Goal24A-2: the radiation reacher check by item (original HazardTypeRadiation.java:26-38, inventory.hasItem(ModItems.reacher)): a renamed
+    // reacher in the main inventory counts like a plain one, the offhand counts (NEO-only), an armor slot does not. Same mock Player as above,
+    // never added to the level; tickCount 200 passes ContaminationUtil's grace period.
+
+    @GameTest(template = TEMPLATE, batch = BATCH, timeoutTicks = 100)
+    public static void hazard_radiation_reacher_by_item(GameTestHelper helper) {
+        guard(() -> {
+            requireHazardConfig();
+            check(!NtmConfig.COMMON.ENABLE_528.get(), "528 mode is on in the common config; it changes the reacher formula");
+            Player player = helper.makeMockPlayer(GameType.SURVIVAL);
+            player.moveTo(helper.absoluteVec(new Vec3(8.5, 2, 8.5)));
+            player.tickCount = 200;
+            Inventory inventory = player.getInventory();
+            ItemStack plutonium = new ItemStack(NtmItems.INGOT_PU239.get());
+            checkLevel(plutonium, HazardRegistry.RADIATION, 5F, "ingot_pu239");
+            float mod = ContaminationUtil.calculateRadiationMod(player);
+            // Original: rad = level / 20; with a reacher rad = squirt(rad); contaminate(CREATIVE) adds rad * radiation mod.
+            float plain = 5F / 20F * mod;
+            float reached = (float) BobMathUtil.squirt(5F / 20F) * mod;
+            ItemStack renamed = new ItemStack(NtmItems.REACHER.get());
+            renamed.set(DataComponents.CUSTOM_NAME, Component.literal("Long Arm"));
+
+            expectRadiation(player, plutonium, plain, "no reacher");
+            inventory.setItem(20, renamed.copy());
+            expectRadiation(player, plutonium, reached, "a renamed reacher in main inventory slot 20");
+            inventory.setItem(20, new ItemStack(NtmItems.REACHER.get()));
+            expectRadiation(player, plutonium, reached, "a plain reacher in main inventory slot 20");
+            inventory.setItem(20, ItemStack.EMPTY);
+            inventory.offhand.set(0, renamed.copy());
+            expectRadiation(player, plutonium, reached, "a renamed reacher in the offhand (NEO-only)");
+            inventory.offhand.set(0, ItemStack.EMPTY);
+            inventory.armor.set(3, renamed.copy());
+            expectRadiation(player, plutonium, plain, "a reacher only in an armor slot");
+            inventory.clearContent();
+        }).run();
+        done(helper, "hazard_radiation_reacher_by_item");
+    }
+
+    private static void expectRadiation(Player player, ItemStack stack, float expected, String label) {
+        HbmLivingAttachments.setRadiation(player, 0F);
+        HazardSystem.applyHazards(stack, player);
+        float rad = HbmLivingAttachments.getRadiation(player);
+        LOGGER.info("[hbm-hazard] ingot_pu239 on a mock player, {}: {} rad (expected {})", label, rad, expected);
+        check(Math.abs(rad - expected) <= 1e-6F * expected, label + ": " + rad + " rad, expected " + expected);
+    }
+
+    // Goal24A-2: ContaminationUtil.contaminate exempts creative players from every type except NONE (and DIGAMMA2) (original
+    // ContaminationUtil.java:284), after the 200-tick grace period (:287).
+
+    @GameTest(template = TEMPLATE, batch = BATCH, timeoutTicks = 100)
+    public static void hazard_contaminate_creative_types(GameTestHelper helper) {
+        guard(() -> {
+            requireHazardConfig();
+            Player creative = helper.makeMockPlayer(GameType.CREATIVE);
+            creative.tickCount = 200;
+            check(creative.isCreative(), "the creative mock player is not creative");
+            float mod = ContaminationUtil.calculateRadiationMod(creative);
+            HbmLivingAttachments.setRadiation(creative, 0F);
+            ContaminationUtil.contaminate(creative, ContaminationUtil.HazardType.RADIATION, ContaminationUtil.ContaminationType.CREATIVE, 10F);
+            float afterCreative = HbmLivingAttachments.getRadiation(creative);
+            ContaminationUtil.contaminate(creative, ContaminationUtil.HazardType.RADIATION, ContaminationUtil.ContaminationType.NONE, 10F);
+            float afterNone = HbmLivingAttachments.getRadiation(creative);
+            LOGGER.info("[hbm-hazard] creative mock player: CREATIVE type -> {} rad, NONE type -> {} rad (mod {})", afterCreative, afterNone, mod);
+            check(afterCreative == 0F, "type CREATIVE contaminated a creative player: " + afterCreative);
+            check(Math.abs(afterNone - 10F * mod) <= 1e-6F, "type NONE gave a creative player " + afterNone + ", expected " + (10F * mod));
+
+            Player fresh = helper.makeMockPlayer(GameType.SURVIVAL);
+            fresh.tickCount = 199;
+            HbmLivingAttachments.setRadiation(fresh, 0F);
+            ContaminationUtil.contaminate(fresh, ContaminationUtil.HazardType.RADIATION, ContaminationUtil.ContaminationType.NONE, 10F);
+            check(HbmLivingAttachments.getRadiation(fresh) == 0F, "a player at tick 199 was contaminated: " + HbmLivingAttachments.getRadiation(fresh));
+        }).run();
+        done(helper, "hazard_contaminate_creative_types");
+    }
+
+    // Goal24A-2 (user decision 2026-10-19): the five NEO-only vanilla rows are gone; the original HazardRegistry has none of them.
+
+    @GameTest(template = TEMPLATE, batch = BATCH, timeoutTicks = 100)
+    public static void hazard_removed_vanilla_rows(GameTestHelper helper) {
+        guard(() -> {
+            checkExact("gold_ingot", new ItemStack(Items.GOLD_INGOT));
+            checkExact("blaze_powder", new ItemStack(Items.BLAZE_POWDER));
+            checkExact("green wool", new ItemStack(Items.GREEN_WOOL));
+            checkExact("white wool", new ItemStack(Items.WHITE_WOOL));
+            checkExact("coal", new ItemStack(Items.COAL));
+            LOGGER.info("[hbm-hazard] gold ingot, blaze powder, green wool, white wool and coal carry no hazard");
+        }).run();
+        done(helper, "hazard_removed_vanilla_rows");
     }
 
     // Goal23A-4: hydroactive explosions. Original HazardTypeHydroactive: newExplosion(..., false, true), breaking blocks, at eye height for a
