@@ -5,6 +5,7 @@ import com.hbm.blockentity.NtmBlockEntityTypes;
 import com.hbm.handler.FuelPoolRecipeClientSync;
 import com.hbm.inventory.menus.MachineWasteDrumMenu;
 import com.hbm.inventory.recipes.FuelPoolRecipes;
+import com.hbm.items.machine.RBMKRodItem;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.network.chat.Component;
@@ -21,8 +22,8 @@ import javax.annotation.Nullable;
 
 /**
  * Spent fuel pool drum (original TileEntityWasteDrum.java): twelve single-item slots that accept hot waste (any fuel pool table
- * input). While water touches the drum, each filled slot has a 1 in (72000 / adjacent water) chance per tick to turn into its
- * table output. The original RBMK rod handling is not ported because NEO has no RBMK rods yet.
+ * input) and RBMK fuel rods. While water touches the drum, each filled slot has a 1 in (72000 / adjacent water) chance per tick to
+ * turn into its table output; a rod is cooled every tick instead and may leave through automation once core and hull are below 50.
  */
 public class MachineWasteDrumBlockEntity extends MachineBaseBlockEntity {
 
@@ -52,12 +53,24 @@ public class MachineWasteDrumBlockEntity extends MachineBaseBlockEntity {
 
         int r = DECAY_TICKS / water;
         boolean changed = false;
+        boolean rods = false;
 
         for(int i = 0; i < SLOT_COUNT; i++) {
             ItemStack stack = this.slots.get(i);
             if(stack.isEmpty()) continue;
 
-            // The roll happens for every filled slot, cool waste included, like the original.
+            // Original :212-218: a rod is cooled and never rolls.
+            if(stack.getItem() instanceof RBMKRodItem rod) {
+                double core = RBMKRodItem.getCoreHeat(stack);
+                double hull = RBMKRodItem.getHullHeat(stack);
+                rod.updateHeat(this.level, stack, 0.025D);
+                rod.provideHeat(this.level, stack, 20D, 0.025D);
+                // A rod at 20 °C, or one whose hull has settled a few ulps above 20, no longer changes.
+                if(core != RBMKRodItem.getCoreHeat(stack) || hull != RBMKRodItem.getHullHeat(stack)) rods = true;
+                continue;
+            }
+
+            // The roll happens for every filled slot that is no rod, cool waste included, like the original.
             if(this.random().nextInt(r) == 0) {
                 ItemStack output = FuelPoolRecipes.getOutput(stack);
                 if(output != null) {
@@ -68,8 +81,9 @@ public class MachineWasteDrumBlockEntity extends MachineBaseBlockEntity {
             }
         }
 
-        // NEO-only: the original never marked the drum dirty after cooling waste.
-        if(changed) this.setChanged();
+        // NEO-only: the original never marked the drum dirty after cooling waste. A cooling rod's heat changes every tick; marking the
+        // drum once a second while any rod still changes is enough for a lone drum to be saved with its cooled rods.
+        if(changed || (rods && this.level.getGameTime() % 20 == 0)) this.setChanged();
     }
 
     /**
@@ -105,15 +119,23 @@ public class MachineWasteDrumBlockEntity extends MachineBaseBlockEntity {
 
     @Override
     public boolean canPlaceItem(int slot, ItemStack stack) {
-        return !stack.isEmpty() && this.isKey(stack);
+        // Original isItemValidForSlot (:103-105): a table input or any RBMK fuel rod.
+        return !stack.isEmpty() && (this.isKey(stack) || stack.getItem() instanceof RBMKRodItem);
     }
 
     @Override public int[] getSlotsForFace(Direction direction) { return SLOTS; }
     // NEO-only guard: the vanilla hopper merges up to the item's own max stack size and ignores the container limit, so automation
     // may only fill empty slots. The GUI slot already limits each slot to one item.
     @Override public boolean canPlaceItemThroughFace(int slot, ItemStack stack, @Nullable Direction direction) { return this.getItem(slot).isEmpty() && this.canPlaceItem(slot, stack); }
-    /** Hot waste stays in the drum; anything the table does not take as an input (cooled waste) may leave. */
-    @Override public boolean canTakeItemThroughFace(int slot, ItemStack stack, Direction direction) { return !this.isKey(this.getItem(slot)); }
+    /**
+     * Original canExtractItem (:183-189): hot waste stays in the drum; anything the table does not take as an input (cooled waste)
+     * may leave, and a rod once core and hull are below 50. Taking by hand is not limited, as the original's plain container slots.
+     */
+    @Override
+    public boolean canTakeItemThroughFace(int slot, ItemStack stack, Direction direction) {
+        if(stack.getItem() instanceof RBMKRodItem) return RBMKRodItem.getCoreHeat(stack) < 50 && RBMKRodItem.getHullHeat(stack) < 50;
+        return !this.isKey(this.getItem(slot));
+    }
 
     @Override
     public AbstractContainerMenu createMenu(int id, Inventory inventory, Player player) {

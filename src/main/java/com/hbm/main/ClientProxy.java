@@ -4,6 +4,7 @@ import com.hbm.blockentity.IScreenProvider;
 import com.hbm.blockentity.NtmBlockEntityTypes;
 import com.hbm.blocks.NtmBlocks;
 import com.hbm.entity.NtmEntityTypes;
+import com.hbm.handler.HbmKeybinds;
 import com.hbm.items.NtmItems;
 import com.hbm.items.weapon.sedna.GunBaseNTItem;
 import com.hbm.items.weapon.sedna.factory.LegoClient;
@@ -236,6 +237,8 @@ public class ClientProxy extends ServerProxy {
         BlockEntityRenderers.register(NtmBlockEntityTypes.RBMK_ABSORBER.get(), new RenderRBMKLid<>());
         BlockEntityRenderers.register(NtmBlockEntityTypes.RBMK_REFLECTOR.get(), new RenderRBMKLid<>());
         BlockEntityRenderers.register(NtmBlockEntityTypes.RBMK_COOLER.get(), new RenderRBMKLid<>());
+        BlockEntityRenderers.register(NtmBlockEntityTypes.RBMK_STORAGE.get(), new RenderRBMKLid<>());
+        BlockEntityRenderers.register(NtmBlockEntityTypes.RBMK_OUTGASSER.get(), new RenderRBMKLid<>());
         //RBMK fuel channels: lid, rods and Cherenkov glow
         BlockEntityRenderers.register(NtmBlockEntityTypes.RBMK_ROD.get(), new RenderRBMKRod());
         //RBMK control rods: pipe stubs and the moving rod head
@@ -246,6 +249,10 @@ public class ClientProxy extends ServerProxy {
         BlockEntityRenderers.register(NtmBlockEntityTypes.RBMK_HEATER.get(), new RenderRBMKPiped<>());
         //RBMK console: model, column squares and screen texts
         BlockEntityRenderers.register(NtmBlockEntityTypes.RBMK_CONSOLE.get(), new RenderRBMKConsole());
+        //RBMK autoloader: body and moving piston
+        BlockEntityRenderers.register(NtmBlockEntityTypes.RBMK_AUTOLOADER.get(), new RenderRBMKAutoloader());
+        //RBMK crane console: console, joystick, meters, lamps and the linked crane
+        BlockEntityRenderers.register(NtmBlockEntityTypes.RBMK_CRANE_CONSOLE.get(), new RenderCraneConsole());
         //missile blocks
         BlockEntityRenderers.register(NtmBlockEntityTypes.LAUNCH_PAD.get(), new RenderLaunchPad());
         BlockEntityRenderers.register(NtmBlockEntityTypes.LAUNCH_PAD_LARGE.get(), new RenderLaunchPadLarge());
@@ -379,5 +386,11 @@ public class ClientProxy extends ServerProxy {
     @Override
     public Player me() {
         return Minecraft.getInstance().player;
+    }
+
+    // Original ClientProxy.getIsKeyPressed (:1973-1987); NEO keeps the mapping in HbmKeybinds.getIsKeyPressed.
+    @Override
+    public boolean getIsKeyPressed(HbmKeybinds.EnumKeybind key) {
+        return HbmKeybinds.getIsKeyPressed(key);
     }
 }

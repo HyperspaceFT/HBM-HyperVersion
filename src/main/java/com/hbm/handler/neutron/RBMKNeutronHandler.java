@@ -5,6 +5,7 @@ import com.hbm.blockentity.machine.rbmk.RBMKAbsorberBlockEntity;
 import com.hbm.blockentity.machine.rbmk.RBMKBaseBlockEntity;
 import com.hbm.blockentity.machine.rbmk.RBMKControlBlockEntity;
 import com.hbm.blockentity.machine.rbmk.RBMKDials;
+import com.hbm.blockentity.machine.rbmk.RBMKOutgasserBlockEntity;
 import com.hbm.blockentity.machine.rbmk.RBMKRodBlockEntity;
 import com.hbm.blockentity.machine.rbmk.RBMKType;
 import com.hbm.blocks.machine.rbmk.RBMKBaseBlock;
@@ -23,7 +24,7 @@ import java.util.List;
 
 /**
  * Original RBMKNeutronHandler (:20-429). The column type is the 24A enum {@link RBMKType}. Not migrated yet: the ReaSim rods
- * (Goal 26) and the outgasser (Goal 25); their branches are left as comments where they sit. The control rods arrived in Goal24D.
+ * (Goal 26); their branches are left as comments where they sit. The control rods arrived in Goal24D, the outgasser in Goal25B.
  */
 public class RBMKNeutronHandler {
 
@@ -325,8 +326,16 @@ public class RBMKNeutronHandler {
                             return;
                         }
 
+                    } else if(type == RBMKType.OUTGASSER) {
+                        // Original :323-329. Only RBMKOutgasserBlockEntity reports OUTGASSER; a channel that cannot process lets the
+                        // stream pass on.
+                        RBMKOutgasserBlockEntity outgasser = (RBMKOutgasserBlockEntity) column;
+
+                        if(outgasser.canProcess()) {
+                            column.receiveFlux(this);
+                            return;
+                        }
                     }
-                    // Original :323-330: OUTGASSER takes the flux when it can process (Goal 25).
 
                 } else if(type == RBMKType.CONTROL_ROD) {
                     // Original :332-340. The control columns are no IRBMKFluxReceiver, so this branch is reached as in the original.
@@ -354,7 +363,8 @@ public class RBMKNeutronHandler {
 
                     // The original casts to TileEntityRBMKRod (GOAL24 decision 12: the interface is the same call for a fuel column). Streams
                     // start at fuel columns, but an origin re-resolved from the world above can be another column that replaced the rod
-                    // between two ticks; the original's cast then crashes the server, NEO drops the reflected flux instead.
+                    // between two ticks; the original's cast then crashes the server. NEO drops the reflected flux at an origin that is no
+                    // IRBMKFluxReceiver; an irradiation channel there takes it only while it can process (its own receiveFlux check).
                     if(originTE instanceof IRBMKFluxReceiver receiver)
                         receiver.receiveFlux(this);
                     return;

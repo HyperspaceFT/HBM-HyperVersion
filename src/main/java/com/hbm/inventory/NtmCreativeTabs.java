@@ -930,8 +930,12 @@ public class NtmCreativeTabs {
                         output.accept(NtmBlocks.RBMK_MODERATOR);
                         output.accept(NtmBlocks.RBMK_COOLER);
                         output.accept(NtmBlocks.RBMK_HEATER);
+                        output.accept(NtmBlocks.RBMK_STORAGE);
+                        output.accept(NtmBlocks.RBMK_OUTGASSER);
+                        output.accept(NtmBlocks.RBMK_AUTOLOADER);
                         output.accept(NtmBlocks.RBMK_LOADER);
                         output.accept(NtmBlocks.RBMK_CONSOLE);
+                        output.accept(NtmBlocks.RBMK_CRANE_CONSOLE);
                         output.accept(NtmBlocks.PRIBRIS);
                         output.accept(NtmBlocks.PRIBRIS_BURNING);
                         output.accept(NtmBlocks.PRIBRIS_RADIATING);

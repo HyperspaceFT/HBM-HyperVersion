@@ -2,7 +2,7 @@ package com.hbm.blockentity.machine.rbmk;
 
 import net.minecraft.world.item.ItemStack;
 
-/** Original com.hbm.tileentity.machine.rbmk.IRBMKLoadable: a column the RBMK autoloader can fill and empty. */
+/** Original com.hbm.tileentity.machine.rbmk.IRBMKLoadable: a column the RBMK crane console can fill and empty. */
 public interface IRBMKLoadable {
 
     /**

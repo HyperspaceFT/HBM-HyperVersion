@@ -31,7 +31,10 @@ import com.hbm.inventory.screens.RBMKControlScreen;
 import com.hbm.inventory.screens.RBMKControlAutoScreen;
 import com.hbm.inventory.screens.RBMKBoilerScreen;
 import com.hbm.inventory.screens.RBMKHeaterScreen;
+import com.hbm.inventory.screens.RBMKStorageScreen;
+import com.hbm.inventory.screens.RBMKOutgasserScreen;
 import com.hbm.inventory.screens.RBMKConsoleScreen;
+import com.hbm.inventory.screens.RBMKAutoloaderScreen;
 import com.hbm.inventory.MetaHelper;
 import com.hbm.inventory.fluid.FluidType;
 import com.hbm.inventory.fluid.Fluids;
@@ -175,7 +178,10 @@ public class NuclearTechModClient {
         event.register(NtmMenuTypes.RBMK_CONTROL_AUTO.get(), RBMKControlAutoScreen::new);
         event.register(NtmMenuTypes.RBMK_BOILER.get(), RBMKBoilerScreen::new);
         event.register(NtmMenuTypes.RBMK_HEATER.get(), RBMKHeaterScreen::new);
+        event.register(NtmMenuTypes.RBMK_STORAGE.get(), RBMKStorageScreen::new);
+        event.register(NtmMenuTypes.RBMK_OUTGASSER.get(), RBMKOutgasserScreen::new);
         event.register(NtmMenuTypes.RBMK_CONSOLE.get(), RBMKConsoleScreen::new);
+        event.register(NtmMenuTypes.RBMK_AUTOLOADER.get(), RBMKAutoloaderScreen::new);
     }
 
     @SubscribeEvent

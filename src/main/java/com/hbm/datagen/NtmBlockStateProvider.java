@@ -422,7 +422,8 @@ public class NtmBlockStateProvider extends BlockStateProvider {
      * and _top on top and bottom (original RenderRBMKReflector.renderWorldBlock and RBMKBase.getIcon); the lid is drawn by
      * RenderRBMKLid. The control rod columns (Goal24D) are the same cube; their pipe stubs and rod head are drawn by RenderRBMKControl,
      * and their item is that cube (the original's four-segment inventory render with pipes and head is not ported). So are the steam
-     * channel, fluid heater (pipe stubs or lid by RenderRBMKPiped) and cooler (lid by RenderRBMKLid) of Goal24D. The debris
+     * channel, fluid heater (pipe stubs or lid by RenderRBMKPiped) and cooler (lid by RenderRBMKLid) of Goal24D, and the storage
+     * column of Goal25A and the irradiation channel of Goal25B (lid by RenderRBMKLid). The debris
      * blocks bake models/obj/rbmk/debris.obj with their own texture (original RenderPribris); their items use a flat icon of that
      * texture.
      * The fuel channels bake the rbmk_element model (RBMKElementBakedModel, original RenderRBMKRod) for every block of the column
@@ -432,7 +433,7 @@ public class NtmBlockStateProvider extends BlockStateProvider {
     private void registerRBMK() {
         for(DeferredBlock<? extends Block> column : new DeferredBlock[] {NtmBlocks.RBMK_BLANK, NtmBlocks.RBMK_MODERATOR, NtmBlocks.RBMK_ABSORBER, NtmBlocks.RBMK_REFLECTOR,
                 NtmBlocks.RBMK_CONTROL, NtmBlocks.RBMK_CONTROL_MOD, NtmBlocks.RBMK_CONTROL_AUTO,
-                NtmBlocks.RBMK_BOILER, NtmBlocks.RBMK_HEATER, NtmBlocks.RBMK_COOLER}) {
+                NtmBlocks.RBMK_BOILER, NtmBlocks.RBMK_HEATER, NtmBlocks.RBMK_COOLER, NtmBlocks.RBMK_STORAGE, NtmBlocks.RBMK_OUTGASSER}) {
             String name = name(column);
             this.simpleBlockWithItem(column.get(), this.models().cubeColumn(name, modLoc("block/rbmk/" + name + "_side"), modLoc("block/rbmk/" + name + "_top")));
         }
@@ -440,6 +441,10 @@ public class NtmBlockStateProvider extends BlockStateProvider {
         this.simpleBlockWithItem(NtmBlocks.RBMK_LOADER.get(), this.models().cubeAll(name(NtmBlocks.RBMK_LOADER), modLoc("block/rbmk_loader")));
         // The console is drawn by RenderRBMKConsole (block and item); its block icon rbmk/rbmk_console (ModBlocks.java:2131) is the break particle.
         this.particleOnlyBlock(NtmBlocks.RBMK_CONSOLE, modLoc("block/rbmk/rbmk_console"));
+        // The crane console is drawn by RenderCraneConsole (block and item); its block icon rbmk/rbmk_crane_console (ModBlocks.java:2132) is the break particle.
+        this.particleOnlyBlock(NtmBlocks.RBMK_CRANE_CONSOLE, modLoc("block/rbmk/rbmk_crane_console"));
+        // The autoloader is drawn by RenderRBMKAutoloader (block and item); its block icon rbmk_autoloader (ModBlocks.java:2142) is the break particle.
+        this.particleOnlyBlock(NtmBlocks.RBMK_AUTOLOADER, modLoc("block/rbmk/rbmk_autoloader"));
 
         this.simpleBlockWithItem(NtmBlocks.DECO_RBMK.get(), this.models().cubeAll(name(NtmBlocks.DECO_RBMK), modLoc("block/rbmk/rbmk_top")));
         this.simpleBlockWithItem(NtmBlocks.DECO_RBMK_SMOOTH.get(), this.models().cubeAll(name(NtmBlocks.DECO_RBMK_SMOOTH), modLoc("block/rbmk/rbmk_blank_top")));

@@ -59,7 +59,10 @@ public class NtmMenuTypes {
     public static final DeferredHolder<MenuType<?>, MenuType<RBMKControlAutoMenu>> RBMK_CONTROL_AUTO = reg("rbmk_control_auto", RBMKControlAutoMenu::new);
     public static final DeferredHolder<MenuType<?>, MenuType<RBMKBoilerMenu>> RBMK_BOILER = reg("rbmk_boiler", RBMKBoilerMenu::new);
     public static final DeferredHolder<MenuType<?>, MenuType<RBMKHeaterMenu>> RBMK_HEATER = reg("rbmk_heater", RBMKHeaterMenu::new);
+    public static final DeferredHolder<MenuType<?>, MenuType<RBMKStorageMenu>> RBMK_STORAGE = reg("rbmk_storage", RBMKStorageMenu::new);
+    public static final DeferredHolder<MenuType<?>, MenuType<RBMKOutgasserMenu>> RBMK_OUTGASSER = reg("rbmk_outgasser", RBMKOutgasserMenu::new);
     public static final DeferredHolder<MenuType<?>, MenuType<RBMKConsoleMenu>> RBMK_CONSOLE = reg("rbmk_console", RBMKConsoleMenu::new);
+    public static final DeferredHolder<MenuType<?>, MenuType<RBMKAutoloaderMenu>> RBMK_AUTOLOADER = reg("rbmk_autoloader", RBMKAutoloaderMenu::new);
 
     public static final DeferredHolder<MenuType<?>, MenuType<MachineFluidTankMenu>> FLUID_TANK = reg("fluid_tank", MachineFluidTankMenu::new);
 

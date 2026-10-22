@@ -8,6 +8,7 @@ import com.hbm.handler.MixerRecipeClientSync;
 import com.hbm.handler.CentrifugeRecipeClientSync;
 import com.hbm.handler.CrystallizerRecipeClientSync;
 import com.hbm.handler.FuelPoolRecipeClientSync;
+import com.hbm.handler.OutgasserRecipeClientSync;
 import com.hbm.handler.jei.AssemblyMachineRecipeHandler;
 import com.hbm.handler.jei.AssemblyMachineTransferInfo;
 import com.hbm.handler.jei.BoilerRecipeHandler;
@@ -28,6 +29,7 @@ import com.hbm.inventory.recipes.PUREXRecipes;
 import com.hbm.inventory.recipes.CentrifugeRecipes;
 import com.hbm.inventory.recipes.CrystallizerRecipes;
 import com.hbm.inventory.recipes.FuelPoolRecipes;
+import com.hbm.inventory.recipes.OutgasserRecipes;
 import com.hbm.inventory.recipes.CombinationRecipes;
 import com.hbm.inventory.recipes.CopperCastingRecipes;
 import com.hbm.inventory.recipes.CrucibleRecipes;
@@ -74,6 +76,8 @@ public class NtmJeiPlugin implements IModPlugin {
     private final List<CrystallizerRecipes.CrystallizerRecipe> knownCrystallizerRecipes = new ArrayList<>();
     private List<FuelPoolRecipes.FuelPoolRecipe> displayedFuelPoolRecipes = List.of();
     private final List<FuelPoolRecipes.FuelPoolRecipe> knownFuelPoolRecipes = new ArrayList<>();
+    private List<OutgasserRecipes.OutgasserRecipe> displayedIrradiationRecipes = List.of();
+    private final List<OutgasserRecipes.OutgasserRecipe> knownIrradiationRecipes = new ArrayList<>();
     private List<CokingRecipeHandler.CokerJeiRecipe> displayedCokerRecipes = List.of();
     private final List<CokingRecipeHandler.CokerJeiRecipe> knownCokerRecipes = new ArrayList<>();
     private List<MixingRecipeHandler.MixerJeiRecipe> displayedMixerRecipes = List.of();
@@ -100,6 +104,8 @@ public class NtmJeiPlugin implements IModPlugin {
         this.refreshCrystallizerRecipes();
         FuelPoolRecipeClientSync.setRefresh(this::refreshFuelPoolRecipes);
         this.refreshFuelPoolRecipes();
+        OutgasserRecipeClientSync.setRefresh(this::refreshIrradiationRecipes);
+        this.refreshIrradiationRecipes();
     }
 
     @Override
@@ -111,12 +117,15 @@ public class NtmJeiPlugin implements IModPlugin {
         CentrifugeRecipeClientSync.setRefresh(null);
         CrystallizerRecipeClientSync.setRefresh(null);
         FuelPoolRecipeClientSync.setRefresh(null);
+        OutgasserRecipeClientSync.setRefresh(null);
         this.displayedCentrifugeRecipes = List.of();
         this.knownCentrifugeRecipes.clear();
         this.displayedCrystallizerRecipes = List.of();
         this.knownCrystallizerRecipes.clear();
         this.displayedFuelPoolRecipes = List.of();
         this.knownFuelPoolRecipes.clear();
+        this.displayedIrradiationRecipes = List.of();
+        this.knownIrradiationRecipes.clear();
         this.displayedCokerRecipes = List.of();
         this.knownCokerRecipes.clear();
         this.displayedMixerRecipes = List.of();
@@ -236,6 +245,26 @@ public class NtmJeiPlugin implements IModPlugin {
         manager.unhideRecipes(FuelPoolRecipeHandler.RECIPE_TYPE, visible);
         this.displayedFuelPoolRecipes = visible;
     }
+
+    private void refreshIrradiationRecipes() {
+        if(this.runtime == null) return;
+        var manager = this.runtime.getRecipeManager();
+        manager.hideRecipes(IrradiationRecipeHandler.RECIPE_TYPE, this.displayedIrradiationRecipes);
+        List<OutgasserRecipes.OutgasserRecipe> visible = new ArrayList<>();
+        List<OutgasserRecipes.OutgasserRecipe> added = new ArrayList<>();
+        for(var recipe : IrradiationRecipeHandler.getRecipes()) {
+            var known = this.knownIrradiationRecipes.stream().filter(recipe::sameRecipe).findFirst().orElse(null);
+            if(known == null) {
+                known = recipe;
+                this.knownIrradiationRecipes.add(known);
+                added.add(known);
+            }
+            visible.add(known);
+        }
+        manager.addRecipes(IrradiationRecipeHandler.RECIPE_TYPE, added);
+        manager.unhideRecipes(IrradiationRecipeHandler.RECIPE_TYPE, visible);
+        this.displayedIrradiationRecipes = visible;
+    }
     private void refreshCokerRecipes() {
         if(this.runtime == null) return;
         var manager = this.runtime.getRecipeManager();
@@ -293,6 +322,8 @@ public class NtmJeiPlugin implements IModPlugin {
                 new GasCentrifugeRecipeHandler(guiHelper),
                 new CrystallizerRecipeHandler(guiHelper),
                 new FuelPoolRecipeHandler(guiHelper),
+                new IrradiationRecipeHandler(guiHelper),
+                new RBMKRodDisassemblyRecipeHandler(guiHelper),
                 new ChemicalPlantRecipeHandler(guiHelper),
                 new PUREXRecipeHandler(guiHelper),
                 new FurnaceCombinationRecipeHandler(guiHelper),
@@ -333,6 +364,13 @@ public class NtmJeiPlugin implements IModPlugin {
         this.knownFuelPoolRecipes.clear();
         this.knownFuelPoolRecipes.addAll(this.displayedFuelPoolRecipes);
         registration.addRecipes(FuelPoolRecipeHandler.RECIPE_TYPE, this.displayedFuelPoolRecipes);
+        // The RBMK rod rows are display only and stay out of the displayed/known lists, so refreshFuelPoolRecipes never hides them.
+        registration.addRecipes(FuelPoolRecipeHandler.RECIPE_TYPE, FuelPoolRecipeHandler.getRodRecipes());
+        this.displayedIrradiationRecipes = IrradiationRecipeHandler.getRecipes();
+        this.knownIrradiationRecipes.clear();
+        this.knownIrradiationRecipes.addAll(this.displayedIrradiationRecipes);
+        registration.addRecipes(IrradiationRecipeHandler.RECIPE_TYPE, this.displayedIrradiationRecipes);
+        registration.addRecipes(RBMKRodDisassemblyRecipeHandler.RECIPE_TYPE, RBMKRodDisassemblyRecipeHandler.getRecipes());
         registration.addRecipes(ChemicalPlantRecipeHandler.RECIPE_TYPE, ChemicalPlantRecipes.INSTANCE.recipeOrderedList);
         registration.addRecipes(PUREXRecipeHandler.RECIPE_TYPE, PUREXRecipes.INSTANCE.recipeOrderedList);
         registration.addRecipes(FurnaceCombinationRecipeHandler.RECIPE_TYPE, CombinationRecipes.getJeiRecipes());
@@ -422,6 +460,14 @@ public class NtmJeiPlugin implements IModPlugin {
         registration.addRecipeCatalyst(
                 NtmBlocks.MACHINE_WASTE_DRUM.asItem(),
                 FuelPoolRecipeHandler.RECIPE_TYPE
+        );
+        registration.addRecipeCatalyst(
+                NtmBlocks.RBMK_OUTGASSER.asItem(),
+                IrradiationRecipeHandler.RECIPE_TYPE
+        );
+        registration.addRecipeCatalyst(
+                net.minecraft.world.item.Items.CRAFTING_TABLE,
+                RBMKRodDisassemblyRecipeHandler.RECIPE_TYPE
         );
         registration.addRecipeCatalyst(
                 NtmBlocks.MACHINE_CHEMICAL_PLANT.asItem(),

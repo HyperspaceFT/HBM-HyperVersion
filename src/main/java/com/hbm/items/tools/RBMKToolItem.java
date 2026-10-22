@@ -1,8 +1,10 @@
 package com.hbm.items.tools;
 
 import com.hbm.blockentity.machine.rbmk.RBMKConsoleBlockEntity;
+import com.hbm.blockentity.machine.rbmk.RBMKCraneConsoleBlockEntity;
 import com.hbm.blocks.machine.rbmk.RBMKBaseBlock;
 import com.hbm.blocks.machine.rbmk.RBMKConsoleBlock;
+import com.hbm.blocks.machine.rbmk.RBMKCraneConsoleBlock;
 import com.hbm.util.TagsUtil;
 import com.hbm.util.i18n.I18nUtil;
 import net.minecraft.ChatFormatting;
@@ -26,8 +28,8 @@ import java.util.List;
 
 /**
  * Original ItemRBMKTool: the RBMK console linking device. Used on any RBMK column it stores the column's core position, used on a
- * console it links the console to that position. The crane console and rbmk_display branches (:70-100) arrive with those blocks
- * (Goals 25 and 26).
+ * console it links the console to that position, used on a crane console it sets the crane over that column (Goal25D, :70-85).
+ * The rbmk_display branch (:87-100) arrives with that block (Goal 26).
  */
 public class RBMKToolItem extends Item {
 
@@ -78,6 +80,23 @@ public class RBMKToolItem extends Item {
                 BlockPos core = console.findCore(level, pos);
 
                 if(core != null && level.getBlockEntity(core) instanceof RBMKConsoleBlockEntity be) {
+                    CompoundTag tag = TagsUtil.getCustomData(stack);
+                    be.setTarget(tag.getInt("posX"), tag.getInt("posY"), tag.getInt("posZ"));
+                    if(player != null) player.displayClientMessage(Component.translatable(this.getDescriptionId() + ".set").withStyle(ChatFormatting.YELLOW), false);
+                }
+            }
+
+            return InteractionResult.sidedSuccess(level.isClientSide);
+        }
+
+        // Original :70-85, with the same NEO-only position check as the console branch.
+        if(b instanceof RBMKCraneConsoleBlock crane && hasPosition(stack)) {
+
+            if(!level.isClientSide) {
+
+                BlockPos core = crane.findCore(level, pos);
+
+                if(core != null && level.getBlockEntity(core) instanceof RBMKCraneConsoleBlockEntity be) {
                     CompoundTag tag = TagsUtil.getCustomData(stack);
                     be.setTarget(tag.getInt("posX"), tag.getInt("posY"), tag.getInt("posZ"));
                     if(player != null) player.displayClientMessage(Component.translatable(this.getDescriptionId() + ".set").withStyle(ChatFormatting.YELLOW), false);

@@ -1,8 +1,8 @@
 package com.hbm.blockentity.machine.rbmk;
 
 /**
- * Original TileEntityRBMKConsole.ColumnType (:502-523), the column kind shown on the RBMK console. Top-level here because the
- * console itself arrives later (Goal24E).
+ * Original TileEntityRBMKConsole.ColumnType (:502-523), the column kind shown on the RBMK console (Goal24E, RBMKConsoleBlockEntity).
+ * Top-level here because the column block entities report it (getConsoleType) as well as the console that reads it.
  */
 public enum RBMKColumnType {
     BLANK(0),

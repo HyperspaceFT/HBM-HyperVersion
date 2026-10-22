@@ -35,30 +35,45 @@ public record CompoundTagControl(CompoundTag tag, BlockPos pos) implements Custo
         // readNbt() yields null for an empty (TAG_End) payload; drop it before any receiver sees it, as the original NBTControlPacket does.
         if(packet.tag == null) return;
 
-        context.enqueueWork(() -> {
-            Player player = context.player();
+        context.enqueueWork(() -> apply(context.player(), packet.tag, packet.pos));
+    }
 
-            BlockEntity be = player.level.getBlockEntity(packet.pos);
+    /**
+     * NEO-only defence: the block entity is only looked up for a loaded position within this distance of the player. The original
+     * NBTControlPacket.java:75,86 fetched the tile entity before the permission check as well; at default reach 64 blocks is wider than
+     * every receiver's own hasPermission distance (fixed 16 or 20 blocks, or the menu's stillValid range), so it only keeps a client from
+     * loading or probing far-away positions. A block interaction range raised to about 56 blocks or more would be cut at 64.
+     */
+    public static final double MAX_DISTANCE = 64D;
+
+    /** The server-side handling of one control tag sent by the given player for the given position. */
+    public static void apply(Player player, CompoundTag tag, BlockPos pos) {
+
+        // A position out of reach skips only the block entity; the held items below do not use the position. hasChunk is Level.isLoaded
+        // without its build-height test, which getBlockEntity repeats; the isolated machine regressions' stub Level has no isLoaded.
+        if(player.level().hasChunk(pos.getX() >> 4, pos.getZ() >> 4) && player.distanceToSqr(pos.getX() + 0.5D, pos.getY() + 0.5D, pos.getZ() + 0.5D) <= MAX_DISTANCE * MAX_DISTANCE) {
+
+            BlockEntity be = player.level().getBlockEntity(pos);
 
             if(be instanceof IControlReceiver icr) {
                 if(icr.hasPermission(player)) {
-                    icr.receiveControl(player, packet.tag);
-                    icr.receiveControl(packet.tag);
+                    icr.receiveControl(player, tag);
+                    icr.receiveControl(tag);
                     return;
                 }
             }
+        }
 
-            List<ItemStack> stacks = InventoryUtil.getItemsFromBothHands(player);
-            for(ItemStack stack : stacks) {
-                if(stack.getItem() instanceof IControlReceiver icr) {
-                    if(icr.hasPermission(player)) {
-                        icr.receiveControl(player, packet.tag);
-                        icr.receiveControl(packet.tag);
-                        break;
-                    }
+        List<ItemStack> stacks = InventoryUtil.getItemsFromBothHands(player);
+        for(ItemStack stack : stacks) {
+            if(stack.getItem() instanceof IControlReceiver icr) {
+                if(icr.hasPermission(player)) {
+                    icr.receiveControl(player, tag);
+                    icr.receiveControl(tag);
+                    break;
                 }
             }
-        });
+        }
     }
 
     @Override

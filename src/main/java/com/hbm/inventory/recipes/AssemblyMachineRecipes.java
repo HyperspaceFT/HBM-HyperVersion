@@ -463,5 +463,13 @@ public class AssemblyMachineRecipes extends GenericRecipes<GenericRecipe> {
                         NtmItems.castPlateIngredient(CastPlateItem.Type.STEEL, 2),
                         new ComparableStack(NtmItems.PLATE_COPPER.get(), 4),
                         new ComparableStack(NtmItems.INGOT_RUBBER.get(), 2)));
+
+        // Original normal ass.rbmkautoloader (AssemblyMachineRecipes.java:532-535): the RBMK autoloader. The expensive branch
+        // (inputItemsEx) and the 528 pools are not migrated; NEO has no item_expensive.
+        this.register(new GenericRecipe("ass.rbmkautoloader").setup(100, 100).outputItems(new ItemStack(NtmBlocks.RBMK_AUTOLOADER.get(), 1))
+                .inputItems(NtmItems.castPlateWeldedIngredient(CastPlateItem.Type.STEEL, 4),
+                        NtmItems.castPlateIngredient(CastPlateItem.Type.LEAD, 4),
+                        new ComparableStack(NtmItems.INGOT_BORON.get(), 4),
+                        new ComparableStack(NtmItems.MOTOR.get(), 3)));
     }
 }

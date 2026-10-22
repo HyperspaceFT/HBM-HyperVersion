@@ -5,6 +5,7 @@ import com.hbm.blocks.generic.BarbedWireBlock;
 import com.hbm.inventory.MetaHelper;
 import com.hbm.inventory.NtmTags;
 import com.hbm.inventory.fluid.Fluids;
+import com.hbm.inventory.recipes.crafting.RBMKRodDisassemblyRecipe;
 import com.hbm.items.BoltItem;
 import com.hbm.items.CastPlateItem;
 import com.hbm.items.NtmItems;
@@ -657,6 +658,31 @@ public class NtmRecipeProvider extends RecipeProvider {
                 .define('G', NtmBlocks.STEEL_GRATE.get())
                 .unlockedBy("has_rbmk_blank", has(NtmBlocks.RBMK_BLANK.get()))
                 .save(recipeOutput, ResourceLocation.fromNamespaceAndPath("hbmsntm", "rbmk_cooler"));
+        // RBMK storage column (Goal25A): original CraftingManager.java:770 (outside the 528 branch). Not registered: the tier-4 anvil
+        // recycling row (AnvilRecipes.java:921-925; the 4-tier anvil is unreachable in NEO, as for the columns above).
+        ShapedRecipeBuilder.shaped(RecipeCategory.MISC, NtmBlocks.RBMK_STORAGE.get(), 1)
+                .pattern("C")
+                .pattern("R")
+                .pattern("C")
+                .define('C', NtmBlocks.CRATE_STEEL.get())
+                .define('R', NtmBlocks.RBMK_BLANK.get())
+                .unlockedBy("has_rbmk_blank", has(NtmBlocks.RBMK_BLANK.get()))
+                .save(recipeOutput, ResourceLocation.fromNamespaceAndPath("hbmsntm", "rbmk_storage"));
+        // RBMK irradiation channel (Goal25B): original CraftingManager.java:769. Not registered: the tier-4 anvil recycling row
+        // (AnvilRecipes.java:914-920; the 4-tier anvil is unreachable in NEO, as for the columns above).
+        ShapedRecipeBuilder.shaped(RecipeCategory.MISC, NtmBlocks.RBMK_OUTGASSER.get(), 1)
+                .pattern("GHG")
+                .pattern("GRG")
+                .pattern("GTG")
+                .define('G', NtmBlocks.STEEL_GRATE.get())
+                .define('H', Items.HOPPER)
+                .define('R', NtmBlocks.RBMK_BLANK.get())
+                .define('T', NtmItems.TANK_STEEL.get())
+                .unlockedBy("has_rbmk_blank", has(NtmBlocks.RBMK_BLANK.get()))
+                .save(recipeOutput, ResourceLocation.fromNamespaceAndPath("hbmsntm", "rbmk_outgasser"));
+        // Cold RBMK rod disassembly (Goal25A): original RBMKFuelCraftingHandler, registered at CraftingManager.java:74 and :80.
+        SpecialRecipeBuilder.special(RBMKRodDisassemblyRecipe::new)
+                .save(recipeOutput, ResourceLocation.fromNamespaceAndPath("hbmsntm", "rbmk_rod_disassembly"));
         // RBMK console and linking device (Goal24E): original CraftingManager.java:989 (the !enable528 branch; B.ingot() is the boron
         // ingot, KEY_ANYPANE any glass pane, the ANALOG circuit NEO's circuit_analog_board) and ToolRecipes.java:133 (PB.ingot() lead,
         // IRON.ingot() iron).
@@ -670,6 +696,16 @@ public class NtmRecipeProvider extends RecipeProvider {
                 .define('C', NtmItems.CIRCUIT_ANALOG_BOARD.get())
                 .unlockedBy("has_deco_rbmk", has(NtmBlocks.DECO_RBMK.get()))
                 .save(recipeOutput, ResourceLocation.fromNamespaceAndPath("hbmsntm", "rbmk_console"));
+        // RBMK crane console (Goal25D): original CraftingManager.java:990 (the !enable528 branch; B.ingot() is the boron ingot, the
+        // ANALOG circuit NEO's circuit_analog_board).
+        ShapedRecipeBuilder.shaped(RecipeCategory.MISC, NtmBlocks.RBMK_CRANE_CONSOLE.get(), 1)
+                .pattern("BCD")
+                .pattern("DDD")
+                .define('B', NtmItems.INGOT_BORON.get())
+                .define('C', NtmItems.CIRCUIT_ANALOG_BOARD.get())
+                .define('D', NtmBlocks.DECO_RBMK.get())
+                .unlockedBy("has_deco_rbmk", has(NtmBlocks.DECO_RBMK.get()))
+                .save(recipeOutput, ResourceLocation.fromNamespaceAndPath("hbmsntm", "rbmk_crane_console"));
         ShapedRecipeBuilder.shaped(RecipeCategory.TOOLS, NtmItems.RBMK_TOOL.get(), 1)
                 .pattern(" A ")
                 .pattern(" IA")

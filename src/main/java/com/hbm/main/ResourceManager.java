@@ -276,6 +276,11 @@ public class ResourceManager {
     };
     //RBMK console (original rbmk_console_tex, :1694)
     public static final ResourceLocation RBMK_CONSOLE_TEX = NuclearTechMod.withDefaultNamespace("textures/models/machines/rbmk_control.png");
+    //RBMK autoloader (original rbmk_autoloader_tex, :1693)
+    public static final ResourceLocation RBMK_AUTOLOADER_TEX = NuclearTechMod.withDefaultNamespace("textures/models/machines/rbmk_autoloader.png");
+    //RBMK crane console and its crane (original rbmk_crane_console_tex and rbmk_crane_tex, :1691-1692)
+    public static final ResourceLocation RBMK_CRANE_CONSOLE_TEX = NuclearTechMod.withDefaultNamespace("textures/models/machines/crane_console.png");
+    public static final ResourceLocation RBMK_CRANE_TEX = NuclearTechMod.withDefaultNamespace("textures/models/machines/rbmk_crane.png");
 
     public static final ResourceLocation WHITE_TEX = NuclearTechMod.withDefaultNamespace("textures/models/white.png");
 
@@ -453,6 +458,9 @@ public class ResourceManager {
     public static IModelCustom rbmk_element_rods;
     public static IModelCustom rbmk_rods;
     public static IModelCustom rbmk_console;
+    public static IModelCustom rbmk_autoloader;
+    public static IModelCustom rbmk_crane_console;
+    public static IModelCustom rbmk_crane;
 
     public static void init() {
 
@@ -616,5 +624,10 @@ public class ResourceManager {
         rbmk_rods = new HFRWavefrontObject("models/obj/rbmk/rbmk_rods.obj").noSmooth().asVBO();
         // Original :1683, smoothed as loaded there.
         rbmk_console = new HFRWavefrontObject("models/obj/rbmk/rbmk_console.obj").asVBO();
+        // Original :1682 (models/rbmk/autoloader.obj), smoothed as loaded there.
+        rbmk_autoloader = new HFRWavefrontObject("models/obj/rbmk/autoloader.obj").asVBO();
+        // Original :1680-1681 (models/rbmk/crane_console.obj and crane.obj), smoothed as loaded there.
+        rbmk_crane_console = new HFRWavefrontObject("models/obj/rbmk/crane_console.obj").asVBO();
+        rbmk_crane = new HFRWavefrontObject("models/obj/rbmk/crane.obj").asVBO();
     }
 }

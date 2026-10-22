@@ -1,5 +1,6 @@
 package com.hbm.main;
 
+import com.hbm.handler.HbmKeybinds;
 import com.hbm.util.i18n.I18nServer;
 import com.hbm.util.i18n.ITranslate;
 import com.hbm.util.particle.IParticleCreator;
@@ -62,5 +63,10 @@ public class ServerProxy {
 
     public Player me() {
         return null;
+    }
+
+    /** Original proxy getIsKeyPressed: the local player's key state, never pressed outside a client. */
+    public boolean getIsKeyPressed(HbmKeybinds.EnumKeybind key) {
+        return false;
     }
 }

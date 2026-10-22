@@ -542,7 +542,8 @@ public class RBMKConsoleGameTests {
     // Covers receiveControl "toggle" (:283-288: screens[slot].type = values()[(ordinal + 1) % 6]) with ScreenType NONE, COL_TEMP,
     // ROD_EXTRACTION, FUEL_DEPLETION, FUEL_POISON, FUEL_TEMP (offsets 0..90 step 18) and "id" (:290-302: the list of i in 0..224 with
     // "s" + i true). NEO-only: slots outside 0..5 are ignored (the original throws). CompoundTagControl.handleServer calls
-    // receiveControl(player, tag) and then receiveControl(tag) (:45-46): the same sequence here must advance a screen exactly once.
+    // receiveControl(player, tag) and then receiveControl(tag) (since Goal25A inside CompoundTagControl.apply, :59-60): the same
+    // sequence here must advance a screen exactly once.
     @GameTest(template = TEMPLATE, batch = "rbmk_console_screen_control", timeoutTicks = 100)
     public static void rbmk_console_screen_control(GameTestHelper helper) {
         Rad rad = new Rad(helper);
@@ -579,7 +580,7 @@ public class RBMKConsoleGameTests {
                 for(int i = 0; i < 6; i++) check(i == 1 ? Arrays.equals(console.screens[i].columns, new int[] { 3, 10 }) : console.screens[i].columns.length == 0,
                         "id 7 / -1 changed screen " + i + ": " + Arrays.toString(console.screens[i].columns));
 
-                // The server handler's call sequence (CompoundTagControl.java:45-46).
+                // The server handler's call sequence (CompoundTagControl.apply, :59-60 since Goal25A).
                 Player player = helper.makeMockPlayer(GameType.SURVIVAL);
                 CompoundTag toggle2 = byteTag("toggle", 2);
                 console.receiveControl(player, toggle2);

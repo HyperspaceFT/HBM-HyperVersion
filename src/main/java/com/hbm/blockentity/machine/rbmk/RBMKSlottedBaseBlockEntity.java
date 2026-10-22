@@ -43,7 +43,8 @@ public abstract class RBMKSlottedBaseBlockEntity extends RBMKBaseBlockEntity {
     }
 
     // The original ISidedInventory exposes nothing to automation (getAccessibleSlotsFromSide empty, isItemValidForSlot and
-    // canExtractItem false); the columns are filled by hand or by the autoloader through IRBMKLoadable.
+    // canExtractItem false); the columns are filled by hand, by the crane console through IRBMKLoadable, or by the autoloader,
+    // which writes the fuel channel's slot directly.
     @Override
     public int[] getSlotsForFace(Direction direction) {
         return new int[0];

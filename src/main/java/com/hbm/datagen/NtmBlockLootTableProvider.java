@@ -292,8 +292,12 @@ public class NtmBlockLootTableProvider extends BlockLootSubProvider {
         this.dropSelf(NtmBlocks.RBMK_BOILER.get());
         this.dropSelf(NtmBlocks.RBMK_HEATER.get());
         this.dropSelf(NtmBlocks.RBMK_COOLER.get());
+        this.dropSelf(NtmBlocks.RBMK_STORAGE.get());
+        this.dropSelf(NtmBlocks.RBMK_OUTGASSER.get());
         this.dropSelf(NtmBlocks.RBMK_LOADER.get());
         this.dropSelf(NtmBlocks.RBMK_CONSOLE.get());
+        this.dropSelf(NtmBlocks.RBMK_CRANE_CONSOLE.get());
+        this.dropSelf(NtmBlocks.RBMK_AUTOLOADER.get());
         // The original corium_block is a fluid block and drops nothing.
         this.add(NtmBlocks.CORIUM_BLOCK.get(), noDrop());
 

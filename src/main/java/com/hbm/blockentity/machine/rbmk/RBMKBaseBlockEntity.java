@@ -47,14 +47,17 @@ import java.util.Set;
 
 /**
  * Base class for all RBMK components, active or passive. Handles heat and the explosion sequence
- * (original TileEntityRBMKBase). The ReaSim water/steam fields and the crane indicator are not ported yet (GOAL24 decision 5,
- * Goal 25); adding their NBT keys later stays compatible. The passive columns have no slots; the slotted columns
- * (RBMKSlottedBaseBlockEntity, Goal24C) share this parent and pass their slot count, which is why it is a MachineBaseBlockEntity.
+ * (original TileEntityRBMKBase). The ReaSim water/steam fields are not ported yet (GOAL24 decision 5); adding their NBT keys later
+ * stays compatible. The crane indicator (Goal25D) is synced but, as in the original, not saved. The passive columns have no slots;
+ * the slotted columns (RBMKSlottedBaseBlockEntity, Goal24C) share this parent and pass their slot count, which is why it is a MachineBaseBlockEntity.
  * @author hbm
  */
 public abstract class RBMKBaseBlockEntity extends MachineBaseBlockEntity {
 
     public double heat;
+
+    /** Ticks left on the RBMK console's crane marker; the crane console sets 10 every tick its lift is above this column. */
+    public int craneIndicator;
 
     public RBMKBaseBlockEntity(BlockEntityType<? extends RBMKBaseBlockEntity> type, BlockPos pos, BlockState state) {
         this(type, pos, state, 0);
@@ -141,6 +144,8 @@ public abstract class RBMKBaseBlockEntity extends MachineBaseBlockEntity {
     @Override
     public void updateEntity() {
         if(this.level == null || this.level.isClientSide) return;
+
+        if(this.craneIndicator > 0) this.craneIndicator--;
 
         moveHeat();
         this.networkPackNT(trackingRange());
@@ -235,12 +240,14 @@ public abstract class RBMKBaseBlockEntity extends MachineBaseBlockEntity {
     public void serialize(RegistryFriendlyByteBuf buf) {
         super.serialize(buf);
         buf.writeDouble(this.heat);
+        buf.writeByte((byte) this.craneIndicator);
     }
 
     @Override
     public void deserialize(RegistryFriendlyByteBuf buf) {
         super.deserialize(buf);
         this.heat = buf.readDouble();
+        this.craneIndicator = buf.readByte();
     }
 
     /**

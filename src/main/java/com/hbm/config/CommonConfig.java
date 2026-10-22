@@ -179,8 +179,8 @@ public class CommonConfig {
                 .define("enableExplosionEffects", true);
         ENABLE_MACHINE_GRAVITY = builder
                 .comment("Requires large large machines to have a proper foundation, or else they tilt and break. Independent from the 528 version of this config, which does the same, but only works with 528 enabled")
-                .translation("hbmsntm.configuration.enableMachineGravity ")
-                .define("enableMachineGravity ", false);
+                .translation("hbmsntm.configuration.enableMachineGravity")
+                .define("enableMachineGravity", false);
 
         ENABLE_EXPENSIVE_MODE = builder
                 .comment("It does what the name implies.")

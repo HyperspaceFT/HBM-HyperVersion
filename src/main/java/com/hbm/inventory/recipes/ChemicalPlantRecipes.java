@@ -160,7 +160,8 @@ public class ChemicalPlantRecipes extends GenericRecipes<GenericRecipe> {
                 .outputItems(MetaHelper.newStack(NtmItems.BATTERY_PACK.get(), 1, BatteryPackType.BATTERY_SCHRABIDIUM.ordinal())));
         this.register(new GenericRecipe("chem.batteryquantum").setupNamed(100, 100000L)
                 .inputItems(new ComparableStack(NtmItems.WIRE_DENSE.get(), 24, WireDenseItem.Type.GOLD.meta), new ComparableStack(NtmItems.PELLET_CHARGED.get(), 32), new ComparableStack(NtmItems.INGOT_CTF.get(), 16))
-                .inputFluids(new FluidStack(Fluids.PERFLUOROMETHYL, 8000))
+                // original ChemicalPlantRecipes.java:192-198: cold perfluoromethyl in, warm perfluoromethyl out.
+                .inputFluids(new FluidStack(Fluids.PERFLUOROMETHYL_COLD, 8000))
                 .outputItems(MetaHelper.newStack(NtmItems.BATTERY_PACK.get(), 1, BatteryPackType.BATTERY_QUANTUM.ordinal()))
                 .outputFluids(new FluidStack(Fluids.PERFLUOROMETHYL, 8000)));
         this.register(new GenericRecipe("chem.desh").setupNamed(100, 100L)

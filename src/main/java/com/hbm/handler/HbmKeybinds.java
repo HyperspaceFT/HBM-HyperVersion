@@ -37,6 +37,13 @@ public class HbmKeybinds {
     public static final KeyMapping GUN_SECONDARY = new KeyMapping(category + ".gunSecondary", InputConstants.Type.MOUSE, InputConstants.MOUSE_BUTTON_RIGHT, category);
     public static final KeyMapping GUN_TERTIARY = new KeyMapping(category + ".gunTertiary", InputConstants.Type.MOUSE, InputConstants.MOUSE_BUTTON_MIDDLE, category);
 
+    // RBMK crane console controls: original craneUpKey .. craneLoadKey (:53-57).
+    public static final KeyMapping CRANE_UP = new KeyMapping(category + ".craneMoveUp", InputConstants.Type.KEYSYM, InputConstants.KEY_UP, category);
+    public static final KeyMapping CRANE_DOWN = new KeyMapping(category + ".craneMoveDown", InputConstants.Type.KEYSYM, InputConstants.KEY_DOWN, category);
+    public static final KeyMapping CRANE_LEFT = new KeyMapping(category + ".craneMoveLeft", InputConstants.Type.KEYSYM, InputConstants.KEY_LEFT, category);
+    public static final KeyMapping CRANE_RIGHT = new KeyMapping(category + ".craneMoveRight", InputConstants.Type.KEYSYM, InputConstants.KEY_RIGHT, category);
+    public static final KeyMapping CRANE_LOAD = new KeyMapping(category + ".craneLoad", InputConstants.Type.KEYSYM, InputConstants.KEY_RETURN, category);
+
     @SubscribeEvent
     public static void onRegisterKeyMappings(RegisterKeyMappingsEvent event) {
         event.register(CALCULATOR);
@@ -51,6 +58,12 @@ public class HbmKeybinds {
         event.register(GUN_PRIMARY);
         event.register(GUN_SECONDARY);
         event.register(GUN_TERTIARY);
+
+        event.register(CRANE_UP);
+        event.register(CRANE_DOWN);
+        event.register(CRANE_LEFT);
+        event.register(CRANE_RIGHT);
+        event.register(CRANE_LOAD);
     }
 
     @SubscribeEvent
@@ -167,6 +180,11 @@ public class HbmKeybinds {
             case GUN_SECONDARY -> GUN_SECONDARY.isDown();
             case GUN_TERTIARY -> GUN_TERTIARY.isDown();
             case RELOAD -> RELOAD.isDown();
+            case CRANE_UP -> CRANE_UP.isDown();
+            case CRANE_DOWN -> CRANE_DOWN.isDown();
+            case CRANE_LEFT -> CRANE_LEFT.isDown();
+            case CRANE_RIGHT -> CRANE_RIGHT.isDown();
+            case CRANE_LOAD -> CRANE_LOAD.isDown();
             default -> false;
         };
     }

@@ -80,8 +80,8 @@ public class RBMKConsoleBlockEntity extends MachineBaseBlockEntity implements IC
                 columns[index] = new RBMKColumn(rbmk.getConsoleType(), rbmk.getNBTForConsole());
                 columns[index].data.putDouble("heat", rbmk.heat);
                 columns[index].data.putDouble("maxHeat", rbmk.maxHeat());
-                // The original writes the column's craneIndicator, a field of the RBMK crane (Goal 25) that NEO's columns do not have yet.
-                columns[index].data.putByte("indicator", (byte) 0);
+                // The column's crane marker, drawn by RenderRBMKConsole (original :104).
+                columns[index].data.putByte("indicator", (byte) rbmk.craneIndicator);
                 if(rbmk.isModerated()) columns[index].data.putBoolean("moderated", true); //false is the default anyway and not setting it when we don't need to reduces cruft
 
                 if(te instanceof RBMKRodBlockEntity fuel) {

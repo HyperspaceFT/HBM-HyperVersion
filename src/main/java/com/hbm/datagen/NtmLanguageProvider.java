@@ -1269,6 +1269,12 @@ public class NtmLanguageProvider extends LanguageProvider {
         this.add("tile.rbmk.dodd.t1_max", "PFM Capacity");
         this.add("tile.rbmk.dodd.t1_type", "PFM Type");
         this.add("tile.rbmk.dodd.t1_p", "PFM Pressure");
+        // RBMK irradiation channel (Goal25B): DODD keys of its progress and gas tank, original en_US.lang:6272-6273, :6286, :6291, :6296.
+        this.add("tile.rbmk.dodd.progress", "Progress");
+        this.add("tile.rbmk.dodd.gas", "Gas");
+        this.add("tile.rbmk.dodd.gas_type", "Gas Type(ID)");
+        this.add("tile.rbmk.dodd.gas_p", "Gas Pressure");
+        this.add("tile.rbmk.dodd.gas_max", "Gas Max Amount");
         this.add("rbmk.boiler.water", "Feedwater: %s / %s");
         this.add("rbmk.boiler.steam", "Steam: %s / %s");
         this.add("rbmk.boiler.type", "Compressor: %s");
@@ -2101,8 +2107,16 @@ public class NtmLanguageProvider extends LanguageProvider {
         this.add(NtmBlocks.RBMK_HEATER, "RBMK Fluid Heater");
         this.add(NtmBlocks.RBMK_LOADER, "RBMK Steam Connector");
         this.add("block.hbmsntm.rbmk_loader.desc", "Allows RBMKs to have both water and steam connections at the bottom$Place one water pipe below the RBMK column, then the connector,$then connect the steam duct to the connector.");
+        // RBMK storage column (Goal25A): original en_US.lang:6253.
+        this.add(NtmBlocks.RBMK_STORAGE, "RBMK Storage Column");
+        // RBMK irradiation channel (Goal25B): original en_US.lang:6243.
+        this.add(NtmBlocks.RBMK_OUTGASSER, "RBMK Irradiation Channel");
         // RBMK console (Goal24E): original en_US.lang:6215.
         this.add(NtmBlocks.RBMK_CONSOLE, "RBMK Console");
+        // RBMK crane console (Goal25D): original en_US.lang:6222.
+        this.add(NtmBlocks.RBMK_CRANE_CONSOLE, "RBMK Crane Console");
+        // RBMK autoloader (Goal25C): original en_US.lang:6212.
+        this.add(NtmBlocks.RBMK_AUTOLOADER, "RBMK Autoloader");
         this.add(NtmBlocks.CORIUM_BLOCK, "Corium");
         this.add(NtmBlocks.MACHINE_SOLDERING_STATION, "Soldering Station");
         this.add(NtmBlocks.HEATER_FIREBOX, "Firebox");
@@ -2547,6 +2561,14 @@ public class NtmLanguageProvider extends LanguageProvider {
         // Original en_US.lang:789 and :794.
         this.add("container.rbmkBoiler", "RBMK Steam Channel");
         this.add("container.rbmkHeater", "RBMK Fluid Heater");
+        // Original en_US.lang:802.
+        this.add("container.rbmkStorage", "RBMK Storage Column");
+        // Original en_US.lang:799.
+        this.add("container.rbmkOutgasser", "RBMK Irradiation Channel");
+        // Original en_US.lang:788.
+        this.add("container.rbmkAutoloader", "RBMK Autoloader");
+        // JEI category of the cold rod disassembly; the original NEI title (RBMKRodDisassemblyHandler.java:15) is hard-coded English.
+        this.add("jei.hbmsntm.rbmk_rod_disassembly", "RBMK Rod Disassembly");
         this.add("container.sat_linker", "SatLink Device");
         this.add("container.sat_linker.chip", "The first slot will copy the satellite/chip's$frequency and paste it to the second slot.");
         this.add("container.sat_linker.random", "The third slot will randomize the$satellite/chip's frequency.");
@@ -2832,6 +2854,29 @@ public class NtmLanguageProvider extends LanguageProvider {
         this.add("itemGroup.nuke", "NTM Bombs");
         this.add("itemGroup.missile", "NTM Missiles and Satellites");
         this.add("itemGroup.consumable", "NTM Consumables and Gear");
+
+        // Key bindings of HbmKeybinds: original hbm.key.* (en_US.lang:1427-1447) under NEO's key names (the original's
+        // hbm.key.calculator and gunTertitary are calc and gunTertiary here).
+        this.add("hbmsntm.keys", "NTM Hotkeys");
+        this.add("hbmsntm.keys.calc", "Calculator");
+        this.add("hbmsntm.keys.toggleBack", "Toggle Jetpack");
+        this.add("hbmsntm.keys.toggleMagnet", "Toggle Magnet");
+        this.add("hbmsntm.keys.toggleHUD", "Toggle HUD");
+        this.add("hbmsntm.keys.ability", "Cycle Tool Abilities");
+        this.add("hbmsntm.keys.abilityAlt", "Configure Tool Abilities");
+        this.add("hbmsntm.keys.reload", "Reload");
+        this.add("hbmsntm.keys.gunPrimary", "Primary Fire");
+        this.add("hbmsntm.keys.gunSecondary", "Secondary Fire");
+        this.add("hbmsntm.keys.gunTertiary", "Gun Sights");
+        // RBMK crane console controls (Goal25D): original en_US.lang:1433-1437.
+        this.add("hbmsntm.keys.craneMoveUp", "Move Crane Forward");
+        this.add("hbmsntm.keys.craneMoveDown", "Move Crane Backward");
+        this.add("hbmsntm.keys.craneMoveLeft", "Move Crane Left");
+        this.add("hbmsntm.keys.craneMoveRight", "Move Crane Right");
+        this.add("hbmsntm.keys.craneLoad", "Load/Unload Crane");
+
+        // Original potion.hbm_mutation (en_US.lang:4954).
+        this.add("effect.hbmsntm.mutation", "Tainted Heart");
 
         this.add("fluid.pressurized", "Pressurized, use compressor!");
 
