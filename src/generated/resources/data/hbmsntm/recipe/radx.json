@@ -1,0 +1,19 @@
+{
+  "type": "minecraft:crafting_shapeless",
+  "category": "misc",
+  "ingredients": [
+    {
+      "item": "hbmsntm:powder_coal"
+    },
+    {
+      "item": "hbmsntm:powder_coal"
+    },
+    {
+      "item": "hbmsntm:fluorite"
+    }
+  ],
+  "result": {
+    "count": 1,
+    "id": "hbmsntm:radx"
+  }
+}

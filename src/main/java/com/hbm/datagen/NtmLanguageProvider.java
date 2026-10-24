@@ -500,6 +500,7 @@ public class NtmLanguageProvider extends LanguageProvider {
         this.add(NtmBlocks.BLOCK_FIBERGLASS, "Roll of Fiberglass");
         this.add(NtmBlocks.BLOCK_INSULATOR, "Roll of Insulation");
         this.add(NtmBlocks.BLOCK_SLAG, "Block of Slag");
+        this.add(NtmBlocks.BLOCK_GRAPHITE, "Block of Graphite");
 
         this.add("container.heaterFirebox", "Firebox");
         this.add("container.heaterOven", "Heating Oven");
@@ -805,6 +806,14 @@ public class NtmLanguageProvider extends LanguageProvider {
         this.add(NtmItems.TANK_STEEL, "Steel Tank");
         this.add(NtmItems.CATALYST_CLAY, "Clay Catalyst");
         this.add(NtmItems.DEUTERIUM_FILTER, "Deuterium Filter");
+        this.add(NtmItems.RAG, "Cloth");
+        this.add("item.hbmsntm.rag.desc", "Drop into water to make damp cloth.$Right-click to urinate on the cloth.");
+        this.add(NtmItems.RAG_DAMP, "Damp Cloth");
+        this.add(NtmItems.RAG_PISS, "Piss-Soaked Rag");
+        this.add(NtmItems.FILTER_COAL, "Activated Carbon Filter");
+        this.add(NtmItems.HAZMAT_CLOTH, "Hazmat Cloth");
+        this.add(NtmItems.HAZMAT_CLOTH_RED, "Advanced Hazmat Cloth");
+        this.add(NtmItems.HAZMAT_CLOTH_GREY, "Lead-Reinforced Hazmat Cloth");
         this.add(NtmItems.FINS_FLAT, "Flat Steel Casing");
         this.add(NtmItems.FINS_SMALL_STEEL, "Small Steel Grid Fins");
         this.add(NtmItems.FINS_BIG_STEEL, "Big Steel Grid Fins");
@@ -1486,6 +1495,36 @@ public class NtmLanguageProvider extends LanguageProvider {
         this.add(NtmItems.METEOR_REMOTE, "Meteorite Remote");
         this.add(NtmItems.METEOR_CHARM, "Meteor Charm");
         this.add(NtmItems.PROTECTION_CHARM, "Charm of Protection");
+        this.add(NtmItems.GAS_MASK, "Gas Mask");
+        this.add(NtmItems.GAS_MASK_M65, "M65-Z Gas Mask");
+        this.add(NtmItems.GAS_MASK_MONO, "Half Mask");
+        this.add(NtmItems.GAS_MASK_OLDE, "Leather Gas Mask");
+        this.add(NtmItems.MASK_RAG, "Crude Protective Mask");
+        this.add(NtmItems.MASK_PISS, "Trench Mask");
+        this.add(NtmItems.HAZMAT_HELMET, "Hazmat Helmet");
+        this.add(NtmItems.HAZMAT_PLATE, "Hazmat Chestplate");
+        this.add(NtmItems.HAZMAT_LEGS, "Hazmat Leggings");
+        this.add(NtmItems.HAZMAT_BOOTS, "Hazmat Boots");
+        this.add(NtmItems.HAZMAT_HELMET_RED, "Advanced Hazmat Helmet");
+        this.add(NtmItems.HAZMAT_PLATE_RED, "Advanced Hazmat Chestplate");
+        this.add(NtmItems.HAZMAT_LEGS_RED, "Advanced Hazmat Leggings");
+        this.add(NtmItems.HAZMAT_BOOTS_RED, "Advanced Hazmat Boots");
+        this.add(NtmItems.HAZMAT_HELMET_GREY, "High-Performance Hazmat Helmet");
+        this.add(NtmItems.HAZMAT_PLATE_GREY, "High-Performance Hazmat Chestplate");
+        this.add(NtmItems.HAZMAT_LEGS_GREY, "High-Performance Hazmat Leggings");
+        this.add(NtmItems.HAZMAT_BOOTS_GREY, "High-Performance Hazmat Boots");
+        this.add(NtmItems.GAS_MASK_FILTER, "Gas Mask Filter");
+        this.add(NtmItems.GAS_MASK_FILTER_MONO, "Catalytic Mask Filter");
+        this.add(NtmItems.GAS_MASK_FILTER_COMBO, "Gas Mask Combo Filter");
+        this.add(NtmItems.GAS_MASK_FILTER_RAG, "Makeshift Gas Mask Filter");
+        this.add(NtmItems.GAS_MASK_FILTER_PISS, "Advanced Makeshift Gas Mask Filter");
+        this.add(NtmItems.RADAWAY, "RadAway");
+        this.add(NtmItems.RADX, "Rad-X");
+        this.add("item.hbmsntm.radx.desc", "Increases radiation resistance by 0.2 (37%%) for 3 minutes");
+        this.add(NtmItems.SIOX, "SiOX Cancer Medication");
+        this.add("item.hbmsntm.siox.desc", "Reverses mesothelioma with the power of Asbestos!");
+        this.add(NtmItems.IV_EMPTY, "IV Bag");
+        this.add(NtmItems.IV_BLOOD, "Blood Bag");
         this.add("geiger.title", "===== ☢ GEIGER COUNTER ☢ =====");
         this.add("geiger.chunkRad", "Current chunk radiation: %s");
         this.add("geiger.envRad", "Total environmental radiation: %s");
@@ -1873,6 +1912,10 @@ public class NtmLanguageProvider extends LanguageProvider {
         this.add("subtitles.block.hbmsntm.steel_grate.step", "Footsteps on steel grate");
         this.add(NtmBlocks.SAND_QUARTZ, "Quartz Sand");
         this.add(NtmBlocks.GLASS_QUARTZ, "Quartz Glass");
+        this.add(NtmBlocks.SAND_BORON, "Boron Sand");
+        this.add(NtmBlocks.SAND_LEAD, "Lead Sand");
+        this.add(NtmBlocks.GLASS_BORON, "Boron Glass");
+        this.add(NtmBlocks.GLASS_LEAD, "Lead Glass");
 
         this.add(NtmBlocks.BRICK_CONCRETE_SLAB, "Concrete Brick Slab");
         this.add(NtmBlocks.BRICK_CONCRETE_MOSSY_SLAB, "Mossy Concrete Brick Slab");
@@ -2187,6 +2230,10 @@ public class NtmLanguageProvider extends LanguageProvider {
         this.add(NtmBlocks.MACHINE_SATLINKER, "SatLink Device");
 
         this.add(NtmBlocks.DECONTAMINATOR, "Player Decontaminator");
+        this.add(NtmBlocks.RAD_ABSORBER, "Radiation Absorber");
+        this.add(NtmBlocks.RAD_ABSORBER_RED, "Enhanced Radiation Absorber");
+        this.add(NtmBlocks.RAD_ABSORBER_GREEN, "Advanced Radiation Absorber");
+        this.add(NtmBlocks.RAD_ABSORBER_PINK, "Elite Radiation Absorber");
 
         this.add(NtmBlocks.PWR_CONTROLLER, "PWR Controller");
 
@@ -2877,6 +2924,35 @@ public class NtmLanguageProvider extends LanguageProvider {
 
         // Original potion.hbm_mutation (en_US.lang:4954).
         this.add("effect.hbmsntm.mutation", "Tainted Heart");
+        // Goal26A: the other mob effects (original potion.hbm_* en_US.lang:4951-4961).
+        this.add("effect.hbmsntm.taint", "Tainted");
+        this.add("effect.hbmsntm.radiation", "Contaminated");
+        this.add("effect.hbmsntm.bang", "! ! !");
+        this.add("effect.hbmsntm.radx", "Rad-X");
+        this.add("effect.hbmsntm.lead", "Lead Poisoning");
+        this.add("effect.hbmsntm.radaway", "Radaway");
+        this.add("effect.hbmsntm.phosphorus", "Phosphorus Burns");
+        this.add("effect.hbmsntm.stability", "Stability");
+        this.add("effect.hbmsntm.potionsickness", "Potion Sickness");
+        this.add("effect.hbmsntm.death", "Astolfization");
+
+        // Goal26A: hazard protection tooltips (original en_US.lang:1413-1425).
+        this.add("hazard.protect", "Protects against hazards:");
+        this.add("hazard.no_protect", "Does NOT protect against:");
+        this.add("hazard.never_protects", "Will never protect against:");
+        this.add("hazard.no_filter", "No filter installed!");
+        this.add("hazard.filter_installed", "Installed filter:");
+        this.add("hazard.bacteria", "Bacteria / Aerosols");
+        this.add("hazard.corrosive", "Corrosive Fumes");
+        this.add("hazard.gas_chlorine", "Chemical Gas");
+        this.add("hazard.gas_inert", "Inert Gas / Asphyxiants");
+        this.add("hazard.gas_monoxide", "Carbon Monoxide");
+        this.add("hazard.light", "Bright Lights");
+        this.add("hazard.nerve_agent", "Nerve Agent");
+        this.add("hazard.particle_coarse", "Airborne Particles");
+        this.add("hazard.particle_fine", "Particulates");
+        this.add("hazard.sand", "Eye Irritants");
+        this.add("hazard.hold_shift", "Hold <%s> to display protection info");
 
         this.add("fluid.pressurized", "Pressurized, use compressor!");
 

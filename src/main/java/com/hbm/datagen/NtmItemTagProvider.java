@@ -30,6 +30,12 @@ public class NtmItemTagProvider extends ItemTagsProvider {
     private static final TagKey<Item> HOES = ItemTags.create(ResourceLocation.fromNamespaceAndPath("minecraft", "hoes"));
     private static final TagKey<Item> ENCHANTABLE_MINING = ItemTags.create(ResourceLocation.fromNamespaceAndPath("minecraft", "enchantable/mining"));
     private static final TagKey<Item> ENCHANTABLE_MINING_LOOT = ItemTags.create(ResourceLocation.fromNamespaceAndPath("minecraft", "enchantable/mining_loot"));
+    private static final TagKey<Item> ENCHANTABLE_HEAD_ARMOR = ItemTags.create(ResourceLocation.fromNamespaceAndPath("minecraft", "enchantable/head_armor"));
+    private static final TagKey<Item> ENCHANTABLE_CHEST_ARMOR = ItemTags.create(ResourceLocation.fromNamespaceAndPath("minecraft", "enchantable/chest_armor"));
+    private static final TagKey<Item> ENCHANTABLE_LEG_ARMOR = ItemTags.create(ResourceLocation.fromNamespaceAndPath("minecraft", "enchantable/leg_armor"));
+    private static final TagKey<Item> ENCHANTABLE_FOOT_ARMOR = ItemTags.create(ResourceLocation.fromNamespaceAndPath("minecraft", "enchantable/foot_armor"));
+    private static final TagKey<Item> ENCHANTABLE_DURABILITY = ItemTags.create(ResourceLocation.fromNamespaceAndPath("minecraft", "enchantable/durability"));
+    private static final TagKey<Item> ENCHANTABLE_EQUIPPABLE = ItemTags.create(ResourceLocation.fromNamespaceAndPath("minecraft", "enchantable/equippable"));
     private static final TagKey<Item> BALLS_HE = ItemTags.create(ResourceLocation.fromNamespaceAndPath("ntm", "balls_he"));
     private static final TagKey<Item> BARS_HARD_PLASTIC = ItemTags.create(ResourceLocation.fromNamespaceAndPath("ntm", "bars_hard_plastic"));
     private static final TagKey<Item> POWDERS_PLASTIC = ItemTags.create(ResourceLocation.fromNamespaceAndPath("ntm", "powders_plastic"));
@@ -209,6 +215,47 @@ public class NtmItemTagProvider extends ItemTagsProvider {
                 NtmItems.STARMETAL_HOE.get(),
                 NtmItems.SCHRABIDIUM_HOE.get()
         );
+
+        /*
+         * ARMOR ENCHANTABILITY
+         */
+        // The masks and hazmat pieces go into the per-slot enchantable tags plus durability and equippable, which is what
+        // minecraft:head_armor etc. would give them, but not into those slot tags themselves: those also feed
+        // minecraft:trimmable_armor, and 1.7.10 had no armor trims (vanilla-UV trims would also be drawn over the custom helmet
+        // models). NO9 is not tagged here and keeps its current enchantability.
+        Item[] headArmor = {
+                NtmItems.GAS_MASK.get(),
+                NtmItems.GAS_MASK_M65.get(),
+                NtmItems.GAS_MASK_MONO.get(),
+                NtmItems.GAS_MASK_OLDE.get(),
+                NtmItems.MASK_RAG.get(),
+                NtmItems.MASK_PISS.get(),
+                NtmItems.HAZMAT_HELMET.get(),
+                NtmItems.HAZMAT_HELMET_RED.get(),
+                NtmItems.HAZMAT_HELMET_GREY.get()
+        };
+        Item[] chestArmor = {
+                NtmItems.HAZMAT_PLATE.get(),
+                NtmItems.HAZMAT_PLATE_RED.get(),
+                NtmItems.HAZMAT_PLATE_GREY.get()
+        };
+        Item[] legArmor = {
+                NtmItems.HAZMAT_LEGS.get(),
+                NtmItems.HAZMAT_LEGS_RED.get(),
+                NtmItems.HAZMAT_LEGS_GREY.get()
+        };
+        Item[] footArmor = {
+                NtmItems.HAZMAT_BOOTS.get(),
+                NtmItems.HAZMAT_BOOTS_RED.get(),
+                NtmItems.HAZMAT_BOOTS_GREY.get()
+        };
+
+        this.tag(ENCHANTABLE_HEAD_ARMOR).add(headArmor);
+        this.tag(ENCHANTABLE_CHEST_ARMOR).add(chestArmor);
+        this.tag(ENCHANTABLE_LEG_ARMOR).add(legArmor);
+        this.tag(ENCHANTABLE_FOOT_ARMOR).add(footArmor);
+        this.tag(ENCHANTABLE_DURABILITY).add(headArmor).add(chestArmor).add(legArmor).add(footArmor);
+        this.tag(ENCHANTABLE_EQUIPPABLE).add(headArmor).add(chestArmor).add(legArmor).add(footArmor);
 
         this.tag(BALLS_HE).add(
                 NtmItems.BALL_TNT.get(),

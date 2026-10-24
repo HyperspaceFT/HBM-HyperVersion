@@ -1,0 +1,32 @@
+{
+  "parent": "minecraft:recipes/root",
+  "criteria": {
+    "has_glass_lead": {
+      "conditions": {
+        "items": [
+          {
+            "items": "hbmsntm:glass_lead"
+          }
+        ]
+      },
+      "trigger": "minecraft:inventory_changed"
+    },
+    "has_the_recipe": {
+      "conditions": {
+        "recipe": "hbmsntm:rbmk_lid_glass_boron_top"
+      },
+      "trigger": "minecraft:recipe_unlocked"
+    }
+  },
+  "requirements": [
+    [
+      "has_the_recipe",
+      "has_glass_lead"
+    ]
+  ],
+  "rewards": {
+    "recipes": [
+      "hbmsntm:rbmk_lid_glass_boron_top"
+    ]
+  }
+}

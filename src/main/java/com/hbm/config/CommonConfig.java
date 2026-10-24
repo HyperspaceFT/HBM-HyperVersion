@@ -2,6 +2,7 @@ package com.hbm.config;
 
 import net.neoforged.neoforge.common.ModConfigSpec;
 import net.neoforged.neoforge.common.ModConfigSpec.BooleanValue;
+import net.neoforged.neoforge.common.ModConfigSpec.ConfigValue;
 import net.neoforged.neoforge.common.ModConfigSpec.DoubleValue;
 import net.neoforged.neoforge.common.ModConfigSpec.IntValue;
 
@@ -99,6 +100,9 @@ public class CommonConfig {
     public final BooleanValue DISABLE_EXPLOSIVE;
     public final BooleanValue DISABLE_HYDROACTIVE;
     public final BooleanValue DISABLE_BLINDING;
+
+    // POTION (the original 8.S0_potionSickness, PotionConfig.java:22,40-45; read through NtmConfig.potionSickness())
+    public final ConfigValue<String> POTION_SICKNESS;
 
     // RTG (the two RTG keys of the original 09_machines, MachineConfig.java:14-15)
     public final BooleanValue SCALE_RTG_POWER;
@@ -482,6 +486,18 @@ public class CommonConfig {
                 .comment("When turned on, all blinding hazards are disabled.")
                 .translation("hbmsntm.configuration.disableBlinding")
                 .define("disableBlinding", false);
+
+        builder.pop();
+
+        /// POTION ///
+        // Original PotionConfig.java:22,40-45: option 8.S0_potionSickness (the numeric prefix is dropped like every NEO key), default
+        // "OFF"; NtmConfig.potionSickness() parses it (NORMAL -> 1, TERRARIA -> 2, anything else -> 0 = off).
+        builder.push("potion");
+
+        POTION_SICKNESS = builder
+                .comment("Valid configs include \"NORMAL\" and \"TERRARIA\", otherwise potion sickness is turned off")
+                .translation("hbmsntm.configuration.potionSickness")
+                .define("potionSickness", "OFF");
 
         builder.pop();
 

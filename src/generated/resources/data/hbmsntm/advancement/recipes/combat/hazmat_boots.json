@@ -1,0 +1,32 @@
+{
+  "parent": "minecraft:recipes/root",
+  "criteria": {
+    "has_hazmat_cloth": {
+      "conditions": {
+        "items": [
+          {
+            "items": "hbmsntm:hazmat_cloth"
+          }
+        ]
+      },
+      "trigger": "minecraft:inventory_changed"
+    },
+    "has_the_recipe": {
+      "conditions": {
+        "recipe": "hbmsntm:hazmat_boots"
+      },
+      "trigger": "minecraft:recipe_unlocked"
+    }
+  },
+  "requirements": [
+    [
+      "has_the_recipe",
+      "has_hazmat_cloth"
+    ]
+  ],
+  "rewards": {
+    "recipes": [
+      "hbmsntm:hazmat_boots"
+    ]
+  }
+}

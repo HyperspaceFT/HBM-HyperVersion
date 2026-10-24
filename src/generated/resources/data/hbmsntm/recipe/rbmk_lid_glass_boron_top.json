@@ -1,0 +1,24 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "key": {
+    "B": {
+      "item": "hbmsntm:glass_boron"
+    },
+    "L": {
+      "item": "hbmsntm:glass_lead"
+    },
+    "P": {
+      "tag": "c:plates/steel"
+    }
+  },
+  "pattern": [
+    "BBB",
+    "LLL",
+    "P P"
+  ],
+  "result": {
+    "count": 4,
+    "id": "hbmsntm:rbmk_lid_glass"
+  }
+}

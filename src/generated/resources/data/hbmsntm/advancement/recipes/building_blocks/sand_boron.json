@@ -1,0 +1,32 @@
+{
+  "parent": "minecraft:recipes/root",
+  "criteria": {
+    "has_boron_powder": {
+      "conditions": {
+        "items": [
+          {
+            "items": "hbmsntm:powder_boron"
+          }
+        ]
+      },
+      "trigger": "minecraft:inventory_changed"
+    },
+    "has_the_recipe": {
+      "conditions": {
+        "recipe": "hbmsntm:sand_boron"
+      },
+      "trigger": "minecraft:recipe_unlocked"
+    }
+  },
+  "requirements": [
+    [
+      "has_the_recipe",
+      "has_boron_powder"
+    ]
+  ],
+  "rewards": {
+    "recipes": [
+      "hbmsntm:sand_boron"
+    ]
+  }
+}

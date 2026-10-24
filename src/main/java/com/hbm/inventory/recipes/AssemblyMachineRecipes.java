@@ -471,5 +471,16 @@ public class AssemblyMachineRecipes extends GenericRecipes<GenericRecipe> {
                         NtmItems.castPlateIngredient(CastPlateItem.Type.LEAD, 4),
                         new ComparableStack(NtmItems.INGOT_BORON.get(), 4),
                         new ComparableStack(NtmItems.MOTOR.get(), 3)));
+
+        // Original AssemblyMachineRecipes.java:122-123, registered in every mode like the original; COAL.dust() is NEO's powder_coal.
+        this.register(new GenericRecipe("ass.filtercoal").setup(50, 100).outputItems(new ItemStack(NtmItems.FILTER_COAL.get(), 1))
+                .inputItems(new ComparableStack(NtmItems.POWDER_COAL.get(), 4),
+                        new ComparableStack(net.minecraft.world.item.Items.STRING, 2),
+                        new ComparableStack(net.minecraft.world.item.Items.PAPER, 1)));
+
+        // Original AssemblyMachineRecipes.java:118-119; PB.dust() is NEO's powder_lead.
+        this.register(new GenericRecipe("ass.hazcloth").setup(50, 100).outputItems(new ItemStack(NtmItems.HAZMAT_CLOTH.get(), 4))
+                .inputItems(new ComparableStack(NtmItems.POWDER_LEAD.get(), 4),
+                        new ComparableStack(net.minecraft.world.item.Items.STRING, 8)));
     }
 }

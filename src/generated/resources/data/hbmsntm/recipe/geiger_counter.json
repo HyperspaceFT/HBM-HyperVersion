@@ -1,0 +1,33 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "equipment",
+  "key": {
+    "B": {
+      "item": "hbmsntm:ingot_beryllium"
+    },
+    "C": {
+      "item": "hbmsntm:circuit_integrated_board"
+    },
+    "G": {
+      "item": "minecraft:gold_ingot"
+    },
+    "P": {
+      "tag": "ntm:any_rubbers"
+    },
+    "S": {
+      "tag": "c:plates/steel"
+    },
+    "W": {
+      "item": "hbmsntm:wire_gold"
+    }
+  },
+  "pattern": [
+    "GPP",
+    "WCS",
+    "WBB"
+  ],
+  "result": {
+    "count": 1,
+    "id": "hbmsntm:geiger_counter"
+  }
+}

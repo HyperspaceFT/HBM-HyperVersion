@@ -174,6 +174,11 @@ public class NtmBlockLootTableProvider extends BlockLootSubProvider {
         this.dropSelf(NtmBlocks.STEEL_GRATE.get());
         this.dropSelf(NtmBlocks.SAND_QUARTZ.get());
         this.dropSelf(NtmBlocks.GLASS_QUARTZ.get());
+        this.dropSelf(NtmBlocks.SAND_BORON.get());
+        this.dropSelf(NtmBlocks.SAND_LEAD.get());
+        // The original glass (BlockBreakable) drops nothing without silk touch; dropSelf follows the NEO GLASS_QUARTZ precedent.
+        this.dropSelf(NtmBlocks.GLASS_BORON.get());
+        this.dropSelf(NtmBlocks.GLASS_LEAD.get());
 
         this.dropSelf(NtmBlocks.ANVIL.get());
 
@@ -360,6 +365,10 @@ public class NtmBlockLootTableProvider extends BlockLootSubProvider {
         this.dropSelf(NtmBlocks.MACHINE_SATLINKER.get());
 
         this.dropSelf(NtmBlocks.DECONTAMINATOR.get());
+        this.dropSelf(NtmBlocks.RAD_ABSORBER.get());
+        this.dropSelf(NtmBlocks.RAD_ABSORBER_RED.get());
+        this.dropSelf(NtmBlocks.RAD_ABSORBER_GREEN.get());
+        this.dropSelf(NtmBlocks.RAD_ABSORBER_PINK.get());
 
         this.dropSelf(NtmBlocks.PWR_CONTROLLER.get());
 
@@ -445,6 +454,7 @@ public class NtmBlockLootTableProvider extends BlockLootSubProvider {
         this.dropSelf(NtmBlocks.BLOCK_FIBERGLASS.get());
         this.dropSelf(NtmBlocks.BLOCK_INSULATOR.get());
         this.dropSelf(NtmBlocks.BLOCK_SLAG.get());
+        this.dropSelf(NtmBlocks.BLOCK_GRAPHITE.get());
     }
 
     @Override

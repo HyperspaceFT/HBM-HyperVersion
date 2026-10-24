@@ -946,7 +946,7 @@ public class RBMKReactorGameTests {
 
     // 14 recipes and registrations
 
-    // Covers CraftingManager.java:991 (rbmk_rod C/R/C, steel shell and rbmk_blank), :992 rbmk_rod_mod and AnvilRecipes.java:927-953 (the tier
+    // Covers CraftingManager.java:991 (rbmk_rod C/R/C, steel shell and rbmk_blank), :992 rbmk_rod_mod (registered by Goal 26A) and AnvilRecipes.java:927-953 (the tier
     // 4 recycling rows) deliberately not registered, and the registrations (ModBlocks rbmk_rod / rbmk_rod_mod / corium_block, one
     // TileEntityRBMKRod for both blocks, RBMKRod.moderated, getRBMKType ROD, getConsoleType FUEL).
     @GameTest(template = TEMPLATE, batch = "rbmk_reactor_recipes", timeoutTicks = 100)
@@ -971,10 +971,11 @@ public class RBMKReactorGameTests {
                 Item shell = NtmItems.SHELL_STEEL.get(), blank = NtmBlocks.RBMK_BLANK.get().asItem();
                 Item rodItem = NtmBlocks.RBMK_ROD.get().asItem(), modItem = NtmBlocks.RBMK_ROD_MOD.get().asItem();
                 shaped(helper, "rbmk_rod", rodItem, 1, new String[] { "C", "R", "C" }, Map.of('C', shell, 'R', blank));
-                check(level.getRecipeManager().byKey(id("rbmk_rod_mod")).isEmpty(), "a recipe hbmsntm:rbmk_rod_mod is loaded");
+                // Goal 26A registers rbmk_rod_mod (original CraftingManager.java:992): BGB/GRG/BGB, graphite block, rbmk_rod, bismuth nugget.
+                shaped(helper, "rbmk_rod_mod", modItem, 1, new String[] { "BGB", "GRG", "BGB" }, Map.of('B', NtmItems.NUGGET_BISMUTH.get(), 'G', NtmBlocks.BLOCK_GRAPHITE.get().asItem(), 'R', rodItem));
                 int scanned = 0;
                 for(RecipeHolder<?> holder : level.getRecipeManager().getRecipes()) {
-                    check(!holder.value().getResultItem(level.registryAccess()).is(modItem), "recipe " + holder.id() + " produces rbmk_rod_mod");
+                    check(holder.id().equals(id("rbmk_rod_mod")) || !holder.value().getResultItem(level.registryAccess()).is(modItem), "recipe " + holder.id() + " produces rbmk_rod_mod");
                     scanned++;
                 }
                 Set<Item> columns = Set.of(rodItem, modItem);
@@ -983,7 +984,7 @@ public class RBMKReactorGameTests {
                     for(AStack input : recipe.input) for(Item column : columns) check(!input.matchesRecipe(new ItemStack(column), true), "an anvil construction row consumes " + column);
                 }
                 for(AnvilSmithingRecipe recipe : AnvilRecipes.getSmithing()) check(!columns.contains(recipe.getSimpleOutput().getItem()), "an anvil smithing row produces " + recipe.getSimpleOutput());
-                LOGGER.info("[hbm-rbmk-reactor] recipes: rbmk_rod C/R/C matches; no rbmk_rod_mod recipe in {} loaded recipes; no anvil row makes or recycles the fuel channels ({} construction rows)",
+                LOGGER.info("[hbm-rbmk-reactor] recipes: rbmk_rod C/R/C and rbmk_rod_mod match; no other recipe makes rbmk_rod_mod in {} loaded recipes; no anvil row makes or recycles the fuel channels ({} construction rows)",
                         scanned, AnvilRecipes.getConstruction().size());
             }).run();
         } finally {

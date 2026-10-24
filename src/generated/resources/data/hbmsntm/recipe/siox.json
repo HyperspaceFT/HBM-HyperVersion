@@ -1,0 +1,19 @@
+{
+  "type": "minecraft:crafting_shapeless",
+  "category": "misc",
+  "ingredients": [
+    {
+      "item": "hbmsntm:powder_coal"
+    },
+    {
+      "item": "hbmsntm:powder_asbestos"
+    },
+    {
+      "item": "hbmsntm:nugget_bismuth"
+    }
+  ],
+  "result": {
+    "count": 8,
+    "id": "hbmsntm:siox"
+  }
+}

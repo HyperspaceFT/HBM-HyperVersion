@@ -1,0 +1,32 @@
+{
+  "parent": "minecraft:recipes/root",
+  "criteria": {
+    "has_sand_boron": {
+      "conditions": {
+        "items": [
+          {
+            "items": "hbmsntm:sand_boron"
+          }
+        ]
+      },
+      "trigger": "minecraft:inventory_changed"
+    },
+    "has_the_recipe": {
+      "conditions": {
+        "recipe": "hbmsntm:glass_boron_from_smelting_sand_boron"
+      },
+      "trigger": "minecraft:recipe_unlocked"
+    }
+  },
+  "requirements": [
+    [
+      "has_the_recipe",
+      "has_sand_boron"
+    ]
+  ],
+  "rewards": {
+    "recipes": [
+      "hbmsntm:glass_boron_from_smelting_sand_boron"
+    ]
+  }
+}

@@ -70,8 +70,11 @@ import com.hbm.registry.NtmBiomes;
 import com.hbm.render.entity.effect.SkeletonModel;
 import com.hbm.render.entity.projectile.ModelRubble;
 import com.hbm.render.entity.projectile.ModelShrapnel;
+import com.hbm.render.item.GasMaskClientExtensions;
 import com.hbm.render.item.weapon.sedna.ItemRenderWeaponBase;
 import com.hbm.render.loader.HFRModelReloader;
+import com.hbm.render.model.armor.ModelGasMask;
+import com.hbm.render.model.armor.ModelM65;
 import com.hbm.render.model.loader.NtmGeometryLoader;
 import com.hbm.render.util.RenderInfoSystem;
 import com.hbm.render.util.RenderScreenOverlay;
@@ -189,6 +192,8 @@ public class NuclearTechModClient {
         event.enqueueWork(() -> {
             ItemBlockRenderTypes.setRenderLayer(NtmBlocks.REINFORCED_LAMINATE.get(), RenderType.cutout());
             ItemBlockRenderTypes.setRenderLayer(NtmBlocks.GLASS_QUARTZ.get(), RenderType.cutout());
+            ItemBlockRenderTypes.setRenderLayer(NtmBlocks.GLASS_BORON.get(), RenderType.cutout());
+            ItemBlockRenderTypes.setRenderLayer(NtmBlocks.GLASS_LEAD.get(), RenderType.cutout());
 
             // CIRCLES IN MINECRAFT
             ResourceManager.init();
@@ -267,6 +272,9 @@ public class NuclearTechModClient {
             }
 
         }, NtmFluidTypes.RAD_LAVA_TYPE.get());
+
+        event.registerItem(new GasMaskClientExtensions(), NtmItems.GAS_MASK.get(), NtmItems.GAS_MASK_M65.get(), NtmItems.GAS_MASK_MONO.get(), NtmItems.GAS_MASK_OLDE.get(),
+                NtmItems.HAZMAT_HELMET.get(), NtmItems.HAZMAT_HELMET_RED.get(), NtmItems.HAZMAT_HELMET_GREY.get());
     }
 
     @SubscribeEvent
@@ -742,6 +750,9 @@ public class NuclearTechModClient {
         event.registerLayerDefinition(ModelRubble.LAYER, ModelRubble::createBodyLayer);
 
         event.registerLayerDefinition(SkeletonModel.SKELETON_PART_LAYER, SkeletonModel::createLayer);
+
+        event.registerLayerDefinition(ModelGasMask.LAYER, ModelGasMask::createLayer);
+        event.registerLayerDefinition(ModelM65.LAYER, ModelM65::createLayer);
     }
 
     @SubscribeEvent(priority = EventPriority.HIGHEST)

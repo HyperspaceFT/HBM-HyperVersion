@@ -128,6 +128,9 @@ public class NtmSoundEvents {
     public static final DeferredHolder<SoundEvent, SoundEvent> PIN_BREAK = reg("item.pin_break");
     public static final DeferredHolder<SoundEvent, SoundEvent> UNPACK = reg("item.unpack");
     public static final DeferredHolder<SoundEvent, SoundEvent> UPGRADE_PLUG = reg("item.upgrade_plug"); // plok
+    public static final DeferredHolder<SoundEvent, SoundEvent> GASMASK_SCREW = reg("item.gasmask_screw"); // PLAYERS CATEGORY; original hbm:item.gasmaskScrew
+    public static final DeferredHolder<SoundEvent, SoundEvent> SYRINGE = reg("item.syringe"); // PLAYERS CATEGORY; original hbm:item.syringe (tool/stim)
+    public static final DeferredHolder<SoundEvent, SoundEvent> RADAWAY = reg("item.radaway"); // PLAYERS CATEGORY; original hbm:item.radaway (tool/radaway)
     // ALARMS
     public static final DeferredHolder<SoundEvent, SoundEvent> ALARM_HATCH = reg("alarm.hatch"); // RECORDS CATEGORY
     public static final DeferredHolder<SoundEvent, SoundEvent> ALARM_SOYUZED = reg("alarm.soyuzed"); // RECORDS CATEGORY

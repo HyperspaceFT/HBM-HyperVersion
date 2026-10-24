@@ -1,0 +1,16 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "equipment",
+  "key": {
+    "R": {
+      "item": "hbmsntm:rag_piss"
+    }
+  },
+  "pattern": [
+    "RRR"
+  ],
+  "result": {
+    "count": 1,
+    "id": "hbmsntm:mask_piss"
+  }
+}

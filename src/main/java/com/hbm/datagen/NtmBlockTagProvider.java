@@ -150,6 +150,10 @@ public class NtmBlockTagProvider extends BlockTagsProvider {
                         NtmBlocks.DECO_RBMK_SMOOTH.get(),
                         NtmBlocks.DECO_BERYLLIUM.get(),
                         NtmBlocks.DECONTAMINATOR.get(),
+                        NtmBlocks.RAD_ABSORBER.get(),
+                        NtmBlocks.RAD_ABSORBER_RED.get(),
+                        NtmBlocks.RAD_ABSORBER_GREEN.get(),
+                        NtmBlocks.RAD_ABSORBER_PINK.get(),
                         NtmBlocks.BARREL_CORRODED.get(),
                         NtmBlocks.BARREL_STEEL.get(),
                         NtmBlocks.BARREL_PLASTIC.get(),
@@ -215,6 +219,7 @@ public class NtmBlockTagProvider extends BlockTagsProvider {
                         NtmBlocks.BLOCK_FIBERGLASS.get(),
                         NtmBlocks.BLOCK_INSULATOR.get(),
                         NtmBlocks.BLOCK_SLAG.get(),
+                        NtmBlocks.BLOCK_GRAPHITE.get(),
                         NtmBlocks.BLOCK_METEOR.get(),
                         NtmBlocks.BLOCK_METEOR_MOLTEN.get(),
                         NtmBlocks.BLOCK_METEOR_BROKEN.get(),
@@ -250,6 +255,8 @@ public class NtmBlockTagProvider extends BlockTagsProvider {
                         NtmBlocks.DUCRETE_BRICK.get(),
                         NtmBlocks.STEEL_SCAFFOLD.get(),
                         NtmBlocks.GLASS_QUARTZ.get(),
+                        NtmBlocks.GLASS_BORON.get(),
+                        NtmBlocks.GLASS_LEAD.get(),
                         NtmBlocks.STEEL_SCAFFOLD.get(),
 
                         NtmBlocks.BARBED_WIRE.get(),
@@ -390,7 +397,9 @@ public class NtmBlockTagProvider extends BlockTagsProvider {
                         NtmBlocks.FROZEN_GRASS.get(),
                         NtmBlocks.FALLOUT.get(),
                         NtmBlocks.MOON_TURF.get(),
-                        NtmBlocks.SAND_QUARTZ.get()
+                        NtmBlocks.SAND_QUARTZ.get(),
+                        NtmBlocks.SAND_BORON.get(),
+                        NtmBlocks.SAND_LEAD.get()
 
                 );
 

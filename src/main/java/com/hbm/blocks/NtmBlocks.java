@@ -187,18 +187,27 @@ public class NtmBlocks {
     public static final DeferredBlock<Block> REINFORCED_LAMINATE = registerNew("reinforced_laminate", () -> new Block(BlockBehaviour.Properties.of().strength(0.3F, 3.0F).sound(SoundType.GLASS).noOcclusion().mapColor(MapColor.NONE)));
     public static final DeferredBlock<Block> BLOCK_INSULATOR = register("block_insulator", () -> new Block(BlockBehaviour.Properties.of().strength(1.0F, 10.0F).sound(SoundType.METAL).mapColor(MapColor.METAL)));
     public static final DeferredBlock<Block> BLOCK_SLAG = register("block_slag", () -> new Block(BlockBehaviour.Properties.of().strength(1.0F, 10.0F).sound(SoundType.METAL).mapColor(MapColor.METAL)));
+    // Original ModBlocks.java:1410 BlockGraphite (an empty BlockFlammable subclass): encouragement 30, flammability 5
+    public static final DeferredBlock<Block> BLOCK_GRAPHITE = register("block_graphite", () -> new FlammableBlock(BlockBehaviour.Properties.of().strength(5.0F, 10.0F).sound(SoundType.METAL).mapColor(MapColor.COLOR_BLACK), 30, 5));
 
     // Deco Blocks
     public static final DeferredBlock<Block> BOBBLEHEAD = registerNew("bobblehead", () -> new BobbleBlock(BlockBehaviour.Properties.of().noOcclusion().instabreak().mapColor(DyeColor.WHITE)));
     public static final DeferredBlock<Block> PLUSHIE = registerNew("plushie", () -> new PlushieBlock(BlockBehaviour.Properties.of().noOcclusion().instabreak().sound(SoundType.WOOL).mapColor(DyeColor.WHITE)));
     public static final DeferredBlock<Block> PLANT_FLOWER = registerNew("plant_flower", () -> new Block(BlockBehaviour.Properties.of().noOcclusion().instabreak().sound(SoundType.GRASS).mapColor(DyeColor.GREEN)));
     public static final DeferredBlock<Block> GLASS_QUARTZ = register("glass_quartz", () -> new Block(BlockBehaviour.Properties.of().noOcclusion().strength(1.0F, 10.0F).sound(SoundType.GLASS).mapColor(MapColor.METAL)));
+    // Original ModBlocks.java:1642-1643 (hardness 0.3, glass sound). TransparentBlock hides the faces between identical glass blocks like the original BlockNTMGlassCT;
+    // the connected textures are not ported.
+    public static final DeferredBlock<Block> GLASS_BORON = register("glass_boron", () -> new TransparentBlock(BlockBehaviour.Properties.of().noOcclusion().strength(0.3F).sound(SoundType.GLASS).mapColor(MapColor.NONE).instrument(NoteBlockInstrument.HAT).isValidSpawn(Blocks::never).isRedstoneConductor(NtmBlocks::never).isSuffocating(NtmBlocks::never).isViewBlocking(NtmBlocks::never)));
+    public static final DeferredBlock<Block> GLASS_LEAD = register("glass_lead", () -> new TransparentBlock(BlockBehaviour.Properties.of().noOcclusion().strength(0.3F).sound(SoundType.GLASS).mapColor(MapColor.NONE).instrument(NoteBlockInstrument.HAT).isValidSpawn(Blocks::never).isRedstoneConductor(NtmBlocks::never).isSuffocating(NtmBlocks::never).isViewBlocking(NtmBlocks::never)));
 
     // Gravel
     public static final DeferredBlock<Block> GRAVEL_OBSIDIAN = registerBlastInfoBlock("gravel_obsidian", () -> new ColoredFallingBlock(new ColorRGBA(-8356741), BlockBehaviour.Properties.of().strength(5.0F, 20.0F).sound(SoundType.GRAVEL).mapColor(MapColor.COLOR_BLACK).instrument(NoteBlockInstrument.BASEDRUM)));
     public static final DeferredBlock<Block> GRAVEL_DIAMOND = register("gravel_diamond", () -> new ColoredFallingBlock(new ColorRGBA(-8356741), BlockBehaviour.Properties.of().strength(0.6F).sound(SoundType.GRAVEL).mapColor(MapColor.STONE)), LoreBlockItem.class, new Properties().rarity(Rarity.RARE));
     public static final DeferredBlock<Block> MOON_TURF = register("moon_turf", () -> new ColoredFallingBlock(new ColorRGBA(-176741), BlockBehaviour.Properties.of().strength(0.6F).sound(SoundType.SAND).mapColor(MapColor.STONE)));
     public static final DeferredBlock<Block> SAND_QUARTZ = register("sand_quartz", () -> new ColoredFallingBlock(new ColorRGBA(-845741), BlockBehaviour.Properties.of().strength(0.6F).sound(SoundType.SAND).mapColor(MapColor.SNOW)));
+    // Original ModBlocks.java:1641 sand_mix (BlockNTMSand BORON and LEAD metas): hardness 0.5, sand sound
+    public static final DeferredBlock<Block> SAND_BORON = register("sand_boron", () -> new ColoredFallingBlock(new ColorRGBA(-3553630), BlockBehaviour.Properties.of().strength(0.5F).sound(SoundType.SAND).mapColor(MapColor.SAND)));
+    public static final DeferredBlock<Block> SAND_LEAD = register("sand_lead", () -> new ColoredFallingBlock(new ColorRGBA(-8026735), BlockBehaviour.Properties.of().strength(0.5F).sound(SoundType.SAND).mapColor(MapColor.COLOR_GRAY)));
 
     // Reinforced Blocks
     public static final DeferredBlock<Block> ASPHALT =       registerBlastInfoBlock("asphalt",       () -> new SpeedyBlock(1.5, BlockBehaviour.Properties.of().strength(15.0F, 120.0F)                                  .mapColor(MapColor.COLOR_BLACK)));
@@ -435,6 +444,12 @@ public class NtmBlocks {
 
     // Absorbers
     public static final DeferredBlock<Block> DECONTAMINATOR = register("decontaminator", () -> new DecontaminatorBlock(BlockBehaviour.Properties.of().strength(5.0F, 10.0F).sound(SoundType.METAL).mapColor(MapColor.TERRACOTTA_GREEN)));
+    // The original is one block with four METAs (BlockAbsorber.EnumAbsorberTier, ModBlocks.java:2307: hardness 5, resistance 10, iron material), split into four IDs here.
+    // The original sets no step sound, so the 1.7.10 default (stone) applies.
+    public static final DeferredBlock<Block> RAD_ABSORBER = register("rad_absorber", () -> new RadAbsorberBlock(BlockBehaviour.Properties.of().strength(5.0F, 10.0F).sound(SoundType.STONE).mapColor(MapColor.METAL).randomTicks(), 2.5F));
+    public static final DeferredBlock<Block> RAD_ABSORBER_RED = register("rad_absorber_red", () -> new RadAbsorberBlock(BlockBehaviour.Properties.of().strength(5.0F, 10.0F).sound(SoundType.STONE).mapColor(MapColor.METAL).randomTicks(), 10F));
+    public static final DeferredBlock<Block> RAD_ABSORBER_GREEN = register("rad_absorber_green", () -> new RadAbsorberBlock(BlockBehaviour.Properties.of().strength(5.0F, 10.0F).sound(SoundType.STONE).mapColor(MapColor.METAL).randomTicks(), 100F));
+    public static final DeferredBlock<Block> RAD_ABSORBER_PINK = register("rad_absorber_pink", () -> new RadAbsorberBlock(BlockBehaviour.Properties.of().strength(5.0F, 10.0F).sound(SoundType.STONE).mapColor(MapColor.METAL).randomTicks(), 10000F));
 
     // PWR
     public static final DeferredBlock<Block> PWR_CONTROLLER = register("pwr_controller", () -> new Block(BlockBehaviour.Properties.of()));

@@ -1,0 +1,27 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "key": {
+    "A": {
+      "item": "hbmsntm:rad_absorber"
+    },
+    "B": {
+      "item": "hbmsntm:ingot_beryllium"
+    },
+    "G": {
+      "item": "minecraft:iron_bars"
+    },
+    "S": {
+      "item": "hbmsntm:ingot_steel"
+    }
+  },
+  "pattern": [
+    "BGB",
+    "SAS",
+    "BSB"
+  ],
+  "result": {
+    "count": 1,
+    "id": "hbmsntm:decontaminator"
+  }
+}

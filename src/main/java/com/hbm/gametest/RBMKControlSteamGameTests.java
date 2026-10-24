@@ -1090,7 +1090,7 @@ public class RBMKControlSteamGameTests {
     // 13 recipes, registrations, RoR
 
     // Covers CraftingManager.java:760 (rbmk_control), :762 (rbmk_control_auto), :771 (rbmk_loader), :993-995 (boiler, heater, cooler),
-    // :761 rbmk_control_mod deliberately not registered, AnvilRecipes.java:868-953 (tier-4 rows not registered: no anvil row makes or
+    // :761 rbmk_control_mod (registered by Goal 26A), AnvilRecipes.java:868-953 (tier-4 rows not registered: no anvil row makes or
     // consumes these blocks), and the registrations (ModBlocks ids, one manual block entity type for both manual blocks, RBMKControl
     // moderated, getRBMKType CONTROL_ROD, console types CONTROL / CONTROL_AUTO / BOILER / HEATEX / COOLER).
     @GameTest(template = TEMPLATE, batch = "rbmk_cs_recipes", timeoutTicks = 100)
@@ -1164,9 +1164,11 @@ public class RBMKControlSteamGameTests {
                         Map.of('C', NtmItems.PIPE_COPPER.get(), 'P', NtmItems.SHELL_STEEL.get(), 'R', blank, 'I', NtmItems.INGOT_POLYMER.get()));
                 shaped(helper, "rbmk_cooler", NtmBlocks.RBMK_COOLER.get().asItem(), new String[] { "IGI", "GCG", "IGI" },
                         Map.of('I', NtmItems.PLATE_POLYMER.get(), 'G', NtmBlocks.STEEL_GRATE.get().asItem(), 'C', blank));
-                check(level.getRecipeManager().byKey(id("rbmk_control_mod")).isEmpty(), "a recipe hbmsntm:rbmk_control_mod is loaded");
+                // Goal 26A registers rbmk_control_mod (original CraftingManager.java:761, the !enable528 branch): BGB/GRG/BGB, graphite block, rbmk_control, bismuth nugget.
                 Item modItem = NtmBlocks.RBMK_CONTROL_MOD.get().asItem();
-                for(RecipeHolder<?> holder : level.getRecipeManager().getRecipes()) check(!holder.value().getResultItem(level.registryAccess()).is(modItem), "recipe " + holder.id() + " produces rbmk_control_mod");
+                shaped(helper, "rbmk_control_mod", modItem, new String[] { "BGB", "GRG", "BGB" },
+                        Map.of('B', NtmItems.NUGGET_BISMUTH.get(), 'G', NtmBlocks.BLOCK_GRAPHITE.get().asItem(), 'R', NtmBlocks.RBMK_CONTROL.get().asItem()));
+                for(RecipeHolder<?> holder : level.getRecipeManager().getRecipes()) check(holder.id().equals(id("rbmk_control_mod")) || !holder.value().getResultItem(level.registryAccess()).is(modItem), "recipe " + holder.id() + " produces rbmk_control_mod");
                 List<Item> columns = new ArrayList<>();
                 for(Supplier<Block> s : blocks.values()) columns.add(s.get().asItem());
                 for(AnvilConstructionRecipe recipe : AnvilRecipes.getConstruction()) {
@@ -1174,7 +1176,7 @@ public class RBMKControlSteamGameTests {
                     for(AStack input : recipe.input) for(Item column : columns) check(!input.matchesRecipe(new ItemStack(column), true), "an anvil construction row consumes " + column);
                 }
                 for(AnvilSmithingRecipe recipe : AnvilRecipes.getSmithing()) check(!columns.contains(recipe.getSimpleOutput().getItem()), "an anvil smithing row produces " + recipe.getSimpleOutput());
-                LOGGER.info("[hbm-rbmk-cs] recipes and registrations: six rows match, no rbmk_control_mod recipe, no anvil row, ids/types/console types as the original");
+                LOGGER.info("[hbm-rbmk-cs] recipes and registrations: six rows and rbmk_control_mod match, no other recipe makes rbmk_control_mod, no anvil row, ids/types/console types as the original");
             }).run();
         } finally {
             finish(helper, null);

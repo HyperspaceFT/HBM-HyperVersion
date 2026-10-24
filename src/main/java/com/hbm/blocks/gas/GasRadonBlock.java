@@ -27,7 +27,7 @@ public class GasRadonBlock extends GasBaseBlock {
     @Override
     public void entityInside(BlockState state, Level level, BlockPos pos, Entity entity) {
         if (entity instanceof LivingEntity livingEntity) {
-            if (!ArmorRegistry.hasProtection(livingEntity, EquipmentSlot.HEAD, HazardClass.PARTICLE_FINE)) {
+            if (ArmorRegistry.hasAllProtection(livingEntity, EquipmentSlot.HEAD, HazardClass.PARTICLE_FINE)) {
                 ArmorUtil.damageGasMaskFilter(livingEntity, 1);
             } else {
                 ContaminationUtil.contaminate(livingEntity, HazardType.RADIATION, ContaminationType.RAD_BYPASS, 0.05F);

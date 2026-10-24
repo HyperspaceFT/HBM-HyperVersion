@@ -1,0 +1,20 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "equipment",
+  "key": {
+    "F": {
+      "item": "hbmsntm:filter_coal"
+    },
+    "I": {
+      "item": "hbmsntm:plate_iron"
+    }
+  },
+  "pattern": [
+    "I",
+    "F"
+  ],
+  "result": {
+    "count": 1,
+    "id": "hbmsntm:gas_mask_filter"
+  }
+}

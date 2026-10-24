@@ -1,0 +1,29 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "key": {
+    "C": {
+      "item": "hbmsntm:powder_coal"
+    },
+    "I": [
+      {
+        "item": "hbmsntm:ingot_copper"
+      },
+      {
+        "item": "minecraft:copper_ingot"
+      }
+    ],
+    "P": {
+      "item": "hbmsntm:powder_lead"
+    }
+  },
+  "pattern": [
+    "ICI",
+    "CPC",
+    "ICI"
+  ],
+  "result": {
+    "count": 1,
+    "id": "hbmsntm:rad_absorber"
+  }
+}

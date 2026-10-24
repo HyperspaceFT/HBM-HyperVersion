@@ -14,6 +14,7 @@ public class ItemModCladding extends ItemArmorMod {
 
     public ItemModCladding(Properties properties, double rad) {
         super(properties.stacksTo(1), ArmorModHandler.CLADDING, true, true, true, true);
+        this.rad = rad;
     }
 
     @Override

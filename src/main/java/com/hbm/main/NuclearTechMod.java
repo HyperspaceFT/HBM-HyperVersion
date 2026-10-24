@@ -14,6 +14,7 @@ import com.hbm.items.component.NtmDataComponents;
 import com.hbm.lib.ModAttachments;
 import com.hbm.lib.ModEffect;
 import com.hbm.particle.NtmParticleTypes;
+import com.hbm.registry.NtmArmorMaterials;
 import com.hbm.registry.NtmRecipeSerializers;
 import com.hbm.registry.NtmSoundEvents;
 import com.hbm.world.feature.NtmFeatures;
@@ -51,6 +52,7 @@ public class NuclearTechMod {
         NtmConfig.register(container);
 
         Fluids.init();
+        NtmArmorMaterials.register(eventBus);
         NtmItems.register(eventBus);
         NtmBlocks.register(eventBus);
         NtmFluidTypes.register(eventBus);

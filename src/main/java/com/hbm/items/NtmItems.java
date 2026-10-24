@@ -15,10 +15,15 @@ import com.hbm.inventory.fluid.Fluids;
 import com.hbm.items.ItemEnums.CapType;
 import com.hbm.items.ItemEnums.CasingType;
 import com.hbm.items.armor.ArmorNo9;
+import com.hbm.items.armor.GasMaskItem;
+import com.hbm.items.armor.HazmatArmorItem;
+import com.hbm.items.armor.HazmatHelmetItem;
+import com.hbm.items.armor.ModArmorItem;
 import com.hbm.items.armor.ModCharmItem;
 import com.hbm.items.food.ConserveItem;
 import com.hbm.items.food.DrinkItem;
 import com.hbm.items.food.EnergyItem;
+import com.hbm.items.food.PillItem;
 import com.hbm.items.machine.*;
 import com.hbm.items.machine.RBMKRodItem.EnumBurnFunc;
 import com.hbm.items.machine.RBMKRodItem.EnumDepleteFunc;
@@ -32,6 +37,7 @@ import com.hbm.items.weapon.MissileItem.MissileFuel;
 import com.hbm.items.weapon.MissileItem.MissileTier;
 import com.hbm.items.weapon.sedna.factory.GunFactory;
 import com.hbm.main.NuclearTechMod;
+import com.hbm.registry.NtmArmorMaterials;
 import com.hbm.util.RTGUtil;
 import com.hbm.util.RTGUtil.HalfLifeType;
 import net.minecraft.world.item.*;
@@ -409,6 +415,14 @@ public class NtmItems {
     public static final DeferredItem<Item> TANK_STEEL = ITEMS.register("tank_steel", () -> new Item(new Item.Properties()));
     public static final DeferredItem<Item> CATALYST_CLAY = ITEMS.register("catalyst_clay", () -> new Item(new Item.Properties()));
     public static final DeferredItem<Item> DEUTERIUM_FILTER = ITEMS.register("deuterium_filter", () -> new Item(new Item.Properties()));
+    public static final DeferredItem<Item> RAG = ITEMS.register("rag", () -> new RagItem(new Item.Properties()));
+    public static final DeferredItem<Item> RAG_DAMP = ITEMS.register("rag_damp", () -> new Item(new Item.Properties()));
+    public static final DeferredItem<Item> RAG_PISS = ITEMS.register("rag_piss", () -> new Item(new Item.Properties()));
+    public static final DeferredItem<Item> FILTER_COAL = ITEMS.register("filter_coal", () -> new Item(new Item.Properties()));
+    // Original ModItems.java:2394-2396
+    public static final DeferredItem<Item> HAZMAT_CLOTH = ITEMS.register("hazmat_cloth", () -> new Item(new Item.Properties()));
+    public static final DeferredItem<Item> HAZMAT_CLOTH_RED = ITEMS.register("hazmat_cloth_red", () -> new Item(new Item.Properties()));
+    public static final DeferredItem<Item> HAZMAT_CLOTH_GREY = ITEMS.register("hazmat_cloth_grey", () -> new Item(new Item.Properties()));
     public static final DeferredItem<Item> FINS_FLAT = ITEMS.register("fins_flat", () -> new Item(new Item.Properties()));
     public static final DeferredItem<Item> FINS_SMALL_STEEL = ITEMS.register("fins_small_steel", () -> new Item(new Item.Properties()));
     public static final DeferredItem<Item> FINS_BIG_STEEL = ITEMS.register("fins_big_steel", () -> new Item(new Item.Properties()));
@@ -996,6 +1010,21 @@ public class NtmItems {
     public static final DeferredItem<Item> METEOR_CHARM = ITEMS.register("meteor_charm", () -> new ModCharmItem(new Item.Properties(), true));
     public static final DeferredItem<Item> PROTECTION_CHARM = ITEMS.register("protection_charm", () -> new ModCharmItem(new Item.Properties(), false));
 
+    // Gas mask filters: original ItemFilter (ItemFilter.java:16-20), 20,000 durability
+    public static final DeferredItem<Item> GAS_MASK_FILTER = ITEMS.register("gas_mask_filter", () -> new GasMaskFilterItem(new Item.Properties().durability(20000)));
+    public static final DeferredItem<Item> GAS_MASK_FILTER_MONO = ITEMS.register("gas_mask_filter_mono", () -> new GasMaskFilterItem(new Item.Properties().durability(20000)));
+    public static final DeferredItem<Item> GAS_MASK_FILTER_COMBO = ITEMS.register("gas_mask_filter_combo", () -> new GasMaskFilterItem(new Item.Properties().durability(20000)));
+    public static final DeferredItem<Item> GAS_MASK_FILTER_RAG = ITEMS.register("gas_mask_filter_rag", () -> new GasMaskFilterItem(new Item.Properties().durability(20000)));
+    public static final DeferredItem<Item> GAS_MASK_FILTER_PISS = ITEMS.register("gas_mask_filter_piss", () -> new GasMaskFilterItem(new Item.Properties().durability(20000)));
+
+    // Radiation medicine: radx / siox are ItemPill(0) (ModItems.java:2828-2829), radaway / iv_empty / iv_blood are ItemSimpleConsumable
+    // (ItemSimpleConsumable.java:113-141); the 1.7.10 default stack size 64 and no rarity
+    public static final DeferredItem<Item> RADAWAY = ITEMS.register("radaway", () -> new SimpleConsumableItem(new Item.Properties()).setUseActionServer(SimpleConsumableItem::radaway));
+    public static final DeferredItem<Item> RADX = ITEMS.register("radx", () -> new PillItem(new Item.Properties(), PillItem.LAMBDA_RADX));
+    public static final DeferredItem<Item> SIOX = ITEMS.register("siox", () -> new PillItem(new Item.Properties(), PillItem.LAMBDA_SIOX));
+    public static final DeferredItem<Item> IV_EMPTY = ITEMS.register("iv_empty", () -> new SimpleConsumableItem(new Item.Properties()).setUseActionServer(SimpleConsumableItem::ivEmpty));
+    public static final DeferredItem<Item> IV_BLOOD = ITEMS.register("iv_blood", () -> new SimpleConsumableItem(new Item.Properties()).setUseActionServer(SimpleConsumableItem::ivBlood));
+
     // Keys and Locks
     public static final DeferredItem<Item> PIN = ITEMS.register("pin", () -> new Item(new Item.Properties().stacksTo(8)));
     public static final DeferredItem<Item> KEY = ITEMS.register("key", () -> new KeyItem(new Item.Properties().stacksTo(1)));
@@ -1238,6 +1267,29 @@ public class NtmItems {
     public static DeferredItem<Item> GUN_HANGMAN;
 
     public static final DeferredItem<Item> NO9 = ITEMS.register("no9", () -> new ArmorNo9(ArmorMaterials.IRON));
+
+    // Gas masks: original ModItemsArmor.java:22-32 (ArmorGasMask on iron, durability factor 15) and ModArmor on aMatRags
+    public static final DeferredItem<Item> GAS_MASK = ITEMS.register("gas_mask", () -> new GasMaskItem(GasMaskItem.MaskType.GAS_MASK, new Item.Properties().durability(ArmorItem.Type.HELMET.getDurability(15))));
+    public static final DeferredItem<Item> GAS_MASK_M65 = ITEMS.register("gas_mask_m65", () -> new GasMaskItem(GasMaskItem.MaskType.M65, new Item.Properties().durability(ArmorItem.Type.HELMET.getDurability(15))));
+    public static final DeferredItem<Item> GAS_MASK_MONO = ITEMS.register("gas_mask_mono", () -> new GasMaskItem(GasMaskItem.MaskType.MONO, new Item.Properties().durability(ArmorItem.Type.HELMET.getDurability(15))));
+    public static final DeferredItem<Item> GAS_MASK_OLDE = ITEMS.register("gas_mask_olde", () -> new GasMaskItem(GasMaskItem.MaskType.OLDE, new Item.Properties().durability(ArmorItem.Type.HELMET.getDurability(15))));
+    public static final DeferredItem<Item> MASK_RAG = ITEMS.register("mask_rag", () -> new ModArmorItem(NtmArmorMaterials.RAGS, ArmorItem.Type.HELMET, new Item.Properties().durability(ArmorItem.Type.HELMET.getDurability(150)), NuclearTechMod.withDefaultNamespace("textures/armor/rag_damp.png")));
+    public static final DeferredItem<Item> MASK_PISS = ITEMS.register("mask_piss", () -> new ModArmorItem(NtmArmorMaterials.RAGS, ArmorItem.Type.HELMET, new Item.Properties().durability(ArmorItem.Type.HELMET.getDurability(150)), NuclearTechMod.withDefaultNamespace("textures/armor/rag_piss.png")));
+
+    // Hazmat suits: original ModItems.java:4253-4265 (ArmorHazmatMask helmets, ArmorHazmat pieces, durability factor 60). Only the
+    // yellow helmet draws an overlay; the red and grey helmets use ModelM65 with their model textures.
+    public static final DeferredItem<Item> HAZMAT_HELMET = ITEMS.register("hazmat_helmet", () -> new HazmatHelmetItem(NtmArmorMaterials.HAZMAT, new Item.Properties().durability(ArmorItem.Type.HELMET.getDurability(60)), NuclearTechMod.withDefaultNamespace("textures/armor/hazmat_1.png"), false, NuclearTechMod.withDefaultNamespace("textures/misc/overlay_hazmat.png")));
+    public static final DeferredItem<Item> HAZMAT_PLATE = ITEMS.register("hazmat_plate", () -> new HazmatArmorItem(NtmArmorMaterials.HAZMAT, ArmorItem.Type.CHESTPLATE, new Item.Properties().durability(ArmorItem.Type.CHESTPLATE.getDurability(60)), NuclearTechMod.withDefaultNamespace("textures/armor/hazmat_1.png")));
+    public static final DeferredItem<Item> HAZMAT_LEGS = ITEMS.register("hazmat_legs", () -> new HazmatArmorItem(NtmArmorMaterials.HAZMAT, ArmorItem.Type.LEGGINGS, new Item.Properties().durability(ArmorItem.Type.LEGGINGS.getDurability(60)), NuclearTechMod.withDefaultNamespace("textures/armor/hazmat_2.png")));
+    public static final DeferredItem<Item> HAZMAT_BOOTS = ITEMS.register("hazmat_boots", () -> new HazmatArmorItem(NtmArmorMaterials.HAZMAT, ArmorItem.Type.BOOTS, new Item.Properties().durability(ArmorItem.Type.BOOTS.getDurability(60)), NuclearTechMod.withDefaultNamespace("textures/armor/hazmat_1.png")));
+    public static final DeferredItem<Item> HAZMAT_HELMET_RED = ITEMS.register("hazmat_helmet_red", () -> new HazmatHelmetItem(NtmArmorMaterials.HAZMAT_RED, new Item.Properties().durability(ArmorItem.Type.HELMET.getDurability(60)), NuclearTechMod.withDefaultNamespace("textures/models/model_haz_red.png"), true, null));
+    public static final DeferredItem<Item> HAZMAT_PLATE_RED = ITEMS.register("hazmat_plate_red", () -> new HazmatArmorItem(NtmArmorMaterials.HAZMAT_RED, ArmorItem.Type.CHESTPLATE, new Item.Properties().durability(ArmorItem.Type.CHESTPLATE.getDurability(60)), NuclearTechMod.withDefaultNamespace("textures/armor/hazmat_1_red.png")));
+    public static final DeferredItem<Item> HAZMAT_LEGS_RED = ITEMS.register("hazmat_legs_red", () -> new HazmatArmorItem(NtmArmorMaterials.HAZMAT_RED, ArmorItem.Type.LEGGINGS, new Item.Properties().durability(ArmorItem.Type.LEGGINGS.getDurability(60)), NuclearTechMod.withDefaultNamespace("textures/armor/hazmat_2_red.png")));
+    public static final DeferredItem<Item> HAZMAT_BOOTS_RED = ITEMS.register("hazmat_boots_red", () -> new HazmatArmorItem(NtmArmorMaterials.HAZMAT_RED, ArmorItem.Type.BOOTS, new Item.Properties().durability(ArmorItem.Type.BOOTS.getDurability(60)), NuclearTechMod.withDefaultNamespace("textures/armor/hazmat_1_red.png")));
+    public static final DeferredItem<Item> HAZMAT_HELMET_GREY = ITEMS.register("hazmat_helmet_grey", () -> new HazmatHelmetItem(NtmArmorMaterials.HAZMAT_GREY, new Item.Properties().durability(ArmorItem.Type.HELMET.getDurability(60)), NuclearTechMod.withDefaultNamespace("textures/models/model_haz_grey.png"), true, null));
+    public static final DeferredItem<Item> HAZMAT_PLATE_GREY = ITEMS.register("hazmat_plate_grey", () -> new HazmatArmorItem(NtmArmorMaterials.HAZMAT_GREY, ArmorItem.Type.CHESTPLATE, new Item.Properties().durability(ArmorItem.Type.CHESTPLATE.getDurability(60)), NuclearTechMod.withDefaultNamespace("textures/armor/hazmat_1_grey.png")));
+    public static final DeferredItem<Item> HAZMAT_LEGS_GREY = ITEMS.register("hazmat_legs_grey", () -> new HazmatArmorItem(NtmArmorMaterials.HAZMAT_GREY, ArmorItem.Type.LEGGINGS, new Item.Properties().durability(ArmorItem.Type.LEGGINGS.getDurability(60)), NuclearTechMod.withDefaultNamespace("textures/armor/hazmat_2_grey.png")));
+    public static final DeferredItem<Item> HAZMAT_BOOTS_GREY = ITEMS.register("hazmat_boots_grey", () -> new HazmatArmorItem(NtmArmorMaterials.HAZMAT_GREY, ArmorItem.Type.BOOTS, new Item.Properties().durability(ArmorItem.Type.BOOTS.getDurability(60)), NuclearTechMod.withDefaultNamespace("textures/armor/hazmat_1_grey.png")));
 
     public static final DeferredItem<Item> PLATE_POLYMER = ITEMS.register("plate_polymer", () -> new Item(new Item.Properties()));
     public static final DeferredItem<Item> INSULATOR = PLATE_POLYMER;

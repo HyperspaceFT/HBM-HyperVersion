@@ -45,7 +45,7 @@ import java.util.List;
  * input accepts the stack. The default table holds the fourteen hydrogen peroxide ore groups (Goal 18A) followed by the four
  * sulfuric acid ore groups (titanium, tungsten, cobalt, rare earth; Goal 18B), the sulfuric acid uranium (stone, deepslate,
  * scorched) and thorium (stone, deepslate) ore rows (Goal 20A) and the sulfuric acid nether/schist uranium (and scorched) and
- * nether plutonium ore rows (Goal 22A), 46 ore-block rows. A custom file still replaces the whole table, so an existing custom
+ * nether plutonium ore rows (Goal 22A) and the hydrogen peroxide coal block to graphite block row (Goal 26A), 47 rows. A custom file still replaces the whole table, so an existing custom
  * table does not gain the sulfuric acid rows automatically.
  */
 public class CrystallizerRecipes extends SerializableRecipe {
@@ -168,7 +168,7 @@ public class CrystallizerRecipes extends SerializableRecipe {
 
     @Override public String getFileName() { return "hbmCrystallizer.json"; }
     @Override public Object getRecipeObject() { return table; }
-    /** Fourteen ordinary peroxide ore groups in the original table order, then the four sulfuric acid groups, then the sulfuric acid uranium and thorium ores, then (Goal 22A) the nether and schist uranium ores and the nether plutonium ore; stone and deepslate ore blocks are separate rows. */
+    /** Fourteen ordinary peroxide ore groups in the original table order, then the four sulfuric acid groups, then the sulfuric acid uranium and thorium ores, then (Goal 22A) the nether and schist uranium ores and the nether plutonium ore, then (Goal 26A) the coal block to graphite block row; stone and deepslate ore blocks are separate rows. */
     @Override public void registerDefaults() {
         ore(Blocks.COAL_ORE, Blocks.DEEPSLATE_COAL_ORE, NtmItems.CRYSTAL_COAL.get());
         ore(Blocks.IRON_ORE, Blocks.DEEPSLATE_IRON_ORE, NtmItems.CRYSTAL_IRON.get());
@@ -205,10 +205,15 @@ public class CrystallizerRecipes extends SerializableRecipe {
         single(NtmBlocks.ORE_GNEISS_URANIUM.get(), NtmItems.CRYSTAL_URANIUM.get(), Fluids.SULFURIC_ACID);
         single(NtmBlocks.ORE_GNEISS_URANIUM_SCORCHED.get(), NtmItems.CRYSTAL_URANIUM.get(), Fluids.SULFURIC_ACID);
         single(NtmBlocks.ORE_NETHER_PLUTONIUM.get(), NtmItems.CRYSTAL_PLUTONIUM.get(), Fluids.SULFURIC_ACID);
+        // Goal 26A: original CrystallizerRecipes.java:99 registerRecipe(new OreDictStack(COAL.block()), new CrystallizerRecipe(ModBlocks.block_graphite, baseTime))
+        // with the two-argument overload's defaults (:314-316: hydrogen peroxide 500 mB, baseTime 600, productivity 0, one item). The
+        // OreDictionary "blockCoal" becomes the c:storage_blocks/coal tag. Appended so the first 46 rows keep their positions; the
+        // productivity is passed as 0 because DEFAULT_PRODUCTIVITY is the ore rows' .prod(0.05F), which line 99 does not carry.
+        add(new CrystallizerRecipe(new TagStack(ItemTags.create(ResourceLocation.fromNamespaceAndPath("c", "storage_blocks/coal")), 1), new FluidStack(Fluids.PEROXIDE, DEFAULT_ACID), new ItemStack(NtmBlocks.BLOCK_GRAPHITE.get()), DEFAULT_DURATION, 0F));
     }
     @Override public void deleteRecipes() { table.clear(); }
     @Override public String getComment() {
-        return "Ore acidizer (crystallizer) recipes. Replaces the whole table; an empty table disables the machine. Each row: input [\"item\", id, count, META] (META 32767 is a wildcard; omitted count is 1, omitted META is the wildcard) or [\"tag\", id, count]; fluid [internal acid name, mB] with 1..8000 mB; output [id, count, META|null, custom-data SNBT] (omitted or null META keeps the item without a META component); duration in ticks 1..1000000 (the machine completes after duration+1 effective sub-cycles); productivity 0..1 is the chance per Effectiveness level that the input is kept, the acid is always consumed. Rows are keyed on input identity plus acid type, so one item may have one row per acid; the first matching row in table order wins. The default table holds the fourteen hydrogen peroxide ore groups plus the four sulfuric acid ore groups (titanium, tungsten, cobalt, rare earth) and the sulfuric acid uranium (stone, deepslate, scorched, nether, scorched nether, schist, scorched schist), thorium (stone, deepslate) and nether plutonium ore rows, 46 rows; a custom file still replaces the whole table, so an existing custom table does not gain the sulfuric acid rows automatically (append their rows to keep them).";
+        return "Ore acidizer (crystallizer) recipes. Replaces the whole table; an empty table disables the machine. Each row: input [\"item\", id, count, META] (META 32767 is a wildcard; omitted count is 1, omitted META is the wildcard) or [\"tag\", id, count]; fluid [internal acid name, mB] with 1..8000 mB; output [id, count, META|null, custom-data SNBT] (omitted or null META keeps the item without a META component); duration in ticks 1..1000000 (the machine completes after duration+1 effective sub-cycles); productivity 0..1 is the chance per Effectiveness level that the input is kept, the acid is always consumed. Rows are keyed on input identity plus acid type, so one item may have one row per acid; the first matching row in table order wins. The default table holds the fourteen hydrogen peroxide ore groups plus the four sulfuric acid ore groups (titanium, tungsten, cobalt, rare earth) and the sulfuric acid uranium (stone, deepslate, scorched, nether, scorched nether, schist, scorched schist), thorium (stone, deepslate) and nether plutonium ore rows plus the hydrogen peroxide coal block to graphite block row, 47 rows; a custom file still replaces the whole table, so an existing custom table does not gain the sulfuric acid rows automatically (append their rows to keep them).";
     }
     @Override public void readRecipe(JsonElement element) {
         try {

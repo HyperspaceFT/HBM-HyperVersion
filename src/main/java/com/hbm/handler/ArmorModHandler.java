@@ -2,11 +2,13 @@ package com.hbm.handler;
 
 import com.hbm.items.armor.ItemArmorMod;
 import com.hbm.util.TagsUtil;
+import net.minecraft.core.component.DataComponents;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.world.item.ArmorItem;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
 
+import java.util.Arrays;
 import java.util.Optional;
 
 public class ArmorModHandler {
@@ -61,10 +63,8 @@ public class ArmorModHandler {
         ItemArmorMod aMod = (ItemArmorMod) mod.getItem();
         int slot = aMod.type;
 
-        CompoundTag cmp = new CompoundTag();
-        mod.save(level.registryAccess(), cmp);
-
-        mods.put(MOD_SLOT_KEY + slot, cmp);
+        // ItemStack.save returns the encoded tag and leaves its argument untouched in 1.21 (1.7.10 writeToNBT filled it)
+        mods.put(MOD_SLOT_KEY + slot, mod.save(level.registryAccess()));
 
         TagsUtil.putCustomData(armor, tag);
     }
@@ -73,18 +73,21 @@ public class ArmorModHandler {
      * Removes the mod from the given slot
      */
     public static void removeMod(ItemStack armor, int slot) {
-        if(armor.isEmpty()) return;
+        if(armor.isEmpty() || !TagsUtil.hasCustomData(armor)) return;
 
+        // Only the mod slot is removed, every other custom data key (filter, cladding, ...) survives (original ArmorModHandler.java:101-119)
         CompoundTag tag = TagsUtil.getCustomData(armor);
 
-        if(!tag.contains(MOD_COMPOUND_KEY)) tag.put(MOD_COMPOUND_KEY, new CompoundTag());
-
         CompoundTag mods = tag.getCompound(MOD_COMPOUND_KEY);
+        // An absent slot changes nothing (the original removeTag was an in-place no-op); pryMods visits every absent slot
+        if(!mods.contains(MOD_SLOT_KEY + slot) && !mods.isEmpty()) return;
         mods.remove(MOD_SLOT_KEY + slot);
 
-        if(mods.isEmpty()) clearMods(armor);
+        if(mods.isEmpty()) tag.remove(MOD_COMPOUND_KEY);
+        else tag.put(MOD_COMPOUND_KEY, mods);
 
-        TagsUtil.putCustomData(armor, mods);
+        if(tag.isEmpty()) armor.remove(DataComponents.CUSTOM_DATA);
+        else TagsUtil.putCustomData(armor, tag);
     }
 
     /**
@@ -113,10 +116,12 @@ public class ArmorModHandler {
 
     /**
      * Gets all the modifications in the provided armor
+     * Absent slots are ItemStack.EMPTY, never null
      */
     public static ItemStack[] pryMods(Level level, ItemStack armor) {
 
         ItemStack[] slots = new ItemStack[MOD_SLOTS];
+        Arrays.fill(slots, ItemStack.EMPTY);
 
         if(!hasMods(armor)) return slots;
 
@@ -127,7 +132,8 @@ public class ArmorModHandler {
 
             CompoundTag cmp = mods.getCompound(MOD_SLOT_KEY + i);
 
-            Optional<ItemStack> stack = ItemStack.parse(level.registryAccess(), cmp);
+            // An empty slot compound is absent; parsing it would log a codec error on every call
+            Optional<ItemStack> stack = cmp.isEmpty() ? Optional.empty() : ItemStack.parse(level.registryAccess(), cmp);
 
             if(stack.isPresent() && !stack.get().isEmpty()) {
                 slots[i] = stack.get();

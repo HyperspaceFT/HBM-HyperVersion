@@ -1,0 +1,32 @@
+{
+  "parent": "minecraft:recipes/root",
+  "criteria": {
+    "has_ingot_graphite": {
+      "conditions": {
+        "items": [
+          {
+            "items": "hbmsntm:ingot_graphite"
+          }
+        ]
+      },
+      "trigger": "minecraft:inventory_changed"
+    },
+    "has_the_recipe": {
+      "conditions": {
+        "recipe": "hbmsntm:block_graphite_from_9_ingot_graphite"
+      },
+      "trigger": "minecraft:recipe_unlocked"
+    }
+  },
+  "requirements": [
+    [
+      "has_the_recipe",
+      "has_ingot_graphite"
+    ]
+  ],
+  "rewards": {
+    "recipes": [
+      "hbmsntm:block_graphite_from_9_ingot_graphite"
+    ]
+  }
+}

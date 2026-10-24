@@ -343,6 +343,11 @@
       "hbmsntm:entity/soyuz_take_off"
     ]
   },
+  "item.gasmask_screw": {
+    "sounds": [
+      "hbmsntm:tool/gasmask_screw"
+    ]
+  },
   "item.geiger1": {
     "sounds": [
       "hbmsntm:tool/geiger1"
@@ -381,6 +386,16 @@
   "item.pin_unlock": {
     "sounds": [
       "hbmsntm:tool/pin_unlock"
+    ]
+  },
+  "item.radaway": {
+    "sounds": [
+      "hbmsntm:tool/radaway"
+    ]
+  },
+  "item.syringe": {
+    "sounds": [
+      "hbmsntm:tool/stim"
     ]
   },
   "item.tech_bleep": {

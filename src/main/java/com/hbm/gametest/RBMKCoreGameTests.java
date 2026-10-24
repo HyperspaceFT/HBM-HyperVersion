@@ -844,13 +844,19 @@ public class RBMKCoreGameTests {
             shaped(helper, "rbmk_blank_from_deco_rbmk", blank, 1, new String[] { "RRR", "R R", "RRR" }, Map.of('R', deco));
             shaped(helper, "rbmk_blank_from_deco_rbmk_smooth", blank, 1, new String[] { "RRR", "R R", "RRR" }, Map.of('R', smooth));
 
-            // Skipped rows: nothing makes rbmk_moderator or rbmk_lid_glass; no anvil row makes an RBMK column.
+            // Goal 26A registers rbmk_moderator (original CraftingManager.java:756) and rbmk_lid_glass x4 in both row orders (:753-754); nothing else makes
+            // them, and no anvil row makes an RBMK column.
+            Item glassLead = NtmBlocks.GLASS_LEAD.get().asItem(), glassBoron = NtmBlocks.GLASS_BORON.get().asItem();
+            shaped(helper, "rbmk_moderator", NtmBlocks.RBMK_MODERATOR.get().asItem(), 1, new String[] { " G ", "GRG", " G " }, Map.of('G', NtmBlocks.BLOCK_GRAPHITE.get().asItem(), 'R', blank));
+            shaped(helper, "rbmk_lid_glass", NtmItems.RBMK_LID_GLASS.get(), 4, new String[] { "LLL", "BBB", "P P" }, Map.of('L', glassLead, 'B', glassBoron, 'P', plate));
+            shaped(helper, "rbmk_lid_glass_boron_top", NtmItems.RBMK_LID_GLASS.get(), 4, new String[] { "BBB", "LLL", "P P" }, Map.of('L', glassLead, 'B', glassBoron, 'P', plate));
+            List<Object> goal26a = List.of(id("rbmk_moderator"), id("rbmk_lid_glass"), id("rbmk_lid_glass_boron_top"));
             Set<Item> skipped = Set.of(NtmBlocks.RBMK_MODERATOR.get().asItem(), NtmItems.RBMK_LID_GLASS.get());
             Set<Item> columns = Set.of(NtmBlocks.RBMK_BLANK.get().asItem(), NtmBlocks.RBMK_MODERATOR.get().asItem(), NtmBlocks.RBMK_ABSORBER.get().asItem(), NtmBlocks.RBMK_REFLECTOR.get().asItem());
             int scanned = 0;
             for(RecipeHolder<?> holder : helper.getLevel().getRecipeManager().getRecipes()) {
                 ItemStack result = holder.value().getResultItem(helper.getLevel().registryAccess());
-                check(!skipped.contains(result.getItem()), "recipe " + holder.id() + " produces " + result);
+                check(goal26a.contains(holder.id()) || !skipped.contains(result.getItem()), "recipe " + holder.id() + " produces " + result);
                 scanned++;
             }
             for(GenericRecipe recipe : AssemblyMachineRecipes.INSTANCE.recipeNameMap.values()) {
@@ -863,7 +869,7 @@ public class RBMKCoreGameTests {
             for(AnvilSmithingRecipe recipe : AnvilRecipes.getSmithing()) {
                 check(!columns.contains(recipe.getSimpleOutput().getItem()), "an anvil smithing row produces " + recipe.getSimpleOutput());
             }
-            LOGGER.info("[hbm-rbmk-core] recipes: ass.rbmk and 7 crafting rows match; {} loaded recipes, {} assembly rows, {} construction and {} smithing rows scanned for the skipped outputs",
+            LOGGER.info("[hbm-rbmk-core] recipes: ass.rbmk and 10 crafting rows match; {} loaded recipes, {} assembly rows, {} construction and {} smithing rows scanned for the skipped outputs",
                     scanned, AssemblyMachineRecipes.INSTANCE.recipeNameMap.size(), AnvilRecipes.getConstruction().size(), AnvilRecipes.getSmithing().size());
         }).run();
         done(helper, "rbmk_recipes");

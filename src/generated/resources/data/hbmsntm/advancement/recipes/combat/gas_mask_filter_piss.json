@@ -1,0 +1,32 @@
+{
+  "parent": "minecraft:recipes/root",
+  "criteria": {
+    "has_rag_piss": {
+      "conditions": {
+        "items": [
+          {
+            "items": "hbmsntm:rag_piss"
+          }
+        ]
+      },
+      "trigger": "minecraft:inventory_changed"
+    },
+    "has_the_recipe": {
+      "conditions": {
+        "recipe": "hbmsntm:gas_mask_filter_piss"
+      },
+      "trigger": "minecraft:recipe_unlocked"
+    }
+  },
+  "requirements": [
+    [
+      "has_the_recipe",
+      "has_rag_piss"
+    ]
+  ],
+  "rewards": {
+    "recipes": [
+      "hbmsntm:gas_mask_filter_piss"
+    ]
+  }
+}

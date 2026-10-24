@@ -1,0 +1,17 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "equipment",
+  "key": {
+    "E": {
+      "item": "hbmsntm:hazmat_cloth_grey"
+    }
+  },
+  "pattern": [
+    "E E",
+    "E E"
+  ],
+  "result": {
+    "count": 1,
+    "id": "hbmsntm:hazmat_boots_grey"
+  }
+}

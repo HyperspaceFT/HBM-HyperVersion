@@ -532,9 +532,304 @@ public class NtmRecipeProvider extends RecipeProvider {
                 .unlockedBy("has_rod_zirnox_empty", has(NtmItems.ROD_ZIRNOX_EMPTY.get()))
                 .save(recipeOutput, ResourceLocation.fromNamespaceAndPath("hbmsntm", "rod_zirnox_th232"));
 
-        // RBMK: original CraftingManager.java:752-758 (lids and passive columns) and :788-791 (deco blocks). Not registered: both
-        // rbmk_lid_glass rows (:753-754, NEO has no glass_lead or glass_boron) and the rbmk_moderator row (:756, NEO has no graphite
-        // block). The control rods (:760-762) follow the fuel channel below.
+        // Goal26A: detection, decontamination and radiation absorbers
+        // Original ToolRecipes.java:113: GOLD.wireFine() is NEO's wire_gold, EnumCircuitType.BASIC the integrated board, ANY_RUBBER.ingot()
+        // the ntm:any_rubbers tag (rubber and biorubber).
+        ShapedRecipeBuilder.shaped(RecipeCategory.TOOLS, NtmItems.GEIGER_COUNTER.get(), 1)
+                .pattern("GPP")
+                .pattern("WCS")
+                .pattern("WBB")
+                .define('G', Items.GOLD_INGOT)
+                .define('P', ItemTags.create(ResourceLocation.fromNamespaceAndPath("ntm", "any_rubbers")))
+                .define('W', NtmItems.WIRE_GOLD.get())
+                .define('C', NtmItems.CIRCUIT_INTEGRATED_BOARD.get())
+                .define('S', NtmTags.Items.PLATES_STEEL)
+                .define('B', NtmItems.INGOT_BERYLLIUM.get())
+                .unlockedBy("has_beryllium_ingot", has(NtmItems.INGOT_BERYLLIUM.get()))
+                .save(recipeOutput, ResourceLocation.fromNamespaceAndPath("hbmsntm", "geiger_counter"));
+        // Original ToolRecipes.java:114: KEY_PLANKS and KEY_ANYPANE are the plank and glass pane tags.
+        ShapedRecipeBuilder.shaped(RecipeCategory.TOOLS, NtmItems.DOSIMETER.get(), 1)
+                .pattern("WGW")
+                .pattern("WCW")
+                .pattern("WBW")
+                .define('W', ItemTags.PLANKS)
+                .define('G', Tags.Items.GLASS_PANES)
+                .define('C', NtmItems.CIRCUIT_VACUUM_TUBE.get())
+                .define('B', NtmItems.INGOT_BERYLLIUM.get())
+                .unlockedBy("has_beryllium_ingot", has(NtmItems.INGOT_BERYLLIUM.get()))
+                .save(recipeOutput, ResourceLocation.fromNamespaceAndPath("hbmsntm", "dosimeter"));
+        // Original ToolRecipes.java:115.
+        ShapelessRecipeBuilder.shapeless(RecipeCategory.MISC, NtmBlocks.GEIGER.get(), 1)
+                .requires(NtmItems.GEIGER_COUNTER.get())
+                .unlockedBy("has_geiger_counter", has(NtmItems.GEIGER_COUNTER.get()))
+                .save(recipeOutput, ResourceLocation.fromNamespaceAndPath("hbmsntm", "geiger"));
+        // Original ToolRecipes.java:116. PO210.billet() is NEO's billet_polonium; it has no survival source yet (GOAL26 decision 4).
+        ShapelessRecipeBuilder.shapeless(RecipeCategory.TOOLS, NtmItems.DIGAMMA_DIAGNOSTIC.get(), 1)
+                .requires(NtmItems.GEIGER_COUNTER.get())
+                .requires(NtmItems.BILLET_POLONIUM.get())
+                .requires(NtmItems.INGOT_ASBESTOS.get())
+                .unlockedBy("has_geiger_counter", has(NtmItems.GEIGER_COUNTER.get()))
+                .save(recipeOutput, ResourceLocation.fromNamespaceAndPath("hbmsntm", "digamma_diagnostic"));
+        // Gas masks, original ArmorRecipes.java:154-157 (the goggles at :153 are not migrated): KEY_ANYPANE is the glass pane tag,
+        // ANY_RUBBER.ingot() the ntm:any_rubbers tag; NEO has no iron plate tag, so the plain plate_iron stands in for IRON.plate().
+        ShapedRecipeBuilder.shaped(RecipeCategory.COMBAT, NtmItems.GAS_MASK.get(), 1)
+                .pattern("PPP")
+                .pattern("GPG")
+                .pattern(" F ")
+                .define('G', Tags.Items.GLASS_PANES)
+                .define('P', NtmTags.Items.PLATES_STEEL)
+                .define('F', NtmItems.PLATE_IRON.get())
+                .unlockedBy("has_steel_plate", has(NtmTags.Items.PLATES_STEEL))
+                .save(recipeOutput, ResourceLocation.fromNamespaceAndPath("hbmsntm", "gas_mask"));
+        ShapedRecipeBuilder.shaped(RecipeCategory.COMBAT, NtmItems.GAS_MASK_M65.get(), 1)
+                .pattern("PPP")
+                .pattern("GPG")
+                .pattern(" F ")
+                .define('G', Tags.Items.GLASS_PANES)
+                .define('P', ItemTags.create(ResourceLocation.fromNamespaceAndPath("ntm", "any_rubbers")))
+                .define('F', NtmItems.PLATE_IRON.get())
+                .unlockedBy("has_iron_plate", has(NtmItems.PLATE_IRON.get()))
+                .save(recipeOutput, ResourceLocation.fromNamespaceAndPath("hbmsntm", "gas_mask_m65"));
+        ShapedRecipeBuilder.shaped(RecipeCategory.COMBAT, NtmItems.GAS_MASK_OLDE.get(), 1)
+                .pattern("PPP")
+                .pattern("GPG")
+                .pattern(" F ")
+                .define('G', Tags.Items.GLASS_PANES)
+                .define('P', Items.LEATHER)
+                .define('F', Tags.Items.INGOTS_IRON)
+                .unlockedBy("has_leather", has(Items.LEATHER))
+                .save(recipeOutput, ResourceLocation.fromNamespaceAndPath("hbmsntm", "gas_mask_olde"));
+        ShapedRecipeBuilder.shaped(RecipeCategory.COMBAT, NtmItems.GAS_MASK_MONO.get(), 1)
+                .pattern(" P ")
+                .pattern("PPP")
+                .pattern(" F ")
+                .define('P', ItemTags.create(ResourceLocation.fromNamespaceAndPath("ntm", "any_rubbers")))
+                .define('F', NtmItems.PLATE_IRON.get())
+                .unlockedBy("has_iron_plate", has(NtmItems.PLATE_IRON.get()))
+                .save(recipeOutput, ResourceLocation.fromNamespaceAndPath("hbmsntm", "gas_mask_mono"));
+        // Original ArmorRecipes.java:160-161.
+        ShapedRecipeBuilder.shaped(RecipeCategory.COMBAT, NtmItems.MASK_RAG.get(), 1)
+                .pattern("RRR")
+                .define('R', NtmItems.RAG_DAMP.get())
+                .unlockedBy("has_rag_damp", has(NtmItems.RAG_DAMP.get()))
+                .save(recipeOutput, ResourceLocation.fromNamespaceAndPath("hbmsntm", "mask_rag"));
+        ShapedRecipeBuilder.shaped(RecipeCategory.COMBAT, NtmItems.MASK_PISS.get(), 1)
+                .pattern("RRR")
+                .define('R', NtmItems.RAG_PISS.get())
+                .unlockedBy("has_rag_piss", has(NtmItems.RAG_PISS.get()))
+                .save(recipeOutput, ResourceLocation.fromNamespaceAndPath("hbmsntm", "mask_piss"));
+        // Hazmat suits, original ArmorRecipes.java:122-133: KEY_ANYPANE is the glass pane tag, IRON.plate() the plain plate_iron as
+        // for the gas masks.
+        ShapedRecipeBuilder.shaped(RecipeCategory.COMBAT, NtmItems.HAZMAT_HELMET.get(), 1)
+                .pattern("EEE")
+                .pattern("EIE")
+                .pattern(" P ")
+                .define('E', NtmItems.HAZMAT_CLOTH.get())
+                .define('I', Tags.Items.GLASS_PANES)
+                .define('P', NtmItems.PLATE_IRON.get())
+                .unlockedBy("has_hazmat_cloth", has(NtmItems.HAZMAT_CLOTH.get()))
+                .save(recipeOutput, ResourceLocation.fromNamespaceAndPath("hbmsntm", "hazmat_helmet"));
+        addHazmatSuitRecipes(recipeOutput, NtmItems.HAZMAT_CLOTH.get(), NtmItems.HAZMAT_PLATE.get(), NtmItems.HAZMAT_LEGS.get(), NtmItems.HAZMAT_BOOTS.get());
+        ShapedRecipeBuilder.shaped(RecipeCategory.COMBAT, NtmItems.HAZMAT_HELMET_RED.get(), 1)
+                .pattern("EEE")
+                .pattern("IEI")
+                .pattern("EFE")
+                .define('E', NtmItems.HAZMAT_CLOTH_RED.get())
+                .define('I', Tags.Items.GLASS_PANES)
+                .define('F', NtmItems.PLATE_IRON.get())
+                .unlockedBy("has_hazmat_cloth_red", has(NtmItems.HAZMAT_CLOTH_RED.get()))
+                .save(recipeOutput, ResourceLocation.fromNamespaceAndPath("hbmsntm", "hazmat_helmet_red"));
+        addHazmatSuitRecipes(recipeOutput, NtmItems.HAZMAT_CLOTH_RED.get(), NtmItems.HAZMAT_PLATE_RED.get(), NtmItems.HAZMAT_LEGS_RED.get(), NtmItems.HAZMAT_BOOTS_RED.get());
+        ShapedRecipeBuilder.shaped(RecipeCategory.COMBAT, NtmItems.HAZMAT_HELMET_GREY.get(), 1)
+                .pattern("EEE")
+                .pattern("IEI")
+                .pattern("EFE")
+                .define('E', NtmItems.HAZMAT_CLOTH_GREY.get())
+                .define('I', Tags.Items.GLASS_PANES)
+                .define('F', NtmItems.PLATE_IRON.get())
+                .unlockedBy("has_hazmat_cloth_grey", has(NtmItems.HAZMAT_CLOTH_GREY.get()))
+                .save(recipeOutput, ResourceLocation.fromNamespaceAndPath("hbmsntm", "hazmat_helmet_grey"));
+        addHazmatSuitRecipes(recipeOutput, NtmItems.HAZMAT_CLOTH_GREY.get(), NtmItems.HAZMAT_PLATE_GREY.get(), NtmItems.HAZMAT_LEGS_GREY.get(), NtmItems.HAZMAT_BOOTS_GREY.get());
+        // Original CraftingManager.java:101-102: REDSTONE.dust() is vanilla redstone, PB.plate() NEO's plate_lead (no lead plate tag),
+        // IRON.plate() plate_iron and ANY_RUBBER.ingot() the ntm:any_rubbers tag.
+        ShapedRecipeBuilder.shaped(RecipeCategory.MISC, NtmItems.HAZMAT_CLOTH_RED.get(), 1)
+                .pattern("C")
+                .pattern("R")
+                .pattern("C")
+                .define('C', NtmItems.HAZMAT_CLOTH.get())
+                .define('R', Items.REDSTONE)
+                .unlockedBy("has_hazmat_cloth", has(NtmItems.HAZMAT_CLOTH.get()))
+                .save(recipeOutput, ResourceLocation.fromNamespaceAndPath("hbmsntm", "hazmat_cloth_red"));
+        ShapedRecipeBuilder.shaped(RecipeCategory.MISC, NtmItems.HAZMAT_CLOTH_GREY.get(), 1)
+                .pattern(" P ")
+                .pattern("ICI")
+                .pattern(" L ")
+                .define('C', NtmItems.HAZMAT_CLOTH_RED.get())
+                .define('P', NtmItems.PLATE_IRON.get())
+                .define('L', NtmItems.PLATE_LEAD.get())
+                .define('I', ItemTags.create(ResourceLocation.fromNamespaceAndPath("ntm", "any_rubbers")))
+                .unlockedBy("has_hazmat_cloth_red", has(NtmItems.HAZMAT_CLOTH_RED.get()))
+                .save(recipeOutput, ResourceLocation.fromNamespaceAndPath("hbmsntm", "hazmat_cloth_grey"));
+        // Gas mask filters, original ConsumableRecipes.java:217-221. ZR.nugget() and ZR.ingot() have no NEO tag, so the
+        // zirconium nugget and ingot stand in; IRON.ingot() is c:ingots/iron.
+        ShapedRecipeBuilder.shaped(RecipeCategory.COMBAT, NtmItems.GAS_MASK_FILTER.get(), 1)
+                .pattern("I")
+                .pattern("F")
+                .define('I', NtmItems.PLATE_IRON.get())
+                .define('F', NtmItems.FILTER_COAL.get())
+                .unlockedBy("has_filter_coal", has(NtmItems.FILTER_COAL.get()))
+                .save(recipeOutput, ResourceLocation.fromNamespaceAndPath("hbmsntm", "gas_mask_filter"));
+        ShapedRecipeBuilder.shaped(RecipeCategory.COMBAT, NtmItems.GAS_MASK_FILTER_MONO.get(), 1)
+                .pattern("ZZZ")
+                .pattern("ZCZ")
+                .pattern("ZZZ")
+                .define('Z', NtmItems.NUGGET_ZIRCONIUM.get())
+                .define('C', NtmItems.CATALYST_CLAY.get())
+                .unlockedBy("has_catalyst_clay", has(NtmItems.CATALYST_CLAY.get()))
+                .save(recipeOutput, ResourceLocation.fromNamespaceAndPath("hbmsntm", "gas_mask_filter_mono"));
+        ShapedRecipeBuilder.shaped(RecipeCategory.COMBAT, NtmItems.GAS_MASK_FILTER_COMBO.get(), 1)
+                .pattern("ZCZ")
+                .pattern("CFC")
+                .pattern("ZCZ")
+                .define('Z', NtmItems.INGOT_ZIRCONIUM.get())
+                .define('C', NtmItems.CATALYST_CLAY.get())
+                .define('F', NtmItems.GAS_MASK_FILTER.get())
+                .unlockedBy("has_gas_mask_filter", has(NtmItems.GAS_MASK_FILTER.get()))
+                .save(recipeOutput, ResourceLocation.fromNamespaceAndPath("hbmsntm", "gas_mask_filter_combo"));
+        ShapedRecipeBuilder.shaped(RecipeCategory.COMBAT, NtmItems.GAS_MASK_FILTER_RAG.get(), 1)
+                .pattern("I")
+                .pattern("F")
+                .define('I', Tags.Items.INGOTS_IRON)
+                .define('F', NtmItems.RAG_DAMP.get())
+                .unlockedBy("has_rag_damp", has(NtmItems.RAG_DAMP.get()))
+                .save(recipeOutput, ResourceLocation.fromNamespaceAndPath("hbmsntm", "gas_mask_filter_rag"));
+        ShapedRecipeBuilder.shaped(RecipeCategory.COMBAT, NtmItems.GAS_MASK_FILTER_PISS.get(), 1)
+                .pattern("I")
+                .pattern("F")
+                .define('I', Tags.Items.INGOTS_IRON)
+                .define('F', NtmItems.RAG_PISS.get())
+                .unlockedBy("has_rag_piss", has(NtmItems.RAG_PISS.get()))
+                .save(recipeOutput, ResourceLocation.fromNamespaceAndPath("hbmsntm", "gas_mask_filter_piss"));
+        // Original CraftingManager.java:839: Blocks.wool is any colour in the 1.7.10 ShapedOreRecipe, so the wool tag.
+        ShapedRecipeBuilder.shaped(RecipeCategory.MISC, NtmItems.RAG.get(), 4)
+                .pattern("SW")
+                .pattern("WS")
+                .define('S', Items.STRING)
+                .define('W', ItemTags.WOOL)
+                .unlockedBy("has_string", has(Items.STRING))
+                .save(recipeOutput, ResourceLocation.fromNamespaceAndPath("hbmsntm", "rag"));
+        // Original SmeltingRecipes.java:118-119.
+        SimpleCookingRecipeBuilder.smelting(Ingredient.of(NtmItems.RAG_DAMP.get()), RecipeCategory.MISC,
+                        NtmItems.RAG.get(), 0.1F, 200)
+                .unlockedBy("has_rag_damp", has(NtmItems.RAG_DAMP.get()))
+                .save(recipeOutput, ResourceLocation.fromNamespaceAndPath("hbmsntm", "rag_from_smelting_rag_damp"));
+        SimpleCookingRecipeBuilder.smelting(Ingredient.of(NtmItems.RAG_PISS.get()), RecipeCategory.MISC,
+                        NtmItems.RAG.get(), 0.1F, 200)
+                .unlockedBy("has_rag_piss", has(NtmItems.RAG_PISS.get()))
+                .save(recipeOutput, ResourceLocation.fromNamespaceAndPath("hbmsntm", "rag_from_smelting_rag_piss"));
+        // Goal26D: radiation medicine, original ConsumableRecipes.java:120 (radx: COAL.dust() is powder_coal, F.dust() the fluorite).
+        ShapelessRecipeBuilder.shapeless(RecipeCategory.MISC, NtmItems.RADX.get(), 1)
+                .requires(NtmItems.POWDER_COAL.get(), 2)
+                .requires(NtmItems.FLUORITE.get())
+                .unlockedBy("has_fluorite", has(NtmItems.FLUORITE.get()))
+                .save(recipeOutput, ResourceLocation.fromNamespaceAndPath("hbmsntm", "radx"));
+        // ConsumableRecipes.java:130 (the default branch; the LBSM gold nugget variant at :127 is deferred). The bismuth nugget has no
+        // survival source in NEO yet (GOAL26 decision 4, unreachable: bismuth).
+        ShapelessRecipeBuilder.shapeless(RecipeCategory.MISC, NtmItems.SIOX.get(), 8)
+                .requires(NtmItems.POWDER_COAL.get())
+                .requires(NtmItems.POWDER_ASBESTOS.get())
+                .requires(NtmItems.NUGGET_BISMUTH.get())
+                .unlockedBy("has_powder_asbestos", has(NtmItems.POWDER_ASBESTOS.get()))
+                .save(recipeOutput, ResourceLocation.fromNamespaceAndPath("hbmsntm", "siox"));
+        // ConsumableRecipes.java:143: ANY_RUBBER.ingot() is the ntm:any_rubbers tag, plate_iron stands in for IRON.plate().
+        ShapedRecipeBuilder.shaped(RecipeCategory.MISC, NtmItems.IV_EMPTY.get(), 4)
+                .pattern("S")
+                .pattern("I")
+                .pattern("S")
+                .define('S', ItemTags.create(ResourceLocation.fromNamespaceAndPath("ntm", "any_rubbers")))
+                .define('I', NtmItems.PLATE_IRON.get())
+                .unlockedBy("has_plate_iron", has(NtmItems.PLATE_IRON.get()))
+                .save(recipeOutput, ResourceLocation.fromNamespaceAndPath("hbmsntm", "iv_empty"));
+        // ConsumableRecipes.java:147; iv_blood has no recipe, it comes from using iv_empty.
+        ShapelessRecipeBuilder.shapeless(RecipeCategory.MISC, NtmItems.RADAWAY.get(), 1)
+                .requires(NtmItems.IV_BLOOD.get())
+                .requires(NtmItems.POWDER_COAL.get())
+                .requires(Items.PUMPKIN_SEEDS)
+                .unlockedBy("has_iv_blood", has(NtmItems.IV_BLOOD.get()))
+                .save(recipeOutput, ResourceLocation.fromNamespaceAndPath("hbmsntm", "radaway"));
+        // Radiation absorber tiers, original CraftingManager.java:626-629 (CU.ingot() is either copper ingot, ANY_PLASTIC.ingot() the
+        // ntm:ingots_plastic tag); the original is one block with four METAs, NEO has four blocks.
+        ShapedRecipeBuilder.shaped(RecipeCategory.MISC, NtmBlocks.RAD_ABSORBER.get(), 1)
+                .pattern("ICI")
+                .pattern("CPC")
+                .pattern("ICI")
+                .define('I', Ingredient.of(NtmItems.INGOT_COPPER.get(), Items.COPPER_INGOT))
+                .define('C', NtmItems.POWDER_COAL.get())
+                .define('P', NtmItems.POWDER_LEAD.get())
+                .unlockedBy("has_lead_powder", has(NtmItems.POWDER_LEAD.get()))
+                .save(recipeOutput, ResourceLocation.fromNamespaceAndPath("hbmsntm", "rad_absorber"));
+        ShapedRecipeBuilder.shaped(RecipeCategory.MISC, NtmBlocks.RAD_ABSORBER_RED.get(), 1)
+                .pattern("ICI")
+                .pattern("CPC")
+                .pattern("ICI")
+                .define('I', NtmItems.INGOT_TITANIUM.get())
+                .define('C', NtmItems.POWDER_COAL.get())
+                .define('P', NtmBlocks.RAD_ABSORBER.get())
+                .unlockedBy("has_rad_absorber", has(NtmBlocks.RAD_ABSORBER.get()))
+                .save(recipeOutput, ResourceLocation.fromNamespaceAndPath("hbmsntm", "rad_absorber_red"));
+        ShapedRecipeBuilder.shaped(RecipeCategory.MISC, NtmBlocks.RAD_ABSORBER_GREEN.get(), 1)
+                .pattern("ICI")
+                .pattern("CPC")
+                .pattern("ICI")
+                .define('I', ItemTags.create(ResourceLocation.fromNamespaceAndPath("ntm", "ingots_plastic")))
+                .define('C', NtmItems.POWDER_DESH_MIX.get())
+                .define('P', NtmBlocks.RAD_ABSORBER_RED.get())
+                .unlockedBy("has_rad_absorber_red", has(NtmBlocks.RAD_ABSORBER_RED.get()))
+                .save(recipeOutput, ResourceLocation.fromNamespaceAndPath("hbmsntm", "rad_absorber_green"));
+        // BIGMT.ingot() is the saturnite ingot. Saturnite and the nitan mix have no survival source in NEO yet (GOAL26 decision 4).
+        ShapedRecipeBuilder.shaped(RecipeCategory.MISC, NtmBlocks.RAD_ABSORBER_PINK.get(), 1)
+                .pattern("ICI")
+                .pattern("CPC")
+                .pattern("ICI")
+                .define('I', NtmItems.INGOT_SATURNITE.get())
+                .define('C', NtmItems.POWDER_NITAN_MIX.get())
+                .define('P', NtmBlocks.RAD_ABSORBER_GREEN.get())
+                .unlockedBy("has_rad_absorber_green", has(NtmBlocks.RAD_ABSORBER_GREEN.get()))
+                .save(recipeOutput, ResourceLocation.fromNamespaceAndPath("hbmsntm", "rad_absorber_pink"));
+        // Original CraftingManager.java:630: the player decontaminator needs the base absorber.
+        ShapedRecipeBuilder.shaped(RecipeCategory.MISC, NtmBlocks.DECONTAMINATOR.get(), 1)
+                .pattern("BGB")
+                .pattern("SAS")
+                .pattern("BSB")
+                .define('B', NtmItems.INGOT_BERYLLIUM.get())
+                .define('G', Items.IRON_BARS)
+                .define('S', NtmItems.INGOT_STEEL.get())
+                .define('A', NtmBlocks.RAD_ABSORBER.get())
+                .unlockedBy("has_rad_absorber", has(NtmBlocks.RAD_ABSORBER.get()))
+                .save(recipeOutput, ResourceLocation.fromNamespaceAndPath("hbmsntm", "decontaminator"));
+        // Original CraftingManager.java:687-688 (BlockNTMSand BORON and LEAD) and SmeltingRecipes.java:132-133 (the lead and boron glass).
+        ShapelessRecipeBuilder.shapeless(RecipeCategory.BUILDING_BLOCKS, NtmBlocks.SAND_BORON.get(), 8)
+                .requires(Ingredient.of(Tags.Items.SANDS), 8)
+                .requires(NtmItems.POWDER_BORON.get())
+                .unlockedBy("has_boron_powder", has(NtmItems.POWDER_BORON.get()))
+                .save(recipeOutput, ResourceLocation.fromNamespaceAndPath("hbmsntm", "sand_boron"));
+        ShapelessRecipeBuilder.shapeless(RecipeCategory.BUILDING_BLOCKS, NtmBlocks.SAND_LEAD.get(), 8)
+                .requires(Ingredient.of(Tags.Items.SANDS), 8)
+                .requires(NtmItems.POWDER_LEAD.get())
+                .unlockedBy("has_lead_powder", has(NtmItems.POWDER_LEAD.get()))
+                .save(recipeOutput, ResourceLocation.fromNamespaceAndPath("hbmsntm", "sand_lead"));
+        SimpleCookingRecipeBuilder.smelting(Ingredient.of(NtmBlocks.SAND_BORON.get()), RecipeCategory.BUILDING_BLOCKS,
+                        NtmBlocks.GLASS_BORON.get(), 0.25F, 200)
+                .unlockedBy("has_sand_boron", has(NtmBlocks.SAND_BORON.get()))
+                .save(recipeOutput, ResourceLocation.fromNamespaceAndPath("hbmsntm", "glass_boron_from_smelting_sand_boron"));
+        SimpleCookingRecipeBuilder.smelting(Ingredient.of(NtmBlocks.SAND_LEAD.get()), RecipeCategory.BUILDING_BLOCKS,
+                        NtmBlocks.GLASS_LEAD.get(), 0.25F, 200)
+                .unlockedBy("has_sand_lead", has(NtmBlocks.SAND_LEAD.get()))
+                .save(recipeOutput, ResourceLocation.fromNamespaceAndPath("hbmsntm", "glass_lead_from_smelting_sand_lead"));
+
+        // RBMK: original CraftingManager.java:752-758 (lids and passive columns) and :788-791 (deco blocks). The two rbmk_lid_glass
+        // rows (:753-754) and the rbmk_moderator row (:756) are registered since Goal 26A, now that NEO has the lead and boron glass
+        // and the graphite block. The control rods (:760-762) follow the fuel channel below.
         ShapedRecipeBuilder.shaped(RecipeCategory.MISC, NtmItems.RBMK_LID.get(), 4)
                 .pattern("PPP")
                 .pattern("CCC")
@@ -543,6 +838,34 @@ public class NtmRecipeProvider extends RecipeProvider {
                 .define('C', NtmBlocks.CONCRETE_ASBESTOS.get())
                 .unlockedBy("has_concrete_asbestos", has(NtmBlocks.CONCRETE_ASBESTOS.get()))
                 .save(recipeOutput, ResourceLocation.fromNamespaceAndPath("hbmsntm", "rbmk_lid"));
+        // Original CraftingManager.java:753-754: two row orders of lead and boron glass, same output.
+        ShapedRecipeBuilder.shaped(RecipeCategory.MISC, NtmItems.RBMK_LID_GLASS.get(), 4)
+                .pattern("LLL")
+                .pattern("BBB")
+                .pattern("P P")
+                .define('P', NtmTags.Items.PLATES_STEEL)
+                .define('L', NtmBlocks.GLASS_LEAD.get())
+                .define('B', NtmBlocks.GLASS_BORON.get())
+                .unlockedBy("has_glass_lead", has(NtmBlocks.GLASS_LEAD.get()))
+                .save(recipeOutput, ResourceLocation.fromNamespaceAndPath("hbmsntm", "rbmk_lid_glass"));
+        ShapedRecipeBuilder.shaped(RecipeCategory.MISC, NtmItems.RBMK_LID_GLASS.get(), 4)
+                .pattern("BBB")
+                .pattern("LLL")
+                .pattern("P P")
+                .define('P', NtmTags.Items.PLATES_STEEL)
+                .define('L', NtmBlocks.GLASS_LEAD.get())
+                .define('B', NtmBlocks.GLASS_BORON.get())
+                .unlockedBy("has_glass_lead", has(NtmBlocks.GLASS_LEAD.get()))
+                .save(recipeOutput, ResourceLocation.fromNamespaceAndPath("hbmsntm", "rbmk_lid_glass_boron_top"));
+        // Original CraftingManager.java:756.
+        ShapedRecipeBuilder.shaped(RecipeCategory.MISC, NtmBlocks.RBMK_MODERATOR.get(), 1)
+                .pattern(" G ")
+                .pattern("GRG")
+                .pattern(" G ")
+                .define('G', NtmBlocks.BLOCK_GRAPHITE.get())
+                .define('R', NtmBlocks.RBMK_BLANK.get())
+                .unlockedBy("has_rbmk_blank", has(NtmBlocks.RBMK_BLANK.get()))
+                .save(recipeOutput, ResourceLocation.fromNamespaceAndPath("hbmsntm", "rbmk_moderator"));
         ShapedRecipeBuilder.shaped(RecipeCategory.MISC, NtmBlocks.RBMK_ABSORBER.get(), 1)
                 .pattern("GGG")
                 .pattern("GRG")
@@ -584,8 +907,8 @@ public class NtmRecipeProvider extends RecipeProvider {
                 .unlockedBy("has_deco_rbmk_smooth", has(NtmBlocks.DECO_RBMK_SMOOTH.get()))
                 .save(recipeOutput, ResourceLocation.fromNamespaceAndPath("hbmsntm", "rbmk_blank_from_deco_rbmk_smooth"));
         // RBMK fuel channel (Goal24C): original CraftingManager.java:991 (the !enable528 branch); STEEL.shell() is NEO's shell_steel
-        // item (no shell tag). Not registered: rbmk_rod_mod (:992, needs GRAPHITE.block(); NEO has no graphite block, as rbmk_moderator)
-        // and the two tier-4 anvil recycling rows (AnvilRecipes.java:927-938; the 4-tier anvil is unreachable in NEO).
+        // item (no shell tag). rbmk_rod_mod (:992, GRAPHITE.block()) is registered since Goal 26A, now that NEO has the graphite block.
+        // Not registered: the two tier-4 anvil recycling rows (AnvilRecipes.java:927-938; the 4-tier anvil is unreachable in NEO).
         ShapedRecipeBuilder.shaped(RecipeCategory.MISC, NtmBlocks.RBMK_ROD.get(), 1)
                 .pattern("C")
                 .pattern("R")
@@ -594,9 +917,19 @@ public class NtmRecipeProvider extends RecipeProvider {
                 .define('R', NtmBlocks.RBMK_BLANK.get())
                 .unlockedBy("has_rbmk_blank", has(NtmBlocks.RBMK_BLANK.get()))
                 .save(recipeOutput, ResourceLocation.fromNamespaceAndPath("hbmsntm", "rbmk_rod"));
+        // Original CraftingManager.java:992 (the !enable528 branch). Bismuth nuggets have no survival source in NEO yet (GOAL26 decision 4).
+        ShapedRecipeBuilder.shaped(RecipeCategory.MISC, NtmBlocks.RBMK_ROD_MOD.get(), 1)
+                .pattern("BGB")
+                .pattern("GRG")
+                .pattern("BGB")
+                .define('G', NtmBlocks.BLOCK_GRAPHITE.get())
+                .define('R', NtmBlocks.RBMK_ROD.get())
+                .define('B', NtmItems.NUGGET_BISMUTH.get())
+                .unlockedBy("has_rbmk_rod", has(NtmBlocks.RBMK_ROD.get()))
+                .save(recipeOutput, ResourceLocation.fromNamespaceAndPath("hbmsntm", "rbmk_rod_mod"));
         // RBMK control rods (Goal24D): original CraftingManager.java:760 and :762 (the !enable528 branch); the ADVANCED circuit is NEO's
-        // circuit_military_grade_board. Not registered: rbmk_control_mod (:761, needs GRAPHITE.block(); NEO has no graphite block, as
-        // rbmk_moderator and rbmk_rod_mod), the ReaSim rows (:764-765, Goal 26) and the tier-4 anvil recycling rows
+        // circuit_military_grade_board. rbmk_control_mod (:761, GRAPHITE.block()) is registered since Goal 26A, now that NEO has the
+        // graphite block. Not registered: the ReaSim rows (:764-765, Goal 26) and the tier-4 anvil recycling rows
         // (AnvilRecipes.java:885-901; the 4-tier anvil is unreachable in NEO).
         ShapedRecipeBuilder.shaped(RecipeCategory.MISC, NtmBlocks.RBMK_CONTROL.get(), 1)
                 .pattern(" B ")
@@ -607,6 +940,16 @@ public class NtmRecipeProvider extends RecipeProvider {
                 .define('R', NtmBlocks.RBMK_ABSORBER.get())
                 .unlockedBy("has_rbmk_absorber", has(NtmBlocks.RBMK_ABSORBER.get()))
                 .save(recipeOutput, ResourceLocation.fromNamespaceAndPath("hbmsntm", "rbmk_control"));
+        // Original CraftingManager.java:761 (the !enable528 branch). Bismuth nuggets have no survival source in NEO yet (GOAL26 decision 4).
+        ShapedRecipeBuilder.shaped(RecipeCategory.MISC, NtmBlocks.RBMK_CONTROL_MOD.get(), 1)
+                .pattern("BGB")
+                .pattern("GRG")
+                .pattern("BGB")
+                .define('G', NtmBlocks.BLOCK_GRAPHITE.get())
+                .define('R', NtmBlocks.RBMK_CONTROL.get())
+                .define('B', NtmItems.NUGGET_BISMUTH.get())
+                .unlockedBy("has_rbmk_control", has(NtmBlocks.RBMK_CONTROL.get()))
+                .save(recipeOutput, ResourceLocation.fromNamespaceAndPath("hbmsntm", "rbmk_control_mod"));
         ShapedRecipeBuilder.shaped(RecipeCategory.MISC, NtmBlocks.RBMK_CONTROL_AUTO.get(), 1)
                 .pattern("C")
                 .pattern("R")
@@ -2112,6 +2455,8 @@ public class NtmRecipeProvider extends RecipeProvider {
         addMaterialBlockRecipe(recipeOutput, NtmBlocks.BLOCK_DURA_STEEL.get(), NtmItems.INGOT_DURA_STEEL.get());
         addMaterialBlockRecipe(recipeOutput, NtmBlocks.BLOCK_EUPHEMIUM.get(), NtmItems.INGOT_EUPHEMIUM.get());
         addMaterialBlockRecipe(recipeOutput, NtmBlocks.BLOCK_FIBERGLASS.get(), NtmItems.INGOT_FIBERGLASS.get());
+        // Original MineralRecipes.java:40 (add1To9Pair)
+        addMaterialBlockRecipe(recipeOutput, NtmBlocks.BLOCK_GRAPHITE.get(), NtmItems.INGOT_GRAPHITE.get());
         addMaterialBlockRecipe(recipeOutput, NtmBlocks.BLOCK_INSULATOR.get(), NtmItems.PLATE_POLYMER.get());
         addMaterialBlockRecipe(recipeOutput, NtmBlocks.BLOCK_LANTHANIUM.get(), NtmItems.INGOT_LANTHANIUM.get());
         addMaterialBlockRecipe(recipeOutput, NtmBlocks.BLOCK_LEAD.get(), NtmItems.INGOT_LEAD.get());
@@ -2530,5 +2875,31 @@ public class NtmRecipeProvider extends RecipeProvider {
         SimpleCookingRecipeBuilder.smelting(Ingredient.of(input), RecipeCategory.MISC, new ItemStack(output, 2), 0.7F, 200)
                 .unlockedBy("has_" + inputName, has(input))
                 .save(recipeOutput, ResourceLocation.fromNamespaceAndPath("hbmsntm", outputName + "_from_" + inputName));
+    }
+
+    // The chestplate, leggings and boots of one hazmat tier, original ArmorRecipes.java:123-125 (and :127-129, :131-133)
+    private void addHazmatSuitRecipes(RecipeOutput recipeOutput, ItemLike cloth, ItemLike plate, ItemLike legs, ItemLike boots) {
+        String clothName = BuiltInRegistries.ITEM.getKey(cloth.asItem()).getPath();
+
+        ShapedRecipeBuilder.shaped(RecipeCategory.COMBAT, plate, 1)
+                .pattern("E E")
+                .pattern("EEE")
+                .pattern("EEE")
+                .define('E', cloth)
+                .unlockedBy("has_" + clothName, has(cloth))
+                .save(recipeOutput, ResourceLocation.fromNamespaceAndPath("hbmsntm", BuiltInRegistries.ITEM.getKey(plate.asItem()).getPath()));
+        ShapedRecipeBuilder.shaped(RecipeCategory.COMBAT, legs, 1)
+                .pattern("EEE")
+                .pattern("E E")
+                .pattern("E E")
+                .define('E', cloth)
+                .unlockedBy("has_" + clothName, has(cloth))
+                .save(recipeOutput, ResourceLocation.fromNamespaceAndPath("hbmsntm", BuiltInRegistries.ITEM.getKey(legs.asItem()).getPath()));
+        ShapedRecipeBuilder.shaped(RecipeCategory.COMBAT, boots, 1)
+                .pattern("E E")
+                .pattern("E E")
+                .define('E', cloth)
+                .unlockedBy("has_" + clothName, has(cloth))
+                .save(recipeOutput, ResourceLocation.fromNamespaceAndPath("hbmsntm", BuiltInRegistries.ITEM.getKey(boots.asItem()).getPath()));
     }
 }

@@ -31,10 +31,9 @@ public class ArmorRegistry {
                     components.add(Component.literal("  ").append(Component.translatable(clazz.unlocalizedMessage)).withStyle(ChatFormatting.YELLOW));
                 }
             } else {
-                components.add(Component.literal("Hold <").withStyle(ChatFormatting.DARK_GRAY, ChatFormatting.ITALIC)
-                        .append(Component.literal("LSHIFT").withStyle(ChatFormatting.YELLOW, ChatFormatting.ITALIC))
-                        .append(Component.literal("> to display protection info").withStyle(ChatFormatting.DARK_GRAY, ChatFormatting.ITALIC))
-                );
+                components.add(Component.translatable("hazard.hold_shift",
+                        Component.literal("LSHIFT").withStyle(ChatFormatting.YELLOW, ChatFormatting.ITALIC)
+                ).withStyle(ChatFormatting.DARK_GRAY, ChatFormatting.ITALIC));
             }
         }
     }
@@ -91,9 +90,10 @@ public class ArmorRegistry {
         if (item instanceof IGasMask gasMask) {
             ItemStack filter = gasMask.getFilter(stack, entity);
 
-            if (!filter.isEmpty()) {
+            // a filter without registered HazardClasses adds nothing (original ArmorRegistry.java:75-83)
+            if (!filter.isEmpty() && hazardClasses.containsKey(filter.getItem())) {
                 // add the HazardClasses from the filter, then remove the ones blacklisted by the mask
-                List<HazardClass> filProt = (List<HazardClass>) hazardClasses.get(filter.getItem()).clone();
+                List<HazardClass> filProt = new ArrayList<>(hazardClasses.get(filter.getItem()));
 
                 for (HazardClass clazz : gasMask.getBlacklist(stack, entity))
                     filProt.remove(clazz);

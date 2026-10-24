@@ -317,6 +317,13 @@ public class NtmCreativeTabs {
                         output.accept(NtmItems.TANK_STEEL.get());
                         output.accept(NtmItems.CATALYST_CLAY.get());
                         output.accept(NtmItems.DEUTERIUM_FILTER.get());
+                        output.accept(NtmItems.RAG.get());
+                        output.accept(NtmItems.RAG_DAMP.get());
+                        output.accept(NtmItems.RAG_PISS.get());
+                        output.accept(NtmItems.FILTER_COAL.get());
+                        output.accept(NtmItems.HAZMAT_CLOTH.get());
+                        output.accept(NtmItems.HAZMAT_CLOTH_RED.get());
+                        output.accept(NtmItems.HAZMAT_CLOTH_GREY.get());
                         output.accept(NtmItems.FINS_FLAT.get());
                         output.accept(NtmItems.FINS_SMALL_STEEL.get());
                         output.accept(NtmItems.FINS_BIG_STEEL.get());
@@ -793,6 +800,10 @@ public class NtmCreativeTabs {
                         output.accept(NtmBlocks.STEEL_GRATE);
                         output.accept(NtmBlocks.SAND_QUARTZ);
                         output.accept(NtmBlocks.GLASS_QUARTZ);
+                        output.accept(NtmBlocks.SAND_BORON);
+                        output.accept(NtmBlocks.SAND_LEAD);
+                        output.accept(NtmBlocks.GLASS_BORON);
+                        output.accept(NtmBlocks.GLASS_LEAD);
 
                         output.accept(NtmBlocks.BRICK_CONCRETE_SLAB);
                         output.accept(NtmBlocks.BRICK_CONCRETE_MOSSY_SLAB);
@@ -1007,6 +1018,10 @@ public class NtmCreativeTabs {
                         output.accept(NtmBlocks.CRATE_TEMPLATE);
                         output.accept(NtmBlocks.MACHINE_SATLINKER);
                         output.accept(NtmBlocks.DECONTAMINATOR);
+                        output.accept(NtmBlocks.RAD_ABSORBER);
+                        output.accept(NtmBlocks.RAD_ABSORBER_RED);
+                        output.accept(NtmBlocks.RAD_ABSORBER_GREEN);
+                        output.accept(NtmBlocks.RAD_ABSORBER_PINK);
 
                         FluidType[] types = Fluids.getInNiceOrder();
                         // multi identifiers
@@ -1214,6 +1229,39 @@ public class NtmCreativeTabs {
                         output.accept(NtmItems.METEOR_REMOTE);
                         output.accept(NtmItems.METEOR_CHARM);
                         output.accept(NtmItems.PROTECTION_CHARM);
+
+                        // The original masks fall back to the vanilla combat tab (1.7.10 ItemArmor) and the filters sit in
+                        // consumableTab; NEO keeps all of them here.
+                        output.accept(NtmItems.GAS_MASK);
+                        output.accept(NtmItems.GAS_MASK_M65);
+                        output.accept(NtmItems.GAS_MASK_MONO);
+                        output.accept(NtmItems.GAS_MASK_OLDE);
+                        output.accept(NtmItems.MASK_RAG);
+                        output.accept(NtmItems.MASK_PISS);
+                        output.accept(NtmItems.HAZMAT_HELMET);
+                        output.accept(NtmItems.HAZMAT_PLATE);
+                        output.accept(NtmItems.HAZMAT_LEGS);
+                        output.accept(NtmItems.HAZMAT_BOOTS);
+                        output.accept(NtmItems.HAZMAT_HELMET_RED);
+                        output.accept(NtmItems.HAZMAT_PLATE_RED);
+                        output.accept(NtmItems.HAZMAT_LEGS_RED);
+                        output.accept(NtmItems.HAZMAT_BOOTS_RED);
+                        output.accept(NtmItems.HAZMAT_HELMET_GREY);
+                        output.accept(NtmItems.HAZMAT_PLATE_GREY);
+                        output.accept(NtmItems.HAZMAT_LEGS_GREY);
+                        output.accept(NtmItems.HAZMAT_BOOTS_GREY);
+                        output.accept(NtmItems.GAS_MASK_FILTER);
+                        output.accept(NtmItems.GAS_MASK_FILTER_MONO);
+                        output.accept(NtmItems.GAS_MASK_FILTER_COMBO);
+                        output.accept(NtmItems.GAS_MASK_FILTER_RAG);
+                        output.accept(NtmItems.GAS_MASK_FILTER_PISS);
+
+                        // radiation medicine, in the original GameRegistry order (ModItems.java:5954-5962)
+                        output.accept(NtmItems.IV_EMPTY);
+                        output.accept(NtmItems.IV_BLOOD);
+                        output.accept(NtmItems.RADAWAY);
+                        output.accept(NtmItems.RADX);
+                        output.accept(NtmItems.SIOX);
 
                         output.accept(NtmItems.BALEFIRE_AND_STEEL);
 
@@ -1514,6 +1562,7 @@ public class NtmCreativeTabs {
         output.accept(NtmBlocks.BLOCK_FIBERGLASS);
         output.accept(NtmBlocks.BLOCK_INSULATOR);
         output.accept(NtmBlocks.BLOCK_SLAG);
+        output.accept(NtmBlocks.BLOCK_GRAPHITE);
 
     }
 

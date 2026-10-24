@@ -1,0 +1,32 @@
+{
+  "parent": "minecraft:recipes/root",
+  "criteria": {
+    "has_rbmk_control": {
+      "conditions": {
+        "items": [
+          {
+            "items": "hbmsntm:rbmk_control"
+          }
+        ]
+      },
+      "trigger": "minecraft:inventory_changed"
+    },
+    "has_the_recipe": {
+      "conditions": {
+        "recipe": "hbmsntm:rbmk_control_mod"
+      },
+      "trigger": "minecraft:recipe_unlocked"
+    }
+  },
+  "requirements": [
+    [
+      "has_the_recipe",
+      "has_rbmk_control"
+    ]
+  ],
+  "rewards": {
+    "recipes": [
+      "hbmsntm:rbmk_control_mod"
+    ]
+  }
+}

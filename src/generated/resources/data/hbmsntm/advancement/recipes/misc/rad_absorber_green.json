@@ -1,0 +1,32 @@
+{
+  "parent": "minecraft:recipes/root",
+  "criteria": {
+    "has_rad_absorber_red": {
+      "conditions": {
+        "items": [
+          {
+            "items": "hbmsntm:rad_absorber_red"
+          }
+        ]
+      },
+      "trigger": "minecraft:inventory_changed"
+    },
+    "has_the_recipe": {
+      "conditions": {
+        "recipe": "hbmsntm:rad_absorber_green"
+      },
+      "trigger": "minecraft:recipe_unlocked"
+    }
+  },
+  "requirements": [
+    [
+      "has_the_recipe",
+      "has_rad_absorber_red"
+    ]
+  ],
+  "rewards": {
+    "recipes": [
+      "hbmsntm:rad_absorber_green"
+    ]
+  }
+}

@@ -406,6 +406,9 @@ public class NtmSoundDefinitionsProvider extends SoundDefinitionsProvider {
         this.add(NtmSoundEvents.GEIGER4, SoundDefinition.definition().with(sound("hbmsntm:tool/geiger4")));
         this.add(NtmSoundEvents.GEIGER5, SoundDefinition.definition().with(sound("hbmsntm:tool/geiger5")));
         this.add(NtmSoundEvents.GEIGER6, SoundDefinition.definition().with(sound("hbmsntm:tool/geiger6")));
+        this.add(NtmSoundEvents.GASMASK_SCREW, SoundDefinition.definition().with(sound("hbmsntm:tool/gasmask_screw")));
+        this.add(NtmSoundEvents.SYRINGE, SoundDefinition.definition().with(sound("hbmsntm:tool/stim")));
+        this.add(NtmSoundEvents.RADAWAY, SoundDefinition.definition().with(sound("hbmsntm:tool/radaway")));
         this.add(NtmSoundEvents.PIN_UNLOCK, SoundDefinition.definition()
                 .with(sound("hbmsntm:tool/pin_unlock"))
         );

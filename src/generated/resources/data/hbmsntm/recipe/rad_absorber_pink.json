@@ -1,0 +1,24 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "key": {
+    "C": {
+      "item": "hbmsntm:powder_nitan_mix"
+    },
+    "I": {
+      "item": "hbmsntm:ingot_saturnite"
+    },
+    "P": {
+      "item": "hbmsntm:rad_absorber_green"
+    }
+  },
+  "pattern": [
+    "ICI",
+    "CPC",
+    "ICI"
+  ],
+  "result": {
+    "count": 1,
+    "id": "hbmsntm:rad_absorber_pink"
+  }
+}

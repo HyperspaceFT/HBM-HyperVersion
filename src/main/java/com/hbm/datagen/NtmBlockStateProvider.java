@@ -177,6 +177,10 @@ public class NtmBlockStateProvider extends BlockStateProvider {
         this.particleOnlyBlock(NtmBlocks.MACHINE_TURBOFAN, modLoc("block/block_steel"));
         this.simpleCubeAllBlock(NtmBlocks.SAND_QUARTZ);
         this.simpleCubeAllBlock(NtmBlocks.GLASS_QUARTZ);
+        this.simpleCubeAllBlock(NtmBlocks.SAND_BORON);
+        this.simpleCubeAllBlock(NtmBlocks.SAND_LEAD);
+        this.simpleCubeAllBlock(NtmBlocks.GLASS_BORON);
+        this.simpleCubeAllBlock(NtmBlocks.GLASS_LEAD);
         this.simpleCubeAllBlock(NtmBlocks.TRANSFORMER);
 
         this.slabBlock(NtmBlocks.BRICK_CONCRETE_SLAB.get(), blockTexture(NtmBlocks.BRICK_CONCRETE), blockTexture(NtmBlocks.BRICK_CONCRETE));
@@ -377,6 +381,12 @@ public class NtmBlockStateProvider extends BlockStateProvider {
                         blockTexture(NtmBlocks.DECONTAMINATOR, "_top")
                 )
         );
+
+        // The texture names differ from the block IDs (original BlockAbsorber.EnumAbsorberTier.textureName)
+        this.simpleBlockWithItem(NtmBlocks.RAD_ABSORBER, this.models().cubeAll(name(NtmBlocks.RAD_ABSORBER), modLoc("block/absorber")));
+        this.simpleBlockWithItem(NtmBlocks.RAD_ABSORBER_RED, this.models().cubeAll(name(NtmBlocks.RAD_ABSORBER_RED), modLoc("block/absorber_red")));
+        this.simpleBlockWithItem(NtmBlocks.RAD_ABSORBER_GREEN, this.models().cubeAll(name(NtmBlocks.RAD_ABSORBER_GREEN), modLoc("block/absorber_green")));
+        this.simpleBlockWithItem(NtmBlocks.RAD_ABSORBER_PINK, this.models().cubeAll(name(NtmBlocks.RAD_ABSORBER_PINK), modLoc("block/absorber_pink")));
 
         this.simpleBlockWithItem(NtmBlocks.PWR_CONTROLLER.get(),
                 this.models().cube(
@@ -597,6 +607,7 @@ public class NtmBlockStateProvider extends BlockStateProvider {
         this.simpleCubeAllBlock(NtmBlocks.BLOCK_WASTE_VITRIFIED);
         this.simpleCubeAllBlock(NtmBlocks.BLOCK_YELLOWCAKE);
         this.simpleCubeAllBlock(NtmBlocks.BLOCK_SLAG);
+        this.simpleCubeAllBlock(NtmBlocks.BLOCK_GRAPHITE);
         this.simpleBlockWithItem(NtmBlocks.BLOCK_FIBERGLASS.get(), this.models().cubeBottomTop("block_fiberglass", modLoc("block/block_fiberglass_side"), modLoc("block/block_fiberglass_side"), modLoc("block/block_fiberglass_top")));
         this.simpleBlockWithItem(NtmBlocks.BLOCK_INSULATOR.get(), this.models().cubeBottomTop("block_insulator", modLoc("block/block_insulator_side"), modLoc("block/block_insulator_side"), modLoc("block/block_insulator_top")));
     }

@@ -1,0 +1,24 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "equipment",
+  "key": {
+    "E": {
+      "item": "hbmsntm:hazmat_cloth"
+    },
+    "I": {
+      "tag": "c:glass_panes"
+    },
+    "P": {
+      "item": "hbmsntm:plate_iron"
+    }
+  },
+  "pattern": [
+    "EEE",
+    "EIE",
+    " P "
+  ],
+  "result": {
+    "count": 1,
+    "id": "hbmsntm:hazmat_helmet"
+  }
+}

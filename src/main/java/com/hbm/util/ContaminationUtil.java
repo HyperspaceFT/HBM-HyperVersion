@@ -98,8 +98,8 @@ public class ContaminationUtil {
         double env = ((int)(HbmLivingAttachments.getRadBuf(player) * 10D)) / 10D;
         boolean limit = false;
 
-        if(env > 3.6F) {
-            env = 3.6F;
+        if(env > 3.6D) {
+            env = 3.6D;
             limit = true;
         }
 
@@ -165,6 +165,10 @@ public class ContaminationUtil {
         }
 
         if(entity instanceof Player player) {
+            // Original ContaminationUtil.java:278: a full hazmat set prevents HAZMAT contamination, checked before the creative and
+            // tickCount exemptions. FARADAY, HAZMAT_HEAVY and DIGAMMA have no migrated armor and are not wired yet. No NEO caller
+            // passes HAZMAT yet (nor does the original); the branch is kept for later gas, bullet and mud ports.
+            if(type == ContaminationType.HAZMAT && ArmorUtil.checkForHazmat(player)) return;
             // Original: creative mode exempts every type except NONE and DIGAMMA2 (NEO DIGAMMA_ROBE); spectators likewise (NEO-only).
             if((player.isCreative() || player.isSpectator()) && type != ContaminationType.NONE && type != ContaminationType.DIGAMMA_ROBE) return;
             if(player.tickCount < 200) return;

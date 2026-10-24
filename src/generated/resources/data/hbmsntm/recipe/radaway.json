@@ -1,0 +1,19 @@
+{
+  "type": "minecraft:crafting_shapeless",
+  "category": "misc",
+  "ingredients": [
+    {
+      "item": "hbmsntm:iv_blood"
+    },
+    {
+      "item": "hbmsntm:powder_coal"
+    },
+    {
+      "item": "minecraft:pumpkin_seeds"
+    }
+  ],
+  "result": {
+    "count": 1,
+    "id": "hbmsntm:radaway"
+  }
+}
