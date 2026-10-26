@@ -946,8 +946,8 @@ public class RBMKReactorGameTests {
 
     // 14 recipes and registrations
 
-    // Covers CraftingManager.java:991 (rbmk_rod C/R/C, steel shell and rbmk_blank), :992 rbmk_rod_mod (registered by Goal 26A) and AnvilRecipes.java:927-953 (the tier
-    // 4 recycling rows) deliberately not registered, and the registrations (ModBlocks rbmk_rod / rbmk_rod_mod / corium_block, one
+    // Covers CraftingManager.java:991 (rbmk_rod C/R/C, steel shell and rbmk_blank), :992 rbmk_rod_mod (registered by Goal 26A) and AnvilRecipes.java:927-939 (the tier
+    // 4 recycling rows, registered by Goal 27B in AnvilRecipes.registerRBMKRecycling), and the registrations (ModBlocks rbmk_rod / rbmk_rod_mod / corium_block, one
     // TileEntityRBMKRod for both blocks, RBMKRod.moderated, getRBMKType ROD, getConsoleType FUEL).
     @GameTest(template = TEMPLATE, batch = "rbmk_reactor_recipes", timeoutTicks = 100)
     public static void rbmk_reactor_recipes_and_registrations(GameTestHelper helper) {
@@ -979,13 +979,33 @@ public class RBMKReactorGameTests {
                     scanned++;
                 }
                 Set<Item> columns = Set.of(rodItem, modItem);
+                // Goal 27B: the only construction rows making or consuming the fuel channels are the tier-4 RECYCLING rows of
+                // AnvilRecipes.registerRBMKRecycling, identified by their input column, with the original outputs (AnvilRecipes.java:929-939)
+                Map<Item, List<Object>> own = Map.of(
+                        rodItem, List.of(blank, 1, shell, 2),
+                        modItem, List.of(rodItem, 1, NtmBlocks.BLOCK_GRAPHITE.get().asItem(), 4, NtmItems.NUGGET_BISMUTH.get(), 4));
+                Map<Item, List<Object>> touched = new LinkedHashMap<>();
                 for(AnvilConstructionRecipe recipe : AnvilRecipes.getConstruction()) {
-                    for(AnvilOutput output : recipe.output) check(!columns.contains(output.stack.getItem()), "an anvil construction row produces " + output.stack);
-                    for(AStack input : recipe.input) for(Item column : columns) check(!input.matchesRecipe(new ItemStack(column), true), "an anvil construction row consumes " + column);
+                    boolean touches = false;
+                    for(AnvilOutput output : recipe.output) touches |= columns.contains(output.stack.getItem());
+                    for(AStack input : recipe.input) for(Item column : columns) touches |= input.matchesRecipe(new ItemStack(column), true);
+                    if(!touches) continue;
+                    Item in = recipe.input.size() == 1 && recipe.input.get(0) instanceof com.hbm.inventory.RecipesCommon.ComparableStack cs && cs.stacksize == 1 ? cs.item : null;
+                    check(in != null && own.containsKey(in) && recipe.tierLower == 4 && recipe.tierUpper == -1 && recipe.getOverlay() == AnvilRecipes.OverlayType.RECYCLING,
+                            "an anvil construction row other than a Goal 27B RBMK recycling row makes or consumes a fuel channel: inputs " + recipe.input.size() + ", tier " + recipe.tierLower + ", overlay " + recipe.getOverlay());
+                    List<Object> got = new ArrayList<>();
+                    for(AnvilOutput output : recipe.output) {
+                        got.add(output.stack.getItem());
+                        got.add(output.stack.getCount());
+                        check(output.chance == 1F, in + " recycling output " + output.stack + " has chance " + output.chance);
+                    }
+                    check(touched.put(in, got) == null, "two anvil construction rows recycle " + in);
                 }
+                check(touched.keySet().equals(own.keySet()), "the anvil construction rows making or consuming the fuel channels recycle " + touched.keySet() + ", expected " + own.keySet());
+                for(Map.Entry<Item, List<Object>> e : own.entrySet()) check(e.getValue().equals(touched.get(e.getKey())), e.getKey() + " recycles into " + touched.get(e.getKey()) + ", expected " + e.getValue());
                 for(AnvilSmithingRecipe recipe : AnvilRecipes.getSmithing()) check(!columns.contains(recipe.getSimpleOutput().getItem()), "an anvil smithing row produces " + recipe.getSimpleOutput());
-                LOGGER.info("[hbm-rbmk-reactor] recipes: rbmk_rod C/R/C and rbmk_rod_mod match; no other recipe makes rbmk_rod_mod in {} loaded recipes; no anvil row makes or recycles the fuel channels ({} construction rows)",
-                        scanned, AnvilRecipes.getConstruction().size());
+                LOGGER.info("[hbm-rbmk-reactor] recipes: rbmk_rod C/R/C and rbmk_rod_mod match; no other recipe makes rbmk_rod_mod in {} loaded recipes; only the {} Goal 27B recycling rows make or recycle the fuel channels ({} construction rows)",
+                        scanned, touched.size(), AnvilRecipes.getConstruction().size());
             }).run();
         } finally {
             finish(helper, null);

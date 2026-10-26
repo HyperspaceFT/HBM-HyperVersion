@@ -1090,8 +1090,8 @@ public class RBMKControlSteamGameTests {
     // 13 recipes, registrations, RoR
 
     // Covers CraftingManager.java:760 (rbmk_control), :762 (rbmk_control_auto), :771 (rbmk_loader), :993-995 (boiler, heater, cooler),
-    // :761 rbmk_control_mod (registered by Goal 26A), AnvilRecipes.java:868-953 (tier-4 rows not registered: no anvil row makes or
-    // consumes these blocks), and the registrations (ModBlocks ids, one manual block entity type for both manual blocks, RBMKControl
+    // :761 rbmk_control_mod (registered by Goal 26A), AnvilRecipes.java:868-953 (since Goal 27B the tier-4 RECYCLING rows of
+    // AnvilRecipes.registerRBMKRecycling are the only anvil rows that make or consume these blocks), and the registrations (ModBlocks ids, one manual block entity type for both manual blocks, RBMKControl
     // moderated, getRBMKType CONTROL_ROD, console types CONTROL / CONTROL_AUTO / BOILER / HEATEX / COOLER).
     @GameTest(template = TEMPLATE, batch = "rbmk_cs_recipes", timeoutTicks = 100)
     public static void rbmk_cs_recipes_registrations(GameTestHelper helper) {
@@ -1171,12 +1171,39 @@ public class RBMKControlSteamGameTests {
                 for(RecipeHolder<?> holder : level.getRecipeManager().getRecipes()) check(holder.id().equals(id("rbmk_control_mod")) || !holder.value().getResultItem(level.registryAccess()).is(modItem), "recipe " + holder.id() + " produces rbmk_control_mod");
                 List<Item> columns = new ArrayList<>();
                 for(Supplier<Block> s : blocks.values()) columns.add(s.get().asItem());
+                // Goal 27B: the only construction rows making or consuming these blocks are the tier-4 RECYCLING rows of AnvilRecipes.registerRBMKRecycling,
+                // identified by their input column, with the original outputs (AnvilRecipes.java:884-901 control rows, :940-951 boiler and cooler)
+                Item control = NtmBlocks.RBMK_CONTROL.get().asItem(), graphiteBlock = NtmBlocks.BLOCK_GRAPHITE.get().asItem();
+                Set<Item> recycled = Set.of(NtmBlocks.RBMK_MODERATOR.get().asItem(), absorber, NtmBlocks.RBMK_REFLECTOR.get().asItem(), control, NtmBlocks.RBMK_CONTROL_MOD.get().asItem(),
+                        NtmBlocks.RBMK_CONTROL_AUTO.get().asItem(), NtmBlocks.RBMK_OUTGASSER.get().asItem(), NtmBlocks.RBMK_STORAGE.get().asItem(), NtmBlocks.RBMK_ROD.get().asItem(),
+                        NtmBlocks.RBMK_ROD_MOD.get().asItem(), NtmBlocks.RBMK_BOILER.get().asItem(), NtmBlocks.RBMK_COOLER.get().asItem());
+                Map<Item, List<Object>> own = Map.of(
+                        control, List.of(absorber, 1, NtmItems.INGOT_GRAPHITE.get(), 2, NtmItems.MOTOR.get(), 2),
+                        NtmBlocks.RBMK_CONTROL_MOD.get().asItem(), List.of(control, 1, graphiteBlock, 4, NtmItems.NUGGET_BISMUTH.get(), 4),
+                        NtmBlocks.RBMK_CONTROL_AUTO.get().asItem(), List.of(control, 1, NtmItems.CIRCUIT_MILITARY_GRADE_BOARD.get(), 1, NtmItems.CRT_DISPLAY.get(), 1),
+                        NtmBlocks.RBMK_BOILER.get().asItem(), List.of(blank, 1, NtmItems.PIPE_COPPER.get(), 6, NtmItems.SHELL_COPPER.get(), 2),
+                        NtmBlocks.RBMK_COOLER.get().asItem(), List.of(blank, 1, NtmBlocks.STEEL_GRATE.get().asItem(), 4, NtmItems.PLATE_POLYMER.get(), 4));
+                Map<Item, List<Object>> touched = new LinkedHashMap<>();
                 for(AnvilConstructionRecipe recipe : AnvilRecipes.getConstruction()) {
-                    for(AnvilOutput output : recipe.output) check(!columns.contains(output.stack.getItem()), "an anvil construction row produces " + output.stack);
-                    for(AStack input : recipe.input) for(Item column : columns) check(!input.matchesRecipe(new ItemStack(column), true), "an anvil construction row consumes " + column);
+                    boolean touches = false;
+                    for(AnvilOutput output : recipe.output) touches |= columns.contains(output.stack.getItem());
+                    for(AStack input : recipe.input) for(Item column : columns) touches |= input.matchesRecipe(new ItemStack(column), true);
+                    if(!touches) continue;
+                    Item in = recipe.input.size() == 1 && recipe.input.get(0) instanceof com.hbm.inventory.RecipesCommon.ComparableStack cs && cs.stacksize == 1 ? cs.item : null;
+                    check(in != null && recycled.contains(in) && recipe.tierLower == 4 && recipe.tierUpper == -1 && recipe.getOverlay() == AnvilRecipes.OverlayType.RECYCLING,
+                            "an anvil construction row other than a Goal 27B RBMK recycling row makes or consumes these blocks: inputs " + recipe.input.size() + ", tier " + recipe.tierLower + ", overlay " + recipe.getOverlay());
+                    List<Object> got = new ArrayList<>();
+                    for(AnvilOutput output : recipe.output) {
+                        got.add(output.stack.getItem());
+                        got.add(output.stack.getCount());
+                        check(output.chance == 1F, in + " recycling output " + output.stack + " has chance " + output.chance);
+                    }
+                    check(touched.put(in, got) == null, "two anvil construction rows recycle " + in);
                 }
+                check(touched.keySet().equals(own.keySet()), "the anvil construction rows making or consuming these blocks recycle " + touched.keySet() + ", expected " + own.keySet());
+                for(Map.Entry<Item, List<Object>> e : own.entrySet()) check(e.getValue().equals(touched.get(e.getKey())), e.getKey() + " recycles into " + touched.get(e.getKey()) + ", expected " + e.getValue());
                 for(AnvilSmithingRecipe recipe : AnvilRecipes.getSmithing()) check(!columns.contains(recipe.getSimpleOutput().getItem()), "an anvil smithing row produces " + recipe.getSimpleOutput());
-                LOGGER.info("[hbm-rbmk-cs] recipes and registrations: six rows and rbmk_control_mod match, no other recipe makes rbmk_control_mod, no anvil row, ids/types/console types as the original");
+                LOGGER.info("[hbm-rbmk-cs] recipes and registrations: six rows and rbmk_control_mod match, no other recipe makes rbmk_control_mod, only the {} Goal 27B recycling rows touch these blocks, ids/types/console types as the original", touched.size());
             }).run();
         } finally {
             finish(helper, null);

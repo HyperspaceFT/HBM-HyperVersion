@@ -2,6 +2,7 @@ package com.hbm.datagen;
 
 import com.hbm.blocks.NtmBlocks;
 import com.hbm.blocks.generic.BarbedWireBlock;
+import com.hbm.blocks.machine.NTMAnvilBlock;
 import com.hbm.inventory.MetaHelper;
 import com.hbm.inventory.NtmTags;
 import com.hbm.inventory.fluid.Fluids;
@@ -908,7 +909,7 @@ public class NtmRecipeProvider extends RecipeProvider {
                 .save(recipeOutput, ResourceLocation.fromNamespaceAndPath("hbmsntm", "rbmk_blank_from_deco_rbmk_smooth"));
         // RBMK fuel channel (Goal24C): original CraftingManager.java:991 (the !enable528 branch); STEEL.shell() is NEO's shell_steel
         // item (no shell tag). rbmk_rod_mod (:992, GRAPHITE.block()) is registered since Goal 26A, now that NEO has the graphite block.
-        // Not registered: the two tier-4 anvil recycling rows (AnvilRecipes.java:927-938; the 4-tier anvil is unreachable in NEO).
+        // Their two tier-4 anvil recycling rows (AnvilRecipes.java:929-939) are registered in NEO's AnvilRecipes since Goal 27B.
         ShapedRecipeBuilder.shaped(RecipeCategory.MISC, NtmBlocks.RBMK_ROD.get(), 1)
                 .pattern("C")
                 .pattern("R")
@@ -929,8 +930,8 @@ public class NtmRecipeProvider extends RecipeProvider {
                 .save(recipeOutput, ResourceLocation.fromNamespaceAndPath("hbmsntm", "rbmk_rod_mod"));
         // RBMK control rods (Goal24D): original CraftingManager.java:760 and :762 (the !enable528 branch); the ADVANCED circuit is NEO's
         // circuit_military_grade_board. rbmk_control_mod (:761, GRAPHITE.block()) is registered since Goal 26A, now that NEO has the
-        // graphite block. Not registered: the ReaSim rows (:764-765, Goal 26) and the tier-4 anvil recycling rows
-        // (AnvilRecipes.java:885-901; the 4-tier anvil is unreachable in NEO).
+        // graphite block. Not registered: the ReaSim rows (:764-765, Goal 26). The tier-4 anvil recycling rows
+        // (AnvilRecipes.java:884-901) are registered in NEO's AnvilRecipes since Goal 27B.
         ShapedRecipeBuilder.shaped(RecipeCategory.MISC, NtmBlocks.RBMK_CONTROL.get(), 1)
                 .pattern(" B ")
                 .pattern("GRG")
@@ -962,8 +963,9 @@ public class NtmRecipeProvider extends RecipeProvider {
         // RBMK steam connector, steam channel, fluid heater and cooler (Goal24D): original CraftingManager.java:771 (outside the 528
         // branch) and :993-995 (the !enable528 branch). CU.ingot() is either copper ingot (as for gear_large), CU.pipe(), CU.shell()
         // and STEEL.shell() are NEO's pipe_copper, shell_copper and shell_steel items (no tags), ANY_PLASTIC.ingot() is the
-        // ntm:ingots_plastic tag (as for screwdriver_desh). Not registered: the tier-4 anvil recycling rows of these columns
-        // (AnvilRecipes.java:868-953; the 4-tier anvil is unreachable in NEO) and the ReaSim steam inlet/outlet rows (Goal 26).
+        // ntm:ingots_plastic tag (as for screwdriver_desh). Not registered: the ReaSim steam inlet/outlet rows (Goal 26). The tier-4
+        // anvil recycling rows of the steam channel and cooler (AnvilRecipes.java:940-951) are registered in NEO's AnvilRecipes since
+        // Goal 27B; the original has none for the steam connector and the fluid heater.
         ShapedRecipeBuilder.shaped(RecipeCategory.MISC, NtmBlocks.RBMK_LOADER.get(), 1)
                 .pattern("SCS")
                 .pattern("CBC")
@@ -1001,8 +1003,8 @@ public class NtmRecipeProvider extends RecipeProvider {
                 .define('G', NtmBlocks.STEEL_GRATE.get())
                 .unlockedBy("has_rbmk_blank", has(NtmBlocks.RBMK_BLANK.get()))
                 .save(recipeOutput, ResourceLocation.fromNamespaceAndPath("hbmsntm", "rbmk_cooler"));
-        // RBMK storage column (Goal25A): original CraftingManager.java:770 (outside the 528 branch). Not registered: the tier-4 anvil
-        // recycling row (AnvilRecipes.java:921-925; the 4-tier anvil is unreachable in NEO, as for the columns above).
+        // RBMK storage column (Goal25A): original CraftingManager.java:770 (outside the 528 branch). Its tier-4 anvil recycling row
+        // (AnvilRecipes.java:921-925) is registered in NEO's AnvilRecipes since Goal 27B.
         ShapedRecipeBuilder.shaped(RecipeCategory.MISC, NtmBlocks.RBMK_STORAGE.get(), 1)
                 .pattern("C")
                 .pattern("R")
@@ -1011,8 +1013,8 @@ public class NtmRecipeProvider extends RecipeProvider {
                 .define('R', NtmBlocks.RBMK_BLANK.get())
                 .unlockedBy("has_rbmk_blank", has(NtmBlocks.RBMK_BLANK.get()))
                 .save(recipeOutput, ResourceLocation.fromNamespaceAndPath("hbmsntm", "rbmk_storage"));
-        // RBMK irradiation channel (Goal25B): original CraftingManager.java:769. Not registered: the tier-4 anvil recycling row
-        // (AnvilRecipes.java:914-920; the 4-tier anvil is unreachable in NEO, as for the columns above).
+        // RBMK irradiation channel (Goal25B): original CraftingManager.java:769. Its tier-4 anvil recycling row
+        // (AnvilRecipes.java:914-920) is registered in NEO's AnvilRecipes since Goal 27B.
         ShapedRecipeBuilder.shaped(RecipeCategory.MISC, NtmBlocks.RBMK_OUTGASSER.get(), 1)
                 .pattern("GHG")
                 .pattern("GRG")
@@ -1858,6 +1860,16 @@ public class NtmRecipeProvider extends RecipeProvider {
                 .define('B', Items.IRON_BLOCK)
                 .unlockedBy("has_iron_ingot", has(Items.IRON_INGOT))
                 .save(recipeOutput, ResourceLocation.fromNamespaceAndPath("hbmsntm", "anvil_iron"));
+        // Lead anvil (Goal 27B): original CraftingManager.java:295, PB.ingot() and PB.block() as NEO's lead ingot and block. The murky
+        // anvil (:296, needs ModItems.undefined) is not ported.
+        ShapedRecipeBuilder.shaped(RecipeCategory.MISC, MetaHelper.newStack(NtmBlocks.ANVIL.asItem(), 1, NTMAnvilBlock.Variant.LEAD.ordinal()))
+                .pattern("III")
+                .pattern(" B ")
+                .pattern("III")
+                .define('I', NtmItems.INGOT_LEAD.get())
+                .define('B', NtmBlocks.BLOCK_LEAD.get())
+                .unlockedBy("has_ingot_lead", has(NtmItems.INGOT_LEAD.get()))
+                .save(recipeOutput, ResourceLocation.fromNamespaceAndPath("hbmsntm", "anvil_lead"));
 
         ShapedRecipeBuilder.shaped(RecipeCategory.MISC, NtmBlocks.MACHINE_PRESS.get(), 1)
                 .pattern("ADA")

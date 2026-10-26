@@ -307,9 +307,9 @@ public class NtmCreativeTabs {
                         output.accept(NtmItems.MOLD_PLATE_CAST.get());
                         output.accept(NtmItems.MOLD_INGOT.get());
                         output.accept(NtmItems.MOLD_BLADE.get());
-                        // One ingot's worth per crucible material, like upstream ItemScraps.getSubItems.
+                        // One ingot's worth per smeltable or additive material, like upstream ItemScraps.getSubItems.
                         for(NTMMaterial material : Mats.orderedList) {
-                            output.accept(CopperScrapsItem.create(new Mats.MaterialStack(material, MaterialShapes.INGOT.q(1))));
+                            if(CopperScrapsItem.isScrapMaterial(material)) output.accept(CopperScrapsItem.create(new Mats.MaterialStack(material, MaterialShapes.INGOT.q(1))));
                         }
                         output.accept(NtmItems.PIPES_STEEL.get());
                         output.accept(NtmItems.CRT_DISPLAY.get());

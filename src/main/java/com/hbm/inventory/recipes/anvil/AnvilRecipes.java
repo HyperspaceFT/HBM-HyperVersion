@@ -585,6 +585,110 @@ public class AnvilRecipes {
                 new AnvilOutput(new ItemStack(NtmBlocks.HEATER_HEATEX.asItem()))
         ).setTier(3).setOverlay(OverlayType.CONSTRUCTION));
 
+        registerRBMKRecycling();
+    }
+
+    /**
+     * Tier-4 RBMK column recycling, original AnvilRecipes.java:868-962 with :927-962 in the default !enable528 branch (Goal 27B; the
+     * tier-4 anvil needs ferrouranium ingots, which no mold casts before Goal 27D). Registered regardless of ENABLE_528, like the NEO
+     * crafting recipes of these columns. Not ported: the two ReaSim rows (:902-913, ReaSim columns are deferred) and
+     * reactor_research (:952-962, @Deprecated). Upstream's 1:many constructor picks the RECYCLING overlay; all outputs are certain.
+     * NEO names: the ADVANCED circuit is circuit_military_grade_board (as in the rbmk_control_auto crafting recipe), STEEL/COPPER
+     * shell and pipe metadata items are shell_steel, shell_copper and pipe_copper.
+     */
+    private static void registerRBMKRecycling() {
+        CONSTRUCTION_RECIPES.add(new AnvilConstructionRecipe(
+                new ComparableStack(NtmBlocks.RBMK_MODERATOR.get()),
+                new AnvilOutput[] {
+                        new AnvilOutput(new ItemStack(NtmBlocks.RBMK_BLANK.get(), 1)),
+                        new AnvilOutput(new ItemStack(NtmBlocks.BLOCK_GRAPHITE.get(), 4))
+                }
+        ).setTier(4).setOverlay(OverlayType.RECYCLING));
+        CONSTRUCTION_RECIPES.add(new AnvilConstructionRecipe(
+                new ComparableStack(NtmBlocks.RBMK_ABSORBER.get()),
+                new AnvilOutput[] {
+                        new AnvilOutput(new ItemStack(NtmBlocks.RBMK_BLANK.get(), 1)),
+                        new AnvilOutput(new ItemStack(NtmItems.INGOT_BORON.get(), 8))
+                }
+        ).setTier(4).setOverlay(OverlayType.RECYCLING));
+        CONSTRUCTION_RECIPES.add(new AnvilConstructionRecipe(
+                new ComparableStack(NtmBlocks.RBMK_REFLECTOR.get()),
+                new AnvilOutput[] {
+                        new AnvilOutput(new ItemStack(NtmBlocks.RBMK_BLANK.get(), 1)),
+                        new AnvilOutput(new ItemStack(NtmItems.NEUTRON_REFLECTOR.get(), 8))
+                }
+        ).setTier(4).setOverlay(OverlayType.RECYCLING));
+        CONSTRUCTION_RECIPES.add(new AnvilConstructionRecipe(
+                new ComparableStack(NtmBlocks.RBMK_CONTROL.get()),
+                new AnvilOutput[] {
+                        new AnvilOutput(new ItemStack(NtmBlocks.RBMK_ABSORBER.get(), 1)),
+                        new AnvilOutput(new ItemStack(NtmItems.INGOT_GRAPHITE.get(), 2)),
+                        new AnvilOutput(new ItemStack(NtmItems.MOTOR.get(), 2))
+                }
+        ).setTier(4).setOverlay(OverlayType.RECYCLING));
+        CONSTRUCTION_RECIPES.add(new AnvilConstructionRecipe(
+                new ComparableStack(NtmBlocks.RBMK_CONTROL_MOD.get()),
+                new AnvilOutput[] {
+                        new AnvilOutput(new ItemStack(NtmBlocks.RBMK_CONTROL.get(), 1)),
+                        new AnvilOutput(new ItemStack(NtmBlocks.BLOCK_GRAPHITE.get(), 4)),
+                        new AnvilOutput(new ItemStack(NtmItems.NUGGET_BISMUTH.get(), 4))
+                }
+        ).setTier(4).setOverlay(OverlayType.RECYCLING));
+        CONSTRUCTION_RECIPES.add(new AnvilConstructionRecipe(
+                new ComparableStack(NtmBlocks.RBMK_CONTROL_AUTO.get()),
+                new AnvilOutput[] {
+                        new AnvilOutput(new ItemStack(NtmBlocks.RBMK_CONTROL.get(), 1)),
+                        new AnvilOutput(new ItemStack(NtmItems.CIRCUIT_MILITARY_GRADE_BOARD.get(), 1)),
+                        new AnvilOutput(new ItemStack(NtmItems.CRT_DISPLAY.get(), 1))
+                }
+        ).setTier(4).setOverlay(OverlayType.RECYCLING));
+        CONSTRUCTION_RECIPES.add(new AnvilConstructionRecipe(
+                new ComparableStack(NtmBlocks.RBMK_OUTGASSER.get()),
+                new AnvilOutput[] {
+                        new AnvilOutput(new ItemStack(NtmBlocks.RBMK_BLANK.get(), 1)),
+                        new AnvilOutput(new ItemStack(NtmBlocks.STEEL_GRATE.get(), 6)),
+                        new AnvilOutput(new ItemStack(NtmItems.TANK_STEEL.get(), 1)),
+                        new AnvilOutput(new ItemStack(Blocks.HOPPER, 1))
+                }
+        ).setTier(4).setOverlay(OverlayType.RECYCLING));
+        CONSTRUCTION_RECIPES.add(new AnvilConstructionRecipe(
+                new ComparableStack(NtmBlocks.RBMK_STORAGE.get()),
+                new AnvilOutput[] {
+                        new AnvilOutput(new ItemStack(NtmBlocks.RBMK_BLANK.get(), 1)),
+                        new AnvilOutput(new ItemStack(NtmBlocks.CRATE_STEEL.get(), 2))
+                }
+        ).setTier(4).setOverlay(OverlayType.RECYCLING));
+        CONSTRUCTION_RECIPES.add(new AnvilConstructionRecipe(
+                new ComparableStack(NtmBlocks.RBMK_ROD.get()),
+                new AnvilOutput[] {
+                        new AnvilOutput(new ItemStack(NtmBlocks.RBMK_BLANK.get(), 1)),
+                        new AnvilOutput(new ItemStack(NtmItems.SHELL_STEEL.get(), 2))
+                }
+        ).setTier(4).setOverlay(OverlayType.RECYCLING));
+        CONSTRUCTION_RECIPES.add(new AnvilConstructionRecipe(
+                new ComparableStack(NtmBlocks.RBMK_ROD_MOD.get()),
+                new AnvilOutput[] {
+                        new AnvilOutput(new ItemStack(NtmBlocks.RBMK_ROD.get(), 1)),
+                        new AnvilOutput(new ItemStack(NtmBlocks.BLOCK_GRAPHITE.get(), 4)),
+                        new AnvilOutput(new ItemStack(NtmItems.NUGGET_BISMUTH.get(), 4))
+                }
+        ).setTier(4).setOverlay(OverlayType.RECYCLING));
+        CONSTRUCTION_RECIPES.add(new AnvilConstructionRecipe(
+                new ComparableStack(NtmBlocks.RBMK_BOILER.get()),
+                new AnvilOutput[] {
+                        new AnvilOutput(new ItemStack(NtmBlocks.RBMK_BLANK.get(), 1)),
+                        new AnvilOutput(new ItemStack(NtmItems.PIPE_COPPER.get(), 6)),
+                        new AnvilOutput(new ItemStack(NtmItems.SHELL_COPPER.get(), 2))
+                }
+        ).setTier(4).setOverlay(OverlayType.RECYCLING));
+        CONSTRUCTION_RECIPES.add(new AnvilConstructionRecipe(
+                new ComparableStack(NtmBlocks.RBMK_COOLER.get()),
+                new AnvilOutput[] {
+                        new AnvilOutput(new ItemStack(NtmBlocks.RBMK_BLANK.get(), 1)),
+                        new AnvilOutput(new ItemStack(NtmBlocks.STEEL_GRATE.get(), 4)),
+                        new AnvilOutput(new ItemStack(NtmItems.PLATE_POLYMER.get(), 4))
+                }
+        ).setTier(4).setOverlay(OverlayType.RECYCLING));
     }
 
     private static void addAnvilRecipe(ItemLike input, int inputCount, ItemLike output, int outputCount, int tier) {

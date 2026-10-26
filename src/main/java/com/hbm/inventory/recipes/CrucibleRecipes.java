@@ -4,6 +4,7 @@ import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.gson.stream.JsonWriter;
+import com.hbm.blocks.NtmBlocks;
 import com.hbm.inventory.material.MaterialShapes;
 import com.hbm.inventory.material.Mats;
 import com.hbm.inventory.material.Mats.MaterialStack;
@@ -17,8 +18,9 @@ import net.minecraft.world.item.ItemStack;
 import java.io.IOException;
 
 /**
- * Crucible alloying recipes. Goal 10A ports only {@code crucible.hss}; the other upstream recipes need
- * materials NEO has not registered yet. The JSON format matches upstream's hbmCrucible.json.
+ * Crucible alloying recipes: the 13 upstream defaults (CrucibleRecipes.java:58-127) in upstream order; Goal 10A ported
+ * {@code crucible.hss}, Goal 27B the other twelve. Not ported: the three GT6-gated steel recipes (:67-77). Like upstream, no
+ * recipe sets a display name, so the GUI shows the icon's item name. The JSON format matches upstream's hbmCrucible.json.
  */
 public class CrucibleRecipes extends GenericRecipes<CrucibleRecipe> {
 
@@ -43,10 +45,60 @@ public class CrucibleRecipes extends GenericRecipes<CrucibleRecipe> {
         if(!this.recipeOrderedList.isEmpty()) return;
 
         int n = MaterialShapes.NUGGET.q(1);
+        int i = MaterialShapes.INGOT.q(1);
+
+        this.register(new CrucibleRecipe("crucible.steel").setup(20, new ItemStack(NtmItems.INGOT_STEEL.get()))
+                .inputs(new MaterialStack(Mats.MAT_IRON, n * 2), new MaterialStack(Mats.MAT_CARBON, n * 3), new MaterialStack(Mats.MAT_FLUX, n))
+                .outputs(new MaterialStack(Mats.MAT_STEEL, n * 2)));
+
+        // Upstream's icon is the stone_resource metadata block; NEO has separate resource blocks without worldgen (Goal 28).
+        this.register(new CrucibleRecipe("crucible.hematite").setup(6, new ItemStack(NtmBlocks.RESOURCE_HEMATITE.get()))
+                .inputs(new MaterialStack(Mats.MAT_HEMATITE, i * 2), new MaterialStack(Mats.MAT_FLUX, n * 2))
+                .outputs(new MaterialStack(Mats.MAT_IRON, i), new MaterialStack(Mats.MAT_SLAG, n * 3)));
+
+        this.register(new CrucibleRecipe("crucible.malachite").setup(6, new ItemStack(NtmBlocks.RESOURCE_MALACHITE.get()))
+                .inputs(new MaterialStack(Mats.MAT_MALACHITE, i * 2), new MaterialStack(Mats.MAT_FLUX, n * 2))
+                .outputs(new MaterialStack(Mats.MAT_COPPER, i), new MaterialStack(Mats.MAT_SLAG, n * 3)));
+
+        this.register(new CrucibleRecipe("crucible.redcopper").setup(2, new ItemStack(NtmItems.INGOT_RED_COPPER.get()))
+                .inputs(new MaterialStack(Mats.MAT_COPPER, n), new MaterialStack(Mats.MAT_REDSTONE, n))
+                .outputs(new MaterialStack(Mats.MAT_MINGRADE, n * 2)));
 
         this.register(new CrucibleRecipe("crucible.hss").setup(9, new ItemStack(NtmItems.INGOT_DURA_STEEL.get()))
                 .inputs(new MaterialStack(Mats.MAT_STEEL, n * 5), new MaterialStack(Mats.MAT_TUNGSTEN, n * 3), new MaterialStack(Mats.MAT_COBALT, n * 1))
                 .outputs(new MaterialStack(Mats.MAT_DURA, n * 9)));
+
+        this.register(new CrucibleRecipe("crucible.ferro").setup(3, new ItemStack(NtmItems.INGOT_FERROURANIUM.get()))
+                .inputs(new MaterialStack(Mats.MAT_STEEL, n * 2), new MaterialStack(Mats.MAT_U238, n))
+                .outputs(new MaterialStack(Mats.MAT_FERRO, n * 3)));
+
+        this.register(new CrucibleRecipe("crucible.tcalloy").setup(9, new ItemStack(NtmItems.INGOT_TCALLOY.get()))
+                .inputs(new MaterialStack(Mats.MAT_STEEL, n * 8), new MaterialStack(Mats.MAT_TECHNETIUM, n))
+                .outputs(new MaterialStack(Mats.MAT_TCALLOY, i)));
+
+        this.register(new CrucibleRecipe("crucible.cdalloy").setup(9, new ItemStack(NtmItems.INGOT_CDALLOY.get()))
+                .inputs(new MaterialStack(Mats.MAT_STEEL, n * 8), new MaterialStack(Mats.MAT_CADMIUM, n))
+                .outputs(new MaterialStack(Mats.MAT_CDALLOY, i)));
+
+        this.register(new CrucibleRecipe("crucible.bbronze").setup(9, new ItemStack(NtmItems.INGOT_BISMUTH_BRONZE.get()))
+                .inputs(new MaterialStack(Mats.MAT_COPPER, n * 8), new MaterialStack(Mats.MAT_BISMUTH, n), new MaterialStack(Mats.MAT_FLUX, n * 3))
+                .outputs(new MaterialStack(Mats.MAT_BBRONZE, i), new MaterialStack(Mats.MAT_SLAG, n * 3)));
+
+        this.register(new CrucibleRecipe("crucible.abronze").setup(9, new ItemStack(NtmItems.INGOT_ARSENIC_BRONZE.get()))
+                .inputs(new MaterialStack(Mats.MAT_COPPER, n * 8), new MaterialStack(Mats.MAT_ARSENIC, n), new MaterialStack(Mats.MAT_FLUX, n * 3))
+                .outputs(new MaterialStack(Mats.MAT_ABRONZE, i), new MaterialStack(Mats.MAT_SLAG, n * 3)));
+
+        this.register(new CrucibleRecipe("crucible.cmb").setup(3, new ItemStack(NtmItems.INGOT_COMBINE_STEEL.get()))
+                .inputs(new MaterialStack(Mats.MAT_MAGTUNG, n * 6), new MaterialStack(Mats.MAT_MUD, n * 3))
+                .outputs(new MaterialStack(Mats.MAT_CMB, i)));
+
+        this.register(new CrucibleRecipe("crucible.magtung").setup(3, new ItemStack(NtmItems.INGOT_MAGNETIZED_TUNGSTEN.get()))
+                .inputs(new MaterialStack(Mats.MAT_TUNGSTEN, i), new MaterialStack(Mats.MAT_SCHRABIDIUM, n * 1))
+                .outputs(new MaterialStack(Mats.MAT_MAGTUNG, i)));
+
+        this.register(new CrucibleRecipe("crucible.bscco").setup(3, new ItemStack(NtmItems.INGOT_BSCCO.get()))
+                .inputs(new MaterialStack(Mats.MAT_BISMUTH, n * 2), new MaterialStack(Mats.MAT_STRONTIUM, n * 2), new MaterialStack(Mats.MAT_CALCIUM, n * 2), new MaterialStack(Mats.MAT_COPPER, n * 3))
+                .outputs(new MaterialStack(Mats.MAT_BSCCO, i)));
     }
 
     @Override

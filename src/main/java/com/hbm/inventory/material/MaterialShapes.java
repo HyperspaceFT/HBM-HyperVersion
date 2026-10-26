@@ -1,11 +1,14 @@
 package com.hbm.inventory.material;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 
 public class MaterialShapes {
 
     public static final List<MaterialShapes> allShapes = new ArrayList<>();
+    // Owned here so the constructor never triggers Mats' class init, whose setAutogen calls would otherwise read null shapes.
+    public static final HashMap<String, MaterialShapes> PREFIX_BY_NAME = new HashMap<>();
 
     public static final MaterialShapes ANY = new MaterialShapes(0, "any").noAutogen();
     public static final MaterialShapes ONLY_ORE = new MaterialShapes(0, "ore").noAutogen();
@@ -49,7 +52,7 @@ public class MaterialShapes {
         this.prefixes = prefixes;
 
         for(String prefix : prefixes) {
-            Mats.prefixByName.put(prefix, this);
+            PREFIX_BY_NAME.put(prefix, this);
         }
 
         allShapes.add(this);

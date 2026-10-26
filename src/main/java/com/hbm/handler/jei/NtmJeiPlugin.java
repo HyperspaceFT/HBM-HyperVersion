@@ -395,7 +395,7 @@ public class NtmJeiPlugin implements IModPlugin {
         this.knownMixerRecipes.addAll(this.displayedMixerRecipes);
         registration.addRecipes(MixingRecipeHandler.RECIPE_TYPE, this.displayedMixerRecipes);
         registration.addRecipes(BoilerRecipeHandler.RECIPE_TYPE, BoilerRecipeHandler.getRecipes());
-        registration.addRecipes(CrucibleSmeltingRecipeHandler.RECIPE_TYPE, CopperCastingRecipes.getMeltEntries());
+        registration.addRecipes(CrucibleSmeltingRecipeHandler.RECIPE_TYPE, CopperCastingRecipes.getSmeltingRecipes());
         registration.addRecipes(CrucibleAlloyingRecipeHandler.RECIPE_TYPE, CrucibleRecipes.INSTANCE.recipeOrderedList);
         registration.addRecipes(CrucibleCastingRecipeHandler.RECIPE_TYPE, CrucibleCastingRecipeHandler.getRecipes());
     }

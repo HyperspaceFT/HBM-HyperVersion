@@ -2,27 +2,495 @@
   "parent": "minecraft:item/generated",
   "overrides": [
     {
+      "model": "hbmsntm:item/scraps_stone",
+      "predicate": {
+        "hbmsntm:scraps_type": 0.00390625
+      }
+    },
+    {
+      "model": "hbmsntm:item/scraps_carbon",
+      "predicate": {
+        "hbmsntm:scraps_type": 0.0078125
+      }
+    },
+    {
+      "model": "hbmsntm:item/scraps_iron",
+      "predicate": {
+        "hbmsntm:scraps_type": 0.01171875
+      }
+    },
+    {
+      "model": "hbmsntm:item/scraps_gold",
+      "predicate": {
+        "hbmsntm:scraps_type": 0.015625
+      }
+    },
+    {
+      "model": "hbmsntm:item/scraps_redstone",
+      "predicate": {
+        "hbmsntm:scraps_type": 0.01953125
+      }
+    },
+    {
+      "model": "hbmsntm:item/scraps_obsidian",
+      "predicate": {
+        "hbmsntm:scraps_type": 0.0234375
+      }
+    },
+    {
+      "model": "hbmsntm:item/scraps_hematite",
+      "predicate": {
+        "hbmsntm:scraps_type": 0.02734375
+      }
+    },
+    {
+      "model": "hbmsntm:item/scraps_wroughtiron",
+      "predicate": {
+        "hbmsntm:scraps_type": 0.03125
+      }
+    },
+    {
+      "model": "hbmsntm:item/scraps_pigiron",
+      "predicate": {
+        "hbmsntm:scraps_type": 0.03515625
+      }
+    },
+    {
+      "model": "hbmsntm:item/scraps_meteoriciron",
+      "predicate": {
+        "hbmsntm:scraps_type": 0.0390625
+      }
+    },
+    {
+      "model": "hbmsntm:item/scraps_malachite",
+      "predicate": {
+        "hbmsntm:scraps_type": 0.04296875
+      }
+    },
+    {
+      "model": "hbmsntm:item/scraps_uranium",
+      "predicate": {
+        "hbmsntm:scraps_type": 0.046875
+      }
+    },
+    {
+      "model": "hbmsntm:item/scraps_uranium233",
+      "predicate": {
+        "hbmsntm:scraps_type": 0.05078125
+      }
+    },
+    {
+      "model": "hbmsntm:item/scraps_uranium235",
+      "predicate": {
+        "hbmsntm:scraps_type": 0.0546875
+      }
+    },
+    {
+      "model": "hbmsntm:item/scraps_uranium238",
+      "predicate": {
+        "hbmsntm:scraps_type": 0.05859375
+      }
+    },
+    {
+      "model": "hbmsntm:item/scraps_thorium232",
+      "predicate": {
+        "hbmsntm:scraps_type": 0.0625
+      }
+    },
+    {
+      "model": "hbmsntm:item/scraps_plutonium",
+      "predicate": {
+        "hbmsntm:scraps_type": 0.06640625
+      }
+    },
+    {
+      "model": "hbmsntm:item/scraps_plutoniumrg",
+      "predicate": {
+        "hbmsntm:scraps_type": 0.0703125
+      }
+    },
+    {
+      "model": "hbmsntm:item/scraps_plutonium238",
+      "predicate": {
+        "hbmsntm:scraps_type": 0.07421875
+      }
+    },
+    {
+      "model": "hbmsntm:item/scraps_plutonium239",
+      "predicate": {
+        "hbmsntm:scraps_type": 0.078125
+      }
+    },
+    {
+      "model": "hbmsntm:item/scraps_plutonium240",
+      "predicate": {
+        "hbmsntm:scraps_type": 0.08203125
+      }
+    },
+    {
+      "model": "hbmsntm:item/scraps_plutonium241",
+      "predicate": {
+        "hbmsntm:scraps_type": 0.0859375
+      }
+    },
+    {
+      "model": "hbmsntm:item/scraps_americiumrg",
+      "predicate": {
+        "hbmsntm:scraps_type": 0.08984375
+      }
+    },
+    {
+      "model": "hbmsntm:item/scraps_americium241",
+      "predicate": {
+        "hbmsntm:scraps_type": 0.09375
+      }
+    },
+    {
+      "model": "hbmsntm:item/scraps_americium242",
+      "predicate": {
+        "hbmsntm:scraps_type": 0.09765625
+      }
+    },
+    {
+      "model": "hbmsntm:item/scraps_neptunium237",
+      "predicate": {
+        "hbmsntm:scraps_type": 0.1015625
+      }
+    },
+    {
+      "model": "hbmsntm:item/scraps_polonium210",
+      "predicate": {
+        "hbmsntm:scraps_type": 0.10546875
+      }
+    },
+    {
+      "model": "hbmsntm:item/scraps_technetium99",
+      "predicate": {
+        "hbmsntm:scraps_type": 0.109375
+      }
+    },
+    {
+      "model": "hbmsntm:item/scraps_radium226",
+      "predicate": {
+        "hbmsntm:scraps_type": 0.11328125
+      }
+    },
+    {
+      "model": "hbmsntm:item/scraps_actinium227",
+      "predicate": {
+        "hbmsntm:scraps_type": 0.1171875
+      }
+    },
+    {
+      "model": "hbmsntm:item/scraps_cobalt60",
+      "predicate": {
+        "hbmsntm:scraps_type": 0.12109375
+      }
+    },
+    {
+      "model": "hbmsntm:item/scraps_gold198",
+      "predicate": {
+        "hbmsntm:scraps_type": 0.125
+      }
+    },
+    {
+      "model": "hbmsntm:item/scraps_lead209",
+      "predicate": {
+        "hbmsntm:scraps_type": 0.12890625
+      }
+    },
+    {
+      "model": "hbmsntm:item/scraps_schrabidium",
+      "predicate": {
+        "hbmsntm:scraps_type": 0.1328125
+      }
+    },
+    {
+      "model": "hbmsntm:item/scraps_solinium",
+      "predicate": {
+        "hbmsntm:scraps_type": 0.13671875
+      }
+    },
+    {
+      "model": "hbmsntm:item/scraps_schrabidate",
+      "predicate": {
+        "hbmsntm:scraps_type": 0.140625
+      }
+    },
+    {
+      "model": "hbmsntm:item/scraps_schraranium",
+      "predicate": {
+        "hbmsntm:scraps_type": 0.14453125
+      }
+    },
+    {
+      "model": "hbmsntm:item/scraps_ghiorsium336",
+      "predicate": {
+        "hbmsntm:scraps_type": 0.1484375
+      }
+    },
+    {
+      "model": "hbmsntm:item/scraps_titanium",
+      "predicate": {
+        "hbmsntm:scraps_type": 0.15234375
+      }
+    },
+    {
       "model": "hbmsntm:item/scraps_tungsten",
       "predicate": {
-        "hbmsntm:scraps_type": 0.2
+        "hbmsntm:scraps_type": 0.15625
+      }
+    },
+    {
+      "model": "hbmsntm:item/scraps_aluminum",
+      "predicate": {
+        "hbmsntm:scraps_type": 0.16015625
+      }
+    },
+    {
+      "model": "hbmsntm:item/scraps_lead",
+      "predicate": {
+        "hbmsntm:scraps_type": 0.1640625
+      }
+    },
+    {
+      "model": "hbmsntm:item/scraps_bismuth",
+      "predicate": {
+        "hbmsntm:scraps_type": 0.16796875
+      }
+    },
+    {
+      "model": "hbmsntm:item/scraps_arsenic",
+      "predicate": {
+        "hbmsntm:scraps_type": 0.171875
+      }
+    },
+    {
+      "model": "hbmsntm:item/scraps_tantalum",
+      "predicate": {
+        "hbmsntm:scraps_type": 0.17578125
+      }
+    },
+    {
+      "model": "hbmsntm:item/scraps_neodymium",
+      "predicate": {
+        "hbmsntm:scraps_type": 0.1796875
+      }
+    },
+    {
+      "model": "hbmsntm:item/scraps_niobium",
+      "predicate": {
+        "hbmsntm:scraps_type": 0.18359375
+      }
+    },
+    {
+      "model": "hbmsntm:item/scraps_beryllium",
+      "predicate": {
+        "hbmsntm:scraps_type": 0.1875
       }
     },
     {
       "model": "hbmsntm:item/scraps_cobalt",
       "predicate": {
-        "hbmsntm:scraps_type": 0.4
+        "hbmsntm:scraps_type": 0.19140625
+      }
+    },
+    {
+      "model": "hbmsntm:item/scraps_boron",
+      "predicate": {
+        "hbmsntm:scraps_type": 0.1953125
+      }
+    },
+    {
+      "model": "hbmsntm:item/scraps_borax",
+      "predicate": {
+        "hbmsntm:scraps_type": 0.19921875
+      }
+    },
+    {
+      "model": "hbmsntm:item/scraps_lanthanum",
+      "predicate": {
+        "hbmsntm:scraps_type": 0.203125
+      }
+    },
+    {
+      "model": "hbmsntm:item/scraps_zirconium",
+      "predicate": {
+        "hbmsntm:scraps_type": 0.20703125
+      }
+    },
+    {
+      "model": "hbmsntm:item/scraps_sodium",
+      "predicate": {
+        "hbmsntm:scraps_type": 0.2109375
+      }
+    },
+    {
+      "model": "hbmsntm:item/scraps_strontium",
+      "predicate": {
+        "hbmsntm:scraps_type": 0.21484375
+      }
+    },
+    {
+      "model": "hbmsntm:item/scraps_calcium",
+      "predicate": {
+        "hbmsntm:scraps_type": 0.21875
+      }
+    },
+    {
+      "model": "hbmsntm:item/scraps_lithium",
+      "predicate": {
+        "hbmsntm:scraps_type": 0.22265625
+      }
+    },
+    {
+      "model": "hbmsntm:item/scraps_cadmium",
+      "predicate": {
+        "hbmsntm:scraps_type": 0.2265625
+      }
+    },
+    {
+      "model": "hbmsntm:item/scraps_silicon",
+      "predicate": {
+        "hbmsntm:scraps_type": 0.23046875
+      }
+    },
+    {
+      "model": "hbmsntm:item/scraps_asbestos",
+      "predicate": {
+        "hbmsntm:scraps_type": 0.234375
+      }
+    },
+    {
+      "model": "hbmsntm:item/scraps_osmiridium",
+      "predicate": {
+        "hbmsntm:scraps_type": 0.23828125
       }
     },
     {
       "model": "hbmsntm:item/scraps_steel",
       "predicate": {
-        "hbmsntm:scraps_type": 0.6
+        "hbmsntm:scraps_type": 0.2421875
+      }
+    },
+    {
+      "model": "hbmsntm:item/scraps_mingrade",
+      "predicate": {
+        "hbmsntm:scraps_type": 0.24609375
       }
     },
     {
       "model": "hbmsntm:item/scraps_durasteel",
       "predicate": {
-        "hbmsntm:scraps_type": 0.8
+        "hbmsntm:scraps_type": 0.25
+      }
+    },
+    {
+      "model": "hbmsntm:item/scraps_workersalloy",
+      "predicate": {
+        "hbmsntm:scraps_type": 0.25390625
+      }
+    },
+    {
+      "model": "hbmsntm:item/scraps_starmetal",
+      "predicate": {
+        "hbmsntm:scraps_type": 0.2578125
+      }
+    },
+    {
+      "model": "hbmsntm:item/scraps_ferrouranium",
+      "predicate": {
+        "hbmsntm:scraps_type": 0.26171875
+      }
+    },
+    {
+      "model": "hbmsntm:item/scraps_tcalloy",
+      "predicate": {
+        "hbmsntm:scraps_type": 0.265625
+      }
+    },
+    {
+      "model": "hbmsntm:item/scraps_cdalloy",
+      "predicate": {
+        "hbmsntm:scraps_type": 0.26953125
+      }
+    },
+    {
+      "model": "hbmsntm:item/scraps_bismuthbronze",
+      "predicate": {
+        "hbmsntm:scraps_type": 0.2734375
+      }
+    },
+    {
+      "model": "hbmsntm:item/scraps_arsenicbronze",
+      "predicate": {
+        "hbmsntm:scraps_type": 0.27734375
+      }
+    },
+    {
+      "model": "hbmsntm:item/scraps_bscco",
+      "predicate": {
+        "hbmsntm:scraps_type": 0.28125
+      }
+    },
+    {
+      "model": "hbmsntm:item/scraps_magnetizedtungsten",
+      "predicate": {
+        "hbmsntm:scraps_type": 0.28515625
+      }
+    },
+    {
+      "model": "hbmsntm:item/scraps_cmbsteel",
+      "predicate": {
+        "hbmsntm:scraps_type": 0.2890625
+      }
+    },
+    {
+      "model": "hbmsntm:item/scraps_dineutronium",
+      "predicate": {
+        "hbmsntm:scraps_type": 0.29296875
+      }
+    },
+    {
+      "model": "hbmsntm:item/scraps_flux",
+      "predicate": {
+        "hbmsntm:scraps_type": 0.296875
+      }
+    },
+    {
+      "model": "hbmsntm:item/scraps_slag",
+      "predicate": {
+        "hbmsntm:scraps_type": 0.30078125
+      }
+    },
+    {
+      "model": "hbmsntm:item/scraps_watzmud",
+      "predicate": {
+        "hbmsntm:scraps_type": 0.3046875
+      }
+    },
+    {
+      "model": "hbmsntm:item/scraps_gunmetal",
+      "predicate": {
+        "hbmsntm:scraps_type": 0.30859375
+      }
+    },
+    {
+      "model": "hbmsntm:item/scraps_weaponsteel",
+      "predicate": {
+        "hbmsntm:scraps_type": 0.3125
+      }
+    },
+    {
+      "model": "hbmsntm:item/scraps_saturnite",
+      "predicate": {
+        "hbmsntm:scraps_type": 0.31640625
+      }
+    },
+    {
+      "model": "hbmsntm:item/scraps_additive",
+      "predicate": {
+        "hbmsntm:scraps_type": 0.75
       }
     },
     {

@@ -845,7 +845,8 @@ public class RBMKCoreGameTests {
             shaped(helper, "rbmk_blank_from_deco_rbmk_smooth", blank, 1, new String[] { "RRR", "R R", "RRR" }, Map.of('R', smooth));
 
             // Goal 26A registers rbmk_moderator (original CraftingManager.java:756) and rbmk_lid_glass x4 in both row orders (:753-754); nothing else makes
-            // them, and no anvil row makes an RBMK column.
+            // them. Since Goal 27B the only anvil construction rows that make or consume these columns are the tier-4 RECYCLING rows of
+            // AnvilRecipes.registerRBMKRecycling (original AnvilRecipes.java:868-951), identified by their input column; no smithing row makes one.
             Item glassLead = NtmBlocks.GLASS_LEAD.get().asItem(), glassBoron = NtmBlocks.GLASS_BORON.get().asItem();
             shaped(helper, "rbmk_moderator", NtmBlocks.RBMK_MODERATOR.get().asItem(), 1, new String[] { " G ", "GRG", " G " }, Map.of('G', NtmBlocks.BLOCK_GRAPHITE.get().asItem(), 'R', blank));
             shaped(helper, "rbmk_lid_glass", NtmItems.RBMK_LID_GLASS.get(), 4, new String[] { "LLL", "BBB", "P P" }, Map.of('L', glassLead, 'B', glassBoron, 'P', plate));
@@ -863,14 +864,42 @@ public class RBMKCoreGameTests {
                 if(recipe.outputItem == null) continue;
                 for(IOutput output : recipe.outputItem) for(ItemStack stack : output.getAllPossibilities()) check(!skipped.contains(stack.getItem()), recipe.getInternalName() + " produces " + stack);
             }
+            // the twelve recycled columns (AnvilRecipes.java:868-901,914-951 without ReaSim and reactor_research); the original outputs of this test's columns
+            Set<Item> recycled = Set.of(NtmBlocks.RBMK_MODERATOR.get().asItem(), NtmBlocks.RBMK_ABSORBER.get().asItem(), NtmBlocks.RBMK_REFLECTOR.get().asItem(),
+                    NtmBlocks.RBMK_CONTROL.get().asItem(), NtmBlocks.RBMK_CONTROL_MOD.get().asItem(), NtmBlocks.RBMK_CONTROL_AUTO.get().asItem(), NtmBlocks.RBMK_OUTGASSER.get().asItem(),
+                    NtmBlocks.RBMK_STORAGE.get().asItem(), NtmBlocks.RBMK_ROD.get().asItem(), NtmBlocks.RBMK_ROD_MOD.get().asItem(), NtmBlocks.RBMK_BOILER.get().asItem(), NtmBlocks.RBMK_COOLER.get().asItem());
+            Map<Item, List<Object>> own = Map.of(
+                    NtmBlocks.RBMK_MODERATOR.get().asItem(), List.of(blank, 1, NtmBlocks.BLOCK_GRAPHITE.get().asItem(), 4),
+                    NtmBlocks.RBMK_ABSORBER.get().asItem(), List.of(blank, 1, NtmItems.INGOT_BORON.get(), 8),
+                    NtmBlocks.RBMK_REFLECTOR.get().asItem(), List.of(blank, 1, NtmItems.NEUTRON_REFLECTOR.get(), 8));
+            // rows that make rbmk_blank or rbmk_absorber or consume moderator / absorber / reflector: these nine 27B rows and no other row
+            Set<Item> touchingWant = Set.of(NtmBlocks.RBMK_MODERATOR.get().asItem(), NtmBlocks.RBMK_ABSORBER.get().asItem(), NtmBlocks.RBMK_REFLECTOR.get().asItem(),
+                    NtmBlocks.RBMK_CONTROL.get().asItem(), NtmBlocks.RBMK_OUTGASSER.get().asItem(), NtmBlocks.RBMK_STORAGE.get().asItem(), NtmBlocks.RBMK_ROD.get().asItem(),
+                    NtmBlocks.RBMK_BOILER.get().asItem(), NtmBlocks.RBMK_COOLER.get().asItem());
+            Set<Item> touched = new HashSet<>();
             for(AnvilConstructionRecipe recipe : AnvilRecipes.getConstruction()) {
-                for(AnvilOutput output : recipe.output) check(!columns.contains(output.stack.getItem()), "an anvil construction row produces " + output.stack);
+                boolean touches = false;
+                for(AnvilOutput output : recipe.output) touches |= columns.contains(output.stack.getItem());
+                for(AStack input : recipe.input) for(Item column : columns) touches |= input.matchesRecipe(new ItemStack(column), true);
+                if(!touches) continue;
+                Item in = recipe.input.size() == 1 && recipe.input.get(0) instanceof ComparableStack c && c.stacksize == 1 ? c.item : null;
+                check(in != null && recycled.contains(in) && recipe.tierLower == 4 && recipe.tierUpper == -1 && recipe.getOverlay() == AnvilRecipes.OverlayType.RECYCLING,
+                        "an anvil construction row other than a Goal 27B RBMK recycling row makes or consumes an RBMK column: inputs " + recipe.input.size() + ", tier " + recipe.tierLower + ", overlay " + recipe.getOverlay());
+                check(touched.add(in), "two anvil construction rows recycle " + in);
+                List<Object> got = new ArrayList<>();
+                for(AnvilOutput output : recipe.output) {
+                    got.add(output.stack.getItem());
+                    got.add(output.stack.getCount());
+                    check(output.chance == 1F, in + " recycling output " + output.stack + " has chance " + output.chance);
+                }
+                if(own.containsKey(in)) check(got.equals(own.get(in)), in + " recycles into " + got + ", expected " + own.get(in));
             }
+            check(touched.equals(touchingWant), "the anvil construction rows making or consuming these columns recycle " + touched + ", expected " + touchingWant);
             for(AnvilSmithingRecipe recipe : AnvilRecipes.getSmithing()) {
                 check(!columns.contains(recipe.getSimpleOutput().getItem()), "an anvil smithing row produces " + recipe.getSimpleOutput());
             }
-            LOGGER.info("[hbm-rbmk-core] recipes: ass.rbmk and 10 crafting rows match; {} loaded recipes, {} assembly rows, {} construction and {} smithing rows scanned for the skipped outputs",
-                    scanned, AssemblyMachineRecipes.INSTANCE.recipeNameMap.size(), AnvilRecipes.getConstruction().size(), AnvilRecipes.getSmithing().size());
+            LOGGER.info("[hbm-rbmk-core] recipes: ass.rbmk and 10 crafting rows match; {} loaded recipes, {} assembly rows scanned for the skipped outputs; {} construction rows: only the {} Goal 27B recycling rows make or consume these columns; {} smithing rows make none",
+                    scanned, AssemblyMachineRecipes.INSTANCE.recipeNameMap.size(), AnvilRecipes.getConstruction().size(), touched.size(), AnvilRecipes.getSmithing().size());
         }).run();
         done(helper, "rbmk_recipes");
     }

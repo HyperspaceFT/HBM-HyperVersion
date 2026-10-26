@@ -8,6 +8,7 @@ import com.hbm.inventory.MetaHelper;
 import com.hbm.inventory.RecipesCommon.ComparableStack;
 import com.hbm.inventory.recipes.loader.SerializableRecipe;
 import com.hbm.items.NtmItems;
+import com.hbm.items.RawIngotItem;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.item.ItemStack;
@@ -56,12 +57,11 @@ public class ShredderRecipes extends SerializableRecipe {
     public static ItemStack getShredderResult(ItemStack stack) {
         if(stack.isEmpty()) return ItemStack.EMPTY;
 
+        // ComparableStack leaves meta out of hashCode and lets a wildcard equal any meta, so this exact lookup already
+        // finds rows registered with the wildcard; a wildcard retry would also match other metas' rows (e.g. ingot_raw),
+        // which upstream's meta-aware hashCode never does.
         ComparableStack key = new ComparableStack(stack).makeSingular();
         ItemStack result = RECIPES.get(key);
-        if(result == null) {
-            key.meta = MetaHelper.WILDCARD_VALUE;
-            result = RECIPES.get(key);
-        }
 
         return result == null ? new ItemStack(NtmItems.DUST.get()) : result.copy();
     }
@@ -71,13 +71,8 @@ public class ShredderRecipes extends SerializableRecipe {
             return false;
         }
 
-        ComparableStack key = new ComparableStack(stack).makeSingular();
-        if (RECIPES.containsKey(key)) {
-            return true;
-        }
-
-        key.meta = MetaHelper.WILDCARD_VALUE;
-        return RECIPES.containsKey(key);
+        // Exact lookup only, see getShredderResult.
+        return RECIPES.containsKey(new ComparableStack(stack).makeSingular());
     }
 
     public static void setRecipe(ComparableStack input, ItemStack output) {
@@ -324,6 +319,25 @@ public class ShredderRecipes extends SerializableRecipe {
         registerIfAbsent(new ItemStack(NtmBlocks.CONCRETE_SMOOTH.get()), new ItemStack(Blocks.GRAVEL, 1));
         registerIfAbsent(new ItemStack(NtmBlocks.RESOURCE_LIMESTONE.get()), new ItemStack(NtmItems.POWDER_LIMESTONE.get(), 4));
         registerIfAbsent(new ItemStack(NtmBlocks.BLOCK_SLAG.get()), new ItemStack(NtmItems.POWDER_CEMENT.get(), 4));
+
+        // Original ShredderRecipes.java:55-70 auto rule (ingot/gem -> one dust) for the gem and ingot names of
+        // OreDictManager.java:335 (gemCoal), :339 (gemQuartz), :351 (ingotThorium), :396 (gemTantalum), :433 (gemLignite),
+        // :454 (ingotLithium) and Forge's vanilla ingotGold, gemDiamond and gemEmerald.
+        registerIfAbsent(new ItemStack(Items.COAL), new ItemStack(NtmItems.POWDER_COAL.get(), 1));
+        registerIfAbsent(new ItemStack(Items.QUARTZ), new ItemStack(NtmItems.POWDER_QUARTZ.get(), 1));
+        registerIfAbsent(new ItemStack(NtmItems.INGOT_TH232.get()), new ItemStack(NtmItems.POWDER_THORIUM.get(), 1));
+        registerIfAbsent(new ItemStack(NtmItems.GEM_TANTALIUM.get()), new ItemStack(NtmItems.POWDER_TANTALIUM.get(), 1));
+        registerIfAbsent(new ItemStack(NtmItems.LIGNITE.get()), new ItemStack(NtmItems.POWDER_LIGNITE.get(), 1));
+        registerIfAbsent(new ItemStack(NtmItems.LITHIUM.get()), new ItemStack(NtmItems.POWDER_LITHIUM.get(), 1));
+        registerIfAbsent(new ItemStack(Items.GOLD_INGOT), new ItemStack(NtmItems.POWDER_GOLD.get(), 1));
+        registerIfAbsent(new ItemStack(Items.DIAMOND), new ItemStack(NtmItems.POWDER_DIAMOND.get(), 1));
+        registerIfAbsent(new ItemStack(Items.EMERALD), new ItemStack(NtmItems.POWDER_EMERALD.get(), 1));
+        // OreDictManager.java:550 registers ingot<Name> for every ingot_raw material; slag has no dust.
+        registerIfAbsent(MetaHelper.newStack(NtmItems.INGOT_RAW.get(), RawIngotItem.Type.REDSTONE.meta), new ItemStack(Items.REDSTONE, 1));
+        registerIfAbsent(MetaHelper.newStack(NtmItems.INGOT_RAW.get(), RawIngotItem.Type.NEODYMIUM.meta), new ItemStack(NtmItems.POWDER_NEODYMIUM.get(), 1));
+        registerIfAbsent(MetaHelper.newStack(NtmItems.INGOT_RAW.get(), RawIngotItem.Type.BORAX.meta), new ItemStack(NtmItems.POWDER_BORAX.get(), 1));
+        registerIfAbsent(MetaHelper.newStack(NtmItems.INGOT_RAW.get(), RawIngotItem.Type.SODIUM.meta), new ItemStack(NtmItems.POWDER_SODIUM.get(), 1));
+        registerIfAbsent(MetaHelper.newStack(NtmItems.INGOT_RAW.get(), RawIngotItem.Type.STRONTIUM.meta), new ItemStack(NtmItems.POWDER_STRONTIUM.get(), 1));
     }
 
     private static void registerIfAbsent(ItemStack input, ItemStack output) {

@@ -13,6 +13,7 @@ import com.hbm.inventory.RecipesCommon.ComparableStack;
 import com.hbm.inventory.RecipesCommon.TagStack;
 import com.hbm.inventory.fluid.FluidType;
 import com.hbm.inventory.fluid.Fluids;
+import com.hbm.inventory.material.MatDistribution;
 import com.hbm.inventory.recipes.SolderingRecipes;
 import com.hbm.inventory.recipes.AssemblyMachineRecipes;
 import com.hbm.inventory.recipes.ArcWelderRecipes;
@@ -82,6 +83,7 @@ public abstract class SerializableRecipe {
         recipeHandlers.add(ChemicalPlantRecipes.INSTANCE);
         recipeHandlers.add(PUREXRecipes.INSTANCE);
         recipeHandlers.add(CrucibleRecipes.INSTANCE);
+        recipeHandlers.add(new MatDistribution());
     }
 
     public static void initialize() {

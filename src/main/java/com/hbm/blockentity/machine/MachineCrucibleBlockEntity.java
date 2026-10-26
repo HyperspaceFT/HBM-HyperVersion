@@ -46,8 +46,11 @@ public class MachineCrucibleBlockEntity extends MachineBaseBlockEntity implement
     /** Capacity of each stack (upstream recipeZCapacity and wasteZCapacity). */
     public static final int CAPACITY = MaterialShapes.BLOCK.q(16);
     public static final String NO_RECIPE = "null";
-    /** Upper bound for synced stack entries; each stack holds at most one entry per registered material. */
-    private static final int MAX_SYNC_ENTRIES = 64;
+    /**
+     * Upper bound for synced stack entries; each stack holds at most one entry per registered material,
+     * and both logical sides register the same material list.
+     */
+    private static final int MAX_SYNC_ENTRIES = Mats.orderedList.size();
     public int heat;
     public int progress;
     public String recipe = NO_RECIPE;
@@ -111,11 +114,13 @@ public class MachineCrucibleBlockEntity extends MachineBaseBlockEntity implement
 
         if(this.progress >= PROCESS_TIME) {
             this.progress = 0;
-            Mats.MaterialStack material = CopperCastingRecipes.getMaterial(this.slots.get(slot));
+            List<Mats.MaterialStack> materials = CopperCastingRecipes.getMaterials(this.slots.get(slot));
             CrucibleRecipe recipe = this.getLoadedRecipe();
-            boolean recipeMaterial = recipe != null
-                    && (recipe.getInputAmount(material.material) > 0 || recipe.hasOutput(material.material));
-            addToStack(recipeMaterial ? this.recipeStack : this.wasteStack, material);
+            for(Mats.MaterialStack material : materials) {
+                boolean recipeMaterial = recipe != null
+                        && (recipe.getInputAmount(material.material) > 0 || recipe.hasOutput(material.material));
+                addToStack(recipeMaterial ? this.recipeStack : this.wasteStack, material);
+            }
             this.slots.get(slot).shrink(1);
             this.stacksChanged = true;
         }
@@ -179,20 +184,22 @@ public class MachineCrucibleBlockEntity extends MachineBaseBlockEntity implement
     }
 
     public boolean isItemSmeltable(ItemStack stack) {
-        Mats.MaterialStack material = CopperCastingRecipes.getMaterial(stack);
-        if(material == null) return false;
+        List<Mats.MaterialStack> materials = CopperCastingRecipes.getMaterials(stack);
+        if(materials.isEmpty()) return false;
         CrucibleRecipe recipe = this.getLoadedRecipe();
 
-        // Every item in the melt table is a single material, so upstream's per-material loop collapses to one pass.
+        // Always true without a recipe; with one, at least one material has to belong to it.
         boolean matchesRecipe = recipe == null;
         int recipeAmount = getQuantaFromType(this.recipeStack, null);
         int wasteAmount = getQuantaFromType(this.wasteStack, null);
 
-        if(recipe != null && recipe.hasOutput(material.material)) {
-            // Allows pouring the output material back into the crucible.
-            recipeAmount += material.amount;
-            matchesRecipe = true;
-        } else {
+        for(Mats.MaterialStack material : materials) {
+            if(recipe != null && recipe.hasOutput(material.material)) {
+                // Allows pouring the output material back into the crucible.
+                recipeAmount += material.amount;
+                matchesRecipe = true;
+                continue;
+            }
             int recipeInputRequired = recipe != null ? recipe.getInputAmount(material.material) : 0;
             if(recipeInputRequired == 0) {
                 wasteAmount += material.amount;

@@ -4,6 +4,7 @@ import com.hbm.inventory.material.MaterialShapes;
 import com.hbm.inventory.material.Mats;
 import com.hbm.inventory.material.NTMMaterial;
 import com.hbm.util.TagsUtil;
+import net.minecraft.ChatFormatting;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.item.Item;
@@ -21,10 +22,13 @@ import java.util.Locale;
 public class CopperScrapsItem extends Item {
     public static final int MAX_AMOUNT = MaterialShapes.BLOCK.q(16);
     /**
-     * Solid scraps with their own model, in override order. Upstream recolours one base texture per material at runtime;
-     * NEO ships those recolours as textures. Copper keeps the Goal 5A base model.
+     * Solid scraps with their own model, in override order: every smeltable or additive material (upstream
+     * ItemScraps.getSubItems) in registration order. Upstream recolours one base texture per material at runtime;
+     * NEO ships those recolours as textures (see {@link #getTextureName}). Copper keeps the Goal 5A base model.
      */
-    public static final List<NTMMaterial> MODEL_MATERIALS = List.of(Mats.MAT_TUNGSTEN, Mats.MAT_COBALT, Mats.MAT_STEEL, Mats.MAT_DURA);
+    public static final List<NTMMaterial> MODEL_MATERIALS = Mats.orderedList.stream()
+            .filter(material -> material != Mats.MAT_COPPER && isScrapMaterial(material)).toList();
+    public static final float ADDITIVE_LIQUID_MODEL = 0.75F;
     public static final float LIQUID_MODEL = 1F;
 
     public CopperScrapsItem(Properties properties) {
@@ -57,27 +61,50 @@ public class CopperScrapsItem extends Item {
         return new Mats.MaterialStack(material, amount);
     }
 
-    /** Item model override value: 0 for the base model, {@link #getModelValue(int)} per material, 1 for liquid display stacks. */
+    /** Materials upstream lists as scraps: smeltable or additive ones. */
+    public static boolean isScrapMaterial(NTMMaterial material) {
+        return material.smeltable == NTMMaterial.SmeltingBehavior.SMELTABLE || material.smeltable == NTMMaterial.SmeltingBehavior.ADDITIVE;
+    }
+
+    /**
+     * Item model override value: 0 for the base model, {@link #getModelValue(int)} per material, 0.75 for liquid
+     * additive and 1 for other liquid display stacks.
+     */
     public static float getModelType(ItemStack stack) {
         Mats.MaterialStack contents = getMats(stack);
         if(contents == null) return 0F;
-        if(isLiquid(stack)) return LIQUID_MODEL;
+        if(isLiquid(stack)) return contents.material.smeltable == NTMMaterial.SmeltingBehavior.ADDITIVE ? ADDITIVE_LIQUID_MODEL : LIQUID_MODEL;
         int index = MODEL_MATERIALS.indexOf(contents.material);
         return index < 0 ? 0F : getModelValue(index);
     }
 
+    /** Exact binary fractions below {@link #ADDITIVE_LIQUID_MODEL} for up to 191 materials. */
     public static float getModelValue(int index) {
-        return (index + 1) * 0.2F;
+        return (index + 1) / 256F;
     }
 
     public static String getModelName(NTMMaterial material) {
         return "scraps_" + material.names[0].toLowerCase(Locale.US);
     }
 
-    /** Liquid display stacks are tinted with the molten colour, as upstream does. */
+    /** Solid texture: upstream's bismuth override, the uncoloured base where light and dark match, else the recolour. */
+    public static String getTextureName(NTMMaterial material) {
+        if(material == Mats.MAT_BISMUTH) return "scraps_bismuth";
+        if(material.solidColorLight == material.solidColorDark) return "scraps_plain";
+        return getModelName(material);
+    }
+
+    /**
+     * Liquid display stacks are tinted with the molten colour, as upstream does. Solid stacks on the uncoloured base
+     * texture get the molten colour too (upstream ItemAutogen tints every material it did not recolour).
+     */
     public static int getColor(ItemStack stack) {
         Mats.MaterialStack contents = getMats(stack);
-        return contents != null && isLiquid(stack) ? contents.material.moltenColor : 0xFFFFFF;
+        if(contents == null) return 0xFFFFFF;
+        if(isLiquid(stack)) return contents.material.moltenColor;
+        boolean plain = contents.material != Mats.MAT_COPPER && isScrapMaterial(contents.material)
+                && "scraps_plain".equals(getTextureName(contents.material));
+        return plain ? contents.material.moltenColor : 0xFFFFFF;
     }
 
     public static boolean isLiquid(ItemStack stack) {
@@ -98,5 +125,8 @@ public class CopperScrapsItem extends Item {
         if(contents == null) return;
         tooltip.add(Component.translatable("casting.scraps", contents.material.getName(), contents.amount));
         if(!isLiquid(stack)) tooltip.add(Component.translatable("casting.scraps.desc"));
+        else if(contents.material.smeltable == NTMMaterial.SmeltingBehavior.ADDITIVE) {
+            tooltip.add(Component.translatable("casting.scraps.additive").withStyle(ChatFormatting.DARK_RED));
+        }
     }
 }

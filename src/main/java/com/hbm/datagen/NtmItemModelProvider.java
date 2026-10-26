@@ -1,6 +1,7 @@
 package com.hbm.datagen;
 
 import com.hbm.blocks.NtmBlocks;
+import com.hbm.inventory.material.NTMMaterial;
 import com.hbm.items.CopperScrapsItem;
 import com.hbm.items.ICustomItemModelRegister;
 import com.hbm.items.NtmItems;
@@ -1043,14 +1044,22 @@ public class NtmItemModelProvider extends ItemModelProvider {
     private void registerScraps() {
         ItemModelBuilder builder = this.basicItem(NtmItems.SCRAPS.get());
         for(int i = 0; i < CopperScrapsItem.MODEL_MATERIALS.size(); i++) {
-            String name = CopperScrapsItem.getModelName(CopperScrapsItem.MODEL_MATERIALS.get(i));
+            NTMMaterial material = CopperScrapsItem.MODEL_MATERIALS.get(i);
+            String name = CopperScrapsItem.getModelName(material);
             builder.override()
                     .predicate(NuclearTechMod.withDefaultNamespace("scraps_type"), CopperScrapsItem.getModelValue(i))
                     .model(getBuilder(name)
                             .parent(getExistingFile(mcLoc("item/generated")))
-                            .texture("layer0", modLoc("item/" + name)))
+                            .texture("layer0", modLoc("item/" + CopperScrapsItem.getTextureName(material))))
                     .end();
         }
+        // Overrides must stay in ascending predicate order: materials, then additive liquid, then liquid.
+        builder.override()
+                .predicate(NuclearTechMod.withDefaultNamespace("scraps_type"), CopperScrapsItem.ADDITIVE_LIQUID_MODEL)
+                .model(getBuilder("scraps_additive")
+                        .parent(getExistingFile(mcLoc("item/generated")))
+                        .texture("layer0", modLoc("item/scraps_additive")))
+                .end();
         builder.override()
                 .predicate(NuclearTechMod.withDefaultNamespace("scraps_type"), CopperScrapsItem.LIQUID_MODEL)
                 .model(getBuilder("scraps_liquid")
