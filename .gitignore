@@ -27,3 +27,6 @@ repo
 
 # Data generator's incremental cache; generated resources remain versioned.
 src/generated/resources/.cache/
+
+# Local migration planning and acceptance records
+/migration/
