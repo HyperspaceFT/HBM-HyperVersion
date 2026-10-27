@@ -1,0 +1,16 @@
+{
+  "type": "minecraft:crafting_shapeless",
+  "category": "misc",
+  "ingredients": [
+    {
+      "item": "hbmsntm:foundry_channel"
+    },
+    {
+      "item": "hbmsntm:plate_steel"
+    }
+  ],
+  "result": {
+    "count": 1,
+    "id": "hbmsntm:foundry_outlet"
+  }
+}

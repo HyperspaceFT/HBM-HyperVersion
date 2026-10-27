@@ -2,9 +2,7 @@ package com.hbm.handler.jei;
 
 import com.hbm.blocks.NtmBlocks;
 import com.hbm.inventory.material.Mats;
-import com.hbm.inventory.material.NTMMaterial;
-import com.hbm.inventory.recipes.CopperCastingRecipes;
-import com.hbm.items.NtmItems;
+import com.hbm.items.machine.MoldItem;
 import com.hbm.main.NuclearTechMod;
 import mezz.jei.api.gui.builder.IRecipeLayoutBuilder;
 import mezz.jei.api.gui.drawable.IDrawable;
@@ -16,25 +14,18 @@ import mezz.jei.api.recipe.category.IRecipeCategory;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.item.ItemStack;
 
-import java.util.ArrayList;
 import java.util.List;
 
-/** Upstream NEI "Crucible Casting": existing plates, the mixer prerequisite Dura ingot and tungsten blades. */
-public class CrucibleCastingRecipeHandler implements IRecipeCategory<CrucibleCastingRecipeHandler.Casting> {
+/**
+ * Upstream NEI "Crucible Casting": one row per mold and material the mold casts ({@link MoldItem#castingRows()}), with the mold and
+ * the casting block it fits (foundry_mold for small molds, foundry_basin for large ones) as catalysts.
+ */
+public class CrucibleCastingRecipeHandler implements IRecipeCategory<MoldItem.CastingRow> {
 
-    public enum Shape { PLATE, INGOT, BLADE }
-
-    public record Casting(NTMMaterial material, Shape shape) {
-        public Casting(NTMMaterial material) { this(material, Shape.PLATE); }
-        public Casting(NTMMaterial material, boolean ingot) { this(material, ingot ? Shape.INGOT : Shape.PLATE); }
-        public boolean ingot() { return this.shape == Shape.INGOT; }
-        public boolean blade() { return this.shape == Shape.BLADE; }
-    }
-
-    public static final RecipeType<Casting> RECIPE_TYPE = RecipeType.create(
+    public static final RecipeType<MoldItem.CastingRow> RECIPE_TYPE = RecipeType.create(
             NuclearTechMod.MODID,
             "crucible_casting",
-            Casting.class
+            MoldItem.CastingRow.class
     );
 
     private static final String TEXTURE = "textures/gui/jei/gui_nei_foundry.png";
@@ -50,25 +41,21 @@ public class CrucibleCastingRecipeHandler implements IRecipeCategory<CrucibleCas
         this.icon = guiHelper.createDrawableItemLike(NtmBlocks.FOUNDRY_MOLD.asItem());
     }
 
-    public static List<Casting> getRecipes() {
-        List<Casting> recipes = new ArrayList<>();
-        for(NTMMaterial material : CopperCastingRecipes.getCastableMaterials()) recipes.add(new Casting(material));
-        recipes.add(new Casting(Mats.MAT_DURA, true));
-        recipes.add(new Casting(Mats.MAT_TUNGSTEN, Shape.BLADE));
-        return recipes;
+    public static List<MoldItem.CastingRow> getRecipes() {
+        return MoldItem.castingRows();
     }
 
-    @Override public RecipeType<Casting> getRecipeType() { return RECIPE_TYPE; }
+    @Override public RecipeType<MoldItem.CastingRow> getRecipeType() { return RECIPE_TYPE; }
     @Override public Component getTitle() { return Component.translatable("container.machine_crucible.jei.casting"); }
     @Override public IDrawable getBackground() { return this.background; }
     @Override public IDrawable getIcon() { return this.icon; }
 
     @Override
-    public void setRecipe(IRecipeLayoutBuilder builder, Casting recipe, IFocusGroup focuses) {
-        builder.addInputSlot(48, 24).addItemStack(CrucibleAlloyingRecipeHandler.liquid(
-                new Mats.MaterialStack(recipe.material(), recipe.ingot() ? CopperCastingRecipes.INGOT_QUANTA : recipe.blade() ? CopperCastingRecipes.BLADE_QUANTA : CopperCastingRecipes.PLATE_QUANTA)));
-        builder.addSlot(RecipeIngredientRole.CATALYST, 75, 6).addItemStack(new ItemStack(recipe.ingot() ? NtmItems.MOLD_INGOT.get() : recipe.blade() ? NtmItems.MOLD_BLADE.get() : NtmItems.MOLD_PLATE_CAST.get()));
-        builder.addSlot(RecipeIngredientRole.CATALYST, 75, 42).addItemStack(new ItemStack(NtmBlocks.FOUNDRY_MOLD.asItem()));
-        builder.addOutputSlot(102, 24).addItemStack(recipe.ingot() ? new ItemStack(NtmItems.INGOT_DURA_STEEL.get()) : recipe.blade() ? new ItemStack(NtmItems.BLADE_TUNGSTEN.get()) : CopperCastingRecipes.getPlate(recipe.material()));
+    public void setRecipe(IRecipeLayoutBuilder builder, MoldItem.CastingRow recipe, IFocusGroup focuses) {
+        builder.addInputSlot(48, 24).addItemStack(CrucibleAlloyingRecipeHandler.liquid(new Mats.MaterialStack(recipe.material(), recipe.cost())));
+        builder.addSlot(RecipeIngredientRole.CATALYST, 75, 6).addItemStack(MoldItem.stackOf(recipe.mold()));
+        builder.addSlot(RecipeIngredientRole.CATALYST, 75, 42).addItemStack(new ItemStack(
+                recipe.mold().size == MoldItem.SIZE_LARGE ? NtmBlocks.FOUNDRY_BASIN.asItem() : NtmBlocks.FOUNDRY_MOLD.asItem()));
+        builder.addOutputSlot(102, 24).addItemStack(recipe.output().copy());
     }
 }

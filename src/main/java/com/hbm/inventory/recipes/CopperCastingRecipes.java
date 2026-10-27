@@ -24,9 +24,10 @@ import java.util.Map;
 import java.util.Set;
 
 /**
- * Crucible smelting lookups and small cast-plate outputs. What an item melts into is upstream's
- * Mats.getSmeltingMaterialsFromItem, built from {@link MaterialEntries} and MatDistribution; the plate mold
- * still covers the Goal 5A/10A materials. The class name is kept for the Goal 5A casting regression.
+ * Crucible smelting lookups and the Goal 5A/10A small cast-plate helpers. What an item melts into is upstream's
+ * Mats.getSmeltingMaterialsFromItem, built from {@link MaterialEntries} and MatDistribution. Since Goal 27D mold outputs come
+ * from MoldItem and {@link MaterialEntries}; the plate helpers and constants are kept for the old Goal 5A/10A regressions.
+ * The class name is kept for the Goal 5A casting regression.
  */
 public final class CopperCastingRecipes {
     public static final int INGOT_QUANTA = MaterialShapes.INGOT.q(1);

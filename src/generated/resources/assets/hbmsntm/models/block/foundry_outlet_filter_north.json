@@ -1,0 +1,30 @@
+{
+  "parent": "minecraft:block/block",
+  "elements": [
+    {
+      "faces": {
+        "north": {
+          "texture": "#filter"
+        },
+        "south": {
+          "texture": "#filter"
+        }
+      },
+      "from": [
+        6,
+        1,
+        15.5
+      ],
+      "to": [
+        10,
+        8,
+        15.5
+      ]
+    }
+  ],
+  "render_type": "minecraft:cutout",
+  "textures": {
+    "filter": "hbmsntm:block/foundry_outlet_filter",
+    "particle": "hbmsntm:block/foundry_outlet_side"
+  }
+}

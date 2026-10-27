@@ -1,0 +1,108 @@
+{
+  "multipart": [
+    {
+      "apply": {
+        "model": "hbmsntm:block/foundry_outlet_north"
+      },
+      "when": {
+        "facing": "north"
+      }
+    },
+    {
+      "apply": {
+        "model": "hbmsntm:block/foundry_outlet_lock_north"
+      },
+      "when": {
+        "closed": "true",
+        "facing": "north"
+      }
+    },
+    {
+      "apply": {
+        "model": "hbmsntm:block/foundry_outlet_filter_north"
+      },
+      "when": {
+        "facing": "north",
+        "filtered": "true"
+      }
+    },
+    {
+      "apply": {
+        "model": "hbmsntm:block/foundry_outlet_east"
+      },
+      "when": {
+        "facing": "east"
+      }
+    },
+    {
+      "apply": {
+        "model": "hbmsntm:block/foundry_outlet_lock_east"
+      },
+      "when": {
+        "closed": "true",
+        "facing": "east"
+      }
+    },
+    {
+      "apply": {
+        "model": "hbmsntm:block/foundry_outlet_filter_east"
+      },
+      "when": {
+        "facing": "east",
+        "filtered": "true"
+      }
+    },
+    {
+      "apply": {
+        "model": "hbmsntm:block/foundry_outlet_south"
+      },
+      "when": {
+        "facing": "south"
+      }
+    },
+    {
+      "apply": {
+        "model": "hbmsntm:block/foundry_outlet_lock_south"
+      },
+      "when": {
+        "closed": "true",
+        "facing": "south"
+      }
+    },
+    {
+      "apply": {
+        "model": "hbmsntm:block/foundry_outlet_filter_south"
+      },
+      "when": {
+        "facing": "south",
+        "filtered": "true"
+      }
+    },
+    {
+      "apply": {
+        "model": "hbmsntm:block/foundry_outlet_west"
+      },
+      "when": {
+        "facing": "west"
+      }
+    },
+    {
+      "apply": {
+        "model": "hbmsntm:block/foundry_outlet_lock_west"
+      },
+      "when": {
+        "closed": "true",
+        "facing": "west"
+      }
+    },
+    {
+      "apply": {
+        "model": "hbmsntm:block/foundry_outlet_filter_west"
+      },
+      "when": {
+        "facing": "west",
+        "filtered": "true"
+      }
+    }
+  ]
+}

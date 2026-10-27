@@ -795,8 +795,22 @@ public class NtmLanguageProvider extends LanguageProvider {
         this.add(NtmItems.CAST_PLATE, "Cast Plate");
         this.add(NtmItems.MOLD_BASE, "Blank Foundry Mold");
         this.add(NtmItems.MOLD_PLATE_CAST, "Cast Plate Foundry Mold");
-        this.add(NtmItems.MOLD_INGOT, "Ingot Foundry Mold (Dura Steel)");
-        this.add(NtmItems.MOLD_BLADE, "Small Blade Foundry Mold (Tungsten)");
+        this.add(NtmItems.MOLD_INGOT, "Ingot Foundry Mold");
+        this.add(NtmItems.MOLD_BLADE, "Small Blade Foundry Mold");
+        this.add(NtmItems.MOLD_NUGGET, "Nugget Foundry Mold");
+        this.add(NtmItems.MOLD_BILLET, "Billet Foundry Mold");
+        this.add(NtmItems.MOLD_PLATE, "Plate Foundry Mold");
+        this.add(NtmItems.MOLD_WIRE, "Wire Foundry Mold");
+        this.add(NtmItems.MOLD_WIRE_DENSE, "Dense Wire Foundry Mold");
+        this.add(NtmItems.MOLD_BLADES, "Shredder Blades Foundry Mold");
+        this.add(NtmItems.MOLD_STAMP, "Press Stamp Foundry Mold");
+        this.add(NtmItems.MOLD_SHELL, "Shell Foundry Mold");
+        this.add(NtmItems.MOLD_PIPE, "Pipe Foundry Mold");
+        this.add(NtmItems.MOLD_INGOTS, "Large Ingot Foundry Mold");
+        this.add(NtmItems.MOLD_PLATES, "Large Plate Foundry Mold");
+        this.add(NtmItems.MOLD_PLATES_CAST, "Large Cast Plate Foundry Mold");
+        this.add(NtmItems.MOLD_WIRES_DENSE, "Large Dense Wire Foundry Mold");
+        this.add(NtmItems.MOLD_BLOCK, "Block Foundry Mold");
         this.add(NtmItems.SCRAPS, "%s Scraps");
         this.add("item.hbmsntm.scraps.generic", "Foundry Scraps");
         this.add("item.hbmsntm.scraps.desc", "Recovered metal; remelt in a crucible.");
@@ -2634,7 +2648,6 @@ public class NtmLanguageProvider extends LanguageProvider {
         this.add("container.machine_crucible.jei.smelting", "Crucible Smelting");
         this.add("container.machine_crucible.jei.casting", "Crucible Casting");
         this.add("container.machine_crucible.jei.select_hint", "Select the recipe in the crucible's interface; it runs every %s ticks.");
-        this.add("casting.no_mold", "Insert a cast plate, Dura ingot, or tungsten blade mold before pouring.");
         this.add("casting.contents", "%s: %s / %s quanta");
         this.add("casting.cooling", "Cooling: %s ticks remaining");
         this.add("casting.take_output", "Right-click to take the cast product.");
@@ -2740,6 +2753,28 @@ public class NtmLanguageProvider extends LanguageProvider {
         this.add(NtmBlocks.MACHINE_CRUCIBLE, "Crucible");
         this.add(NtmBlocks.MACHINE_CRUCIBLE, DESC, "Smelts metals with heat from directly below. The selected alloy pours from the front, everything else from the rear.$Heat transfer rate: ΔT*0.25 TU/t");
         this.add(NtmBlocks.FOUNDRY_MOLD, "Shallow Foundry Basin");
+        this.add(NtmBlocks.FOUNDRY_CHANNEL, "Foundry Channel");
+        this.add(NtmBlocks.FOUNDRY_TANK, "Foundry Storage Basin");
+        this.add(NtmBlocks.FOUNDRY_OUTLET, "Foundry Outlet");
+        this.add(NtmBlocks.FOUNDRY_BASIN, "Foundry Basin");
+        this.add("foundry.noCast", "No mold installed!");
+        // mold titles, upstream shape.* (en_US.lang:5050-5076)
+        this.add("shape.nugget", "Nugget");
+        this.add("shape.billet", "Billet");
+        this.add("shape.ingot", "Ingot");
+        this.add("shape.plate", "Plate");
+        this.add("shape.wireFine", "Wires");
+        this.add("shape.plateTriple", "Cast Plate");
+        this.add("shape.wireDense", "Dense Wire");
+        this.add("shape.shell", "Shell");
+        this.add("shape.ntmpipe", "Pipe");
+        this.add("shape.block", "Block");
+        this.add("shape.blade", "Blade");
+        this.add("shape.blades", "Shredder Blades");
+        this.add("shape.stamp", "Press Stamp");
+        this.add("foundry.filter", "Filter: %s");
+        this.add("foundry.inverted", "Redstone inverted");
+        this.add("foundry.invertFilter", "Filter inverted");
         this.add(NtmBlocks.FURNACE_COMBINATION, DESC, "A large furnace that can produce charcoal and coal coke.$Produces fluid byproducts.$Heat transfer rate: ΔT*0.25 TU/t");
 
         // COMMANDS //

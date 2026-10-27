@@ -1,0 +1,73 @@
+{
+  "multipart": [
+    {
+      "apply": {
+        "model": "hbmsntm:block/foundry_channel_center"
+      }
+    },
+    {
+      "apply": {
+        "model": "hbmsntm:block/foundry_channel_arm_north"
+      },
+      "when": {
+        "north": "true"
+      }
+    },
+    {
+      "apply": {
+        "model": "hbmsntm:block/foundry_channel_end_north"
+      },
+      "when": {
+        "north": "false"
+      }
+    },
+    {
+      "apply": {
+        "model": "hbmsntm:block/foundry_channel_arm_east"
+      },
+      "when": {
+        "east": "true"
+      }
+    },
+    {
+      "apply": {
+        "model": "hbmsntm:block/foundry_channel_end_east"
+      },
+      "when": {
+        "east": "false"
+      }
+    },
+    {
+      "apply": {
+        "model": "hbmsntm:block/foundry_channel_arm_south"
+      },
+      "when": {
+        "south": "true"
+      }
+    },
+    {
+      "apply": {
+        "model": "hbmsntm:block/foundry_channel_end_south"
+      },
+      "when": {
+        "south": "false"
+      }
+    },
+    {
+      "apply": {
+        "model": "hbmsntm:block/foundry_channel_arm_west"
+      },
+      "when": {
+        "west": "true"
+      }
+    },
+    {
+      "apply": {
+        "model": "hbmsntm:block/foundry_channel_end_west"
+      },
+      "when": {
+        "west": "false"
+      }
+    }
+  ]
+}

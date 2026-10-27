@@ -307,6 +307,20 @@ public class NtmCreativeTabs {
                         output.accept(NtmItems.MOLD_PLATE_CAST.get());
                         output.accept(NtmItems.MOLD_INGOT.get());
                         output.accept(NtmItems.MOLD_BLADE.get());
+                        output.accept(NtmItems.MOLD_NUGGET.get());
+                        output.accept(NtmItems.MOLD_BILLET.get());
+                        output.accept(NtmItems.MOLD_PLATE.get());
+                        output.accept(NtmItems.MOLD_WIRE.get());
+                        output.accept(NtmItems.MOLD_WIRE_DENSE.get());
+                        output.accept(NtmItems.MOLD_BLADES.get());
+                        output.accept(NtmItems.MOLD_STAMP.get());
+                        output.accept(NtmItems.MOLD_SHELL.get());
+                        output.accept(NtmItems.MOLD_PIPE.get());
+                        output.accept(NtmItems.MOLD_INGOTS.get());
+                        output.accept(NtmItems.MOLD_PLATES.get());
+                        output.accept(NtmItems.MOLD_PLATES_CAST.get());
+                        output.accept(NtmItems.MOLD_WIRES_DENSE.get());
+                        output.accept(NtmItems.MOLD_BLOCK.get());
                         // One ingot's worth per smeltable or additive material, like upstream ItemScraps.getSubItems.
                         for(NTMMaterial material : Mats.orderedList) {
                             if(CopperScrapsItem.isScrapMaterial(material)) output.accept(CopperScrapsItem.create(new Mats.MaterialStack(material, MaterialShapes.INGOT.q(1))));
@@ -980,6 +994,10 @@ public class NtmCreativeTabs {
                         output.accept(NtmBlocks.FURNACE_COMBINATION);
                         output.accept(NtmBlocks.MACHINE_CRUCIBLE);
                         output.accept(NtmBlocks.FOUNDRY_MOLD);
+                        output.accept(NtmBlocks.FOUNDRY_BASIN);
+                        output.accept(NtmBlocks.FOUNDRY_CHANNEL);
+                        output.accept(NtmBlocks.FOUNDRY_TANK);
+                        output.accept(NtmBlocks.FOUNDRY_OUTLET);
                         output.accept(NtmBlocks.MACHINE_BLAST_FURNACE);
                         output.accept(NtmBlocks.MACHINE_COMBUSTION_ENGINE);
                         output.accept(NtmBlocks.MACHINE_TURBOFAN);

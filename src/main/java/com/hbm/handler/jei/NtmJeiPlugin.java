@@ -512,13 +512,15 @@ public class NtmJeiPlugin implements IModPlugin {
                 CrucibleCastingRecipeHandler.RECIPE_TYPE
         );
         registration.addRecipeCatalyst(
-                NtmItems.MOLD_BLADE.get(),
+                NtmBlocks.FOUNDRY_BASIN.asItem(),
                 CrucibleCastingRecipeHandler.RECIPE_TYPE
         );
-        registration.addRecipeCatalyst(
-                NtmItems.MOLD_PLATE_CAST.get(),
-                CrucibleCastingRecipeHandler.RECIPE_TYPE
-        );
+        for(com.hbm.items.machine.MoldItem.Mold mold : com.hbm.items.machine.MoldItem.molds()) {
+            registration.addRecipeCatalyst(
+                    com.hbm.items.machine.MoldItem.stackOf(mold),
+                    CrucibleCastingRecipeHandler.RECIPE_TYPE
+            );
+        }
     }
 
     @Override

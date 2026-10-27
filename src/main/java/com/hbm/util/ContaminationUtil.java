@@ -7,10 +7,10 @@ import com.hbm.extprop.HbmLivingAttachments;
 import com.hbm.handler.HazmatRegistry;
 import com.hbm.handler.radiation.ChunkRadiationManager;
 import com.hbm.lib.ModEffect;
-import com.hbm.util.i18n.I18nUtil;
 import net.minecraft.ChatFormatting;
 import net.minecraft.core.BlockPos;
 import net.minecraft.network.chat.Component;
+import net.minecraft.network.chat.MutableComponent;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.animal.MushroomCow;
@@ -80,18 +80,18 @@ public class ContaminationUtil {
         double res = ((int)(10000D - ContaminationUtil.calculateRadiationMod(player) * 10000D)) / 100D;
         double resKoeff = ((int)(HazmatRegistry.getResistance(player) * 100D)) / 100D;
 
-        String playerRadPrefix = getPrefixFromRadPlayer(playerRad);
-        String chunkPrefix = getPrefixFromRad(chunkRad);
-        String envPrefix = getPrefixFromRad(envRad);
-        String resPrefix = getPrefixFromRadResistance(resKoeff);
+        ChatFormatting playerRadColor = getPrefixFromRadPlayer(playerRad);
+        ChatFormatting chunkColor = getPrefixFromRad(chunkRad);
+        ChatFormatting envColor = getPrefixFromRad(envRad);
+        ChatFormatting resColor = getPrefixFromRadResistance(resKoeff);
 
-        String rad = I18nUtil.resolveKey("rad");
-        String rads = rad + "/" + I18nUtil.resolveKey("s");
+        // Units travel as translatable components and resolve on the client: this runs on
+        // the server, where I18nUtil has no language and returns the I18nServer sentinel.
         player.displayClientMessage(Component.translatable("geiger.title").withStyle(ChatFormatting.GOLD), false);
-        player.displayClientMessage(Component.translatable("geiger.chunkRad", chunkPrefix + (chunkRad + " " + rads)).withStyle(ChatFormatting.YELLOW), false);
-        player.displayClientMessage(Component.translatable("geiger.envRad", envPrefix + (envRad + " " + rads)).withStyle(ChatFormatting.YELLOW), false);
-        player.displayClientMessage(Component.translatable("geiger.playerRad", playerRadPrefix + (playerRad + " " + rad)).withStyle(ChatFormatting.YELLOW), false);
-        player.displayClientMessage(Component.translatable("geiger.playerRes", resPrefix + res + "% (" + resKoeff + ")").withStyle(ChatFormatting.YELLOW), false);
+        player.displayClientMessage(Component.translatable("geiger.chunkRad", Component.literal(chunkRad + " ").append(radsPerSecond()).withStyle(chunkColor)).withStyle(ChatFormatting.YELLOW), false);
+        player.displayClientMessage(Component.translatable("geiger.envRad", Component.literal(envRad + " ").append(radsPerSecond()).withStyle(envColor)).withStyle(ChatFormatting.YELLOW), false);
+        player.displayClientMessage(Component.translatable("geiger.playerRad", Component.literal(playerRad + " ").append(Component.translatable("rad")).withStyle(playerRadColor)).withStyle(ChatFormatting.YELLOW), false);
+        player.displayClientMessage(Component.translatable("geiger.playerRes", Component.literal(res + "% (" + resKoeff + ")").withStyle(resColor)).withStyle(ChatFormatting.YELLOW), false);
     }
 
     public static void printDosimeterData(Player player) {
@@ -103,11 +103,10 @@ public class ContaminationUtil {
             limit = true;
         }
 
-        String envPrefix = getPrefixFromRad(env);
+        ChatFormatting envColor = getPrefixFromRad(env);
 
-        String rads = I18nUtil.resolveKey("rad") + "/" + I18nUtil.resolveKey("s");
         player.displayClientMessage(Component.translatable("geiger.title.dosimeter").withStyle(ChatFormatting.GOLD), false);
-        player.displayClientMessage(Component.translatable("geiger.envRad", envPrefix + (limit ? ">" : "") + env + " " + rads).withStyle(ChatFormatting.YELLOW), false);
+        player.displayClientMessage(Component.translatable("geiger.envRad", Component.literal((limit ? ">" : "") + env + " ").append(radsPerSecond()).withStyle(envColor)).withStyle(ChatFormatting.YELLOW), false);
     }
 
     public static void printDiagnosticData(Player player) {
@@ -115,31 +114,38 @@ public class ContaminationUtil {
         double halfLife = ((int)((1D - Math.pow(0.5, digamma)) * 10000)) / 100D; // hl 3 confirmed??
 
         player.displayClientMessage(Component.translatable("digamma.title").withStyle(ChatFormatting.DARK_PURPLE), false);
-        player.displayClientMessage(Component.translatable("digamma.playerDigamma", ChatFormatting.RED + (digamma + " " + I18nUtil.resolveKey("drx"))).withStyle(ChatFormatting.LIGHT_PURPLE), false);
+        player.displayClientMessage(Component.translatable("digamma.playerDigamma", Component.literal(digamma + " ").append(Component.translatable("drx")).withStyle(ChatFormatting.RED)).withStyle(ChatFormatting.LIGHT_PURPLE), false);
         player.displayClientMessage(Component.translatable("digamma.playerHealth", ChatFormatting.RED + (halfLife + " %")).withStyle(ChatFormatting.LIGHT_PURPLE), false);
         player.displayClientMessage(Component.translatable("digamma.playerRes", ChatFormatting.BLUE + "N/A").withStyle(ChatFormatting.LIGHT_PURPLE), false);
     }
 
-    public static String getPrefixFromRad(double rads) {
-        if(rads == 0) return ChatFormatting.GREEN.toString();
-        else if(rads < 1) return ChatFormatting.YELLOW.toString();
-        else if(rads < 10) return ChatFormatting.GOLD.toString();
-        else if(rads < 100) return ChatFormatting.RED.toString();
-        else if(rads < 1000) return ChatFormatting.DARK_RED.toString();
-        return ChatFormatting.DARK_GRAY.toString();
+    // "RAD/s" with both units as translation keys, so the receiving client resolves them.
+    private static MutableComponent radsPerSecond() {
+        return Component.translatable("rad").append("/").append(Component.translatable("s"));
     }
 
-    public static String getPrefixFromRadPlayer(double rads) {
-        if(rads < 200) return ChatFormatting.GREEN.toString();
-        else if(rads < 400) return ChatFormatting.YELLOW.toString();
-        else if(rads < 600) return ChatFormatting.GOLD.toString();
-        else if(rads < 800) return ChatFormatting.RED.toString();
-        else if(rads < 1000) return ChatFormatting.DARK_RED.toString();
-        return ChatFormatting.DARK_GRAY.toString();
+    // The colour is applied as a style on the whole readout (number and unit), which is
+    // what the original's legacy "§x" prefix did to the concatenated string.
+    public static ChatFormatting getPrefixFromRad(double rads) {
+        if(rads == 0) return ChatFormatting.GREEN;
+        else if(rads < 1) return ChatFormatting.YELLOW;
+        else if(rads < 10) return ChatFormatting.GOLD;
+        else if(rads < 100) return ChatFormatting.RED;
+        else if(rads < 1000) return ChatFormatting.DARK_RED;
+        return ChatFormatting.DARK_GRAY;
     }
-    public static String getPrefixFromRadResistance(double koeff) {
-        if(koeff > 0) return ChatFormatting.GREEN.toString();
-        return ChatFormatting.WHITE.toString();
+
+    public static ChatFormatting getPrefixFromRadPlayer(double rads) {
+        if(rads < 200) return ChatFormatting.GREEN;
+        else if(rads < 400) return ChatFormatting.YELLOW;
+        else if(rads < 600) return ChatFormatting.GOLD;
+        else if(rads < 800) return ChatFormatting.RED;
+        else if(rads < 1000) return ChatFormatting.DARK_RED;
+        return ChatFormatting.DARK_GRAY;
+    }
+    public static ChatFormatting getPrefixFromRadResistance(double koeff) {
+        if(koeff > 0) return ChatFormatting.GREEN;
+        return ChatFormatting.WHITE;
     }
 
     public enum HazardType {

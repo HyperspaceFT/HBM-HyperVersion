@@ -529,7 +529,7 @@ public class CrucibleAlloyGameTests {
             Item[] ingots = { NtmItems.INGOT_STEEL.get(), NtmItems.INGOT_DESH.get(), NtmItems.INGOT_FERROURANIUM.get(), NtmItems.INGOT_SATURNITE.get(), NtmItems.INGOT_BISMUTH_BRONZE.get(),
                     NtmItems.INGOT_ARSENIC_BRONZE.get(), NtmItems.INGOT_SCHRABIDATE.get(), NtmItems.INGOT_DINEUTRONIUM.get(), NtmItems.INGOT_OSMIRIDIUM.get() };
             List<AnvilSmithingRecipe> smithing = AnvilRecipes.getSmithing();
-            check(smithing.size() == 23, "smithing has " + smithing.size() + " recipes, expected 18 upgrades + 5 special (start)");
+            check(smithing.size() == 37, "smithing has " + smithing.size() + " recipes, expected 18 upgrades + 5 special + 14 Goal27D mold rows"); // Goal27D: 14 AnvilSmithingMoldRecipe rows appended after the 23
             for(int t = 0; t < targets.length; t++) {
                 for(int a = 0; a < 2; a++) {
                     AnvilSmithingRecipe r = smithing.get(t * 2 + a);

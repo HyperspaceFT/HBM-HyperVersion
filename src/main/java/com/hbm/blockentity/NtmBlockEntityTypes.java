@@ -214,6 +214,30 @@ public class NtmBlockEntityTypes {
                             FoundryMoldBlockEntity::new,
                             NtmBlocks.FOUNDRY_MOLD.get())
                     .build(null));
+    public static final Supplier<BlockEntityType<FoundryChannelBlockEntity>> FOUNDRY_CHANNEL = BLOCK_ENTITY_TYPES.register(
+            "foundry_channel",
+            () -> BlockEntityType.Builder.of(
+                            FoundryChannelBlockEntity::new,
+                            NtmBlocks.FOUNDRY_CHANNEL.get())
+                    .build(null));
+    public static final Supplier<BlockEntityType<FoundryTankBlockEntity>> FOUNDRY_TANK = BLOCK_ENTITY_TYPES.register(
+            "foundry_tank",
+            () -> BlockEntityType.Builder.of(
+                            FoundryTankBlockEntity::new,
+                            NtmBlocks.FOUNDRY_TANK.get())
+                    .build(null));
+    public static final Supplier<BlockEntityType<FoundryOutletBlockEntity>> FOUNDRY_OUTLET = BLOCK_ENTITY_TYPES.register(
+            "foundry_outlet",
+            () -> BlockEntityType.Builder.of(
+                            FoundryOutletBlockEntity::new,
+                            NtmBlocks.FOUNDRY_OUTLET.get())
+                    .build(null));
+    public static final Supplier<BlockEntityType<FoundryBasinBlockEntity>> FOUNDRY_BASIN = BLOCK_ENTITY_TYPES.register(
+            "foundry_basin",
+            () -> BlockEntityType.Builder.of(
+                            FoundryBasinBlockEntity::new,
+                            NtmBlocks.FOUNDRY_BASIN.get())
+                    .build(null));
 
     public static final Supplier<BlockEntityType<MachineBlastFurnaceBlockEntity>> MACHINE_BLAST_FURNACE = BLOCK_ENTITY_TYPES.register(
             "machine_blast_furnace",

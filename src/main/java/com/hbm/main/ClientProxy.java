@@ -213,6 +213,10 @@ public class ClientProxy extends ServerProxy {
         BlockEntityRenderers.register(NtmBlockEntityTypes.FRACTION_SPACER.get(), new RenderSpacer());
         BlockEntityRenderers.register(NtmBlockEntityTypes.FURNACE_COMBINATION.get(), new RenderFurnaceCombination());
         BlockEntityRenderers.register(NtmBlockEntityTypes.MACHINE_CRUCIBLE.get(), new RenderCrucible());
+        BlockEntityRenderers.register(NtmBlockEntityTypes.FOUNDRY_MOLD.get(), new RenderFoundry());
+        BlockEntityRenderers.register(NtmBlockEntityTypes.FOUNDRY_BASIN.get(), new RenderFoundry());
+        BlockEntityRenderers.register(NtmBlockEntityTypes.FOUNDRY_CHANNEL.get(), new RenderFoundry());
+        BlockEntityRenderers.register(NtmBlockEntityTypes.FOUNDRY_TANK.get(), new RenderFoundry());
         BlockEntityRenderers.register(NtmBlockEntityTypes.MACHINE_BLAST_FURNACE.get(), new RenderBlastFurnace());
         BlockEntityRenderers.register(NtmBlockEntityTypes.MACHINE_WOOD_BURNER.get(), new RenderWoodBurner());
         BlockEntityRenderers.register(NtmBlockEntityTypes.MACHINE_CENTRIFUGE.get(), new RenderCentrifuge());

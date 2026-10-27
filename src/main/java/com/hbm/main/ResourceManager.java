@@ -61,6 +61,7 @@ public class ResourceManager {
     public static final ResourceLocation FURNACE_COMBINATION_TEX = NuclearTechMod.withDefaultNamespace("textures/models/machines/combination_oven.png");
     public static final ResourceLocation MACHINE_CRUCIBLE_TEX = NuclearTechMod.withDefaultNamespace("textures/models/machines/crucible_heat.png");
     public static final ResourceLocation MACHINE_CRUCIBLE_LAVA_TEX = NuclearTechMod.withDefaultNamespace("textures/models/machines/lava.png");
+    public static final ResourceLocation FOUNDRY_LAVA_TEX = NuclearTechMod.withDefaultNamespace("textures/models/machines/lava_gray.png");
     public static final ResourceLocation BLAST_FURNACE_TEX = NuclearTechMod.withDefaultNamespace("textures/models/machines/blast_furnace.png");
     public static final ResourceLocation WOOD_BURNER_TEX = NuclearTechMod.withDefaultNamespace("textures/models/machines/wood_burner.png");
     public static final ResourceLocation CENTRIFUGE_TEX = NuclearTechMod.withDefaultNamespace("textures/models/machines/centrifuge_new.png");

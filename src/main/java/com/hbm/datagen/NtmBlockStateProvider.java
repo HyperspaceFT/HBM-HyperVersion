@@ -341,6 +341,10 @@ public class NtmBlockStateProvider extends BlockStateProvider {
         this.particleOnlyBlock(NtmBlocks.FURNACE_COMBINATION, modLoc("block/block_steel"));
         this.particleOnlyBlock(NtmBlocks.MACHINE_CRUCIBLE, modLoc("block/block_steel"));
         this.registerFoundryMold();
+        this.registerFoundryChannel();
+        this.registerFoundryTank();
+        this.registerFoundryOutlet();
+        this.registerFoundryBasin();
         this.particleOnlyBlock(NtmBlocks.MACHINE_BLAST_FURNACE, modLoc("block/block_steel"));
         this.particleOnlyBlock(NtmBlocks.MACHINE_WOOD_BURNER, modLoc("block/block_steel"));
         this.particleOnlyBlock(NtmBlocks.MACHINE_CENTRIFUGE, modLoc("block/block_steel"));
@@ -823,6 +827,155 @@ public class NtmBlockStateProvider extends BlockStateProvider {
                 .face(Direction.SOUTH).texture("#side").end()
                 .face(Direction.WEST).texture("#side").end()
                 .face(Direction.EAST).texture("#side").end().end();
+    }
+
+    private static final Direction[] FOUNDRY_SIDES = {Direction.NORTH, Direction.EAST, Direction.SOUTH, Direction.WEST};
+
+    private BlockModelBuilder foundryModel(String name, String prefix) {
+        return models().withExistingParent(name, mcLoc("block/block"))
+                .renderType("cutout")
+                .texture("top", modLoc("block/" + prefix + "_top"))
+                .texture("side", modLoc("block/" + prefix + "_side"))
+                .texture("bottom", modLoc("block/" + prefix + "_bottom"))
+                .texture("inner", modLoc("block/" + prefix + "_inner"))
+                .texture("particle", modLoc("block/" + prefix + "_side"));
+    }
+
+    /**
+     * Adds an element given in its north-facing layout, turned clockwise (seen from above) by quarter * 90 degrees. Coordinates are
+     * turned instead of rotating the model so the faces keep upstream's world-aligned UVs. faces: Direction, texture pairs.
+     */
+    private void foundryElement(BlockModelBuilder model, int quarter, float x1, float y1, float z1, float x2, float y2, float z2, Object... faces) {
+        float ax = x1, az = z1, bx = x2, bz = z2;
+        for(int i = 0; i < quarter; i++) {
+            float nax = 16 - az, naz = ax, nbx = 16 - bz, nbz = bx;
+            ax = nax; az = naz; bx = nbx; bz = nbz;
+        }
+        var element = model.element().from(Math.min(ax, bx), y1, Math.min(az, bz)).to(Math.max(ax, bx), y2, Math.max(az, bz));
+        for(int f = 0; f < faces.length; f += 2) {
+            Direction dir = (Direction) faces[f];
+            for(int i = 0; i < quarter && dir.getAxis().isHorizontal(); i++) dir = dir.getClockWise();
+            element.face(dir).texture((String) faces[f + 1]).end();
+        }
+        element.end();
+    }
+
+    /** Upstream RenderFoundryChannel: the centre floor and, per side, the open arm (floor and two 1 px walls) or the end wall. */
+    private void registerFoundryChannel() {
+        Block block = NtmBlocks.FOUNDRY_CHANNEL.get();
+        MultiPartBlockStateBuilder builder = getMultipartBuilder(block);
+
+        BlockModelBuilder center = this.foundryModel("foundry_channel_center", "foundry_channel");
+        this.foundryChannelCenter(center);
+        builder.part().modelFile(center).addModel().end();
+
+        BlockModelBuilder inventory = this.foundryModel("foundry_channel_inventory", "foundry_channel");
+        this.foundryChannelCenter(inventory);
+
+        for(int quarter = 0; quarter < 4; quarter++) {
+            Direction side = FOUNDRY_SIDES[quarter];
+            String suffix = side.getSerializedName();
+
+            BlockModelBuilder arm = this.foundryModel("foundry_channel_arm_" + suffix, "foundry_channel");
+            this.foundryChannelArm(arm, quarter, false);
+            this.foundryChannelArm(inventory, quarter, true);
+            BlockModelBuilder end = this.foundryModel("foundry_channel_end_" + suffix, "foundry_channel");
+            this.foundryElement(end, quarter, 5, 0, 5, 11, 8, 6, Direction.UP, "#top", Direction.NORTH, "#side", Direction.SOUTH, "#inner");
+
+            builder.part().modelFile(arm).addModel().condition(com.hbm.blocks.machine.FoundryChannelBlock.getProperty(side), true).end();
+            builder.part().modelFile(end).addModel().condition(com.hbm.blocks.machine.FoundryChannelBlock.getProperty(side), false).end();
+        }
+
+        this.simpleBlockItem(block, inventory);
+    }
+
+    private void foundryChannelCenter(BlockModelBuilder model) {
+        this.foundryElement(model, 0, 6, 2, 6, 10, 2, 10, Direction.UP, "#bottom");
+        this.foundryElement(model, 0, 5, 0, 5, 11, 0, 11, Direction.DOWN, "#bottom");
+    }
+
+    /** The inventory variant also closes the arm ends at the block edge, like upstream renderInventoryBlock. */
+    private void foundryChannelArm(BlockModelBuilder model, int quarter, boolean inventory) {
+        if(inventory) {
+            this.foundryElement(model, quarter, 5, 0, 0, 11, 2, 6, Direction.UP, "#bottom", Direction.DOWN, "#bottom", Direction.NORTH, "#side");
+            this.foundryElement(model, quarter, 5, 0, 0, 6, 8, 6, Direction.UP, "#top", Direction.WEST, "#side", Direction.EAST, "#inner", Direction.NORTH, "#side");
+            this.foundryElement(model, quarter, 10, 0, 0, 11, 8, 6, Direction.UP, "#top", Direction.WEST, "#inner", Direction.EAST, "#side", Direction.NORTH, "#side");
+        } else {
+            this.foundryElement(model, quarter, 5, 0, 0, 11, 2, 6, Direction.UP, "#bottom", Direction.DOWN, "#bottom");
+            this.foundryElement(model, quarter, 5, 0, 0, 6, 8, 6, Direction.UP, "#top", Direction.WEST, "#side", Direction.EAST, "#inner");
+            this.foundryElement(model, quarter, 10, 0, 0, 11, 8, 6, Direction.UP, "#top", Direction.WEST, "#inner", Direction.EAST, "#side");
+        }
+    }
+
+    /**
+     * Upstream RenderFoundryTank for a tank without neighbours: 2 px floor and walls. Merging walls with neighbouring tanks and the
+     * upper/outlet side textures are not reproduced by this static model.
+     */
+    private void registerFoundryTank() {
+        BlockModelBuilder model = this.foundryModel("foundry_tank", "foundry_tank");
+        this.foundryElement(model, 0, 0, 0, 0, 16, 2, 16, Direction.UP, "#bottom", Direction.DOWN, "#bottom");
+        for(int quarter = 0; quarter < 4; quarter++) {
+            this.foundryElement(model, quarter, 0, 0, 0, 16, 16, 2, Direction.UP, "#top", Direction.NORTH, "#side", Direction.SOUTH, "#inner");
+        }
+        this.simpleBlockWithItem(NtmBlocks.FOUNDRY_TANK.get(), model);
+    }
+
+    /**
+     * Upstream RenderFoundryBasin.renderWorldBlock (RenderFoundryBasin.java:77-90): the floor at 2 px shows the bottom texture like the
+     * underside, the full-height walls the side texture outside, the inner texture inside and the top rim on top.
+     */
+    private void registerFoundryBasin() {
+        BlockModelBuilder model = this.foundryModel("foundry_basin", "foundry_basin");
+        this.foundryElement(model, 0, 0, 0, 0, 16, 2, 16, Direction.UP, "#bottom", Direction.DOWN, "#bottom");
+        for(int quarter = 0; quarter < 4; quarter++) {
+            this.foundryElement(model, quarter, 0, 0, 0, 16, 16, 2, Direction.UP, "#top", Direction.NORTH, "#side", Direction.SOUTH, "#inner");
+        }
+        this.simpleBlockWithItem(NtmBlocks.FOUNDRY_BASIN.get(), model);
+    }
+
+    /**
+     * Upstream RenderFoundryOutlet (meta 2 branch, facing north, turned for the other facings): the trough at the back edge with a
+     * raised inner floor and inner walls, plus the lock (CLOSED) and filter (FILTERED) planes.
+     */
+    private void registerFoundryOutlet() {
+        Block block = NtmBlocks.FOUNDRY_OUTLET.get();
+        MultiPartBlockStateBuilder builder = getMultipartBuilder(block);
+        ModelFile item = null;
+
+        for(int quarter = 0; quarter < 4; quarter++) {
+            Direction facing = FOUNDRY_SIDES[quarter];
+            String suffix = facing.getSerializedName();
+
+            BlockModelBuilder body = this.foundryModel("foundry_outlet_" + suffix, "foundry_outlet")
+                    .texture("front", modLoc("block/foundry_outlet_front"));
+            this.foundryElement(body, quarter, 5, 0, 10, 11, 8, 16, Direction.DOWN, "#bottom", Direction.UP, "#top",
+                    Direction.EAST, "#side", Direction.WEST, "#side", Direction.NORTH, "#front", Direction.SOUTH, "#front");
+            this.foundryElement(body, quarter, 5, 2, 10, 11, 2, 16, Direction.UP, "#bottom");
+            this.foundryElement(body, quarter, 6, 0, 10, 6, 8, 16, Direction.EAST, "#inner");
+            this.foundryElement(body, quarter, 10, 0, 10, 10, 8, 16, Direction.WEST, "#inner");
+
+            BlockModelBuilder lock = models().withExistingParent("foundry_outlet_lock_" + suffix, mcLoc("block/block"))
+                    .renderType("cutout")
+                    .texture("lock", modLoc("block/foundry_outlet_lock"))
+                    .texture("particle", modLoc("block/foundry_outlet_side"));
+            this.foundryElement(lock, quarter, 6, 1, 15, 10, 8, 15, Direction.NORTH, "#lock", Direction.SOUTH, "#lock");
+
+            BlockModelBuilder filter = models().withExistingParent("foundry_outlet_filter_" + suffix, mcLoc("block/block"))
+                    .renderType("cutout")
+                    .texture("filter", modLoc("block/foundry_outlet_filter"))
+                    .texture("particle", modLoc("block/foundry_outlet_side"));
+            this.foundryElement(filter, quarter, 6, 1, 15.5F, 10, 8, 15.5F, Direction.NORTH, "#filter", Direction.SOUTH, "#filter");
+
+            builder.part().modelFile(body).addModel().condition(com.hbm.blocks.machine.FoundryOutletBlock.FACING, facing).end();
+            builder.part().modelFile(lock).addModel().condition(com.hbm.blocks.machine.FoundryOutletBlock.FACING, facing)
+                    .condition(com.hbm.blocks.machine.FoundryOutletBlock.CLOSED, true).end();
+            builder.part().modelFile(filter).addModel().condition(com.hbm.blocks.machine.FoundryOutletBlock.FACING, facing)
+                    .condition(com.hbm.blocks.machine.FoundryOutletBlock.FILTERED, true).end();
+
+            if(facing == Direction.NORTH) item = body;
+        }
+
+        this.simpleBlockItem(block, item);
     }
 
     private void steelBeamBlock() {

@@ -7,6 +7,7 @@ import com.hbm.inventory.NtmTags;
 import com.hbm.inventory.RecipesCommon;
 import com.hbm.inventory.RecipesCommon.AStack;
 import com.hbm.inventory.RecipesCommon.ComparableStack;
+import com.hbm.inventory.material.MaterialShapes;
 import com.hbm.items.BoltItem;
 import com.hbm.items.CastPlateItem;
 import com.hbm.items.NtmItems;
@@ -128,6 +129,31 @@ public class AnvilRecipes {
         SMITHING_RECIPES.add(new AnvilSmithingCastMoldRecipe());
         SMITHING_RECIPES.add(new AnvilSmithingIngotMoldRecipe());
         SMITHING_RECIPES.add(new AnvilSmithingBladeMoldRecipe());
+        // The other mainline molds, upstream AnvilRecipes.java:98-126 in upstream order (ingot, cast plate and blade molds above).
+        addMoldSmithing(0, NtmItems.MOLD_NUGGET.get(), new ItemStack(Items.GOLD_NUGGET), MaterialShapes.NUGGET, 1);
+        addMoldSmithing(1, NtmItems.MOLD_BILLET.get(), new ItemStack(NtmItems.BILLET_URANIUM.get()), MaterialShapes.BILLET, 1);
+        addMoldSmithing(3, NtmItems.MOLD_PLATE.get(), new ItemStack(NtmItems.PLATE_IRON.get()), MaterialShapes.PLATE, 1);
+        addMoldSmithing(13, NtmItems.MOLD_PLATES_CAST.get(), MetaHelper.newStack(NtmItems.CAST_PLATE.get(), 3, CastPlateItem.Type.IRON.ordinal()), MaterialShapes.CASTPLATE, 3);
+        addMoldSmithing(4, NtmItems.MOLD_WIRE.get(), new ItemStack(NtmItems.WIRE_COPPER.get()), MaterialShapes.WIRE, 1);
+        SMITHING_RECIPES.add(new AnvilSmithingMoldRecipe(6, new ItemStack(NtmItems.MOLD_BLADES.get()),
+                List.of(new ItemStack(NtmItems.BLADES_STEEL.get())),
+                List.of(new ItemStack(NtmItems.BLADES_STEEL.get()), new ItemStack(NtmItems.BLADES_TITANIUM.get()))));
+        SMITHING_RECIPES.add(new AnvilSmithingMoldRecipe(7, new ItemStack(NtmItems.MOLD_STAMP.get()),
+                List.of(new ItemStack(NtmItems.STAMP_IRON_FLAT.get())),
+                List.of(new ItemStack(NtmItems.STAMP_STONE_FLAT.get()), new ItemStack(NtmItems.STAMP_IRON_FLAT.get()),
+                        new ItemStack(NtmItems.STAMP_STEEL_FLAT.get()), new ItemStack(NtmItems.STAMP_TITANIUM_FLAT.get()),
+                        new ItemStack(NtmItems.STAMP_OBSIDIAN_FLAT.get()))));
+        addMoldSmithing(8, NtmItems.MOLD_SHELL.get(), new ItemStack(NtmItems.SHELL_STEEL.get()), MaterialShapes.SHELL, 1);
+        addMoldSmithing(9, NtmItems.MOLD_PIPE.get(), new ItemStack(NtmItems.PIPE_STEEL.get()), MaterialShapes.PIPE, 1);
+        addMoldSmithing(10, NtmItems.MOLD_INGOTS.get(), new ItemStack(Items.IRON_INGOT, 9), MaterialShapes.INGOT, 9);
+        addMoldSmithing(11, NtmItems.MOLD_PLATES.get(), new ItemStack(NtmItems.PLATE_IRON.get(), 9), MaterialShapes.PLATE, 9);
+        addMoldSmithing(12, NtmItems.MOLD_BLOCK.get(), new ItemStack(Items.IRON_BLOCK), MaterialShapes.BLOCK, 1);
+        addMoldSmithing(20, NtmItems.MOLD_WIRE_DENSE.get(), MetaHelper.newStack(NtmItems.WIRE_DENSE.get(), 1, WireDenseItem.Type.RED_COPPER.meta), MaterialShapes.DENSEWIRE, 1);
+        addMoldSmithing(21, NtmItems.MOLD_WIRES_DENSE.get(), MetaHelper.newStack(NtmItems.WIRE_DENSE.get(), 9, WireDenseItem.Type.RED_COPPER.meta), MaterialShapes.DENSEWIRE, 9);
+    }
+
+    private static void addMoldSmithing(int moldId, ItemLike mold, ItemStack demo, MaterialShapes shape, int count) {
+        SMITHING_RECIPES.add(new AnvilSmithingMoldRecipe(moldId, new ItemStack(mold), List.of(demo), shape, count));
     }
 
     private static void addUpgrade(NTMAnvilBlock.Variant input, NTMAnvilBlock.Variant output, ItemLike ingredient, int amount) {

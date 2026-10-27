@@ -13,6 +13,7 @@ import com.hbm.inventory.recipes.CopperCastingRecipes;
 import com.hbm.inventory.recipes.CrucibleRecipe;
 import com.hbm.inventory.recipes.CrucibleRecipes;
 import com.hbm.items.CopperScrapsItem;
+import com.hbm.util.CrucibleUtil;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.core.HolderLookup;
@@ -25,13 +26,8 @@ import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.inventory.AbstractContainerMenu;
 import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.level.ClipContext;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.AABB;
-import net.minecraft.world.phys.BlockHitResult;
-import net.minecraft.world.phys.HitResult;
-import net.minecraft.world.phys.Vec3;
-import net.minecraft.world.phys.shapes.CollisionContext;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -152,27 +148,17 @@ public class MachineCrucibleBlockEntity extends MachineBaseBlockEntity implement
     }
 
     /**
-     * Upstream CrucibleUtil.pourFullStack in safe mode: the first material the mold under the spout accepts,
-     * at most 24 quanta per tick. A blocked, absent or full receiver keeps the material in the crucible.
+     * Upstream CrucibleUtil.pourFullStack in safe mode: a ray 6 blocks down from the spout; the first SMELTABLE material the
+     * ICrucibleAcceptor it hits (foundry_mold, channel, tank) accepts on the hit side, at most 24 quanta per tick.
+     * A blocked, absent or full receiver keeps the material in the crucible.
      */
     private void pour(Direction direction, List<Mats.MaterialStack> stacks) {
-        if(stacks.isEmpty()) return;
-        Vec3 start = new Vec3(this.worldPosition.getX() + 0.5D + direction.getStepX() * 1.875D,
+        Mats.MaterialStack poured = CrucibleUtil.pourFullStack(this.level,
+                this.worldPosition.getX() + 0.5D + direction.getStepX() * 1.875D,
                 this.worldPosition.getY() + 0.25D,
-                this.worldPosition.getZ() + 0.5D + direction.getStepZ() * 1.875D);
-        BlockHitResult hit = this.level.clip(new ClipContext(start, start.add(0, -6, 0),
-                ClipContext.Block.COLLIDER, ClipContext.Fluid.ANY, CollisionContext.empty()));
-        if(hit.getType() != HitResult.Type.BLOCK || hit.getDirection() != Direction.UP) return;
-        if(!(this.level.getBlockEntity(hit.getBlockPos()) instanceof FoundryMoldBlockEntity mold)) return;
-        for(Mats.MaterialStack stack : stacks) {
-            if(stack.material == null || stack.amount <= 0 || stack.material.smeltable != NTMMaterial.SmeltingBehavior.SMELTABLE) continue;
-            int accepted = mold.pour(new Mats.MaterialStack(stack.material, Math.min(stack.amount, CopperCastingRecipes.POUR_QUANTA)));
-            if(accepted > 0) {
-                stack.amount -= accepted;
-                this.stacksChanged = true;
-                return;
-            }
-        }
+                this.worldPosition.getZ() + 0.5D + direction.getStepZ() * 1.875D,
+                6, stacks, CopperCastingRecipes.POUR_QUANTA);
+        if(poured != null) this.stacksChanged = true;
     }
 
     public Direction getRecipeDirection() {

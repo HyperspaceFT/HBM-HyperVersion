@@ -405,9 +405,24 @@ public class NtmItems {
     public static final DeferredItem<Item> CAST_PLATE_WELDED = ITEMS.register("cast_plate_welded", () -> new CastPlateItem(new Item.Properties(), true));
     public static final DeferredItem<Item> CAST_PLATE = ITEMS.register("cast_plate", () -> new CastPlateItem(new Item.Properties(), false));
     public static final DeferredItem<Item> MOLD_BASE = ITEMS.register("mold_base", () -> new Item(new Item.Properties().stacksTo(1)));
-    public static final DeferredItem<Item> MOLD_PLATE_CAST = ITEMS.register("mold_plate_cast", () -> new Item(new Item.Properties().stacksTo(1)));
-    public static final DeferredItem<Item> MOLD_BLADE = ITEMS.register("mold_blade", () -> new Item(new Item.Properties().stacksTo(1)));
-    public static final DeferredItem<Item> MOLD_INGOT = ITEMS.register("mold_ingot", () -> new Item(new Item.Properties().stacksTo(1)));
+    // Foundry molds: one item per upstream ItemMold meta; the second argument is upstream's mold ID (MoldItem's table).
+    public static final DeferredItem<Item> MOLD_PLATE_CAST = ITEMS.register("mold_plate_cast", () -> new MoldItem(new Item.Properties().stacksTo(1), 19));
+    public static final DeferredItem<Item> MOLD_BLADE = ITEMS.register("mold_blade", () -> new MoldItem(new Item.Properties().stacksTo(1), 5));
+    public static final DeferredItem<Item> MOLD_INGOT = ITEMS.register("mold_ingot", () -> new MoldItem(new Item.Properties().stacksTo(1), 2));
+    public static final DeferredItem<Item> MOLD_NUGGET = ITEMS.register("mold_nugget", () -> new MoldItem(new Item.Properties().stacksTo(1), 0));
+    public static final DeferredItem<Item> MOLD_BILLET = ITEMS.register("mold_billet", () -> new MoldItem(new Item.Properties().stacksTo(1), 1));
+    public static final DeferredItem<Item> MOLD_PLATE = ITEMS.register("mold_plate", () -> new MoldItem(new Item.Properties().stacksTo(1), 3));
+    public static final DeferredItem<Item> MOLD_WIRE = ITEMS.register("mold_wire", () -> new MoldItem(new Item.Properties().stacksTo(1), 4));
+    public static final DeferredItem<Item> MOLD_WIRE_DENSE = ITEMS.register("mold_wire_dense", () -> new MoldItem(new Item.Properties().stacksTo(1), 20));
+    public static final DeferredItem<Item> MOLD_BLADES = ITEMS.register("mold_blades", () -> new MoldItem(new Item.Properties().stacksTo(1), 6));
+    public static final DeferredItem<Item> MOLD_STAMP = ITEMS.register("mold_stamp", () -> new MoldItem(new Item.Properties().stacksTo(1), 7));
+    public static final DeferredItem<Item> MOLD_SHELL = ITEMS.register("mold_shell", () -> new MoldItem(new Item.Properties().stacksTo(1), 8));
+    public static final DeferredItem<Item> MOLD_PIPE = ITEMS.register("mold_pipe", () -> new MoldItem(new Item.Properties().stacksTo(1), 9));
+    public static final DeferredItem<Item> MOLD_INGOTS = ITEMS.register("mold_ingots", () -> new MoldItem(new Item.Properties().stacksTo(1), 10));
+    public static final DeferredItem<Item> MOLD_PLATES = ITEMS.register("mold_plates", () -> new MoldItem(new Item.Properties().stacksTo(1), 11));
+    public static final DeferredItem<Item> MOLD_PLATES_CAST = ITEMS.register("mold_plates_cast", () -> new MoldItem(new Item.Properties().stacksTo(1), 13));
+    public static final DeferredItem<Item> MOLD_WIRES_DENSE = ITEMS.register("mold_wires_dense", () -> new MoldItem(new Item.Properties().stacksTo(1), 21));
+    public static final DeferredItem<Item> MOLD_BLOCK = ITEMS.register("mold_block", () -> new MoldItem(new Item.Properties().stacksTo(1), 12));
     public static final DeferredItem<Item> SCRAPS = ITEMS.register("scraps", () -> new CopperScrapsItem(new Item.Properties().stacksTo(1)));
     public static final DeferredItem<Item> PIPES_STEEL = ITEMS.register("pipes_steel", () -> new Item(new Item.Properties()));
     public static final DeferredItem<Item> CRT_DISPLAY = ITEMS.register("crt_display", () -> new Item(new Item.Properties()));

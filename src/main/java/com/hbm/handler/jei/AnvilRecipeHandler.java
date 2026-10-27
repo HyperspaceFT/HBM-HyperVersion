@@ -67,7 +67,12 @@ public class AnvilRecipeHandler implements IRecipeCategory<AnvilSmithingRecipe> 
                 .addItemStack(recipe.getSimpleOutput())
                 .setOutputSlotBackground();
 
-        builder.createFocusLink(left, right);
+        // JEI requires linked slots to hold the same number of ingredients; the tier-4
+        // rows pair a 4- or 2-entry slot with a single stack, and an unconditional link
+        // throws IllegalArgumentException ("This recipe crashed").
+        if(recipe.getLeft().size() == recipe.getRight().size()) {
+            builder.createFocusLink(left, right);
+        }
     }
 
     @Override

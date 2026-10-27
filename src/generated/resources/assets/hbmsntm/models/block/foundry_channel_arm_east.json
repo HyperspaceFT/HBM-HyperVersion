@@ -1,0 +1,79 @@
+{
+  "parent": "minecraft:block/block",
+  "elements": [
+    {
+      "faces": {
+        "down": {
+          "texture": "#bottom"
+        },
+        "up": {
+          "texture": "#bottom"
+        }
+      },
+      "from": [
+        10,
+        0,
+        5
+      ],
+      "to": [
+        16,
+        2,
+        11
+      ]
+    },
+    {
+      "faces": {
+        "north": {
+          "texture": "#side"
+        },
+        "south": {
+          "texture": "#inner"
+        },
+        "up": {
+          "texture": "#top"
+        }
+      },
+      "from": [
+        10,
+        0,
+        5
+      ],
+      "to": [
+        16,
+        8,
+        6
+      ]
+    },
+    {
+      "faces": {
+        "north": {
+          "texture": "#inner"
+        },
+        "south": {
+          "texture": "#side"
+        },
+        "up": {
+          "texture": "#top"
+        }
+      },
+      "from": [
+        10,
+        0,
+        10
+      ],
+      "to": [
+        16,
+        8,
+        11
+      ]
+    }
+  ],
+  "render_type": "minecraft:cutout",
+  "textures": {
+    "bottom": "hbmsntm:block/foundry_channel_bottom",
+    "inner": "hbmsntm:block/foundry_channel_inner",
+    "particle": "hbmsntm:block/foundry_channel_side",
+    "side": "hbmsntm:block/foundry_channel_side",
+    "top": "hbmsntm:block/foundry_channel_top"
+  }
+}
