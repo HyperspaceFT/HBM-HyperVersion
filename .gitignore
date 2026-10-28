@@ -30,3 +30,6 @@ src/generated/resources/.cache/
 
 # Local migration planning and acceptance records
 /migration/
+
+# Local Claude Code harness (project subagents and skills)
+/.claude/

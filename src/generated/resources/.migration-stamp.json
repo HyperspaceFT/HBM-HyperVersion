@@ -1,10 +1,10 @@
 {
     "version": 1,
-    "inputFingerprint": "959c9a2cbeb48a3c6c7a2026d540238d2edb93c2f31da7891670b28fdf84688d",
+    "inputFingerprint": "2de72bdeeb3e232bacddf484b4d0bc9af73043155a47661a457df211f59a7204",
     "inputs": {
         "build.gradle": "4989a1fc5f845f58c291641ff88715e3ad60235da71d72b6e58e251eadba75ef",
         "gradle.lockfile": "bc2fc40eb1bd76a2841d99debb9401ac270350a110395a7de1f3a27412e9463a",
-        "gradle.properties": "114aa9db9eee2f9babdd590e22799592c79cc163eac055f6ac271a25321e25f1",
+        "gradle.properties": "50aa600c113dfc6a4411a58427f6bfdcbc91afe26bc60c86b4d009d8c77ca633",
         "gradle/migration-resources.gradle": "3176fc435b16b546bc6ed33443fa89538dba268eac11d544e913a1cb4902dcd1",
         "gradle/wrapper/gradle-wrapper.properties": "05fcb55a155233ee632da57149d1ba3cd39a001701ae00e0c20782fbaf6c378b",
         "settings.gradle": "7101376da381a131c051b23a7851ef80f6c7ce16b9967685aba5a868bb81ddb6",
