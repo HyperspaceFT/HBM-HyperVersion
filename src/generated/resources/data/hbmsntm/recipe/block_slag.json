@@ -1,0 +1,22 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "key": {
+    "#": {
+      "type": "neoforge:components",
+      "components": {
+        "hbmsntm:meta": 41
+      },
+      "items": "hbmsntm:ingot_raw"
+    }
+  },
+  "pattern": [
+    "###",
+    "###",
+    "###"
+  ],
+  "result": {
+    "count": 1,
+    "id": "hbmsntm:block_slag"
+  }
+}

@@ -205,6 +205,8 @@ public class NtmItems {
     public static final DeferredItem<Item> BRIQUETTE_COAL = ITEMS.register("briquette_coal", () -> new FuelItem(new Item.Properties(), 2400));
     public static final DeferredItem<Item> BRIQUETTE_LIGNITE = ITEMS.register("briquette_lignite", () -> new FuelItem(new Item.Properties(), 1800));
     public static final DeferredItem<Item> BRIQUETTE_WOOD = ITEMS.register("briquette_wood", () -> new FuelItem(new Item.Properties(), 1600));
+    // Original FuelHandler.java:41: 4800 ticks
+    public static final DeferredItem<Item> COAL_INFERNAL = ITEMS.register("coal_infernal", () -> new FuelItem(new Item.Properties(), 4800));
 
     // Powders
     public static final DeferredItem<Item> POWDER_IRON = ITEMS.register("powder_iron", () -> new Item(new Item.Properties()));
@@ -457,12 +459,12 @@ public class NtmItems {
     public static final DeferredItem<Item> BIOMASS = ITEMS.register("biomass", () -> new Item(new Item.Properties()));
     public static final DeferredItem<Item> PELLET_CHARGED = ITEMS.register("pellet_charged", () -> new Item(new Item.Properties()));
     public static final DeferredItem<Item> GLYPHID_MEAT = ITEMS.register("glyphid_meat", () -> new Item(new Item.Properties().food(NtmFoods.GLYPHID_MEAT)));
-    public static final DeferredItem<Item> SOLID_FUEL = ITEMS.register("solid_fuel", () -> new Item(new Item.Properties()));
+    public static final DeferredItem<Item> SOLID_FUEL = ITEMS.register("solid_fuel", () -> new FuelItem(new Item.Properties(), 3200));
     public static final DeferredItem<Item> PISTON_SET = ITEMS.register("piston_set", () -> new PistonSetItem(new Item.Properties()));
     public static final DeferredItem<Item> CANISTER_EMPTY = ITEMS.register("canister_empty", () -> new Item(new Item.Properties()));
     public static final DeferredItem<Item> CANISTER_NAPALM = ITEMS.register("canister_napalm", () -> new Item(new Item.Properties()));
     public static final DeferredItem<Item> FUEL_ADDITIVE = ITEMS.register("fuel_additive", () -> new FuelAdditiveItem(new Item.Properties()));
-    public static final DeferredItem<Item> ROCKET_FUEL = ITEMS.register("rocket_fuel", () -> new Item(new Item.Properties()));
+    public static final DeferredItem<Item> ROCKET_FUEL = ITEMS.register("rocket_fuel", () -> new FuelItem(new Item.Properties(), 6400));
     public static final DeferredItem<Item> CORDITE = ITEMS.register("cordite", () -> new Item(new Item.Properties()));
     public static final DeferredItem<Item> CHOCOLATE = ITEMS.register("chocolate", () -> new Item(new Item.Properties().food(NtmFoods.CHOCOLATE)));
     public static final DeferredItem<Item> BALL_DYNAMITE = ITEMS.register("ball_dynamite", () -> new Item(new Item.Properties()));
@@ -520,6 +522,8 @@ public class NtmItems {
     public static final DeferredItem<Item> OIL_TAR_PARAFFIN = ITEMS.register("oil_tar_paraffin", () -> new Item(new Item.Properties()));
     public static final DeferredItem<Item> OIL_TAR_WOOD = ITEMS.register("oil_tar_wood", () -> new Item(new Item.Properties()));
     public static final DeferredItem<Item> OIL_TAR_WAX = ITEMS.register("oil_tar_wax", () -> new Item(new Item.Properties()));
+    public static final DeferredItem<Item> PLANT_ITEM_MUSTARDWILLOW = ITEMS.register("plant_item_mustardwillow", () -> new Item(new Item.Properties()));
+    public static final DeferredItem<Item> SCRAP_OIL = ITEMS.register("scrap_oil", () -> new Item(new Item.Properties()));
     public static final DeferredItem<Item> DUST = ITEMS.register("dust", () -> new Item(new Item.Properties()));
     public static final DeferredItem<Item> NUCLEAR_WASTE = ITEMS.register("nuclear_waste", () -> new NuclearWasteItem(new Item.Properties()));
     public static final DeferredItem<Item> NUCLEAR_WASTE_TINY = ITEMS.register("nuclear_waste_tiny", () -> new NuclearWasteItem(new Item.Properties()));
@@ -637,6 +641,9 @@ public class NtmItems {
     // Original ModItems.java:3709-3710: ItemTooling(SCREWDRIVER, 100) and (SCREWDRIVER, 0), the desh one unbreakable.
     public static final DeferredItem<Item> SCREWDRIVER = ITEMS.register("screwdriver", () -> new ToolingItem(ToolType.SCREWDRIVER, new Item.Properties().durability(100)));
     public static final DeferredItem<Item> SCREWDRIVER_DESH = ITEMS.register("screwdriver_desh", () -> new ToolingItem(ToolType.SCREWDRIVER, new Item.Properties()));
+    // Original ModItems.java:3711-3712: ItemTooling(HAND_DRILL, 100) and (HAND_DRILL, 0), the desh one unbreakable.
+    public static final DeferredItem<Item> HAND_DRILL = ITEMS.register("hand_drill", () -> new ToolingItem(ToolType.HAND_DRILL, new Item.Properties().durability(100)));
+    public static final DeferredItem<Item> HAND_DRILL_DESH = ITEMS.register("hand_drill_desh", () -> new ToolingItem(ToolType.HAND_DRILL, new Item.Properties()));
     public static final DeferredItem<Item> BLOWTORCH = ITEMS.register("blowtorch", () -> new BlowtorchItem(new Item.Properties().stacksTo(1)));
     public static final DeferredItem<Item> ACETYLENE_TORCH = ITEMS.register("acetylene_torch", () -> new BlowtorchItem(new Item.Properties().stacksTo(1)));
     public static final DeferredItem<Item> BLADES_STEEL = ITEMS.register("blades_steel", () -> new Item(new Item.Properties().stacksTo(1).durability(256)));
@@ -1250,6 +1257,8 @@ public class NtmItems {
     public static final DeferredItem<Item> DETONATOR_LASER = ITEMS.register("detonator_laser", () -> new LaserDetonatorItem(new Item.Properties().stacksTo(1)));
     public static final DeferredItem<Item> DETONATOR_DEADMAN = ITEMS.register("detonator_deadman", () -> new DangerousDropItem(new Item.Properties().stacksTo(1)));
     public static final DeferredItem<Item> DETONATOR_DE = ITEMS.register("detonator_de", () -> new DangerousDropItem(new Item.Properties().stacksTo(1)));
+    // Original ModItems.java:3388 ItemRangefinder (max stack 1); only a crafting material in NEO, its range-finding function is not migrated.
+    public static final DeferredItem<Item> RANGEFINDER = ITEMS.register("rangefinder", () -> new Item(new Item.Properties().stacksTo(1)));
     public static final DeferredItem<Item> BOMB_CALLER = ITEMS.register("bomb_caller", () -> new BombCallerItem(new Item.Properties().stacksTo(1)));
     public static final DeferredItem<Item> DEFUSER = ITEMS.register("defuser", () -> new ToolingItem(ToolType.DEFUSER, new Item.Properties().durability(100)));
     public static final DeferredItem<Item> REACHER = ITEMS.register("reacher", () -> new Item(new Item.Properties().stacksTo(1)));

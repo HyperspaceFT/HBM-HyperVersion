@@ -21,6 +21,8 @@ public class HeaterOilburnerMenu extends MenuBase<HeaterOilburnerBlockEntity> {
         this.addSlot(new SlotNonRetarded(be, 0, 26, 17));
         this.addSlot(new SlotNonRetarded(be, 1, 26, 53));
         this.addSlot(new SlotNonRetarded(be, 2, 44, 71));
+        // Original ContainerOilburner: the overdrive upgrade
+        this.addSlot(new SlotNonRetarded(be, 3, 80, 73));
 
         this.playerInv(inventory, 8, 121);
     }

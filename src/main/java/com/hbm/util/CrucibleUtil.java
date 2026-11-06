@@ -14,9 +14,34 @@ import net.minecraft.world.phys.shapes.CollisionContext;
 import java.util.List;
 
 /**
- * Upstream CrucibleUtil, safe mode only: the crucible is the only caller and never spills, so pourSingleStack and spill are not ported.
+ * Upstream CrucibleUtil, safe mode only: neither the crucible nor the rotary furnace ever spills, so spill is not ported.
  */
 public class CrucibleUtil {
+
+    /**
+     * Upstream pourSingleStack in safe mode: a ray straight down at the given coordinates; a block that accepts the stack on the hit side takes as
+     * much of the whole stack as it can. Returns what is left of the stack (amount 0 when everything went in), or the unchanged stack when nothing
+     * accepted it. The upstream quanta argument only limits spilling, which safe mode never does, so it is left out. Pass a single cell array to get
+     * the impact position of the stream.
+     */
+    public static Mats.MaterialStack pourSingleStack(Level level, double x, double y, double z, double range, Mats.MaterialStack stack, Vec3[] impactHolder) {
+
+        BlockHitResult[] holder = new BlockHitResult[1];
+        ICrucibleAcceptor acc = getPouringTarget(level, new Vec3(x, y, z), new Vec3(x, y - range, z), holder);
+
+        if(acc == null) return stack;
+        if(stack.material.smeltable != NTMMaterial.SmeltingBehavior.SMELTABLE) return stack;
+
+        BlockHitResult hit = holder[0];
+
+        if(acc.canAcceptPartialPour(level, hit.getBlockPos(), hit.getLocation(), hit.getDirection(), stack)) {
+            Mats.MaterialStack left = acc.pour(level, hit.getBlockPos(), hit.getLocation(), hit.getDirection(), stack);
+            if(impactHolder != null) impactHolder[0] = hit.getLocation();
+            return left == null ? new Mats.MaterialStack(stack.material, 0) : left;
+        }
+
+        return stack;
+    }
 
     /**
      * Standard pouring, casting a hitscan straight down at the given coordinates with the given range. Pours at most quanta of the first

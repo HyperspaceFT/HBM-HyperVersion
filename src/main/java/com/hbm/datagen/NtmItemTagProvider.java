@@ -10,6 +10,7 @@ import net.minecraft.data.tags.ItemTagsProvider;
 import net.minecraft.tags.ItemTags;
 import net.minecraft.tags.TagKey;
 import net.minecraft.world.item.Item;
+import net.minecraft.world.item.Items;
 import net.minecraft.world.level.block.Block;
 import net.neoforged.neoforge.common.data.ExistingFileHelper;
 
@@ -43,6 +44,12 @@ public class NtmItemTagProvider extends ItemTagsProvider {
     private static final TagKey<Item> ANY_RUBBERS = ItemTags.create(ResourceLocation.fromNamespaceAndPath("ntm", "any_rubbers"));
     private static final TagKey<Item> ANY_TARS = ItemTags.create(ResourceLocation.fromNamespaceAndPath("ntm", "any_tars"));
     private static final TagKey<Item> ANY_CONCRETE = ItemTags.create(ResourceLocation.fromNamespaceAndPath("ntm", "any_concrete"));
+    private static final TagKey<Item> INGOTS_RESISTANT_ALLOY = ItemTags.create(ResourceLocation.fromNamespaceAndPath("ntm", "ingots_resistant_alloy"));
+    private static final TagKey<Item> INGOTS_PLASTIC_EXPLOSIVE = ItemTags.create(ResourceLocation.fromNamespaceAndPath("ntm", "ingots_plastic_explosive"));
+    private static final TagKey<Item> INGOTS_BISMOID_BRONZE = ItemTags.create(ResourceLocation.fromNamespaceAndPath("ntm", "ingots_bismoid_bronze"));
+    private static final TagKey<Item> NUGGETS_BISMOID = ItemTags.create(ResourceLocation.fromNamespaceAndPath("ntm", "nuggets_bismoid"));
+    private static final TagKey<Item> GEMS_COKE = ItemTags.create(ResourceLocation.fromNamespaceAndPath("ntm", "gems_coke"));
+    private static final TagKey<Item> INGOTS_COPPER = ItemTags.create(ResourceLocation.fromNamespaceAndPath("ntm", "ingots_copper"));
 
     public NtmItemTagProvider(PackOutput output, CompletableFuture<HolderLookup.Provider> provider, CompletableFuture<TagLookup<Block>> blockTags, ExistingFileHelper helper) {
         super(output, provider, blockTags, NuclearTechMod.MODID, helper);
@@ -297,6 +304,36 @@ public class NtmItemTagProvider extends ItemTagsProvider {
                 NtmBlocks.CONCRETE_ASBESTOS.asItem(),
                 NtmBlocks.DUCRETE.asItem(),
                 NtmBlocks.DUCRETE_SMOOTH.asItem()
+        );
+
+        // The original's ANY_RESISTANTALLOY.ingot() (OreDictManager.java:311): technetium steel and cadmium steel ingots.
+        this.tag(INGOTS_RESISTANT_ALLOY).add(
+                NtmItems.INGOT_TCALLOY.get(),
+                NtmItems.INGOT_CDALLOY.get()
+        );
+
+        // The original's ANY_PLASTICEXPLOSIVE.ingot() (OreDictManager.java:502): semtex and C-4 bars.
+        this.tag(INGOTS_PLASTIC_EXPLOSIVE).add(
+                NtmItems.INGOT_SEMTEX.get(),
+                NtmItems.INGOT_C4.get()
+        );
+
+        // The original's ANY_BISMOIDBRONZE.ingot() (OreDictManager.java:313): bismuth bronze and arsenic bronze ingots.
+        this.tag(INGOTS_BISMOID_BRONZE).add(
+                NtmItems.INGOT_BISMUTH_BRONZE.get(),
+                NtmItems.INGOT_ARSENIC_BRONZE.get()
+        );
+
+        // The original's ANY_BISMOID.nugget() (OreDictManager.java:326,685): bismuth and arsenic nuggets.
+        this.tag(NUGGETS_BISMOID).add(NtmItems.NUGGET_BISMUTH.get(), NtmItems.NUGGET_ARSENIC.get());
+
+        // The original's ANY_COKE.gem(): NEO's three coke items.
+        this.tag(GEMS_COKE).add(NtmItems.COKE_COAL.get(), NtmItems.COKE_LIGNITE.get(), NtmItems.COKE_PETROLEUM.get());
+
+        // The original's CU.ingot() (ingotCopper, OreDictManager CU): the vanilla copper ingot and NEO's own ingot_copper.
+        this.tag(INGOTS_COPPER).add(
+                Items.COPPER_INGOT,
+                NtmItems.INGOT_COPPER.get()
         );
 
     }

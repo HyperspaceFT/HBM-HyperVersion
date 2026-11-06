@@ -1,0 +1,16 @@
+{
+  "type": "minecraft:crafting_shapeless",
+  "category": "equipment",
+  "ingredients": [
+    {
+      "item": "hbmsntm:detonator"
+    },
+    {
+      "item": "hbmsntm:circuit_military_grade_board"
+    }
+  ],
+  "result": {
+    "count": 1,
+    "id": "hbmsntm:detonator_multi"
+  }
+}

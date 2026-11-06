@@ -1,0 +1,17 @@
+{
+  "type": "hbmsntm:depth_deposit",
+  "config": {
+    "fill": 0.8,
+    "filler": {
+      "Name": "hbmsntm:stone_depth"
+    },
+    "ore": {
+      "Name": "hbmsntm:ore_depth_zirconium"
+    },
+    "size": 5,
+    "target": {
+      "predicate_type": "minecraft:tag_match",
+      "tag": "minecraft:base_stone_overworld"
+    }
+  }
+}

@@ -547,7 +547,7 @@ public class CrucibleAlloyGameTests {
 
             // construction rows before the twelve RBMK rows: count and the tiers of the wire, desh, bismuth, HEV and lunar rows
             List<AnvilConstructionRecipe> all = AnvilRecipes.getConstruction();
-            int start = 103;
+            int start = 104;
             check(all.size() == start + 12, "construction has " + all.size() + " rows, expected the start's " + start + " + 12");
             Item[] wires = { NtmItems.WIRE_GOLD.get(), NtmItems.WIRE_COPPER.get(), NtmItems.WIRE_ALUMINIUM.get(), NtmItems.WIRE_ZIRCONIUM.get(), NtmItems.WIRE_LEAD.get(), NtmItems.WIRE_TUNGSTEN.get(),
                     NtmItems.WIRE_SCHRABIDIUM.get(), NtmItems.WIRE_STEEL.get(), NtmItems.WIRE_MAGNETIZED_TUNGSTEN.get(), NtmItems.WIRE_CARBON.get(), NtmItems.WIRE_RED_COPPER.get() };

@@ -76,6 +76,8 @@ public abstract class SerializableRecipe {
         recipeHandlers.add(new CokerRecipes());
         recipeHandlers.add(new MixerRecipes());
         recipeHandlers.add(new ArcFurnaceRecipes());
+        recipeHandlers.add(new com.hbm.inventory.recipes.VacuumRefineryRecipes());
+        recipeHandlers.add(new com.hbm.inventory.recipes.RotaryFurnaceRecipes());
 
         //GENERIC
         recipeHandlers.add(AssemblyMachineRecipes.INSTANCE);

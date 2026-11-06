@@ -1,0 +1,32 @@
+{
+  "parent": "minecraft:recipes/root",
+  "criteria": {
+    "has_rangefinder": {
+      "conditions": {
+        "items": [
+          {
+            "items": "hbmsntm:rangefinder"
+          }
+        ]
+      },
+      "trigger": "minecraft:inventory_changed"
+    },
+    "has_the_recipe": {
+      "conditions": {
+        "recipe": "hbmsntm:detonator_laser"
+      },
+      "trigger": "minecraft:recipe_unlocked"
+    }
+  },
+  "requirements": [
+    [
+      "has_the_recipe",
+      "has_rangefinder"
+    ]
+  ],
+  "rewards": {
+    "recipes": [
+      "hbmsntm:detonator_laser"
+    ]
+  }
+}

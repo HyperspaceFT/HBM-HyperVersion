@@ -1,0 +1,17 @@
+{
+  "type": "hbmsntm:depth_deposit",
+  "config": {
+    "fill": 0.6,
+    "filler": {
+      "Name": "hbmsntm:stone_depth"
+    },
+    "ore": {
+      "Name": "hbmsntm:cluster_depth_tungsten"
+    },
+    "size": 5,
+    "target": {
+      "predicate_type": "minecraft:tag_match",
+      "tag": "minecraft:base_stone_overworld"
+    }
+  }
+}

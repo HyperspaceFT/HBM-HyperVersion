@@ -1,0 +1,23 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "equipment",
+  "key": {
+    "C": {
+      "item": "hbmsntm:circuit_integrated_board"
+    },
+    "P": {
+      "tag": "c:plates/steel"
+    },
+    "T": {
+      "tag": "ntm:balls_he"
+    }
+  },
+  "pattern": [
+    " C ",
+    "PTP"
+  ],
+  "result": {
+    "count": 1,
+    "id": "hbmsntm:mine_he"
+  }
+}

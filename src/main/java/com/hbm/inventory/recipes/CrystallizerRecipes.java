@@ -45,7 +45,10 @@ import java.util.List;
  * input accepts the stack. The default table holds the fourteen hydrogen peroxide ore groups (Goal 18A) followed by the four
  * sulfuric acid ore groups (titanium, tungsten, cobalt, rare earth; Goal 18B), the sulfuric acid uranium (stone, deepslate,
  * scorched) and thorium (stone, deepslate) ore rows (Goal 20A) and the sulfuric acid nether/schist uranium (and scorched) and
- * nether plutonium ore rows (Goal 22A) and the hydrogen peroxide coal block to graphite block row (Goal 26A), 47 rows. A custom file still replaces the whole table, so an existing custom
+ * nether plutonium ore rows (Goal 22A) and the hydrogen peroxide coal block to graphite block row (Goal 26A), then the nether
+ * phosphorus, trixite, nether sulfur, nether tungsten and nether cobalt ore rows and the infernal coal to solid fuel row
+ * (Goal 28A), then the graphitic schist to lithium powder row, the schist iron, gold, copper, rare earth and lithium ore rows and
+ * the depth cinnabar ore row (Goal 28B), then the mustard willow leaf and oily scraps rows with radiosolvent (Goal 28D), and the three tar to wax rows with chlorine (Goal 28D), 65 rows. A custom file still replaces the whole table, so an existing custom
  * table does not gain the sulfuric acid rows automatically.
  */
 public class CrystallizerRecipes extends SerializableRecipe {
@@ -161,14 +164,14 @@ public class CrystallizerRecipes extends SerializableRecipe {
         add(new CrystallizerRecipe(new ComparableStack(stone, 1), fluid, new ItemStack(crystal), DEFAULT_DURATION, DEFAULT_PRODUCTIVITY));
         add(new CrystallizerRecipe(new ComparableStack(deepslate, 1), fluid, new ItemStack(crystal), DEFAULT_DURATION, DEFAULT_PRODUCTIVITY));
     }
-    /** One ore block without a deepslate twin (the scorched, nether and schist uranium ores, the nether plutonium ore), same numbers as {@link #ore}. */
+    /** One ore block without a deepslate twin (the scorched, nether and schist uranium ores, the other nether and schist ores, trixite, the depth cinnabar ore), same numbers as {@link #ore}. */
     private void single(Block ore, ItemLike crystal, FluidType acid) {
         add(new CrystallizerRecipe(new ComparableStack(ore, 1), new FluidStack(acid, DEFAULT_ACID), new ItemStack(crystal), DEFAULT_DURATION, DEFAULT_PRODUCTIVITY));
     }
 
     @Override public String getFileName() { return "hbmCrystallizer.json"; }
     @Override public Object getRecipeObject() { return table; }
-    /** Fourteen ordinary peroxide ore groups in the original table order, then the four sulfuric acid groups, then the sulfuric acid uranium and thorium ores, then (Goal 22A) the nether and schist uranium ores and the nether plutonium ore, then (Goal 26A) the coal block to graphite block row; stone and deepslate ore blocks are separate rows. */
+    /** Fourteen ordinary peroxide ore groups in the original table order, then the four sulfuric acid groups, then the sulfuric acid uranium and thorium ores, then (Goal 22A) the nether and schist uranium ores and the nether plutonium ore, then (Goal 26A) the coal block to graphite block row, then (Goal 28A) the other nether ores, trixite and infernal coal, then (Goal 28B) graphitic schist and the schist ores, then (Goal 28D) the radiosolvent and chlorine rows; stone and deepslate ore blocks are separate rows. */
     @Override public void registerDefaults() {
         ore(Blocks.COAL_ORE, Blocks.DEEPSLATE_COAL_ORE, NtmItems.CRYSTAL_COAL.get());
         ore(Blocks.IRON_ORE, Blocks.DEEPSLATE_IRON_ORE, NtmItems.CRYSTAL_IRON.get());
@@ -210,10 +213,38 @@ public class CrystallizerRecipes extends SerializableRecipe {
         // OreDictionary "blockCoal" becomes the c:storage_blocks/coal tag. Appended so the first 46 rows keep their positions; the
         // productivity is passed as 0 because DEFAULT_PRODUCTIVITY is the ore rows' .prod(0.05F), which line 99 does not carry.
         add(new CrystallizerRecipe(new TagStack(ItemTags.create(ResourceLocation.fromNamespaceAndPath("c", "storage_blocks/coal")), 1), new FluidStack(Fluids.PEROXIDE, DEFAULT_ACID), new ItemStack(NtmBlocks.BLOCK_GRAPHITE.get()), DEFAULT_DURATION, 0F));
+        // Goal 28A: original CrystallizerRecipes.java:89-90, the phosphorus ore under the two-argument overload's peroxide default
+        // (:314-316) and trixite under the :59 sulfuric acid stack, both baseTime and prod 0.05; then the nether members of the
+        // S.ore(), W.ore() and CO.ore() rows (:71, :74, :81; OreDictManager.java:430,382,400) with those rows' acids; then :104,
+        // infernal coal to solid fuel, peroxide, utilityTime 100 and no productivity. Appended so the first 47 rows keep their positions.
+        single(NtmBlocks.ORE_NETHER_FIRE.get(), NtmItems.CRYSTAL_PHOSPHORUS.get(), Fluids.PEROXIDE);
+        single(NtmBlocks.ORE_TIKITE.get(), NtmItems.CRYSTAL_TRIXITE.get(), Fluids.SULFURIC_ACID);
+        single(NtmBlocks.ORE_NETHER_SULFUR.get(), NtmItems.CRYSTAL_SULFUR.get(), Fluids.PEROXIDE);
+        single(NtmBlocks.ORE_NETHER_TUNGSTEN.get(), NtmItems.CRYSTAL_TUNGSTEN.get(), Fluids.SULFURIC_ACID);
+        single(NtmBlocks.ORE_NETHER_COBALT.get(), NtmItems.CRYSTAL_COBALT.get(), Fluids.SULFURIC_ACID);
+        add(new CrystallizerRecipe(new ComparableStack(NtmItems.COAL_INFERNAL.get(), 1), new FluidStack(Fluids.PEROXIDE, DEFAULT_ACID), new ItemStack(NtmItems.SOLID_FUEL.get()), 100, 0F));
+        // Goal 28B: original CrystallizerRecipes.java:105, graphitic schist to lithium powder, peroxide, utilityTime 100 and prod 0.25;
+        // then the schist members of the IRON, GOLD and CU .ore() rows (:62-63, :73), the oreRareEarth row (:86) and the LI.ore() row
+        // (:80) with those rows' acids, and the depth member of the oreCinnabar row (:87, OreDictManager.java:437). Appended so the
+        // first 53 rows keep their positions.
+        add(new CrystallizerRecipe(new ComparableStack(NtmBlocks.STONE_GNEISS.get(), 1), new FluidStack(Fluids.PEROXIDE, DEFAULT_ACID), new ItemStack(NtmItems.POWDER_LITHIUM.get()), 100, 0.25F));
+        single(NtmBlocks.ORE_GNEISS_IRON.get(), NtmItems.CRYSTAL_IRON.get(), Fluids.PEROXIDE);
+        single(NtmBlocks.ORE_GNEISS_GOLD.get(), NtmItems.CRYSTAL_GOLD.get(), Fluids.PEROXIDE);
+        single(NtmBlocks.ORE_GNEISS_COPPER.get(), NtmItems.CRYSTAL_COPPER.get(), Fluids.PEROXIDE);
+        single(NtmBlocks.ORE_GNEISS_RARE.get(), NtmItems.CRYSTAL_RARE.get(), Fluids.SULFURIC_ACID);
+        single(NtmBlocks.ORE_GNEISS_LITHIUM.get(), NtmItems.CRYSTAL_LITHIUM.get(), Fluids.SULFURIC_ACID);
+        single(NtmBlocks.ORE_DEPTH_CINNABAR.get(), NtmItems.CRYSTAL_CINNABAR.get(), Fluids.PEROXIDE);
+        // Goal 28D: original CrystallizerRecipes.java:108-109; the mustard willow row has no .prod(), so its productivity is the class default 0 (:328).
+        add(new CrystallizerRecipe(new ComparableStack(NtmItems.PLANT_ITEM_MUSTARDWILLOW.get(), 10), new FluidStack(Fluids.RADIOSOLVENT, 250), new ItemStack(NtmItems.POWDER_CADMIUM.get()), 100, 0F));
+        add(new CrystallizerRecipe(new ComparableStack(NtmItems.SCRAP_OIL.get(), 16), new FluidStack(Fluids.RADIOSOLVENT, 100), new ItemStack(NtmItems.NUGGET_ARSENIC.get()), 100, 0.3F));
+        // Goal 28D: original CrystallizerRecipes.java:212-214, 20 ticks and productivity 0; the wax feeds the irradiation channel row for radiosolvent.
+        add(new CrystallizerRecipe(new ComparableStack(NtmItems.OIL_TAR_CRUDE.get(), 1), new FluidStack(Fluids.CHLORINE, 250), new ItemStack(NtmItems.OIL_TAR_WAX.get()), 20, 0F));
+        add(new CrystallizerRecipe(new ComparableStack(NtmItems.OIL_TAR_CRACK.get(), 1), new FluidStack(Fluids.CHLORINE, 100), new ItemStack(NtmItems.OIL_TAR_WAX.get()), 20, 0F));
+        add(new CrystallizerRecipe(new ComparableStack(NtmItems.OIL_TAR_PARAFFIN.get(), 1), new FluidStack(Fluids.CHLORINE, 100), new ItemStack(NtmItems.OIL_TAR_WAX.get()), 20, 0F));
     }
     @Override public void deleteRecipes() { table.clear(); }
     @Override public String getComment() {
-        return "Ore acidizer (crystallizer) recipes. Replaces the whole table; an empty table disables the machine. Each row: input [\"item\", id, count, META] (META 32767 is a wildcard; omitted count is 1, omitted META is the wildcard) or [\"tag\", id, count]; fluid [internal acid name, mB] with 1..8000 mB; output [id, count, META|null, custom-data SNBT] (omitted or null META keeps the item without a META component); duration in ticks 1..1000000 (the machine completes after duration+1 effective sub-cycles); productivity 0..1 is the chance per Effectiveness level that the input is kept, the acid is always consumed. Rows are keyed on input identity plus acid type, so one item may have one row per acid; the first matching row in table order wins. The default table holds the fourteen hydrogen peroxide ore groups plus the four sulfuric acid ore groups (titanium, tungsten, cobalt, rare earth) and the sulfuric acid uranium (stone, deepslate, scorched, nether, scorched nether, schist, scorched schist), thorium (stone, deepslate) and nether plutonium ore rows plus the hydrogen peroxide coal block to graphite block row, 47 rows; a custom file still replaces the whole table, so an existing custom table does not gain the sulfuric acid rows automatically (append their rows to keep them).";
+        return "Ore acidizer (crystallizer) recipes. Replaces the whole table; an empty table disables the machine. Each row: input [\"item\", id, count, META] (META 32767 is a wildcard; omitted count is 1, omitted META is the wildcard) or [\"tag\", id, count]; fluid [internal acid name, mB] with 1..8000 mB; output [id, count, META|null, custom-data SNBT] (omitted or null META keeps the item without a META component); duration in ticks 1..1000000 (the machine completes after duration+1 effective sub-cycles); productivity 0..1 is the chance per Effectiveness level that the input is kept, the acid is always consumed. Rows are keyed on input identity plus acid type, so one item may have one row per acid; the first matching row in table order wins. The default table holds the fourteen hydrogen peroxide ore groups plus the four sulfuric acid ore groups (titanium, tungsten, cobalt, rare earth) and the sulfuric acid uranium (stone, deepslate, scorched, nether, scorched nether, schist, scorched schist), thorium (stone, deepslate) and nether plutonium ore rows plus the hydrogen peroxide coal block to graphite block row, then the nether phosphorus (hydrogen peroxide), trixite (sulfuric acid), nether sulfur (hydrogen peroxide), nether tungsten and nether cobalt (sulfuric acid) ore rows and the hydrogen peroxide infernal coal to solid fuel row, then the hydrogen peroxide graphitic schist to lithium powder row, the schist iron, gold and copper (hydrogen peroxide) and schist rare earth and lithium (sulfuric acid) ore rows and the hydrogen peroxide depth cinnabar ore row, then the radiosolvent mustard willow to cadmium powder and oily scrap to arsenic nugget rows and the chlorine crude, cracked and paraffin tar to wax tar rows, 65 rows; a custom file still replaces the whole table, so an existing custom table does not gain the sulfuric acid rows automatically (append their rows to keep them).";
     }
     @Override public void readRecipe(JsonElement element) {
         try {

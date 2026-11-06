@@ -24,6 +24,8 @@ public class NtmMenuTypes {
     public static final DeferredHolder<MenuType<?>, MenuType<MachineElectricFurnaceMenu>> MACHINE_ELECTRIC_FURNACE = reg("machine_electric_furnace", MachineElectricFurnaceMenu::new);
     public static final DeferredHolder<MenuType<?>, MenuType<MachineOilWellMenu<?>>> MACHINE_OIL_WELL = reg("machine_oil_well", MachineOilWellMenu::new);
     public static final DeferredHolder<MenuType<?>, MenuType<MachineRefineryMenu>> MACHINE_REFINERY = reg("machine_refinery", MachineRefineryMenu::new);
+    public static final DeferredHolder<MenuType<?>, MenuType<MachineVacuumDistillMenu>> MACHINE_VACUUM_DISTILL = reg("machine_vacuum_distill", MachineVacuumDistillMenu::new);
+    public static final DeferredHolder<MenuType<?>, MenuType<MachineRotaryFurnaceMenu>> MACHINE_ROTARY_FURNACE = reg("machine_rotary_furnace", MachineRotaryFurnaceMenu::new);
     public static final DeferredHolder<MenuType<?>, MenuType<MachineFurnaceCombinationMenu>> FURNACE_COMBINATION = reg("furnace_combination", MachineFurnaceCombinationMenu::new);
     public static final DeferredHolder<MenuType<?>, MenuType<MachineCrucibleMenu>> MACHINE_CRUCIBLE = reg("machine_crucible", MachineCrucibleMenu::new);
     public static final DeferredHolder<MenuType<?>, MenuType<MachineBlastFurnaceMenu>> MACHINE_BLAST_FURNACE = reg("machine_blast_furnace", MachineBlastFurnaceMenu::new);

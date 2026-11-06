@@ -53,6 +53,8 @@ public class ResourceManager {
     public static final ResourceLocation PUMPJACK_TEX = NuclearTechMod.withDefaultNamespace("textures/models/machines/pumpjack.png");
     public static final ResourceLocation FRACKING_TOWER_TEX = NuclearTechMod.withDefaultNamespace("textures/models/machines/fracking_tower.png");
     public static final ResourceLocation REFINERY_TEX = NuclearTechMod.withDefaultNamespace("textures/models/machines/refinery.png");
+    public static final ResourceLocation VACUUM_DISTILL_TEX = NuclearTechMod.withDefaultNamespace("textures/models/machines/vacuum_distill.png");
+    public static final ResourceLocation ROTARY_FURNACE_TEX = NuclearTechMod.withDefaultNamespace("textures/models/machines/rotary_furnace.png");
     // Original cracking_tower_tex; it points at catalytic_cracker.png, not the unused cracking_tower.png.
     public static final ResourceLocation CATALYTIC_CRACKER_TEX = NuclearTechMod.withDefaultNamespace("textures/models/machines/catalytic_cracker.png");
     public static final ResourceLocation fraction_tower_tex = NuclearTechMod.withDefaultNamespace("textures/models/machines/fraction_tower.png");
@@ -345,6 +347,8 @@ public class ResourceManager {
     public static IModelCustom pumpjack;
     public static IModelCustom fracking_tower;
     public static IModelCustom refinery;
+    public static IModelCustom vacuum_distill;
+    public static IModelCustom rotary_furnace;
     public static IModelCustom catalytic_cracker;
     public static IModelCustom fraction_tower;
     public static IModelCustom fraction_spacer;
@@ -516,6 +520,8 @@ public class ResourceManager {
         pumpjack = new HFRWavefrontObject("models/obj/machines/pumpjack.obj").asVBO();
         fracking_tower = new HFRWavefrontObject("models/obj/machines/fracking_tower.obj").asVBO();
         refinery = new HFRWavefrontObject("models/obj/machines/refinery.obj").asVBO();
+        vacuum_distill = new HFRWavefrontObject("models/obj/machines/vacuum_distill.obj").asVBO();
+        rotary_furnace = new HFRWavefrontObject("models/obj/machines/rotary_furnace.obj").asVBO();
         catalytic_cracker = new HFRWavefrontObject("models/obj/machines/catalytic_cracker.obj").asVBO();
         fraction_tower = new HFRWavefrontObject("models/obj/machines/fraction_tower.obj").asVBO();
         fraction_spacer = new HFRWavefrontObject("models/obj/machines/fraction_spacer.obj").asVBO();

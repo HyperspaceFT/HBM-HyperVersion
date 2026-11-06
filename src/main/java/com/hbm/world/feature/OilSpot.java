@@ -40,7 +40,7 @@ public class OilSpot {
                     if(addWillows && random.nextInt(50) == 0) {
                         BlockPos above = pos.above();
                         if(level.getBlockState(above).canBeReplaced()) {
-                            level.setBlock(above, Blocks.DEAD_BUSH.defaultBlockState(), 3);
+                            level.setBlock(above, NtmBlocks.PLANT_MUSTARD_WILLOW.get().defaultBlockState(), 3);
                         }
                     }
                     break;

@@ -1,0 +1,6 @@
+{
+  "type": "neoforge:add_features",
+  "biomes": "#minecraft:is_overworld",
+  "features": "hbmsntm:schist_stratum_placed",
+  "step": "local_modifications"
+}

@@ -224,6 +224,7 @@ public class NtmItemModelProvider extends ItemModelProvider {
         this.basicItem(NtmItems.BRIQUETTE_COAL.get());
         this.basicItem(NtmItems.BRIQUETTE_LIGNITE.get());
         this.basicItem(NtmItems.BRIQUETTE_WOOD.get());
+        this.basicItem(NtmItems.COAL_INFERNAL.get());
 
         this.basicItem(NtmItems.OIL_TAR_CRUDE.get());
         this.basicItem(NtmItems.OIL_TAR_CRACK.get());
@@ -231,6 +232,9 @@ public class NtmItemModelProvider extends ItemModelProvider {
         this.basicItem(NtmItems.OIL_TAR_PARAFFIN.get());
         this.basicItem(NtmItems.OIL_TAR_WOOD.get());
         this.basicItem(NtmItems.OIL_TAR_WAX.get());
+        this.basicItem(NtmItems.PLANT_ITEM_MUSTARDWILLOW.get());
+        this.basicItem(NtmItems.SCRAP_OIL.get());
+        this.withExistingParent("plant_mustard_willow", "item/generated").texture("layer0", this.modLoc("block/plant_mustard_willow_cd0"));
         this.basicItem(NtmItems.SULFUR.get());
         this.basicItem(NtmItems.CINNABAR.get());
         this.basicItem(NtmItems.FRAGMENT_COBALT.get());
@@ -741,6 +745,8 @@ public class NtmItemModelProvider extends ItemModelProvider {
 
         this.handheldItem(NtmItems.SCREWDRIVER.get());
         this.handheldItem(NtmItems.SCREWDRIVER_DESH.get());
+        this.handheldItem(NtmItems.HAND_DRILL.get());
+        this.handheldItem(NtmItems.HAND_DRILL_DESH.get());
         this.handheldItem(NtmItems.BLOWTORCH.get());
         this.handheldItem(NtmItems.ACETYLENE_TORCH.get());
         this.handheldItem(NtmItems.BLADES_STEEL.get());
@@ -1003,6 +1009,7 @@ public class NtmItemModelProvider extends ItemModelProvider {
         this.entityItem(NtmItems.DETONATOR_LASER.get(), true);
         this.handheldItem(NtmItems.DETONATOR_DEADMAN.get());
         this.handheldItem(NtmItems.DETONATOR_DE.get());
+        this.basicItem(NtmItems.RANGEFINDER.get());
         this.handheldItem(NtmItems.BOMB_CALLER.get());
         this.handheldItem(NtmItems.DEFUSER.get());
         this.handheldItem(NtmItems.REACHER.get());

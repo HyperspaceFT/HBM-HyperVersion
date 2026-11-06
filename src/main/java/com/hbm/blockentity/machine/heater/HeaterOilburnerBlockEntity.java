@@ -2,11 +2,14 @@ package com.hbm.blockentity.machine.heater;
 
 import api.hbm.fluidmk2.IFluidStandardTransceiverMK2;
 import com.hbm.blockentity.IFluidCopiable;
+import com.hbm.blockentity.IUpgradeInfoProvider;
 import com.hbm.blockentity.NtmBlockEntityTypes;
+import com.hbm.blocks.NtmBlocks;
 import com.hbm.handler.pollution.PollutionHandler;
 import com.hbm.handler.pollution.PollutionHandler.PollutionType;
 import com.hbm.interfaces.IControlReceiver;
 import com.hbm.inventory.FluidContainerRegistry;
+import com.hbm.inventory.UpgradeManagerNT;
 import com.hbm.inventory.fluid.FluidType;
 import com.hbm.inventory.fluid.Fluids;
 import com.hbm.inventory.fluid.tank.FluidTank;
@@ -15,7 +18,11 @@ import com.hbm.inventory.fluid.trait.FT_Polluting;
 import com.hbm.inventory.menus.HeaterOilburnerMenu;
 import com.hbm.items.machine.IItemFluidIdentifier;
 import com.hbm.items.machine.InfiniteFluidItem;
+import com.hbm.items.machine.MachineUpgradeItem;
+import com.hbm.items.machine.MachineUpgradeItem.UpgradeType;
+import com.hbm.util.BobMathUtil;
 import com.hbm.util.fauxpointtwelve.DirPos;
+import net.minecraft.ChatFormatting;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.nbt.CompoundTag;
@@ -25,22 +32,32 @@ import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.inventory.AbstractContainerMenu;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.TooltipFlag;
 import net.minecraft.world.level.block.state.BlockState;
 
+import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
-public class HeaterOilburnerBlockEntity extends AbstractHeaterMachineBlockEntity implements IFluidStandardTransceiverMK2, IControlReceiver, IFluidCopiable {
+public class HeaterOilburnerBlockEntity extends AbstractHeaterMachineBlockEntity implements IFluidStandardTransceiverMK2, IControlReceiver, IFluidCopiable, IUpgradeInfoProvider {
 
-    public static final int maxHeatEnergy = 100_000;
-    /** Burn rate in mB/t, cycled 1-10 with a screwdriver as in the original. */
-    public static final int MAX_SETTING = 10;
+    public static final int SLOT_UPGRADE = 3;
+    // Original getValidUpgrades: overdrive up to level 3, so the burn rate never exceeds 10 * (3 + 1)
+    private static final int MAX_OVERDRIVE = 3;
+    private static final int HIGHEST_BURN_RATE = 10 * (MAX_OVERDRIVE + 1);
 
     public final FluidTank tank = new FluidTank(Fluids.HEATINGOIL, 16_000);
     public boolean isOn = false;
+    /** Burn rate in mB/t (the original's burnRate), set with the GUI slider, 1..maxBurnRate. */
     public int setting = 1;
+    /** Recomputed on the server every tick from the overdrive level and synced to the client. */
+    public int maxBurnRate = 10;
+    public int maxHeatEnergy = 500_000;
+
+    public final UpgradeManagerNT upgradeManager = new UpgradeManagerNT(this);
 
     public HeaterOilburnerBlockEntity(BlockPos pos, BlockState state) {
-        super(NtmBlockEntityTypes.HEATER_OILBURNER.get(), pos, state, 3);
+        super(NtmBlockEntityTypes.HEATER_OILBURNER.get(), pos, state, 4);
     }
 
     @Override
@@ -50,7 +67,7 @@ public class HeaterOilburnerBlockEntity extends AbstractHeaterMachineBlockEntity
 
     @Override
     protected int getMaxHeat() {
-        return maxHeatEnergy;
+        return this.maxHeatEnergy;
     }
 
     public DirPos[] getConPos() {
@@ -68,10 +85,21 @@ public class HeaterOilburnerBlockEntity extends AbstractHeaterMachineBlockEntity
 
         int prevFill = this.tank.getFill();
         int prevHeat = this.heatEnergy;
+        int prevSetting = this.setting;
         FluidType prevType = this.tank.getTankType();
 
         this.tank.loadTank(this.level, 0, 1, this.slots);
         this.tank.setType(2, this.slots);
+
+        this.upgradeManager.checkSlots(this.slots, SLOT_UPGRADE, SLOT_UPGRADE);
+        int overdrive = this.upgradeManager.getLevel(UpgradeType.OVERDRIVE);
+
+        this.maxBurnRate = 10 * (overdrive + 1);
+        this.maxHeatEnergy = 500_000 * (overdrive + 1);
+
+        // Removing an overdrive upgrade lowers both limits at once
+        this.setting = Math.min(this.setting, this.maxBurnRate);
+        this.heatEnergy = Math.min(this.heatEnergy, this.maxHeatEnergy);
 
         for(DirPos pos : this.getConPos()) {
             this.trySubscribe(this.tank.getTankType(), this.level, pos);
@@ -79,7 +107,7 @@ public class HeaterOilburnerBlockEntity extends AbstractHeaterMachineBlockEntity
 
         boolean shouldCool = true;
 
-        if(this.isOn && this.heatEnergy < maxHeatEnergy) {
+        if(this.isOn && this.heatEnergy < this.maxHeatEnergy) {
             if(this.tank.getTankType().hasTrait(FT_Flammable.class)) {
                 FT_Flammable trait = this.tank.getTankType().getTrait(FT_Flammable.class);
                 int toBurn = Math.min(this.setting, this.tank.getFill());
@@ -97,7 +125,7 @@ public class HeaterOilburnerBlockEntity extends AbstractHeaterMachineBlockEntity
             }
         }
 
-        if(this.heatEnergy >= maxHeatEnergy) {
+        if(this.heatEnergy >= this.maxHeatEnergy) {
             shouldCool = false;
         }
 
@@ -105,7 +133,7 @@ public class HeaterOilburnerBlockEntity extends AbstractHeaterMachineBlockEntity
             this.heatEnergy = Math.max(this.heatEnergy - Math.max(this.heatEnergy / 1000, 1), 0);
         }
 
-        if(this.tank.getFill() != prevFill || this.heatEnergy != prevHeat || this.tank.getTankType() != prevType) {
+        if(this.tank.getFill() != prevFill || this.heatEnergy != prevHeat || this.setting != prevSetting || this.tank.getTankType() != prevType) {
             this.setChanged();
         }
 
@@ -128,10 +156,24 @@ public class HeaterOilburnerBlockEntity extends AbstractHeaterMachineBlockEntity
         }
     }
 
-    public void toggleSetting() {
-        this.setting++;
-        if(this.setting > MAX_SETTING) this.setting = 1;
-        this.setChanged();
+    @Override
+    public boolean canProvideInfo(UpgradeType type, int lvl, TooltipFlag flag) {
+        return type == UpgradeType.OVERDRIVE;
+    }
+
+    @Override
+    public void provideInfo(UpgradeType type, int lvl, List<Component> components, TooltipFlag flag) {
+        components.add(IUpgradeInfoProvider.getStandardLabel(NtmBlocks.HEATER_OILBURNER.get()));
+        if(type == UpgradeType.OVERDRIVE) {
+            components.add(Component.translatable(KEY_YES).withStyle(BobMathUtil.getBlink() ? ChatFormatting.RED : ChatFormatting.DARK_GRAY));
+        }
+    }
+
+    @Override
+    public HashMap<UpgradeType, Integer> getValidUpgrades() {
+        HashMap<UpgradeType, Integer> upgrades = new HashMap<>(1);
+        upgrades.put(UpgradeType.OVERDRIVE, MAX_OVERDRIVE);
+        return upgrades;
     }
 
     @Override
@@ -145,12 +187,24 @@ public class HeaterOilburnerBlockEntity extends AbstractHeaterMachineBlockEntity
             return stack.getItem() instanceof IItemFluidIdentifier;
         }
 
+        if(slot == SLOT_UPGRADE) {
+            return stack.getItem() instanceof MachineUpgradeItem item && this.getValidUpgrades().containsKey(item.type);
+        }
+
         if(slot == 0) {
+            // Gas shale is a full container without an empty one (original ContainerOilburner.java:22 takes any item)
             return !FluidContainerRegistry.getEmptyContainer(stack).isEmpty()
+                    || FluidContainerRegistry.getFluidContent(stack, this.tank.getTankType()) > 0
                     || stack.getItem() instanceof InfiniteFluidItem;
         }
 
         return false;
+    }
+
+    // Slots 0-2 keep the heater base's automation access; the overdrive upgrade stays out of it, as the original exposes no slot to automation
+    @Override
+    public int[] getSlotsForFace(Direction direction) {
+        return new int[] {0, 1, 2};
     }
 
     @Override
@@ -191,6 +245,10 @@ public class HeaterOilburnerBlockEntity extends AbstractHeaterMachineBlockEntity
         if(tag.contains("toggle")) {
             this.isOn = !this.isOn;
         }
+        // The original takes the slider value unchecked; the server clamps it to the current limit
+        if(tag.contains("setting")) {
+            this.setting = Math.clamp(tag.getInt("setting"), 1, this.maxBurnRate);
+        }
         this.setChanged();
     }
 
@@ -205,7 +263,7 @@ public class HeaterOilburnerBlockEntity extends AbstractHeaterMachineBlockEntity
     @Override
     public void pasteSettings(CompoundTag tag, int index, net.minecraft.world.level.Level level, Player player, BlockPos pos) {
         IFluidCopiable.super.pasteSettings(tag, index, level, player, pos);
-        if(tag.contains("setting")) this.setting = Math.clamp(tag.getInt("setting"), 1, MAX_SETTING);
+        if(tag.contains("setting")) this.setting = Math.clamp(tag.getInt("setting"), 1, this.maxBurnRate);
         if(tag.contains("isOn")) this.isOn = tag.getBoolean("isOn");
         this.setChanged();
     }
@@ -216,6 +274,8 @@ public class HeaterOilburnerBlockEntity extends AbstractHeaterMachineBlockEntity
         this.tank.serialize(buf);
         buf.writeBoolean(this.isOn);
         buf.writeInt(this.setting);
+        buf.writeInt(this.maxHeatEnergy);
+        buf.writeInt(this.maxBurnRate);
     }
 
     @Override
@@ -224,6 +284,8 @@ public class HeaterOilburnerBlockEntity extends AbstractHeaterMachineBlockEntity
         this.tank.deserialize(buf);
         this.isOn = buf.readBoolean();
         this.setting = buf.readInt();
+        this.maxHeatEnergy = buf.readInt();
+        this.maxBurnRate = buf.readInt();
     }
 
     @Override
@@ -231,8 +293,9 @@ public class HeaterOilburnerBlockEntity extends AbstractHeaterMachineBlockEntity
         super.loadAdditional(tag, registries);
         this.tank.readFromNBT(tag, "tank");
         this.isOn = tag.getBoolean("isOn");
-        // Earlier NEO versions allowed up to 100
-        this.setting = Math.clamp(tag.getInt("setting"), 1, MAX_SETTING);
+        // Earlier NEO versions allowed up to 100. The upgrade level is not known until the first tick reads slot 3, so this
+        // only bounds the rate by the highest overdrive level; the first server tick clamps it to the current maxBurnRate.
+        this.setting = Math.clamp(tag.getInt("setting"), 1, HIGHEST_BURN_RATE);
     }
 
     @Override

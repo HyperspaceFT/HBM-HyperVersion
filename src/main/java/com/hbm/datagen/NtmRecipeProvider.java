@@ -10,6 +10,7 @@ import com.hbm.inventory.recipes.crafting.RBMKRodDisassemblyRecipe;
 import com.hbm.items.BoltItem;
 import com.hbm.items.CastPlateItem;
 import com.hbm.items.NtmItems;
+import com.hbm.items.RawIngotItem;
 import com.hbm.items.WireDenseItem;
 import com.hbm.items.component.NtmDataComponents;
 import com.hbm.items.machine.BatteryPackItem;
@@ -1194,6 +1195,23 @@ public class NtmRecipeProvider extends RecipeProvider {
                 .define('S', ItemTags.create(ResourceLocation.fromNamespaceAndPath("ntm", "ingots_plastic")))
                 .unlockedBy("has_ingot_desh", has(NtmItems.INGOT_DESH.get()))
                 .save(recipeOutput, ResourceLocation.fromNamespaceAndPath("hbmsntm", "screwdriver_desh"));
+        // Hand drills, original ToolRecipes.java:141-142; KEY_STICK is the vanilla stick.
+        ShapedRecipeBuilder.shaped(RecipeCategory.TOOLS, NtmItems.HAND_DRILL.get(), 1)
+                .pattern(" D")
+                .pattern("S ")
+                .pattern(" S")
+                .define('D', NtmItems.INGOT_DURA_STEEL.get())
+                .define('S', Items.STICK)
+                .unlockedBy("has_ingot_dura_steel", has(NtmItems.INGOT_DURA_STEEL.get()))
+                .save(recipeOutput, ResourceLocation.fromNamespaceAndPath("hbmsntm", "hand_drill"));
+        ShapedRecipeBuilder.shaped(RecipeCategory.TOOLS, NtmItems.HAND_DRILL_DESH.get(), 1)
+                .pattern(" D")
+                .pattern("S ")
+                .pattern(" S")
+                .define('D', NtmItems.INGOT_DESH.get())
+                .define('S', ItemTags.create(ResourceLocation.fromNamespaceAndPath("ntm", "ingots_plastic")))
+                .unlockedBy("has_ingot_desh", has(NtmItems.INGOT_DESH.get()))
+                .save(recipeOutput, ResourceLocation.fromNamespaceAndPath("hbmsntm", "hand_drill_desh"));
         // Original RodRecipes.java:28: an empty rod and two uranium fuel billets make the (low-)enriched uranium fuel rod; the
         // output carries no "life" data.
         ShapelessRecipeBuilder.shapeless(RecipeCategory.MISC, MetaHelper.newStack(NtmItems.ROD_ZIRNOX.get(), 1, ZirnoxType.URANIUM_FUEL.ordinal()))
@@ -2163,8 +2181,18 @@ public class NtmRecipeProvider extends RecipeProvider {
         addOreSmelting(recipeOutput, NtmBlocks.ORE_NETHER_URANIUM.get(), NtmItems.INGOT_URANIUM.get(), 0.7F);
         addOreSmelting(recipeOutput, NtmBlocks.ORE_NETHER_URANIUM_SCORCHED.get(), NtmItems.INGOT_URANIUM.get(), 0.7F);
         addOreSmelting(recipeOutput, NtmBlocks.ORE_NETHER_PLUTONIUM.get(), NtmItems.INGOT_PLUTONIUM.get(), 0.7F);
+        // Original SmeltingRecipes.java:39,46 (Goal 28A): nether tungsten and nether cobalt ore smelt to their ingots (original 12.0F and 2.0F).
+        addOreSmelting(recipeOutput, NtmBlocks.ORE_NETHER_TUNGSTEN.get(), NtmItems.INGOT_TUNGSTEN.get(), 0.7F);
+        addOreSmelting(recipeOutput, NtmBlocks.ORE_NETHER_COBALT.get(), NtmItems.INGOT_COBALT.get(), 0.7F);
         addOreSmelting(recipeOutput, NtmBlocks.ORE_GNEISS_URANIUM.get(), NtmItems.INGOT_URANIUM.get(), 0.7F);
         addOreSmelting(recipeOutput, NtmBlocks.ORE_GNEISS_URANIUM_SCORCHED.get(), NtmItems.INGOT_URANIUM.get(), 0.7F);
+        // Original SmeltingRecipes.java:54-55,58-60 (Goal 28B): the schist iron, gold, copper, lithium and schrabidium ores (original
+        // 5.0F, 5.0F, 5F, 10F and 256.0F); schist copper smelts like NEO's copper ore, the vanilla one, to the vanilla copper ingot.
+        addOreSmelting(recipeOutput, NtmBlocks.ORE_GNEISS_IRON.get(), Items.IRON_INGOT, 0.7F);
+        addOreSmelting(recipeOutput, NtmBlocks.ORE_GNEISS_GOLD.get(), Items.GOLD_INGOT, 0.7F);
+        addOreSmelting(recipeOutput, NtmBlocks.ORE_GNEISS_COPPER.get(), Items.COPPER_INGOT, 0.7F);
+        addOreSmelting(recipeOutput, NtmBlocks.ORE_GNEISS_LITHIUM.get(), NtmItems.LITHIUM.get(), 0.7F);
+        addOreSmelting(recipeOutput, NtmBlocks.ORE_GNEISS_SCHRABIDIUM.get(), NtmItems.INGOT_SCHRABIDIUM.get(), 0.7F);
         addOreSmelting(recipeOutput, NtmBlocks.ORE_TUNGSTEN.get(), NtmBlocks.ORE_TUNGSTEN_DEEPSLATE.get(), NtmItems.INGOT_TUNGSTEN.get(), 0.7F);
         addOreSmelting(recipeOutput, NtmBlocks.ORE_TITANIUM.get(), NtmBlocks.ORE_TITANIUM_DEEPSLATE.get(), NtmItems.INGOT_TITANIUM.get(), 0.7F);
         addOreSmelting(recipeOutput, NtmBlocks.ORE_LEAD.get(), NtmBlocks.ORE_LEAD_DEEPSLATE.get(), NtmItems.INGOT_LEAD.get(), 0.7F);
@@ -2321,6 +2349,143 @@ public class NtmRecipeProvider extends RecipeProvider {
         addAxeRecipe(recipeOutput, NtmItems.SCHRABIDIUM_AXE.get(), NtmItems.INGOT_SCHRABIDIUM.get(), "schrabidium_axe");
         addShovelRecipe(recipeOutput, NtmItems.SCHRABIDIUM_SHOVEL.get(), NtmItems.INGOT_SCHRABIDIUM.get(), "schrabidium_shovel");
         addHoeRecipe(recipeOutput, NtmItems.SCHRABIDIUM_HOE.get(), NtmItems.INGOT_SCHRABIDIUM.get(), "schrabidium_hoe");
+
+        // Goal28C: the press preheater, detonators, demolition charges, landmines, the rangefinder and the slag block
+        // Original CraftingManager.java:852: Fluids.LAVA.getDict(1000) is here the lava bucket only (the original also accepts
+        // its lava-filled universal and lead tanks), whose crafting remainder returns the empty bucket; CU.plate() is
+        // c:plates/copper, W.ingot() NEO's tungsten ingot.
+        ShapedRecipeBuilder.shaped(RecipeCategory.MISC, NtmBlocks.PRESS_PREHEATER.get(), 1)
+                .pattern("CCC")
+                .pattern("SLS")
+                .pattern("TST")
+                .define('C', NtmTags.Items.PLATES_COPPER)
+                .define('S', Items.STONE)
+                .define('L', Items.LAVA_BUCKET)
+                .define('T', NtmItems.INGOT_TUNGSTEN.get())
+                .unlockedBy("has_tungsten_ingot", has(NtmItems.INGOT_TUNGSTEN.get()))
+                .save(recipeOutput, ResourceLocation.fromNamespaceAndPath("hbmsntm", "press_preheater"));
+        // Original CraftingManager.java:319: EnumCircuitType.BASIC is the integrated board, STEEL.plate() c:plates/steel.
+        ShapedRecipeBuilder.shaped(RecipeCategory.TOOLS, NtmItems.DETONATOR.get(), 1)
+                .pattern("C")
+                .pattern("S")
+                .define('C', NtmItems.CIRCUIT_INTEGRATED_BOARD.get())
+                .define('S', NtmTags.Items.PLATES_STEEL)
+                .unlockedBy("has_integrated_board", has(NtmItems.CIRCUIT_INTEGRATED_BOARD.get()))
+                .save(recipeOutput, ResourceLocation.fromNamespaceAndPath("hbmsntm", "detonator"));
+        // Original CraftingManager.java:320: EnumCircuitType.ADVANCED is the military grade board.
+        ShapelessRecipeBuilder.shapeless(RecipeCategory.TOOLS, NtmItems.DETONATOR_MULTI.get(), 1)
+                .requires(NtmItems.DETONATOR.get())
+                .requires(NtmItems.CIRCUIT_MILITARY_GRADE_BOARD.get())
+                .unlockedBy("has_detonator", has(NtmItems.DETONATOR.get()))
+                .save(recipeOutput, ResourceLocation.fromNamespaceAndPath("hbmsntm", "detonator_multi"));
+        // Original CraftingManager.java:321: the plain rubber ingot stands in for RUBBER.ingot() (ntm:any_rubbers also holds bio
+        // rubber), GOLD.wireDense() is the gold dense wire only.
+        ShapelessRecipeBuilder.shapeless(RecipeCategory.TOOLS, NtmItems.DETONATOR_LASER.get(), 1)
+                .requires(NtmItems.RANGEFINDER.get())
+                .requires(NtmItems.CIRCUIT_MILITARY_GRADE_BOARD.get())
+                .requires(NtmItems.INGOT_RUBBER.get())
+                .requires(DataComponentIngredient.of(false, NtmDataComponents.META, WireDenseItem.Type.GOLD.meta, NtmItems.WIRE_DENSE.get()))
+                .unlockedBy("has_rangefinder", has(NtmItems.RANGEFINDER.get()))
+                .save(recipeOutput, ResourceLocation.fromNamespaceAndPath("hbmsntm", "detonator_laser"));
+        // Original CraftingManager.java:322.
+        ShapelessRecipeBuilder.shapeless(RecipeCategory.TOOLS, NtmItems.DETONATOR_DEADMAN.get(), 1)
+                .requires(NtmItems.DETONATOR.get())
+                .requires(NtmItems.DEFUSER.get())
+                .requires(NtmItems.DUCTTAPE.get())
+                .unlockedBy("has_detonator", has(NtmItems.DETONATOR.get()))
+                .save(recipeOutput, ResourceLocation.fromNamespaceAndPath("hbmsntm", "detonator_deadman"));
+        // Original CraftingManager.java:323.
+        ShapedRecipeBuilder.shaped(RecipeCategory.TOOLS, NtmItems.DETONATOR_DE.get(), 1)
+                .pattern("T")
+                .pattern("D")
+                .pattern("T")
+                .define('T', Items.TNT)
+                .define('D', NtmItems.DETONATOR_DEADMAN.get())
+                .unlockedBy("has_detonator_deadman", has(NtmItems.DETONATOR_DEADMAN.get()))
+                .save(recipeOutput, ResourceLocation.fromNamespaceAndPath("hbmsntm", "detonator_de"));
+        // Original CraftingManager.java:520.
+        ShapedRecipeBuilder.shaped(RecipeCategory.MISC, NtmBlocks.DET_CORD.get(), 4)
+                .pattern(" P ")
+                .pattern("PGP")
+                .pattern(" P ")
+                .define('P', Items.PAPER)
+                .define('G', Items.GUNPOWDER)
+                .unlockedBy("has_gunpowder", has(Items.GUNPOWDER))
+                .save(recipeOutput, ResourceLocation.fromNamespaceAndPath("hbmsntm", "det_cord"));
+        // Original CraftingManager.java:521: ANY_PLASTICEXPLOSIVE.ingot() is the ntm:ingots_plastic_explosive tag (semtex, C-4).
+        ShapedRecipeBuilder.shaped(RecipeCategory.MISC, NtmBlocks.DET_CHARGE.get(), 1)
+                .pattern("PDP")
+                .pattern("DTD")
+                .pattern("PDP")
+                .define('P', NtmTags.Items.PLATES_STEEL)
+                .define('D', NtmBlocks.DET_CORD.get())
+                .define('T', ItemTags.create(ResourceLocation.fromNamespaceAndPath("ntm", "ingots_plastic_explosive")))
+                .unlockedBy("has_det_cord", has(NtmBlocks.DET_CORD.get()))
+                .save(recipeOutput, ResourceLocation.fromNamespaceAndPath("hbmsntm", "det_charge"));
+        // det_nuke (CraftingManager.java:522) is not registered: deferred with the nuclear bombs (GOAL28 decision 5).
+        // Original CraftingManager.java:523: NEO has no iron plate tag, so the plain plate_iron stands in for IRON.plate().
+        ShapedRecipeBuilder.shaped(RecipeCategory.MISC, NtmBlocks.DET_MINER.get(), 4)
+                .pattern("FFF")
+                .pattern("ITI")
+                .pattern("ITI")
+                .define('F', Items.FLINT)
+                .define('I', NtmItems.PLATE_IRON.get())
+                .define('T', NtmItems.BALL_DYNAMITE.get())
+                .unlockedBy("has_ball_dynamite", has(NtmItems.BALL_DYNAMITE.get()))
+                .save(recipeOutput, ResourceLocation.fromNamespaceAndPath("hbmsntm", "det_miner"));
+        // Original CraftingManager.java:524.
+        ShapedRecipeBuilder.shaped(RecipeCategory.MISC, NtmBlocks.DET_MINER.get(), 12)
+                .pattern("FFF")
+                .pattern("ITI")
+                .pattern("ITI")
+                .define('F', Items.FLINT)
+                .define('I', NtmTags.Items.PLATES_STEEL)
+                .define('T', ItemTags.create(ResourceLocation.fromNamespaceAndPath("ntm", "ingots_plastic_explosive")))
+                .unlockedBy("has_steel_plate", has(NtmTags.Items.PLATES_STEEL))
+                .save(recipeOutput, ResourceLocation.fromNamespaceAndPath("hbmsntm", "det_miner_steel"));
+        // Original WeaponRecipes.java:297: ANY_SMOKELESS.dust() is ballistite or cordite; NEO has only cordite.
+        ShapedRecipeBuilder.shaped(RecipeCategory.COMBAT, NtmBlocks.MINE_AP.get(), 4)
+                .pattern("I")
+                .pattern("C")
+                .pattern("S")
+                .define('I', NtmItems.PLATE_POLYMER.get())
+                .define('C', NtmItems.CORDITE.get())
+                .define('S', NtmItems.INGOT_STEEL.get())
+                .unlockedBy("has_cordite", has(NtmItems.CORDITE.get()))
+                .save(recipeOutput, ResourceLocation.fromNamespaceAndPath("hbmsntm", "mine_ap"));
+        // mine_shrap (WeaponRecipes.java:298) is not registered: it needs pellet_buckshot, which NEO does not have.
+        // Original WeaponRecipes.java:299: ANY_HIGHEXPLOSIVE.ingot() is the ntm:balls_he tag (TNT ball, TATB ball).
+        ShapedRecipeBuilder.shaped(RecipeCategory.COMBAT, NtmBlocks.MINE_HE.get(), 1)
+                .pattern(" C ")
+                .pattern("PTP")
+                .define('C', NtmItems.CIRCUIT_INTEGRATED_BOARD.get())
+                .define('P', NtmTags.Items.PLATES_STEEL)
+                .define('T', ItemTags.create(ResourceLocation.fromNamespaceAndPath("ntm", "balls_he")))
+                .unlockedBy("has_integrated_board", has(NtmItems.CIRCUIT_INTEGRATED_BOARD.get()))
+                .save(recipeOutput, ResourceLocation.fromNamespaceAndPath("hbmsntm", "mine_he"));
+        // mine_fat (WeaponRecipes.java:300) is not registered: deferred with the nuclear bombs (GOAL28 decision 5).
+        // Original ToolRecipes.java:104: KEY_ANYPANE is the glass pane tag.
+        ShapedRecipeBuilder.shaped(RecipeCategory.TOOLS, NtmItems.RANGEFINDER.get(), 1)
+                .pattern("GRC")
+                .pattern("  S")
+                .define('G', Tags.Items.GLASS_PANES)
+                .define('R', Items.REDSTONE)
+                .define('C', NtmItems.CIRCUIT_INTEGRATED_BOARD.get())
+                .define('S', NtmTags.Items.PLATES_STEEL)
+                .unlockedBy("has_integrated_board", has(NtmItems.CIRCUIT_INTEGRATED_BOARD.get()))
+                .save(recipeOutput, ResourceLocation.fromNamespaceAndPath("hbmsntm", "rangefinder"));
+        // Original MineralRecipes.java:58 (add1To9Pair): the slag block and nine slag raw ingots.
+        ShapedRecipeBuilder.shaped(RecipeCategory.MISC, NtmBlocks.BLOCK_SLAG.get(), 1)
+                .pattern("###")
+                .pattern("###")
+                .pattern("###")
+                .define('#', DataComponentIngredient.of(false, NtmDataComponents.META, RawIngotItem.Type.SLAG.meta, NtmItems.INGOT_RAW.get()))
+                .unlockedBy("has_ingot_raw", has(NtmItems.INGOT_RAW.get()))
+                .save(recipeOutput, ResourceLocation.fromNamespaceAndPath("hbmsntm", "block_slag"));
+        ShapelessRecipeBuilder.shapeless(RecipeCategory.MISC, MetaHelper.newStack(NtmItems.INGOT_RAW.get(), 9, RawIngotItem.Type.SLAG.meta))
+                .requires(NtmBlocks.BLOCK_SLAG.get())
+                .unlockedBy("has_block_slag", has(NtmBlocks.BLOCK_SLAG.get()))
+                .save(recipeOutput, ResourceLocation.fromNamespaceAndPath("hbmsntm", "ingot_raw_slag"));
 
         registerMaterialConversionRecipes(recipeOutput);
     }

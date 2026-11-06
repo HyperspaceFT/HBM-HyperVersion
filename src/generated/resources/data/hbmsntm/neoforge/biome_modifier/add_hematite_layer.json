@@ -1,0 +1,9 @@
+{
+  "type": "hbmsntm:config_gated_add_features",
+  "biomes": "#minecraft:is_overworld",
+  "config": [
+    "enableHematite"
+  ],
+  "features": "hbmsntm:hematite_layer_placed",
+  "step": "underground_ores"
+}

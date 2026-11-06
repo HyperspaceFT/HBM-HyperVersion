@@ -9,6 +9,7 @@ import mezz.jei.api.gui.drawable.IDrawable;
 import mezz.jei.api.gui.ingredient.IRecipeSlotsView;
 import mezz.jei.api.helpers.IGuiHelper;
 import mezz.jei.api.recipe.IFocusGroup;
+import mezz.jei.api.recipe.RecipeIngredientRole;
 import mezz.jei.api.recipe.RecipeType;
 import mezz.jei.api.recipe.category.IRecipeCategory;
 import net.minecraft.client.Minecraft;
@@ -86,6 +87,17 @@ public class AnvilConstructionRecipeHandler implements IRecipeCategory<AnvilCons
                 }
             });
         }
+
+        // Every anvil variant of the recipe's tier, cycled in one catalyst slot
+        List<ItemStack> anvils = NTMAnvilBlock.getAnvilsFromTier(recipe.tierLower);
+        if(!anvils.isEmpty()) {
+            int anvilX = switch(recipe.getOverlay()) {
+                case RECYCLING -> 30;
+                case CONSTRUCTION -> 120;
+                case SMITHING, NONE -> 75;
+            };
+            builder.addSlot(RecipeIngredientRole.CATALYST, anvilX, 31).addItemStacks(anvils);
+        }
     }
 
     @Override
@@ -118,16 +130,6 @@ public class AnvilConstructionRecipeHandler implements IRecipeCategory<AnvilCons
                 blit(guiGraphics, 47, 5, 5, 87, 108, 54);
                 blit(guiGraphics, 29, 14, overlayU, 96, 18, 36);
             }
-        }
-
-        List<ItemStack> anvils = NTMAnvilBlock.getAnvilsFromTier(recipe.tierLower);
-        if(!anvils.isEmpty()) {
-            int anvilX = switch(recipe.getOverlay()) {
-                case RECYCLING -> 30;
-                case CONSTRUCTION -> 120;
-                case SMITHING, NONE -> 75;
-            };
-            guiGraphics.renderItem(anvils.getFirst(), anvilX, 31);
         }
     }
 

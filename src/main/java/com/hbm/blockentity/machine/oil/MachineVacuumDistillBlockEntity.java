@@ -1,0 +1,331 @@
+package com.hbm.blockentity.machine.oil;
+
+import api.hbm.energymk2.IEnergyReceiverMK2;
+import api.hbm.fluidmk2.IFluidStandardTransceiverMK2;
+import com.hbm.blockentity.IFluidCopiable;
+import com.hbm.blockentity.IPersistentNBT;
+import com.hbm.blockentity.MachineBaseBlockEntity;
+import com.hbm.blockentity.NtmBlockEntityTypes;
+import com.hbm.inventory.FluidContainerRegistry;
+import com.hbm.inventory.FluidStack;
+import com.hbm.inventory.fluid.FluidType;
+import com.hbm.inventory.fluid.Fluids;
+import com.hbm.inventory.fluid.tank.FluidTank;
+import com.hbm.inventory.menus.MachineVacuumDistillMenu;
+import com.hbm.inventory.recipes.VacuumRefineryRecipes;
+import com.hbm.inventory.recipes.VacuumRefineryRecipes.VacuumRefineryRecipe;
+import com.hbm.items.machine.IItemFluidIdentifier;
+import com.hbm.lib.Library;
+import com.hbm.registry.NtmSoundEvents;
+import com.hbm.sound.AudioWrapper;
+import com.hbm.util.fauxpointtwelve.DirPos;
+import net.minecraft.core.BlockPos;
+import net.minecraft.core.Direction;
+import net.minecraft.core.HolderLookup;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.network.RegistryFriendlyByteBuf;
+import net.minecraft.network.chat.Component;
+import net.minecraft.sounds.SoundSource;
+import net.minecraft.world.entity.player.Inventory;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.inventory.AbstractContainerMenu;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.level.Level;
+import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.phys.AABB;
+
+public class MachineVacuumDistillBlockEntity extends MachineBaseBlockEntity implements IEnergyReceiverMK2, IFluidStandardTransceiverMK2, IPersistentNBT, IFluidCopiable {
+
+    public static final long MAX_POWER = 1_000_000L;
+    public static final int POWER_PER_OPERATION = 10_000;
+    public static final int INPUT_PER_OPERATION = 100;
+
+    public long power;
+    public boolean isOn;
+    public final FluidTank[] tanks;
+
+    private AudioWrapper audio;
+    private int audioTime;
+    private AABB renderBox;
+
+    public MachineVacuumDistillBlockEntity(BlockPos pos, BlockState state) {
+        super(NtmBlockEntityTypes.MACHINE_VACUUM_DISTILL.get(), pos, state, 12);
+
+        this.tanks = new FluidTank[] {
+                new FluidTank(Fluids.OIL, 64_000).withPressure(2),
+                new FluidTank(Fluids.HEAVYOIL_VACUUM, 24_000),
+                new FluidTank(Fluids.REFORMATE, 24_000),
+                new FluidTank(Fluids.LIGHTOIL_VACUUM, 24_000),
+                new FluidTank(Fluids.SOURGAS, 24_000)
+        };
+    }
+
+    @Override
+    protected Component getDefaultName() {
+        return Component.translatable("container.vacuumDistill");
+    }
+
+    @Override
+    public void updateEntity() {
+        if(this.level == null) return;
+
+        if(!this.level.isClientSide) {
+            this.isOn = false;
+
+            if(this.level.getGameTime() % 20 == 0) {
+                for(DirPos pos : this.getConPos()) {
+                    this.trySubscribe(this.level, pos);
+                    this.trySubscribe(this.tanks[0].getTankType(), this.level, pos);
+                }
+            }
+
+            this.power = Library.chargeTEFromItems(this.slots, 0, this.power, MAX_POWER);
+            if(this.tanks[0].setType(11, this.slots)) this.setChanged();
+            if(this.tanks[0].loadTank(this.level, 1, 2, this.slots)) this.setChanged();
+
+            this.refine();
+
+            if(this.tanks[1].unloadTank(this.level, 3, 4, this.slots)) this.setChanged();
+            if(this.tanks[2].unloadTank(this.level, 5, 6, this.slots)) this.setChanged();
+            if(this.tanks[3].unloadTank(this.level, 7, 8, this.slots)) this.setChanged();
+            if(this.tanks[4].unloadTank(this.level, 9, 10, this.slots)) this.setChanged();
+
+            for(DirPos pos : this.getConPos()) {
+                for(int i = 1; i < this.tanks.length; i++) {
+                    if(this.tanks[i].getFill() > 0) {
+                        this.tryProvide(this.tanks[i], this.level, pos);
+                    }
+                }
+            }
+
+            this.networkPackNT(150);
+        } else {
+            if(this.isOn) {
+                this.audioTime = 20;
+            }
+
+            if(this.audioTime > 0) {
+                this.audioTime--;
+
+                if(this.audio == null) {
+                    this.audio = this.createAudioLoop();
+                    if(this.audio != null) {
+                        this.audio.startSound();
+                    }
+                } else if(!this.audio.isPlaying()) {
+                    this.audio = this.rebootAudio(this.audio);
+                }
+
+                if(this.audio != null) {
+                    this.audio.updateVolume(getVolume(1F));
+                    this.audio.keepAlive();
+                }
+            } else if(this.audio != null) {
+                this.audio.stopSound();
+                this.audio = null;
+            }
+        }
+    }
+
+    private void refine() {
+        VacuumRefineryRecipe refinery = VacuumRefineryRecipes.getVacuum(this.tanks[0].getTankType());
+
+        if(refinery == null) {
+            for(int i = 1; i < this.tanks.length; i++) {
+                if(this.tanks[i].getTankType() != Fluids.NONE) {
+                    this.tanks[i].setTankType(Fluids.NONE);
+                    this.setChanged();
+                }
+            }
+            return;
+        }
+
+        FluidStack[] outputs = refinery.outputs;
+
+        for(int i = 0; i < outputs.length; i++) {
+            if(this.tanks[i + 1].getTankType() != outputs[i].type) {
+                this.tanks[i + 1].setTankType(outputs[i].type);
+                this.setChanged();
+            }
+        }
+
+        if(this.power < POWER_PER_OPERATION) return;
+        if(this.tanks[0].getFill() < INPUT_PER_OPERATION) return;
+        for(int i = 0; i < outputs.length; i++) {
+            if(this.tanks[i + 1].getFill() + outputs[i].fill > this.tanks[i + 1].getMaxFill()) return;
+        }
+
+        this.isOn = true;
+        this.power -= POWER_PER_OPERATION;
+        this.tanks[0].setFill(this.tanks[0].getFill() - INPUT_PER_OPERATION);
+
+        for(int i = 0; i < outputs.length; i++) {
+            this.tanks[i + 1].setFill(this.tanks[i + 1].getFill() + outputs[i].fill);
+        }
+
+        this.setChanged();
+    }
+
+    public DirPos[] getConPos() {
+        BlockPos pos = this.getBlockPos();
+        return new DirPos[] {
+                new DirPos(pos.getX() + 2, pos.getY(), pos.getZ() + 1, Direction.EAST),
+                new DirPos(pos.getX() + 2, pos.getY(), pos.getZ() - 1, Direction.EAST),
+                new DirPos(pos.getX() - 2, pos.getY(), pos.getZ() + 1, Direction.WEST),
+                new DirPos(pos.getX() - 2, pos.getY(), pos.getZ() - 1, Direction.WEST),
+                new DirPos(pos.getX() + 1, pos.getY(), pos.getZ() + 2, Direction.SOUTH),
+                new DirPos(pos.getX() - 1, pos.getY(), pos.getZ() + 2, Direction.SOUTH),
+                new DirPos(pos.getX() + 1, pos.getY(), pos.getZ() - 2, Direction.NORTH),
+                new DirPos(pos.getX() - 1, pos.getY(), pos.getZ() - 2, Direction.NORTH)
+        };
+    }
+
+    @Override
+    public boolean canPlaceItem(int slot, ItemStack stack) {
+        return switch(slot) {
+            case 0 -> stack.getItem() instanceof api.hbm.energymk2.IBatteryItem;
+            case 3 -> !FluidContainerRegistry.getFullContainer(stack, this.tanks[1].getTankType()).isEmpty();
+            case 5 -> !FluidContainerRegistry.getFullContainer(stack, this.tanks[2].getTankType()).isEmpty();
+            case 7 -> !FluidContainerRegistry.getFullContainer(stack, this.tanks[3].getTankType()).isEmpty();
+            case 9 -> !FluidContainerRegistry.getFullContainer(stack, this.tanks[4].getTankType()).isEmpty();
+            case 11 -> stack.getItem() instanceof IItemFluidIdentifier;
+            default -> false;
+        };
+    }
+
+    // The original exposes no item access: its proxies carry fluid and power only.
+    @Override public boolean canPlaceItemThroughFace(int index, ItemStack stack, Direction direction) { return false; }
+    @Override public boolean canTakeItemThroughFace(int index, ItemStack stack, Direction direction) { return false; }
+    @Override public int[] getSlotsForFace(Direction direction) { return new int[0]; }
+
+    @Override
+    protected void loadAdditional(CompoundTag tag, HolderLookup.Provider registries) {
+        super.loadAdditional(tag, registries);
+        this.power = tag.getLong("power");
+        this.tanks[0].readFromNBT(tag, "input");
+        this.tanks[1].readFromNBT(tag, "heavy");
+        this.tanks[2].readFromNBT(tag, "reformate");
+        this.tanks[3].readFromNBT(tag, "light");
+        this.tanks[4].readFromNBT(tag, "gas");
+    }
+
+    @Override
+    protected void saveAdditional(CompoundTag tag, HolderLookup.Provider registries) {
+        super.saveAdditional(tag, registries);
+        tag.putLong("power", this.power);
+        this.tanks[0].writeToNBT(tag, "input");
+        this.tanks[1].writeToNBT(tag, "heavy");
+        this.tanks[2].writeToNBT(tag, "reformate");
+        this.tanks[3].writeToNBT(tag, "light");
+        this.tanks[4].writeToNBT(tag, "gas");
+    }
+
+    @Override
+    public void writeNBT(CompoundTag savedTag) {
+        boolean empty = true;
+        for(FluidTank tank : this.tanks) if(tank.getFill() > 0) empty = false;
+        if(empty) return;
+
+        CompoundTag tag = new CompoundTag();
+        for(int i = 0; i < this.tanks.length; i++) this.tanks[i].writeToNBT(tag, "" + i);
+        savedTag.put(NBT_PERSISTENT_KEY, tag);
+    }
+
+    @Override
+    public void readNBT(CompoundTag savedTag) {
+        CompoundTag tag = savedTag.getCompound(NBT_PERSISTENT_KEY);
+        for(int i = 0; i < this.tanks.length; i++) this.tanks[i].readFromNBT(tag, "" + i);
+    }
+
+    @Override
+    public void serialize(RegistryFriendlyByteBuf buf) {
+        super.serialize(buf);
+        buf.writeLong(this.power);
+        buf.writeBoolean(this.isOn);
+        for(FluidTank tank : this.tanks) tank.serialize(buf);
+    }
+
+    @Override
+    public void deserialize(RegistryFriendlyByteBuf buf) {
+        super.deserialize(buf);
+        this.power = buf.readLong();
+        this.isOn = buf.readBoolean();
+        for(FluidTank tank : this.tanks) tank.deserialize(buf);
+    }
+
+    @Override public long getPower() { return Math.max(Math.min(this.power, MAX_POWER), 0); }
+    @Override public void setPower(long power) { this.power = power; this.setChanged(); }
+    @Override public long getMaxPower() { return MAX_POWER; }
+
+    @Override
+    public boolean canConnect(Direction dir) {
+        return dir != null && dir != Direction.DOWN;
+    }
+
+    @Override
+    public boolean canConnect(FluidType type, Direction dir) {
+        return dir != null && dir != Direction.DOWN;
+    }
+
+    @Override public FluidTank[] getSendingTanks() { return new FluidTank[] { this.tanks[1], this.tanks[2], this.tanks[3], this.tanks[4] }; }
+    @Override public FluidTank[] getReceivingTanks() { return new FluidTank[] { this.tanks[0] }; }
+    @Override public FluidTank[] getAllTanks() { return this.tanks; }
+    @Override public FluidTank getTankToPaste() { return this.tanks[0]; }
+
+    @Override
+    public void pasteSettings(CompoundTag tag, int index, Level level, Player player, BlockPos pos) {
+        IFluidCopiable.super.pasteSettings(tag, index, level, player, pos);
+        this.setChanged();
+    }
+
+    public AABB getRenderBoundingBox() {
+        if(this.renderBox == null) {
+            BlockPos pos = this.worldPosition;
+            this.renderBox = new AABB(pos.getX() - 1, pos.getY(), pos.getZ() - 1, pos.getX() + 2, pos.getY() + 9, pos.getZ() + 2);
+        }
+        return this.renderBox;
+    }
+
+    @Override
+    public long transferFluid(FluidType type, int pressure, long amount) {
+        long remainder = IFluidStandardTransceiverMK2.super.transferFluid(type, pressure, amount);
+        // Network transfers can happen while the refinery is idle, between its ticks.
+        if(remainder < amount) this.setChanged();
+        return remainder;
+    }
+
+    @Override
+    public void useUpFluid(FluidType type, int pressure, long amount) {
+        long previous = this.getFluidAvailable(type, pressure);
+        IFluidStandardTransceiverMK2.super.useUpFluid(type, pressure, amount);
+        if(this.getFluidAvailable(type, pressure) != previous) this.setChanged();
+    }
+
+    @Override
+    public AbstractContainerMenu createMenu(int id, Inventory inventory, Player player) {
+        return new MachineVacuumDistillMenu(id, inventory, this);
+    }
+
+    @Override
+    public void onChunkUnloaded() {
+        super.onChunkUnloaded();
+        if(this.audio != null) {
+            this.audio.stopSound();
+            this.audio = null;
+        }
+    }
+
+    @Override
+    public void setRemoved() {
+        super.setRemoved();
+        if(this.audio != null) {
+            this.audio.stopSound();
+            this.audio = null;
+        }
+    }
+
+    @Override
+    public AudioWrapper createAudioLoop() {
+        return AudioWrapper.getLoopedSound(NtmSoundEvents.BOILER.get(), SoundSource.BLOCKS, this, 0.25F, 15F, 1.0F, 20);
+    }
+}

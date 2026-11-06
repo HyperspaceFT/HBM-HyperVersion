@@ -955,7 +955,7 @@ public class RBMKCoreGameTests {
     // R12 screwdrivers as tools
 
     // Covers ModItems.java:3709-3710 (ItemTooling SCREWDRIVER 100 / 0, ItemCraftingDegradation stack size 1), ItemTooling.onItemUse (:26-41: only
-    // a true onScrew damages and consumes), HeaterOilburner.onScrew (:117-137) and TileEntityLockableBase.java:112 (hasItem by item).
+    // a true onScrew damages and consumes), HeaterElectric.onScrew (:101-121) and TileEntityLockableBase.java:112 (hasItem by item).
     @GameTest(template = TEMPLATE, batch = BATCH, timeoutTicks = 100)
     public static void rbmk_screwdriver_tooling(GameTestHelper helper) {
         try {
@@ -998,21 +998,30 @@ public class RBMKCoreGameTests {
                 check(tnt == InteractionResult.PASS && defuser.getDamageValue() == 0, "defuser on tnt: " + tnt + ", damage " + defuser.getDamageValue());
                 check(helper.getBlockState(new BlockPos(13, 1, 2)).is(NtmBlocks.TNT.get()), "the tnt became " + helper.getBlockState(new BlockPos(13, 1, 2)));
 
-                // Oil burner: the screwdriver toggles the setting 1 -> 2 and wears 1; a full cycle wraps 10 -> 1.
+                // Electric heater: the screwdriver steps the setting 0 -> 1 and wears 1; a full cycle wraps 10 -> 0 (HeaterElectric.java:101-121,
+                // TileEntityHeaterElectric.java:161-166).
                 BlockPos heaterRel = new BlockPos(8, 1, 8);
-                SmokeTestSupport.place(helper, (DummyableBlock) NtmBlocks.HEATER_OILBURNER.get(), heaterRel, Direction.NORTH);
-                HeaterOilburnerBlockEntity heater = SmokeTestSupport.blockEntity(helper, heaterRel, HeaterOilburnerBlockEntity.class);
-                check(heater.setting == 1, "a fresh oil burner has setting " + heater.setting);
+                SmokeTestSupport.place(helper, (DummyableBlock) NtmBlocks.HEATER_ELECTRIC.get(), heaterRel, Direction.NORTH);
+                com.hbm.blockentity.machine.heater.HeaterElectricBlockEntity heater = SmokeTestSupport.blockEntity(helper, heaterRel, com.hbm.blockentity.machine.heater.HeaterElectricBlockEntity.class);
+                check(heater.setting == 0, "a fresh electric heater has setting " + heater.setting);
                 ItemStack driver = new ItemStack(NtmItems.SCREWDRIVER.get());
                 InteractionResult toggled = use(player, driver, helper.absolutePos(heaterRel));
-                LOGGER.info("[hbm-rbmk-core] screwdriver on the oil burner: {}, setting {}, damage {}", toggled, heater.setting, driver.getDamageValue());
-                check(toggled.consumesAction() && heater.setting == 2 && driver.getDamageValue() == 1, "oil burner: " + toggled + ", setting " + heater.setting + ", damage " + driver.getDamageValue());
-                for(int i = 0; i < 8; i++) use(player, driver, helper.absolutePos(heaterRel));
-                check(heater.setting == 10, "after nine toggles the setting is " + heater.setting);
+                LOGGER.info("[hbm-rbmk-core] screwdriver on the electric heater: {}, setting {}, damage {}", toggled, heater.setting, driver.getDamageValue());
+                check(toggled.consumesAction() && heater.setting == 1 && driver.getDamageValue() == 1, "electric heater: " + toggled + ", setting " + heater.setting + ", damage " + driver.getDamageValue());
+                for(int i = 0; i < 9; i++) use(player, driver, helper.absolutePos(heaterRel));
+                check(heater.setting == 10, "after ten toggles the setting is " + heater.setting);
                 use(player, driver, helper.absolutePos(heaterRel));
-                check(heater.setting == 1 && driver.getDamageValue() == 10, "the tenth toggle gave setting " + heater.setting + ", damage " + driver.getDamageValue());
+                check(heater.setting == 0 && driver.getDamageValue() == 11, "the eleventh toggle gave setting " + heater.setting + ", damage " + driver.getDamageValue());
                 ItemStack deshDriver = new ItemStack(NtmItems.SCREWDRIVER_DESH.get());
-                check(use(player, deshDriver, helper.absolutePos(heaterRel)).consumesAction() && heater.setting == 2 && deshDriver.getDamageValue() == 0, "the desh screwdriver: setting " + heater.setting + ", damage " + deshDriver.getDamageValue());
+                check(use(player, deshDriver, helper.absolutePos(heaterRel)).consumesAction() && heater.setting == 1 && deshDriver.getDamageValue() == 0, "the desh screwdriver: setting " + heater.setting + ", damage " + deshDriver.getDamageValue());
+                // The fluid burner is set through its GUI slider (original HeaterOilburner.java at 4f5924e2b is no IToolable): the screwdriver passes,
+                // does not wear and leaves the burn rate alone.
+                BlockPos burnerRel = new BlockPos(12, 1, 8);
+                SmokeTestSupport.place(helper, (DummyableBlock) NtmBlocks.HEATER_OILBURNER.get(), burnerRel, Direction.NORTH);
+                HeaterOilburnerBlockEntity burner = SmokeTestSupport.blockEntity(helper, burnerRel, HeaterOilburnerBlockEntity.class);
+                ItemStack burnerDriver = new ItemStack(NtmItems.SCREWDRIVER.get());
+                InteractionResult passed = use(player, burnerDriver, helper.absolutePos(burnerRel));
+                check(passed == InteractionResult.PASS && burner.setting == 1 && burnerDriver.getDamageValue() == 0, "screwdriver on the fluid burner: " + passed + ", setting " + burner.setting + ", damage " + burnerDriver.getDamageValue());
 
                 // Lock picking: a pin in hand and a used screwdriver anywhere in the main inventory; lockMod 1 makes the roll always succeed
                 // (100 > nextDouble * 100), lockMod 0 always fail, so only the predicate decides whether the pin is used.

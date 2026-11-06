@@ -1,0 +1,19 @@
+{
+  "type": "minecraft:crafting_shapeless",
+  "category": "equipment",
+  "ingredients": [
+    {
+      "item": "hbmsntm:detonator"
+    },
+    {
+      "item": "hbmsntm:defuser"
+    },
+    {
+      "item": "hbmsntm:ducttape"
+    }
+  ],
+  "result": {
+    "count": 1,
+    "id": "hbmsntm:detonator_deadman"
+  }
+}

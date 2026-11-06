@@ -13,6 +13,8 @@ import com.hbm.blockentity.machine.oil.MachineFrackingTowerBlockEntity;
 import com.hbm.blockentity.machine.oil.MachineOilWellBlockEntity;
 import com.hbm.blockentity.machine.oil.MachinePumpjackBlockEntity;
 import com.hbm.blockentity.machine.oil.MachineRefineryBlockEntity;
+import com.hbm.blockentity.machine.oil.MachineVacuumDistillBlockEntity;
+import com.hbm.blockentity.machine.MachineRotaryFurnaceBlockEntity;
 import com.hbm.blockentity.machine.rbmk.*;
 import com.hbm.blockentity.machine.storage.*;
 import com.hbm.blockentity.network.CableBaseBlockEntity;
@@ -174,6 +176,9 @@ public class NtmBlockEntityTypes {
     public static final Supplier<BlockEntityType<MachineOilWellBlockEntity>> MACHINE_OIL_WELL = BLOCK_ENTITY_TYPES.register("machine_oil_well", () -> BlockEntityType.Builder.of(MachineOilWellBlockEntity::new, NtmBlocks.MACHINE_WELL.get()).build(null));
     public static final Supplier<BlockEntityType<MachinePumpjackBlockEntity>> MACHINE_PUMPJACK = BLOCK_ENTITY_TYPES.register("machine_pumpjack", () -> BlockEntityType.Builder.of(MachinePumpjackBlockEntity::new, NtmBlocks.MACHINE_PUMPJACK.get()).build(null));
     public static final Supplier<BlockEntityType<MachineFrackingTowerBlockEntity>> MACHINE_FRACKING_TOWER = BLOCK_ENTITY_TYPES.register("machine_fracking_tower", () -> BlockEntityType.Builder.of(MachineFrackingTowerBlockEntity::new, NtmBlocks.MACHINE_FRACKING_TOWER.get()).build(null));
+
+    public static final Supplier<BlockEntityType<MachineVacuumDistillBlockEntity>> MACHINE_VACUUM_DISTILL = BLOCK_ENTITY_TYPES.register("machine_vacuum_distill", () -> BlockEntityType.Builder.of(MachineVacuumDistillBlockEntity::new, NtmBlocks.MACHINE_VACUUM_DISTILL.get()).build(null));
+    public static final Supplier<BlockEntityType<MachineRotaryFurnaceBlockEntity>> MACHINE_ROTARY_FURNACE = BLOCK_ENTITY_TYPES.register("machine_rotary_furnace", () -> BlockEntityType.Builder.of(MachineRotaryFurnaceBlockEntity::new, NtmBlocks.MACHINE_ROTARY_FURNACE.get()).build(null));
 
     public static final Supplier<BlockEntityType<MachineRefineryBlockEntity>> MACHINE_REFINERY = BLOCK_ENTITY_TYPES.register(
             "machine_refinery",

@@ -77,6 +77,6 @@ public class AnvilRecipeHandler implements IRecipeCategory<AnvilSmithingRecipe> 
 
     @Override
     public void draw(AnvilSmithingRecipe recipe, IRecipeSlotsView recipeSlotsView, GuiGraphics guiGraphics, double mouseX, double mouseY) {
-        guiGraphics.drawString(Minecraft.getInstance().font, "Tier " + recipe.getTier(), 52, 43, 0x404040, false);
+        guiGraphics.drawString(Minecraft.getInstance().font, Component.translatable("block.hbmsntm.anvil.tier", recipe.getTier()), 52, 43, 0x404040, false);
     }
 }

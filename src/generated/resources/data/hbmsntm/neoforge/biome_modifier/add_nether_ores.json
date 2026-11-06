@@ -1,0 +1,16 @@
+{
+  "type": "hbmsntm:config_gated_add_features",
+  "biomes": "#minecraft:is_nether",
+  "config": [
+    "netherOres"
+  ],
+  "features": [
+    "hbmsntm:ore_nether_uranium_placed",
+    "hbmsntm:ore_nether_tungsten_placed",
+    "hbmsntm:ore_nether_sulfur_placed",
+    "hbmsntm:ore_nether_fire_placed",
+    "hbmsntm:ore_nether_coal_placed",
+    "hbmsntm:ore_nether_cobalt_placed"
+  ],
+  "step": "underground_ores"
+}

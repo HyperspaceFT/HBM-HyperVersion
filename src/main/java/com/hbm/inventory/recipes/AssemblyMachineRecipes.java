@@ -22,6 +22,7 @@ import com.hbm.items.machine.FluidIconItem;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.tags.ItemTags;
 import net.minecraft.world.item.ItemStack;
+import net.neoforged.neoforge.common.Tags;
 
 public class AssemblyMachineRecipes extends GenericRecipes<GenericRecipe> {
 
@@ -387,7 +388,7 @@ public class AssemblyMachineRecipes extends GenericRecipes<GenericRecipe> {
         // any plastic ingot is ntm:ingots_plastic.
         if(!NtmConfig.enable528()) {
             // Original ass.chip (AssemblyMachineRecipes.java:127-128); circuit SILICON is the printed silicon wafer.
-            // ass.chipBismoid, ass.chipQuantum and ass.atomicClock (:129-134) are deferred with their inputs (GOAL13B B4).
+            // ass.chipQuantum and ass.atomicClock (:131-134) are deferred with their inputs (GOAL13B B4).
             this.register(new GenericRecipe("ass.chip").setup(50, 250).outputItems(new ItemStack(NtmItems.CIRCUIT_MICROCHIP.get(), 1))
                     .inputItems(new ComparableStack(NtmItems.PLATE_POLYMER.get(), 1),
                             new ComparableStack(NtmItems.CIRCUIT_PRINTED_SILICON_WAFER.get(), 1),
@@ -482,5 +483,169 @@ public class AssemblyMachineRecipes extends GenericRecipes<GenericRecipe> {
         this.register(new GenericRecipe("ass.hazcloth").setup(50, 100).outputItems(new ItemStack(NtmItems.HAZMAT_CLOTH.get(), 4))
                 .inputItems(new ComparableStack(NtmItems.POWDER_LEAD.get(), 4),
                         new ComparableStack(net.minecraft.world.item.Items.STRING, 8)));
+
+        // Original plate rows (AssemblyMachineRecipes.java:65-79), registered in every mode like the original, in the alt.plates
+        // pool and the autoswitch.plates group. IRON/GOLD.ingot() are c:ingots/iron and gold; CU.ingot() is ntm:ingots_copper
+        // (the vanilla copper ingot and NEO's own ingot_copper, which c:ingots/copper does not hold). NEO's own ingots have no
+        // c:ingots tags, so the plain items stand in for the other ore dictionary entries.
+        String autoPlate = "autoswitch.plates";
+        this.register(new GenericRecipe("ass.plateiron").setup(60, 100).outputItems(new ItemStack(NtmItems.PLATE_IRON.get(), 1))
+                .inputItems(new RecipesCommon.TagStack(Tags.Items.INGOTS_IRON, 1)).setPools(GenericRecipes.POOL_PREFIX_ALT + "plates").setGroup(autoPlate, this));
+        this.register(new GenericRecipe("ass.plategold").setup(60, 100).outputItems(new ItemStack(NtmItems.PLATE_GOLD.get(), 1))
+                .inputItems(new RecipesCommon.TagStack(Tags.Items.INGOTS_GOLD, 1)).setPools(GenericRecipes.POOL_PREFIX_ALT + "plates").setGroup(autoPlate, this));
+        this.register(new GenericRecipe("ass.platetitanium").setup(60, 100).outputItems(new ItemStack(NtmItems.PLATE_TITANIUM.get(), 1))
+                .inputItems(new ComparableStack(NtmItems.INGOT_TITANIUM.get(), 1)).setPools(GenericRecipes.POOL_PREFIX_ALT + "plates").setGroup(autoPlate, this));
+        this.register(new GenericRecipe("ass.platealu").setup(60, 100).outputItems(new ItemStack(NtmItems.PLATE_ALUMINIUM.get(), 1))
+                .inputItems(new ComparableStack(NtmItems.INGOT_ALUMINIUM.get(), 1)).setPools(GenericRecipes.POOL_PREFIX_ALT + "plates").setGroup(autoPlate, this));
+        this.register(new GenericRecipe("ass.platesteel").setup(60, 100).outputItems(new ItemStack(NtmItems.PLATE_STEEL.get(), 1))
+                .inputItems(new ComparableStack(NtmItems.INGOT_STEEL.get(), 1)).setPools(GenericRecipes.POOL_PREFIX_ALT + "plates").setGroup(autoPlate, this));
+        this.register(new GenericRecipe("ass.platelead").setup(60, 100).outputItems(new ItemStack(NtmItems.PLATE_LEAD.get(), 1))
+                .inputItems(new ComparableStack(NtmItems.INGOT_LEAD.get(), 1)).setPools(GenericRecipes.POOL_PREFIX_ALT + "plates").setGroup(autoPlate, this));
+        this.register(new GenericRecipe("ass.platecopper").setup(60, 100).outputItems(new ItemStack(NtmItems.PLATE_COPPER.get(), 1))
+                .inputItems(new RecipesCommon.TagStack(ItemTags.create(ResourceLocation.fromNamespaceAndPath("ntm", "ingots_copper")), 1)).setPools(GenericRecipes.POOL_PREFIX_ALT + "plates").setGroup(autoPlate, this));
+        this.register(new GenericRecipe("ass.plateschrab").setup(60, 100).outputItems(new ItemStack(NtmItems.PLATE_SCHRABIDIUM.get(), 1))
+                .inputItems(new ComparableStack(NtmItems.INGOT_SCHRABIDIUM.get(), 1)).setPools(GenericRecipes.POOL_PREFIX_ALT + "plates").setGroup(autoPlate, this));
+        this.register(new GenericRecipe("ass.platecmb").setup(60, 100).outputItems(new ItemStack(NtmItems.PLATE_COMBINE_STEEL.get(), 1))
+                .inputItems(new ComparableStack(NtmItems.INGOT_COMBINE_STEEL.get(), 1)).setPools(GenericRecipes.POOL_PREFIX_ALT + "plates").setGroup(autoPlate, this));
+        this.register(new GenericRecipe("ass.plategunmetal").setup(60, 100).outputItems(new ItemStack(NtmItems.PLATE_GUNMETAL.get(), 1))
+                .inputItems(new ComparableStack(NtmItems.INGOT_GUNMETAL.get(), 1)).setPools(GenericRecipes.POOL_PREFIX_ALT + "plates").setGroup(autoPlate, this));
+        // ass.plateweaponsteel (:77) is not registered: NEO has no plate_weaponsteel.
+        this.register(new GenericRecipe("ass.platesaturnite").setup(60, 100).outputItems(new ItemStack(NtmItems.PLATE_SATURNITE.get(), 1))
+                .inputItems(new ComparableStack(NtmItems.INGOT_SATURNITE.get(), 1)).setPools(GenericRecipes.POOL_PREFIX_ALT + "plates").setGroup(autoPlate, this));
+        this.register(new GenericRecipe("ass.platedura").setup(60, 100).outputItems(new ItemStack(NtmItems.PLATE_DURA_STEEL.get(), 1))
+                .inputItems(new ComparableStack(NtmItems.INGOT_DURA_STEEL.get(), 1)).setPools(GenericRecipes.POOL_PREFIX_ALT + "plates").setGroup(autoPlate, this));
+
+        // Original ass.assembler (AssemblyMachineRecipes.java:262-263); the steel ingot is the plain item as in ass.chemplant,
+        // BASIC is the integrated circuit board.
+        this.register(new GenericRecipe("ass.assembler").setup(200, 100).outputItems(new ItemStack(NtmBlocks.MACHINE_ASSEMBLY_MACHINE.get(), 1))
+                .inputItems(new ComparableStack(NtmItems.INGOT_STEEL.get(), 4),
+                        new RecipesCommon.TagStack(NtmTags.Items.PLATES_COPPER, 4),
+                        new ComparableStack(NtmItems.MOTOR.get(), 2),
+                        new ComparableStack(NtmItems.CIRCUIT_INTEGRATED_BOARD.get(), 1)));
+
+        // Original normal ass.chemplantAlt (AssemblyMachineRecipes.java:267-268); the expensive branch is not migrated (NEO has
+        // no item_expensive). NEO has no dura plate or copper pipe tag, so the plain items stand in; BASIC is the integrated circuit board.
+        this.register(new GenericRecipe("ass.chemplantAlt").setup(200, 100).outputItems(new ItemStack(NtmBlocks.MACHINE_CHEMICAL_PLANT.get(), 1))
+                .inputItems(new ComparableStack(NtmItems.PLATE_DURA_STEEL.get(), 8),
+                        new ComparableStack(NtmItems.PIPE_COPPER.get(), 4),
+                        new ComparableStack(NtmItems.MOTOR.get(), 2),
+                        new ComparableStack(NtmItems.CIRCUIT_INTEGRATED_BOARD.get(), 1)));
+
+        // Original normal ass.pumpjack and ass.fracker (AssemblyMachineRecipes.java:301-308), without setPools528 like
+        // ass.crackingtower, since NEO has no blueprint source in survival for 528. pools (the original's annihilator); the
+        // expensive branch (inputItemsEx) is not migrated (NEO has no item_expensive). CAPACITOR is the capacitor circuit.
+        this.register(new GenericRecipe("ass.pumpjack").setup(400, 100).outputItems(new ItemStack(NtmBlocks.MACHINE_PUMPJACK.get(), 1))
+                .inputItems(new ComparableStack(NtmItems.PLATE_DURA_STEEL.get(), 8),
+                        NtmItems.castPlateWeldedIngredient(CastPlateItem.Type.STEEL, 8),
+                        new ComparableStack(NtmItems.PIPE_STEEL.get(), 12),
+                        new ComparableStack(NtmItems.MOTOR_DESH.get(), 1),
+                        new ComparableStack(NtmItems.DRILL_TITANIUM.get(), 1)));
+        this.register(new GenericRecipe("ass.fracker").setup(600, 100).outputItems(new ItemStack(NtmBlocks.MACHINE_FRACKING_TOWER.get(), 1))
+                .inputItems(new ComparableStack(NtmItems.SHELL_STEEL.get(), 24),
+                        new ComparableStack(NtmItems.PIPE_STEEL.get(), 12),
+                        new ComparableStack(NtmBlocks.CONCRETE_SMOOTH.get(), 64),
+                        new ComparableStack(NtmItems.DRILL_TITANIUM.get(), 1),
+                        new ComparableStack(NtmItems.MOTOR_DESH.get(), 2),
+                        new ComparableStack(NtmItems.PLATE_DESH.get(), 24),
+                        new ComparableStack(NtmItems.CIRCUIT_CAPACITOR.get(), 16)));
+
+        // Original normal ass.radar and ass.radarlarge (AssemblyMachineRecipes.java:392-397); the expensive branch is not migrated
+        // (NEO has no item_expensive). ANY_RUBBER.ingot() is ntm:any_rubbers (latex/bio rubber and rubber) and ANY_RESISTANTALLOY.ingot()
+        // is ntm:ingots_resistant_alloy; BASIC is the integrated circuit board, ADVANCED the military grade circuit board.
+        this.register(new GenericRecipe("ass.radar").setup(300, 100).outputItems(new ItemStack(NtmBlocks.MACHINE_RADAR.get(), 1))
+                .inputItems(new RecipesCommon.TagStack(NtmTags.Items.PLATES_STEEL, 12),
+                        new RecipesCommon.TagStack(ItemTags.create(ResourceLocation.fromNamespaceAndPath("ntm", "any_rubbers")), 12),
+                        new ComparableStack(NtmItems.MAGNETRON.get(), 5),
+                        new ComparableStack(NtmItems.MOTOR.get(), 1),
+                        new ComparableStack(NtmItems.CIRCUIT_INTEGRATED_BOARD.get(), 8),
+                        new ComparableStack(NtmItems.CRT_DISPLAY.get(), 4)));
+        this.register(new GenericRecipe("ass.radarlarge").setup(400, 100).outputItems(new ItemStack(NtmBlocks.MACHINE_RADAR_LARGE.get(), 1))
+                .inputItems(NtmItems.castPlateWeldedIngredient(CastPlateItem.Type.STEEL, 6),
+                        new RecipesCommon.TagStack(ItemTags.create(ResourceLocation.fromNamespaceAndPath("ntm", "ingots_resistant_alloy")), 4),
+                        new RecipesCommon.TagStack(ItemTags.create(ResourceLocation.fromNamespaceAndPath("ntm", "any_rubbers")), 24),
+                        new ComparableStack(NtmItems.MAGNETRON.get(), 16),
+                        new ComparableStack(NtmItems.MOTOR_DESH.get(), 1),
+                        new ComparableStack(NtmItems.CIRCUIT_MILITARY_GRADE_BOARD.get(), 4),
+                        new ComparableStack(NtmItems.CRT_DISPLAY.get(), 4)));
+
+        // Original normal ass.leviturbine (AssemblyMachineRecipes.java:437-439); the expensive branch is not migrated (NEO has no
+        // item_expensive). NEO has no steel shell or titanium plate tag, so the plain items stand in; dense gold wire and the
+        // dura pipe as ass.turbofan.
+        this.register(new GenericRecipe("ass.leviturbine").setup(600, 100).outputItems(new ItemStack(NtmBlocks.MACHINE_CHUNGUS.get(), 1))
+                .inputItems(new ComparableStack(NtmItems.SHELL_STEEL.get(), 6),
+                        NtmItems.castPlateWeldedIngredient(CastPlateItem.Type.STEEL, 16),
+                        new ComparableStack(NtmItems.PLATE_TITANIUM.get(), 12),
+                        new RecipesCommon.TagStack(ItemTags.create(ResourceLocation.fromNamespaceAndPath("ntm", "ingots_resistant_alloy")), 16),
+                        new ComparableStack(NtmItems.TURBINE_TUNGSTEN.get(), 5),
+                        new ComparableStack(NtmItems.TURBINE_TITANIUM.get(), 3),
+                        new ComparableStack(NtmItems.FLYWHEEL_BERYLLIUM.get(), 1),
+                        new ComparableStack(MetaHelper.newStack(NtmItems.WIRE_DENSE.get(), 48, WireDenseItem.Type.GOLD.meta)),
+                        new ComparableStack(NtmItems.PIPE_DURA_STEEL.get(), 16),
+                        new ComparableStack(NtmItems.PIPE_STEEL.get(), 16)));
+
+        // Original overdrive upgrades (AssemblyMachineRecipes.java:629-637), registered only outside 528 mode like the original.
+        // BIGMT.ingot() is the saturnite ingot, ANY_HARDPLASTIC.ingot() is ntm:bars_hard_plastic (PC, PVC) and
+        // ANY_BISMOIDBRONZE.ingot() is ntm:ingots_bismoid_bronze; ingot_cft is NEO's INGOT_CTF. ADVANCED is the military grade
+        // circuit board, BISMOID the versatile circuit board.
+        if(!NtmConfig.enable528()) {
+            this.register(new GenericRecipe("ass.overdrive1").setup(200, 100).outputItems(new ItemStack(NtmItems.UPGRADE_OVERDRIVE_1.get(), 1))
+                    .inputItems(new ComparableStack(NtmItems.UPGRADE_SPEED_3.get(), 1),
+                            new ComparableStack(NtmItems.UPGRADE_EFFECT_3.get(), 1),
+                            new ComparableStack(NtmItems.INGOT_SATURNITE.get(), 16),
+                            new RecipesCommon.TagStack(ItemTags.create(ResourceLocation.fromNamespaceAndPath("ntm", "bars_hard_plastic")), 16),
+                            new ComparableStack(NtmItems.CIRCUIT_MILITARY_GRADE_BOARD.get(), 16)));
+            this.register(new GenericRecipe("ass.overdrive2").setup(600, 100).outputItems(new ItemStack(NtmItems.UPGRADE_OVERDRIVE_2.get(), 1))
+                    .inputItems(new ComparableStack(NtmItems.UPGRADE_OVERDRIVE_1.get(), 1),
+                            new ComparableStack(NtmItems.UPGRADE_SPEED_3.get(), 1),
+                            new ComparableStack(NtmItems.UPGRADE_EFFECT_3.get(), 1),
+                            new ComparableStack(NtmItems.INGOT_SATURNITE.get(), 16),
+                            new ComparableStack(NtmItems.INGOT_CTF.get(), 8),
+                            new ComparableStack(NtmItems.CIRCUIT_CAPACITOR_BOARD.get(), 16)));
+            this.register(new GenericRecipe("ass.overdrive3").setup(1_200, 100).outputItems(new ItemStack(NtmItems.UPGRADE_OVERDRIVE_3.get(), 1))
+                    .inputItems(new ComparableStack(NtmItems.UPGRADE_OVERDRIVE_2.get(), 1),
+                            new ComparableStack(NtmItems.UPGRADE_SPEED_3.get(), 1),
+                            new ComparableStack(NtmItems.UPGRADE_EFFECT_3.get(), 1),
+                            new RecipesCommon.TagStack(ItemTags.create(ResourceLocation.fromNamespaceAndPath("ntm", "ingots_bismoid_bronze")), 16),
+                            new ComparableStack(NtmItems.INGOT_CTF.get(), 16),
+                            new ComparableStack(NtmItems.CIRCUIT_VERSATILE_BOARD.get(), 16)));
+        }
+
+        // Original ass.minenaval (AssemblyMachineRecipes.java:652-653); ANY_PLASTICEXPLOSIVE.ingot() is ntm:ingots_plastic_explosive,
+        // ADVANCED is the military grade circuit board.
+        this.register(new GenericRecipe("ass.minenaval").setup(300, 100).outputItems(new ItemStack(NtmBlocks.MINE_NAVAL.get(), 1))
+                .inputItems(new ComparableStack(NtmItems.SPHERE_STEEL.get(), 1),
+                        new ComparableStack(NtmItems.PIPE_STEEL.get(), 3),
+                        new ComparableStack(NtmItems.CIRCUIT_MILITARY_GRADE_BOARD.get(), 1),
+                        new RecipesCommon.TagStack(ItemTags.create(ResourceLocation.fromNamespaceAndPath("ntm", "ingots_plastic_explosive")), 24)));
+
+        // Original ass.emptypackage (AssemblyMachineRecipes.java:1110-1111); NEO has no titanium plate tag, so the plain item stands in.
+        this.register(new GenericRecipe("ass.emptypackage").setup(40, 100).outputItems(new ItemStack(NtmItems.FLUID_PACK_EMPTY.get(), 1))
+                .inputItems(new ComparableStack(NtmItems.PLATE_TITANIUM.get(), 4),
+                        new RecipesCommon.TagStack(ItemTags.create(ResourceLocation.fromNamespaceAndPath("ntm", "ingots_plastic")), 2)));
+
+        // Original ass.platemixed (AssemblyMachineRecipes.java:81-82); BIGMT.plate() is the saturnite plate.
+        this.register(new GenericRecipe("ass.platemixed").setup(50, 100).outputItems(new ItemStack(NtmItems.PLATE_MIXED.get(), 4))
+                .inputItems(new ComparableStack(NtmItems.PLATE_COPPER.get(), 2),
+                        new ComparableStack(NtmItems.NEUTRON_REFLECTOR.get(), 1),
+                        new ComparableStack(NtmItems.PLATE_SATURNITE.get(), 1)));
+
+        // Original ass.vaccumrefinery (AssemblyMachineRecipes.java:327-328); CHIP_BISMOID is the versatile integrated circuit.
+        this.register(new GenericRecipe("ass.vaccumrefinery").setup(200, 100).outputItems(new ItemStack(NtmBlocks.MACHINE_VACUUM_DISTILL.get(), 1))
+                .inputItems(NtmItems.castPlateIngredient(CastPlateItem.Type.STEEL, 16),
+                        new ComparableStack(NtmItems.PLATE_COPPER.get(), 16),
+                        new RecipesCommon.TagStack(ItemTags.create(ResourceLocation.fromNamespaceAndPath("ntm", "ingots_resistant_alloy")), 4),
+                        new ComparableStack(NtmItems.SPHERE_STEEL.get(), 1),
+                        new ComparableStack(NtmItems.PIPE_STEEL.get(), 12),
+                        new ComparableStack(NtmItems.MOTOR_DESH.get(), 3),
+                        new ComparableStack(NtmItems.CIRCUIT_VERSATILE_INTEGRATED.get(), 4)));
+
+        // Original ass.chipBismoid (AssemblyMachineRecipes.java:129-130, in the same not-528 branch as ass.chip); ANY_BISMOID.nugget() is ntm:nuggets_bismoid.
+        if(!NtmConfig.enable528()) {
+            this.register(new GenericRecipe("ass.chipBismoid").setup(100, 1_500).outputItems(new ItemStack(NtmItems.CIRCUIT_VERSATILE_INTEGRATED.get(), 1))
+                    .inputItems(new ComparableStack(NtmItems.PLATE_POLYMER.get(), 2),
+                            new ComparableStack(NtmItems.CIRCUIT_PRINTED_SILICON_WAFER.get(), 2),
+                            new RecipesCommon.TagStack(ItemTags.create(ResourceLocation.fromNamespaceAndPath("ntm", "nuggets_bismoid")), 1),
+                            new ComparableStack(NtmItems.WIRE_GOLD.get(), 2)));
+        }
     }
 }

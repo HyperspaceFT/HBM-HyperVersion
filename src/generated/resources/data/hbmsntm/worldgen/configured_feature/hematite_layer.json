@@ -1,0 +1,12 @@
+{
+  "type": "hbmsntm:ore_layer",
+  "config": {
+    "layer": 0,
+    "scale_h": 0.04,
+    "scale_v": 0.25,
+    "state": {
+      "Name": "hbmsntm:resource_hematite"
+    },
+    "threshold": 230.0
+  }
+}

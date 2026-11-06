@@ -1,18 +1,13 @@
 package com.hbm.blocks.machine.heater;
 
-import api.hbm.block.IToolable;
 import com.hbm.blockentity.ITickable;
 import com.hbm.blockentity.ProxyComboBlockEntity;
 import com.hbm.blockentity.machine.heater.HeaterOilburnerBlockEntity;
 import com.hbm.blocks.DummyBlockType;
-import com.hbm.blocks.ILookOverlay;
 import com.hbm.blocks.ITooltipProvider;
-import com.hbm.inventory.fluid.FluidType;
-import com.hbm.inventory.fluid.trait.FT_Flammable;
 import com.hbm.items.machine.IItemFluidIdentifier;
 import com.hbm.util.BobMathUtil;
 import com.mojang.serialization.MapCodec;
-import net.minecraft.ChatFormatting;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.network.chat.Component;
@@ -26,13 +21,10 @@ import net.minecraft.world.level.block.entity.BlockEntityTicker;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.BlockHitResult;
-import net.neoforged.neoforge.client.event.RenderGuiEvent;
 
-import java.util.ArrayList;
 import java.util.List;
-import java.util.Locale;
 
-public class HeaterOilburnerBlock extends AbstractHeaterBlock implements ITooltipProvider, ILookOverlay, IToolable {
+public class HeaterOilburnerBlock extends AbstractHeaterBlock implements ITooltipProvider {
 
     public HeaterOilburnerBlock(Properties properties) {
         super(properties);
@@ -122,43 +114,6 @@ public class HeaterOilburnerBlock extends AbstractHeaterBlock implements IToolti
         } finally {
             safeRem = false;
         }
-    }
-
-    @Override
-    public boolean onScrew(Level level, Player player, BlockPos pos, Direction direction, ToolType tool) {
-        if(tool != ToolType.SCREWDRIVER) {
-            return false;
-        }
-
-        if(level.isClientSide) return true;
-
-        BlockPos corePos = this.findCore(level, pos);
-        if(corePos == null) return false;
-
-        BlockEntity te = level.getBlockEntity(corePos);
-        if(!(te instanceof HeaterOilburnerBlockEntity heater)) return false;
-
-        heater.toggleSetting();
-        heater.setChanged();
-        return true;
-    }
-
-    @Override
-    public void printHook(RenderGuiEvent.Pre event, Level level, BlockPos pos) {
-        BlockPos corePos = this.findCore(level, pos);
-        if(corePos == null) return;
-
-        BlockEntity te = level.getBlockEntity(corePos);
-        if(!(te instanceof HeaterOilburnerBlockEntity heater)) return;
-
-        List<Component> text = new ArrayList<>();
-        text.add(Component.literal("-> ").withStyle(ChatFormatting.GREEN).append(Component.literal(heater.setting + " mB/t")));
-        FluidType type = heater.tank.getTankType();
-        if(type.hasTrait(FT_Flammable.class)) {
-            int heat = (int)(type.getTrait(FT_Flammable.class).getHeatEnergy() * heater.setting / 1000D);
-            text.add(Component.literal("<- ").withStyle(ChatFormatting.RED).append(Component.literal(String.format(Locale.US, "%,d", heat) + " TU/t")));
-        }
-        ILookOverlay.printGeneric(event, Component.translatable(this.getDescriptionId()), 0xffff00, 0x404000, text);
     }
 
     @Override

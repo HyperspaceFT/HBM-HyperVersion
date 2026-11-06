@@ -133,6 +133,7 @@ public class ShredderRecipes extends SerializableRecipe {
             case "niter" -> output(new ItemStack(NtmItems.NITER.get()));
             case "lignite" -> output(new ItemStack(NtmItems.POWDER_LIGNITE.get()));
             case "schrabidium" -> output(new ItemStack(NtmItems.POWDER_SCHRABIDIUM.get()));
+            case "lithium" -> output(new ItemStack(NtmItems.POWDER_LITHIUM.get()));
             default -> ItemStack.EMPTY;
         };
     }
@@ -168,6 +169,8 @@ public class ShredderRecipes extends SerializableRecipe {
             String path = BuiltInRegistries.BLOCK.getKey(block).getPath();
             if(!path.startsWith("ore_")) continue;
             if(path.equals("ore_basalt")) continue;
+            // Not in the original coal ore dictionary entry, so the original shreds only its coal_infernal drop
+            if(path.equals("ore_nether_coal")) continue;
 
             ItemStack output = getRawOreOutput(normalizeOreName(path));
             registerRawOreRecipe(block, output);
@@ -181,10 +184,21 @@ public class ShredderRecipes extends SerializableRecipe {
     private static void registerMaterialRecipes() {
         registerIfAbsent(new ItemStack(NtmBlocks.ORE_RARE.get()), new ItemStack(NtmItems.POWDER_DESH_MIX.get(), 1));
         registerIfAbsent(new ItemStack(NtmBlocks.ORE_RARE_DEEPSLATE.get()), new ItemStack(NtmItems.POWDER_DESH_MIX.get(), 1));
+        // Original OreDictManager.java:438,473-474 with the ore rule (ShredderRecipes.java:66): the depth borax, zirconium and
+        // neodymium ores shred to two of their dust
+        registerIfAbsent(new ItemStack(NtmBlocks.ORE_DEPTH_BORAX.get()), new ItemStack(NtmItems.POWDER_BORAX.get(), 2));
+        registerIfAbsent(new ItemStack(NtmBlocks.ORE_DEPTH_ZIRCONIUM.get()), new ItemStack(NtmItems.POWDER_ZIRCONIUM.get(), 2));
+        registerIfAbsent(new ItemStack(NtmBlocks.ORE_DEPTH_NETHER_NEODYMIUM.get()), new ItemStack(NtmItems.POWDER_NEODYMIUM.get(), 2));
         // Original: the chunk that a normally mined rare earth ore drops
         registerIfAbsent(new ItemStack(NtmItems.RARE_EARTH_ORE_CHUNK.get()), new ItemStack(NtmItems.POWDER_DESH_MIX.get(), 1));
         registerIfAbsent(new ItemStack(NtmBlocks.BLOCK_ACTINIUM.get()), new ItemStack(NtmItems.POWDER_ACTINIUM.get(), 9));
         registerIfAbsent(new ItemStack(NtmBlocks.BLOCK_ALUMINIUM.get()), new ItemStack(NtmItems.POWDER_ALUMINIUM.get(), 9));
+        // Fracking debris scrapping (original ShredderRecipes.java:302-306); NEO has no porous stone for :307
+        registerIfAbsent(new ItemStack(NtmBlocks.DIRT_DEAD.get()), new ItemStack(NtmItems.SCRAP_OIL.get(), 1));
+        registerIfAbsent(new ItemStack(NtmBlocks.DIRT_OILY.get()), new ItemStack(NtmItems.SCRAP_OIL.get(), 1));
+        registerIfAbsent(new ItemStack(NtmBlocks.SAND_OILY.get()), new ItemStack(NtmItems.SCRAP_OIL.get(), 1));
+        registerIfAbsent(new ItemStack(NtmBlocks.SAND_RED_OILY.get()), new ItemStack(NtmItems.SCRAP_OIL.get(), 1));
+        registerIfAbsent(new ItemStack(NtmBlocks.STONE_CRACKED.get()), new ItemStack(NtmItems.SCRAP_OIL.get(), 1));
         registerIfAbsent(new ItemStack(NtmBlocks.BLOCK_ASBESTOS.get()), new ItemStack(NtmItems.POWDER_ASBESTOS.get(), 9));
         registerIfAbsent(new ItemStack(NtmBlocks.BLOCK_AUSTRALIUM.get()), new ItemStack(NtmItems.POWDER_AUSTRALIUM.get(), 9));
         registerIfAbsent(new ItemStack(NtmBlocks.BLOCK_BERYLLIUM.get()), new ItemStack(NtmItems.POWDER_BERYLLIUM.get(), 9));
@@ -318,6 +332,8 @@ public class ShredderRecipes extends SerializableRecipe {
         registerIfAbsent(new ItemStack(NtmBlocks.CONCRETE.get()), new ItemStack(Blocks.GRAVEL, 1));
         registerIfAbsent(new ItemStack(NtmBlocks.CONCRETE_SMOOTH.get()), new ItemStack(Blocks.GRAVEL, 1));
         registerIfAbsent(new ItemStack(NtmBlocks.RESOURCE_LIMESTONE.get()), new ItemStack(NtmItems.POWDER_LIMESTONE.get(), 4));
+        // Original ShredderRecipes.java:176
+        registerIfAbsent(new ItemStack(NtmBlocks.STONE_GNEISS.get()), new ItemStack(NtmItems.POWDER_LITHIUM_TINY.get(), 1));
         registerIfAbsent(new ItemStack(NtmBlocks.BLOCK_SLAG.get()), new ItemStack(NtmItems.POWDER_CEMENT.get(), 4));
 
         // Original ShredderRecipes.java:55-70 auto rule (ingot/gem -> one dust) for the gem and ingot names of
@@ -406,6 +422,9 @@ public class ShredderRecipes extends SerializableRecipe {
         setRecipe(new ItemStack(NtmItems.DEBRIS_EXCHANGER.get()), new ItemStack(NtmItems.POWDER_STEEL.get(), 3));
         setRecipe(new ItemStack(NtmItems.DEBRIS_METAL.get()), new ItemStack(NtmItems.POWDER_STEEL_TINY.get(), 3));
         setRecipe(new ItemStack(NtmItems.DEBRIS_GRAPHITE.get()), new ItemStack(NtmItems.POWDER_COAL.get(), 1));
+        // Original ShredderRecipes.java:150 and :199
+        setRecipe(NtmBlocks.ORE_NETHER_FIRE.get(), new ItemStack(NtmItems.POWDER_FIRE.get(), 6));
+        setRecipe(new ItemStack(NtmItems.COAL_INFERNAL.get()), new ItemStack(NtmItems.POWDER_COAL.get(), 2));
     }
 
     private static void registerBasaltRecipe(OreBasaltBlock.BasaltOreType type, ItemStack output) {

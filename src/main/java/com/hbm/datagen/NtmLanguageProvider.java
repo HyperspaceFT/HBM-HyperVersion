@@ -218,6 +218,7 @@ public class NtmLanguageProvider extends LanguageProvider {
         this.add(NtmItems.BRIQUETTE_COAL, "Coal Briquette");
         this.add(NtmItems.BRIQUETTE_LIGNITE, "Lignite Briquette");
         this.add(NtmItems.BRIQUETTE_WOOD, "Sawdust Briquette");
+        this.add(NtmItems.COAL_INFERNAL, "Infernal Coal");
         this.add("hbmmat.redstone", "Redstone");
         this.add("hbmmat.borax", "Borax");
         this.add("hbmmat.sodium", "Sodium");
@@ -843,6 +844,8 @@ public class NtmLanguageProvider extends LanguageProvider {
         this.add(NtmItems.TOOTHPICKS, "Toothpicks");
         this.add(NtmItems.DUCTTAPE, "Duct Tape");
         this.add(NtmItems.PLANT_ITEM, "Rope");
+        this.add(NtmItems.PLANT_ITEM_MUSTARDWILLOW, "Mustard Willow Leaf");
+        this.add(NtmItems.SCRAP_OIL, "Oily Scraps");
         this.add(NtmBlocks.PLANT_FLOWER, "Hemp");
         this.add(NtmItems.PART_GENERIC, "Generic Part");
         this.add("item.hbmsntm.part_generic.piston_pneumatic", "Pneumatic Piston");
@@ -1232,6 +1235,8 @@ public class NtmLanguageProvider extends LanguageProvider {
 
         this.add(NtmItems.SCREWDRIVER, "Screwdriver");
         this.add(NtmItems.SCREWDRIVER_DESH, "Desh Screwdriver");
+        this.add(NtmItems.HAND_DRILL, "Hand Drill");
+        this.add(NtmItems.HAND_DRILL_DESH, "Desh Hand Drill");
         this.add(NtmItems.BLOWTORCH, "Blowtorch");
         this.add(NtmItems.ACETYLENE_TORCH, "Acetylene Welding Torch");
         this.add(NtmItems.BLADES_STEEL, "Steel Shredder Blades");
@@ -1907,6 +1912,7 @@ public class NtmLanguageProvider extends LanguageProvider {
         this.add(NtmItems.DETONATOR_DEADMAN, DESC, "Shift right-click to set position,$drop to detonate!");
         this.add(NtmItems.DETONATOR_DE, "Dead Man's Explosive");
         this.add(NtmItems.DETONATOR_DE, DESC, "Explodes when dropped!");
+        this.add(NtmItems.RANGEFINDER, "Rangefinder");
         this.add("item.hbmsntm.obj_bomb_caller.desc0", "Type: Carpet bombing");
         this.add("item.hbmsntm.obj_bomb_caller.desc1", "Type: Napalm");
         this.add("item.hbmsntm.obj_bomb_caller.desc2", "Type: Atomic bomb");
@@ -2070,10 +2076,40 @@ public class NtmLanguageProvider extends LanguageProvider {
         this.add(NtmBlocks.ORE_NETHER_URANIUM_SCORCHED, "Scorched Nether Uranium Ore");
         this.add(NtmBlocks.ORE_NETHER_PLUTONIUM, "Nether Plutonium Ore");
         this.add(NtmBlocks.ORE_NETHER_SCHRABIDIUM, "Nether Schrabidium Ore");
+        this.add(NtmBlocks.ORE_NETHER_TUNGSTEN, "Nether Tungsten Ore");
+        this.add(NtmBlocks.ORE_NETHER_SULFUR, "Nether Sulfur Ore");
+        this.add(NtmBlocks.ORE_NETHER_FIRE, "Nether Phosphorus Ore");
+        this.add(NtmBlocks.ORE_NETHER_COAL, "Burning Nether Coal Ore");
+        this.add(NtmBlocks.ORE_NETHER_SMOLDERING, "Smoldering Netherrack");
+        this.add(NtmBlocks.ORE_NETHER_COBALT, "Nether Cobalt Ore");
         this.add(NtmBlocks.ORE_TIKITE, "Trixite");
         this.add(NtmBlocks.ORE_GNEISS_URANIUM, "Schist Uranium Ore");
         this.add(NtmBlocks.ORE_GNEISS_URANIUM_SCORCHED, "Scorched Schist Uranium Ore");
         this.add(NtmBlocks.ORE_GNEISS_SCHRABIDIUM, "Schist Schrabidium Ore");
+        this.add(NtmBlocks.STONE_GNEISS, "Graphitic Schist");
+        this.add(NtmBlocks.ORE_GNEISS_IRON, "Schist Iron Ore");
+        this.add(NtmBlocks.ORE_GNEISS_GOLD, "Schist Gold Ore");
+        this.add(NtmBlocks.ORE_GNEISS_COPPER, "Schist Copper Ore");
+        this.add(NtmBlocks.ORE_GNEISS_ASBESTOS, "Schist Asbestos Ore");
+        this.add(NtmBlocks.ORE_GNEISS_LITHIUM, "Schist Lithium Ore");
+        this.add(NtmBlocks.ORE_GNEISS_RARE, "Schist Rare Earth Ore");
+        this.add(NtmBlocks.ORE_GNEISS_GAS, "Gas Shale");
+        this.add(NtmBlocks.STONE_DEPTH, "Depth Rock");
+        this.add(NtmBlocks.STONE_DEPTH_NETHER, "Nether Depth Rock");
+        this.add(NtmBlocks.ORE_DEPTH_CINNABAR, "Depth Cinnabar Ore");
+        this.add(NtmBlocks.ORE_DEPTH_ZIRCONIUM, "Depth Zirconium Ore");
+        this.add(NtmBlocks.ORE_DEPTH_BORAX, "Depth Borax Ore");
+        this.add(NtmBlocks.ORE_DEPTH_NETHER_NEODYMIUM, "Nether Depth Neodymium Ore");
+        this.add(NtmBlocks.CLUSTER_DEPTH_IRON, "Depth Iron Ore Cluster");
+        this.add(NtmBlocks.CLUSTER_DEPTH_TITANIUM, "Depth Titanium Ore Cluster");
+        this.add(NtmBlocks.CLUSTER_DEPTH_TUNGSTEN, "Depth Tungsten Ore Cluster");
+        this.add(NtmBlocks.ORE_ALEXANDRITE, "Alexandrite Ore");
+        this.add(NtmBlocks.CLUSTER_IRON, "Iron Ore Cluster");
+        this.add(NtmBlocks.CLUSTER_TITANIUM, "Titanium Ore Cluster");
+        this.add(NtmBlocks.CLUSTER_ALUMINIUM, "Aluminium Ore Cluster");
+        this.add(NtmBlocks.CLUSTER_COPPER, "Copper Ore Cluster");
+        // Original en_US.lang:6638, the depth rock tooltip
+        this.add("trait.tile.depth", "Can only be destroyed by explosions");
         this.add(NtmBlocks.ORE_BERYLLIUM, "Beryllium Ore");
         this.add(NtmBlocks.ORE_BERYLLIUM_DEEPSLATE, "Deepslate Beryllium Ore");
         this.add(NtmBlocks.ORE_TUNGSTEN, "Tungsten Ore");
@@ -2229,6 +2265,8 @@ public class NtmLanguageProvider extends LanguageProvider {
         this.add(NtmBlocks.MACHINE_SHREDDER, "Machine Shredder");
         this.add(NtmBlocks.MACHINE_ELECTRIC_FURNACE, "Electric Furnace");
         this.add(NtmBlocks.MACHINE_FLUID_TANK, "Tank");
+        this.add(NtmBlocks.MACHINE_RADAR, "Radar");
+        this.add(NtmBlocks.MACHINE_RADAR_LARGE, "Large Radar");
         this.add(NtmBlocks.MACHINE_CHUNGUS, "Leviathan Steam Turbine");
         this.add("machine_chungus.compressor_locked", "Cannot change compressor setting while operational!");
         this.add(NtmBlocks.MACHINE_INDUSTRIAL_TURBINE, "Industrial Steam Turbine");
@@ -2293,8 +2331,8 @@ public class NtmLanguageProvider extends LanguageProvider {
         this.add("entity.hbmsntm.rbmk_debris", "RBMK Debris");
         this.add("block.hbmsntm.heater_oven.desc", "Burns solid fuel to produce heat.$Accepts heat from the bottom with 50%% efficiency.");
         this.add("tile.heater_oven.desc", "Burns solid fuel to produce heat.$Accepts heat from the bottom with 50%% efficiency.");
-        this.add("block.hbmsntm.heater_oilburner.desc", "Burns fluids to produce heat.$Can be configured with a screwdriver.");
-        this.add("tile.heater_oilburner.desc", "Burns fluids to produce heat.$Can be configured with a screwdriver.");
+        this.add("block.hbmsntm.heater_oilburner.desc", "Burns fluids to produce heat.$The burn rate is set with the slider in the GUI.$Accepts overdrive upgrades.");
+        this.add("tile.heater_oilburner.desc", "Burns fluids to produce heat.$The burn rate is set with the slider in the GUI.$Accepts overdrive upgrades.");
         this.add("block.hbmsntm.heater_heatex.desc", "Produces heat from hot fluids.");
         this.add("tile.heater_heatex.desc", "Produces heat from hot fluids.");
         this.add("block.hbmsntm.heater_electric.desc", "Uses energy to produce heat.$Accepts heat from the bottom with 85%% efficiency.$Can be configured with a screwdriver.");
@@ -2312,6 +2350,10 @@ public class NtmLanguageProvider extends LanguageProvider {
         this.add(NtmBlocks.MACHINE_PUMPJACK, "Pumpjack");
         this.add(NtmBlocks.MACHINE_FRACKING_TOWER, "Hydraulic Fracking Tower");
         this.add(NtmBlocks.MACHINE_REFINERY, "Oil Refinery");
+        this.add(NtmBlocks.MACHINE_VACUUM_DISTILL, "Vacuum Refinery");
+        this.add(NtmBlocks.MACHINE_ROTARY_FURNACE, "Rotary Furnace");
+        this.add(NtmBlocks.PLANT_MUSTARD_WILLOW, "Mustard Willow");
+        this.add("block.hbmsntm.plant_mustard_willow.mature", "Mustard Willow (Mature)");
         this.add(NtmBlocks.MACHINE_CATALYTIC_CRACKER, "Catalytic Cracking Tower");
         this.add(NtmBlocks.MACHINE_FRACTION_TOWER, "Fractioning Tower");
         this.add(NtmBlocks.FRACTION_SPACER, "Fractioning Tower Separator");
@@ -2580,6 +2622,8 @@ public class NtmLanguageProvider extends LanguageProvider {
         this.add("pollution.trait.poison", "POISON");
         this.add("pollution.trait.heavymetal", "HEAVY METAL");
         this.add("pollution.trait.fallout", "FALLOUT");
+        // Fluid burner ignition button, a literal in the original GUIOilburner
+        this.add("heater_oilburner.ignition", "Ignition");
         this.add("machine_combustion_engine.action.toggle", "Click to toggle ignition");
         this.add("machine_combustion_engine.throttle", "Throttle: %s / 30");
         this.add("machine_combustion_engine.fuel_rate", "Fuel consumption: %s mB/t");
@@ -2631,6 +2675,9 @@ public class NtmLanguageProvider extends LanguageProvider {
         this.add("container.pumpjack", "Pumpjack");
         this.add("container.fracking_tower", "H.F.T.");
         this.add("container.machine_refinery", "Oil Refinery");
+        this.add("container.vacuumDistill", "Vacuum Refinery");
+        this.add("container.machineRotaryFurnace", "Rotary Furnace");
+        this.add("container.machineRotaryFurnace.empty", "Empty");
         this.add("container.furnace_combination", "Combination Oven");
         this.add("container.machine_crucible", "Crucible");
         this.add("container.machine_crucible.heat", "Stored heat: %s / %s TU");
@@ -3137,9 +3184,40 @@ public class NtmLanguageProvider extends LanguageProvider {
 
         this.add("autoswitch", "Part of auto switch group \"%s\"$Recipe changes based on first ingredient");
         this.add("autoswitch.zirnox", "Reprocessing ZIRNOX Fuel");
+        this.add("autoswitch.plates", "Metal Plates");
         this.add("autoswitch.schrab", "Schrabidium Extraction");
         this.add("purex.recycle", "Reprocessing of %s");
         this.add("purex.schrab", "Schrabidium extraction from %s");
+
+        // Config screen names of the worldgen group (CommonConfig); the text is the config comment
+        this.add("hbmsntm.configuration.worldgen.netherOres", "General switch for whether nether ores should be generated.");
+        this.add("hbmsntm.configuration.worldgen.endOres", "General switch for whether end ores should be generated. Does not include special structures like trixite crystals.");
+        this.add("hbmsntm.configuration.worldgen.enablePlutoniumNetherOre", "Enables plutonium ore generation in the nether");
+        this.add("hbmsntm.configuration.worldgen.netherUraniumSpawnRate", "Amount of nether uranium per chunk");
+        this.add("hbmsntm.configuration.worldgen.netherTungstenSpawnRate", "Amount of nether tungsten per chunk");
+        this.add("hbmsntm.configuration.worldgen.netherSulfurSpawnRate", "Amount of nether sulfur per chunk");
+        this.add("hbmsntm.configuration.worldgen.netherPhosphorusSpawnRate", "Amount of nether phosphorus per chunk");
+        this.add("hbmsntm.configuration.worldgen.netherCoalSpawnRate", "Amount of nether coal per chunk");
+        this.add("hbmsntm.configuration.worldgen.netherPlutoniumSpawnRate", "Amount of nether plutonium per chunk, if enabled");
+        this.add("hbmsntm.configuration.worldgen.netherCobaltSpawnRate", "Amount of nether cobalt per chunk");
+        this.add("hbmsntm.configuration.worldgen.endTikiteSpawnRate", "Amount of end trixite per chunk");
+        this.add("hbmsntm.configuration.worldgen.overworldOres", "General switch for the schist ores, depth deposits and ore clusters. Does not include special structures like oil.");
+        this.add("hbmsntm.configuration.worldgen.gneissIronSpawnRate", "Amount of schist iron ore veins per chunk");
+        this.add("hbmsntm.configuration.worldgen.gneissGoldSpawnRate", "Amount of schist gold ore veins per chunk");
+        this.add("hbmsntm.configuration.worldgen.gneissUraniumSpawnRate", "Amount of schist uranium ore veins per chunk");
+        this.add("hbmsntm.configuration.worldgen.gneissCopperSpawnRate", "Amount of schist copper ore veins per chunk");
+        this.add("hbmsntm.configuration.worldgen.gneissAsbestosSpawnRate", "Amount of schist asbestos ore veins per chunk");
+        this.add("hbmsntm.configuration.worldgen.gneissLithiumSpawnRate", "Amount of schist lithium ore veins per chunk");
+        this.add("hbmsntm.configuration.worldgen.gneissRareEarthSpawnRate", "Amount of schist rare earth ore veins per chunk");
+        this.add("hbmsntm.configuration.worldgen.gneissGasShaleSpawnRate", "Amount of gas shale veins per chunk");
+        this.add("hbmsntm.configuration.worldgen.ironClusterSpawnRate", "Amount of iron cluster veins per chunk");
+        this.add("hbmsntm.configuration.worldgen.titaniumClusterSpawnRate", "Amount of titanium cluster veins per chunk");
+        this.add("hbmsntm.configuration.worldgen.aluminiumClusterSpawnRate", "Amount of aluminium cluster veins per chunk");
+        this.add("hbmsntm.configuration.worldgen.copperClusterSpawnRate", "Amount of copper cluster veins per chunk");
+        this.add("hbmsntm.configuration.worldgen.alexandriteSpawnRate", "Spawns an alexandrite vein every nTH chunk");
+        this.add("hbmsntm.configuration.worldgen.enableHematite", "Toggles hematite deposits");
+        this.add("hbmsntm.configuration.worldgen.enableMalachite", "Toggles malachite deposits");
+        this.add("hbmsntm.configuration.worldgen.enableBauxite", "Toggles bauxite deposits");
     }
 
     // HELPERS //

@@ -1,0 +1,28 @@
+{
+  "type": "hbmsntm:config_gated_add_features",
+  "biomes": "#minecraft:is_overworld",
+  "config": [
+    "overworldOres"
+  ],
+  "features": [
+    "hbmsntm:depth_cluster_iron_placed",
+    "hbmsntm:depth_cluster_titanium_placed",
+    "hbmsntm:depth_cluster_tungsten_placed",
+    "hbmsntm:depth_ore_cinnabar_placed",
+    "hbmsntm:depth_ore_zirconium_placed",
+    "hbmsntm:depth_ore_borax_placed",
+    "hbmsntm:ore_gneiss_iron_placed",
+    "hbmsntm:ore_gneiss_gold_placed",
+    "hbmsntm:ore_gneiss_uranium_placed",
+    "hbmsntm:ore_gneiss_copper_placed",
+    "hbmsntm:ore_gneiss_asbestos_placed",
+    "hbmsntm:ore_gneiss_lithium_placed",
+    "hbmsntm:ore_gneiss_rare_placed",
+    "hbmsntm:ore_gneiss_gas_placed",
+    "hbmsntm:cluster_iron_placed",
+    "hbmsntm:cluster_titanium_placed",
+    "hbmsntm:cluster_aluminium_placed",
+    "hbmsntm:cluster_copper_placed"
+  ],
+  "step": "underground_ores"
+}

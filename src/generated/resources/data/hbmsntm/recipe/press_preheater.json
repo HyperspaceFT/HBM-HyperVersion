@@ -1,0 +1,27 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "key": {
+    "C": {
+      "tag": "c:plates/copper"
+    },
+    "L": {
+      "item": "minecraft:lava_bucket"
+    },
+    "S": {
+      "item": "minecraft:stone"
+    },
+    "T": {
+      "item": "hbmsntm:ingot_tungsten"
+    }
+  },
+  "pattern": [
+    "CCC",
+    "SLS",
+    "TST"
+  ],
+  "result": {
+    "count": 1,
+    "id": "hbmsntm:press_preheater"
+  }
+}

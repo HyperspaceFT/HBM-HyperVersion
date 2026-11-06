@@ -1,0 +1,32 @@
+{
+  "parent": "minecraft:recipes/root",
+  "criteria": {
+    "has_detonator_deadman": {
+      "conditions": {
+        "items": [
+          {
+            "items": "hbmsntm:detonator_deadman"
+          }
+        ]
+      },
+      "trigger": "minecraft:inventory_changed"
+    },
+    "has_the_recipe": {
+      "conditions": {
+        "recipe": "hbmsntm:detonator_de"
+      },
+      "trigger": "minecraft:recipe_unlocked"
+    }
+  },
+  "requirements": [
+    [
+      "has_the_recipe",
+      "has_detonator_deadman"
+    ]
+  ],
+  "rewards": {
+    "recipes": [
+      "hbmsntm:detonator_de"
+    ]
+  }
+}

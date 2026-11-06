@@ -228,6 +228,16 @@ public class AnvilRecipes {
 
         CONSTRUCTION_RECIPES.add(new AnvilConstructionRecipe(
                 new AStack[] {
+                        new ComparableStack(Blocks.STONE_BRICKS, 8),
+                        new ComparableStack(NtmItems.INGOT_FIREBRICK.get(), 16),
+                        new ComparableStack(Items.IRON_INGOT, 4),
+                        new ComparableStack(NtmItems.PLATE_COPPER.get(), 8)
+                },
+                new AnvilOutput(new ItemStack(NtmBlocks.MACHINE_ROTARY_FURNACE.asItem()))
+        ).setTier(2).setOverlay(OverlayType.CONSTRUCTION));
+
+        CONSTRUCTION_RECIPES.add(new AnvilConstructionRecipe(
+                new AStack[] {
                         new ComparableStack(NtmItems.CIRCUIT_VACUUM_TUBE.get(), 2),
                         new ComparableStack(NtmItems.COIL_COPPER.get(), 4),
                         NtmItems.castPlateIngredient(CastPlateItem.Type.STEEL, 2),

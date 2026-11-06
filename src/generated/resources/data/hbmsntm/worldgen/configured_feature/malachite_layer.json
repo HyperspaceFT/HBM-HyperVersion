@@ -1,0 +1,12 @@
+{
+  "type": "hbmsntm:ore_layer",
+  "config": {
+    "layer": 2,
+    "scale_h": 0.1,
+    "scale_v": 0.15,
+    "state": {
+      "Name": "hbmsntm:resource_malachite"
+    },
+    "threshold": 275.0
+  }
+}

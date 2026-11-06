@@ -1,0 +1,6 @@
+{
+  "type": "neoforge:add_features",
+  "biomes": "#minecraft:is_nether",
+  "features": "hbmsntm:smoldering_netherrack_placed",
+  "step": "top_layer_modification"
+}

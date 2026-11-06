@@ -1,0 +1,16 @@
+{
+  "type": "minecraft:crafting_shapeless",
+  "category": "misc",
+  "ingredients": [
+    {
+      "item": "hbmsntm:block_slag"
+    }
+  ],
+  "result": {
+    "components": {
+      "hbmsntm:meta": 41
+    },
+    "count": 9,
+    "id": "hbmsntm:ingot_raw"
+  }
+}

@@ -1,0 +1,27 @@
+{
+  "feature": "hbmsntm:ore_nether_coal",
+  "placement": [
+    {
+      "type": "hbmsntm:config_count",
+      "config": "netherCoalSpawnRate"
+    },
+    {
+      "type": "minecraft:in_square"
+    },
+    {
+      "type": "minecraft:height_range",
+      "height": {
+        "type": "minecraft:uniform",
+        "max_inclusive": {
+          "absolute": 111
+        },
+        "min_inclusive": {
+          "absolute": 16
+        }
+      }
+    },
+    {
+      "type": "minecraft:biome"
+    }
+  ]
+}

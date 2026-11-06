@@ -24,6 +24,8 @@ def inputFiles = [
         'gradle/migration-resources.gradle', 'gradle/wrapper/gradle-wrapper.properties'
 ]
 def optionalInputFiles = ['gradle.lockfile']
+// GameTest sources only assert behavior; no data provider reads them, so they are not generation inputs.
+def gameTestSources = 'com/hbm/gametest/'
 def textExtensions = [
         'cfg', 'csv', 'fsh', 'gradle', 'java', 'json', 'lang', 'mcmeta', 'md',
         'mtl', 'obj', 'properties', 'toml', 'txt', 'vsh', 'xml', 'yaml', 'yml'
@@ -127,7 +129,9 @@ def manifest = { Map<String, File> files ->
 def inputs = {
     def files = new TreeMap<String, File>()
     ['src/main/java', 'src/main/resources'].each { String dir ->
-        resourceFiles(file(dir)).each { String path, File item -> files["${dir}/${path}"] = item }
+        resourceFiles(file(dir)).each { String path, File item ->
+            if (dir != 'src/main/java' || !path.startsWith(gameTestSources)) files["${dir}/${path}"] = item
+        }
     }
     inputFiles.each { String path ->
         File item = file(path)
@@ -413,12 +417,18 @@ def verifyMigrationResources = tasks.register('verifyMigrationResources') {
 // Compile/process alone is not migration acceptance. Run runData, then build separately.
 tasks.named('jar').configure { dependsOn verifyMigrationResources }
 tasks.named('check').configure { dependsOn verifyMigrationResources }
+// GameTests read generated recipes, tags and loot tables; a stale tree would test old data.
+// Matched by name so that a build defining no such run still configures.
+tasks.named { it == 'runGameTestServer' }.configureEach { dependsOn verifyMigrationResources }
 gradle.taskGraph.whenReady { graph ->
     def runsData = graph.hasTask(tasks.named('runData').get())
     def verifiesData = graph.hasTask(verifyMigrationResources.get())
     if (runsData &&
             (graph.hasTask(tasks.named('jar').get()) || graph.hasTask(tasks.named('check').get()))) {
         throw new GradleException('Run runData and build/check in separate Gradle invocations so packaging processes the new resources.')
+    }
+    if (runsData && graph.hasTask(':runGameTestServer')) {
+        throw new GradleException('Run runData and runGameTestServer in separate Gradle invocations so the tests read the new resources.')
     }
     // Lock before compile/process dependencies, through build completion. A crashed process
     // releases the OS lock, leaving its journal available for the next runData to recover.

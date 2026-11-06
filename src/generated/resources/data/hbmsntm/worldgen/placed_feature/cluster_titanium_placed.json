@@ -1,0 +1,27 @@
+{
+  "feature": "hbmsntm:cluster_titanium",
+  "placement": [
+    {
+      "type": "hbmsntm:config_count",
+      "config": "titaniumClusterSpawnRate"
+    },
+    {
+      "type": "minecraft:in_square"
+    },
+    {
+      "type": "minecraft:height_range",
+      "height": {
+        "type": "minecraft:uniform",
+        "max_inclusive": {
+          "absolute": 44
+        },
+        "min_inclusive": {
+          "absolute": 15
+        }
+      }
+    },
+    {
+      "type": "minecraft:biome"
+    }
+  ]
+}

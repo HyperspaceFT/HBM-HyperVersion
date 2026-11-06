@@ -330,6 +330,8 @@ public class NtmJeiPlugin implements IModPlugin {
                 new PressRecipeHandler(guiHelper),
                 new ShredderRecipeHandler(guiHelper),
                 new RefineryRecipeHandler(guiHelper),
+                new VacuumRefineryRecipeHandler(guiHelper),
+                new RotaryFurnaceRecipeHandler(guiHelper),
                 new CrackingRecipeHandler(guiHelper),
                 new FractioningRecipeHandler(guiHelper),
                 new CompressorRecipeHandler(guiHelper),
@@ -377,6 +379,8 @@ public class NtmJeiPlugin implements IModPlugin {
         registration.addRecipes(PressRecipeHandler.RECIPE_TYPE, PressRecipeHandler.getRecipes());
         registration.addRecipes(ShredderRecipeHandler.RECIPE_TYPE, ShredderRecipes.getJeiRecipes());
         registration.addRecipes(RefineryRecipeHandler.RECIPE_TYPE, RefineryRecipeHandler.getRecipes());
+        registration.addRecipes(VacuumRefineryRecipeHandler.RECIPE_TYPE, VacuumRefineryRecipeHandler.getRecipes());
+        registration.addRecipes(RotaryFurnaceRecipeHandler.RECIPE_TYPE, RotaryFurnaceRecipeHandler.getRecipes());
         registration.addRecipes(CrackingRecipeHandler.RECIPE_TYPE, CrackingRecipeHandler.getRecipes());
         this.displayedFractions = FractioningRecipeHandler.getRecipes();
         this.knownFractions.clear();
@@ -488,6 +492,14 @@ public class NtmJeiPlugin implements IModPlugin {
         registration.addRecipeCatalyst(
                 NtmBlocks.MACHINE_REFINERY.asItem(),
                 RefineryRecipeHandler.RECIPE_TYPE
+        );
+        registration.addRecipeCatalyst(
+                NtmBlocks.MACHINE_VACUUM_DISTILL.asItem(),
+                VacuumRefineryRecipeHandler.RECIPE_TYPE
+        );
+        registration.addRecipeCatalyst(
+                NtmBlocks.MACHINE_ROTARY_FURNACE.asItem(),
+                RotaryFurnaceRecipeHandler.RECIPE_TYPE
         );
         registration.addRecipeCatalyst(
                 NtmBlocks.MACHINE_CATALYTIC_CRACKER.asItem(),

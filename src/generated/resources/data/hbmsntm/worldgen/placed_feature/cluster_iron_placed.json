@@ -1,0 +1,27 @@
+{
+  "feature": "hbmsntm:cluster_iron",
+  "placement": [
+    {
+      "type": "hbmsntm:config_count",
+      "config": "ironClusterSpawnRate"
+    },
+    {
+      "type": "minecraft:in_square"
+    },
+    {
+      "type": "minecraft:height_range",
+      "height": {
+        "type": "minecraft:uniform",
+        "max_inclusive": {
+          "absolute": 59
+        },
+        "min_inclusive": {
+          "absolute": 15
+        }
+      }
+    },
+    {
+      "type": "minecraft:biome"
+    }
+  ]
+}

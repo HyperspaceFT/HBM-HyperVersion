@@ -1,0 +1,7 @@
+{
+  "variants": {
+    "": {
+      "model": "hbmsntm:block/machine_vacuum_distill_particle"
+    }
+  }
+}

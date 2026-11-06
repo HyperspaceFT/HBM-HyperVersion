@@ -158,6 +158,7 @@ public class NtmCreativeTabs {
                         output.accept(NtmItems.BRIQUETTE_COAL.get());
                         output.accept(NtmItems.BRIQUETTE_LIGNITE.get());
                         output.accept(NtmItems.BRIQUETTE_WOOD.get());
+                        output.accept(NtmItems.COAL_INFERNAL.get());
                         output.accept(NtmItems.POWDER_METEORITE.get());
                         output.accept(NtmItems.POWDER_METEORITE_TINY.get());
                         output.accept(NtmItems.POWDER_ASH_WOOD.get());
@@ -471,6 +472,9 @@ public class NtmCreativeTabs {
                         output.accept(NtmItems.OIL_TAR_PARAFFIN);
                         output.accept(NtmItems.OIL_TAR_WOOD);
                         output.accept(NtmItems.OIL_TAR_WAX);
+                        output.accept(NtmItems.PLANT_ITEM_MUSTARDWILLOW);
+                        output.accept(NtmBlocks.PLANT_MUSTARD_WILLOW);
+                        output.accept(NtmItems.SCRAP_OIL);
                         output.accept(NtmItems.DUST);
                         output.accept(NtmItems.FALLOUT_PILE);
                         output.accept(NtmItems.CRYSTAL_IRON);
@@ -735,6 +739,8 @@ public class NtmCreativeTabs {
                         output.accept(NtmItems.MELTDOWN_TOOL);
                         output.accept(NtmItems.SCREWDRIVER);
                         output.accept(NtmItems.SCREWDRIVER_DESH);
+                        output.accept(NtmItems.HAND_DRILL);
+                        output.accept(NtmItems.HAND_DRILL_DESH);
 
                         output.accept(NtmItems.UPGRADE_TEMPLATE);
                         output.accept(NtmItems.UPGRADE_SPEED_1);
@@ -877,10 +883,24 @@ public class NtmCreativeTabs {
                         output.accept(NtmBlocks.ORE_NETHER_URANIUM_SCORCHED);
                         output.accept(NtmBlocks.ORE_NETHER_PLUTONIUM);
                         output.accept(NtmBlocks.ORE_NETHER_SCHRABIDIUM);
+                        output.accept(NtmBlocks.ORE_NETHER_TUNGSTEN);
+                        output.accept(NtmBlocks.ORE_NETHER_SULFUR);
+                        output.accept(NtmBlocks.ORE_NETHER_FIRE);
+                        output.accept(NtmBlocks.ORE_NETHER_COAL);
+                        output.accept(NtmBlocks.ORE_NETHER_SMOLDERING);
+                        output.accept(NtmBlocks.ORE_NETHER_COBALT);
                         output.accept(NtmBlocks.ORE_TIKITE);
                         output.accept(NtmBlocks.ORE_GNEISS_URANIUM);
                         output.accept(NtmBlocks.ORE_GNEISS_URANIUM_SCORCHED);
                         output.accept(NtmBlocks.ORE_GNEISS_SCHRABIDIUM);
+                        output.accept(NtmBlocks.STONE_GNEISS);
+                        output.accept(NtmBlocks.ORE_GNEISS_IRON);
+                        output.accept(NtmBlocks.ORE_GNEISS_GOLD);
+                        output.accept(NtmBlocks.ORE_GNEISS_COPPER);
+                        output.accept(NtmBlocks.ORE_GNEISS_ASBESTOS);
+                        output.accept(NtmBlocks.ORE_GNEISS_LITHIUM);
+                        output.accept(NtmBlocks.ORE_GNEISS_RARE);
+                        output.accept(NtmBlocks.ORE_GNEISS_GAS);
                         output.accept(NtmBlocks.ORE_BERYLLIUM);
                         output.accept(NtmBlocks.ORE_BERYLLIUM_DEEPSLATE);
                         output.accept(NtmBlocks.ORE_TUNGSTEN);
@@ -920,6 +940,20 @@ public class NtmCreativeTabs {
                         output.accept(NtmBlocks.RESOURCE_MALACHITE);
                         output.accept(NtmBlocks.RESOURCE_CHRYSOTILE);
                         output.accept(NtmBlocks.RESOURCE_SULFUROUS_STONE);
+                        output.accept(NtmBlocks.STONE_DEPTH);
+                        output.accept(NtmBlocks.ORE_DEPTH_CINNABAR);
+                        output.accept(NtmBlocks.ORE_DEPTH_ZIRCONIUM);
+                        output.accept(NtmBlocks.ORE_DEPTH_BORAX);
+                        output.accept(NtmBlocks.CLUSTER_DEPTH_IRON);
+                        output.accept(NtmBlocks.CLUSTER_DEPTH_TITANIUM);
+                        output.accept(NtmBlocks.CLUSTER_DEPTH_TUNGSTEN);
+                        output.accept(NtmBlocks.ORE_ALEXANDRITE);
+                        output.accept(NtmBlocks.STONE_DEPTH_NETHER);
+                        output.accept(NtmBlocks.ORE_DEPTH_NETHER_NEODYMIUM);
+                        output.accept(NtmBlocks.CLUSTER_IRON);
+                        output.accept(NtmBlocks.CLUSTER_TITANIUM);
+                        output.accept(NtmBlocks.CLUSTER_ALUMINIUM);
+                        output.accept(NtmBlocks.CLUSTER_COPPER);
                         addMaterialBlocks(output);
                     }).build());
 
@@ -984,6 +1018,8 @@ public class NtmCreativeTabs {
                         output.accept(NtmBlocks.MACHINE_PUMPJACK);
                         output.accept(NtmBlocks.MACHINE_FRACKING_TOWER);
                         output.accept(NtmBlocks.MACHINE_REFINERY);
+                        output.accept(NtmBlocks.MACHINE_VACUUM_DISTILL);
+                        output.accept(NtmBlocks.MACHINE_ROTARY_FURNACE);
                         output.accept(NtmBlocks.MACHINE_CATALYTIC_CRACKER);
                         output.accept(NtmBlocks.MACHINE_FRACTION_TOWER);
                         output.accept(NtmBlocks.MACHINE_COMPRESSOR);
@@ -1165,6 +1201,7 @@ public class NtmCreativeTabs {
 
                         output.accept(NtmItems.DESIGNATOR);
                         output.accept(NtmItems.DESIGNATOR_RANGE);
+                        output.accept(NtmItems.RANGEFINDER);
                         output.accept(NtmItems.MISSILE_ASSEMBLY);
                         output.accept(NtmItems.THRUSTER_SMALL);
                         output.accept(NtmItems.THRUSTER_MEDIUM);

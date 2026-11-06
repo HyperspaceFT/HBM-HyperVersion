@@ -1,0 +1,26 @@
+{
+  "type": "minecraft:crafting_shapeless",
+  "category": "equipment",
+  "ingredients": [
+    {
+      "item": "hbmsntm:rangefinder"
+    },
+    {
+      "item": "hbmsntm:circuit_military_grade_board"
+    },
+    {
+      "item": "hbmsntm:ingot_rubber"
+    },
+    {
+      "type": "neoforge:components",
+      "components": {
+        "hbmsntm:meta": 7900
+      },
+      "items": "hbmsntm:wire_dense"
+    }
+  ],
+  "result": {
+    "count": 1,
+    "id": "hbmsntm:detonator_laser"
+  }
+}

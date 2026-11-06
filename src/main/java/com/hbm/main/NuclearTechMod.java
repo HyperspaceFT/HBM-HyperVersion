@@ -18,6 +18,7 @@ import com.hbm.registry.NtmArmorMaterials;
 import com.hbm.registry.NtmRecipeSerializers;
 import com.hbm.registry.NtmSoundEvents;
 import com.hbm.world.feature.NtmFeatures;
+import com.hbm.world.gen.NtmWorldgenCodecs;
 import net.minecraft.resources.ResourceLocation;
 import net.neoforged.bus.api.IEventBus;
 import net.neoforged.fml.ModContainer;
@@ -68,5 +69,6 @@ public class NuclearTechMod {
         NtmRecipeSerializers.register(eventBus);
         NtmParticleTypes.register(eventBus);
         NtmFeatures.register(eventBus);
+        NtmWorldgenCodecs.register(eventBus);
     }
 }

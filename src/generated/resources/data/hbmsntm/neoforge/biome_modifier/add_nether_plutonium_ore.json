@@ -1,0 +1,10 @@
+{
+  "type": "hbmsntm:config_gated_add_features",
+  "biomes": "#minecraft:is_nether",
+  "config": [
+    "netherOres",
+    "enablePlutoniumNetherOre"
+  ],
+  "features": "hbmsntm:ore_nether_plutonium_placed",
+  "step": "underground_ores"
+}

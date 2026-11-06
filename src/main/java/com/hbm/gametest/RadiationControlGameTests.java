@@ -1088,7 +1088,8 @@ public class RadiationControlGameTests {
     public static void crystallizer_row(GameTestHelper helper) {
         guard(() -> {
             List<CrystallizerRecipe> defaults = CrystallizerRecipes.getDefaultRecipes();
-            check(defaults.size() == 47, "the default table has " + defaults.size() + " rows, expected 47");
+            // Goal28A appends six nether/end ore and infernal coal rows after row 47 (53), Goal28B seven schist and depth ore rows after those (60 in total), Goal28D the mustard willow leaf, oily scraps and three tar to wax rows (65 in total)
+            check(defaults.size() == 65, "the default table has " + defaults.size() + " rows, expected 65");
 
             // The 46 start rows: [input block, output crystal, acid], stone and deepslate variants as separate rows.
             List<Object[]> start = new ArrayList<>();

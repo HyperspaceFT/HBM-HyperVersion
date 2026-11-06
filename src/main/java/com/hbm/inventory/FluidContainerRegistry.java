@@ -1,5 +1,7 @@
 package com.hbm.inventory;
 
+import com.hbm.blocks.NtmBlocks;
+import com.hbm.config.NtmConfig;
 import com.hbm.inventory.fluid.FluidType;
 import com.hbm.inventory.fluid.Fluids;
 import com.hbm.items.NtmItems;
@@ -34,6 +36,9 @@ public class FluidContainerRegistry {
         // PotionContents patch; other potions share the item, so that component is part of the match.
         FluidContainerRegistry.registerContainer(new FluidContainer(new ItemStack(Items.WATER_BUCKET), new ItemStack(Items.BUCKET), Fluids.WATER, 1000));
         FluidContainerRegistry.registerContainer(new FluidContainer(PotionContents.createItemStack(Items.POTION, Potions.WATER), new ItemStack(Items.GLASS_BOTTLE), Fluids.WATER, 250));
+
+        // Original FluidContainerRegistry.java:45: gas shale holds petroleum gas and leaves nothing behind once emptied
+        FluidContainerRegistry.registerContainer(new FluidContainer(new ItemStack(NtmBlocks.ORE_GNEISS_GAS.get()), ItemStack.EMPTY, Fluids.PETROLEUM, NtmConfig.enable528() ? 50 : 250));
 
         FluidType[] fluids = Fluids.getAll();
         for (int i = 1; i < fluids.length; i++) {

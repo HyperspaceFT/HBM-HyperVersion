@@ -34,7 +34,16 @@ public class OutgasBlock extends Block {
 
     public BlockState getGas() {
 
-        if(this == NtmBlocks.BRICK_ASBESTOS.get()) {
+        if(this == NtmBlocks.ORE_GNEISS_URANIUM.get() || this == NtmBlocks.ORE_GNEISS_URANIUM_SCORCHED.get() ||
+                this == NtmBlocks.ORE_NETHER_URANIUM.get() || this == NtmBlocks.ORE_NETHER_URANIUM_SCORCHED.get()) {
+            return NtmBlocks.GAS_RADON.get().defaultBlockState();
+        }
+
+        if(this == NtmBlocks.ORE_NETHER_COAL.get()) {
+            return NtmBlocks.GAS_MONOXIDE.get().defaultBlockState();
+        }
+
+        if(this == NtmBlocks.ORE_GNEISS_ASBESTOS.get() || this == NtmBlocks.BRICK_ASBESTOS.get()) {
             return NtmBlocks.GAS_ASBESTOS.get().defaultBlockState();
         }
 

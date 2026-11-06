@@ -1,0 +1,32 @@
+{
+  "parent": "minecraft:recipes/root",
+  "criteria": {
+    "has_ball_dynamite": {
+      "conditions": {
+        "items": [
+          {
+            "items": "hbmsntm:ball_dynamite"
+          }
+        ]
+      },
+      "trigger": "minecraft:inventory_changed"
+    },
+    "has_the_recipe": {
+      "conditions": {
+        "recipe": "hbmsntm:det_miner"
+      },
+      "trigger": "minecraft:recipe_unlocked"
+    }
+  },
+  "requirements": [
+    [
+      "has_the_recipe",
+      "has_ball_dynamite"
+    ]
+  ],
+  "rewards": {
+    "recipes": [
+      "hbmsntm:det_miner"
+    ]
+  }
+}

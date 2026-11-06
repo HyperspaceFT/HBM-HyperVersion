@@ -119,6 +119,13 @@ public class CopperScrapsItem extends Item {
         return Component.translatable(this.getDescriptionId(), contents.material.getName());
     }
 
+    // Vanilla ItemEntity.getName() translates the stack's description id without arguments and the material key
+    // needs one, so dropped scraps (as named in command feedback) use the generic name
+    @Override
+    public String getDescriptionId(ItemStack stack) {
+        return this.getDescriptionId() + ".generic";
+    }
+
     @Override
     public void appendHoverText(ItemStack stack, TooltipContext context, List<Component> tooltip, TooltipFlag flag) {
         Mats.MaterialStack contents = getMats(stack);

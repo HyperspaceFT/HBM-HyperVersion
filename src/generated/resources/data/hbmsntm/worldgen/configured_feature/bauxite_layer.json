@@ -1,0 +1,12 @@
+{
+  "type": "hbmsntm:ore_layer",
+  "config": {
+    "layer": 1,
+    "scale_h": 0.03,
+    "scale_v": 0.15,
+    "state": {
+      "Name": "hbmsntm:resource_bauxite"
+    },
+    "threshold": 300.0
+  }
+}

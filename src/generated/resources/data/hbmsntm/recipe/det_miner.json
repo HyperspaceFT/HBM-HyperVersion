@@ -1,0 +1,24 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "key": {
+    "F": {
+      "item": "minecraft:flint"
+    },
+    "I": {
+      "item": "hbmsntm:plate_iron"
+    },
+    "T": {
+      "item": "hbmsntm:ball_dynamite"
+    }
+  },
+  "pattern": [
+    "FFF",
+    "ITI",
+    "ITI"
+  ],
+  "result": {
+    "count": 4,
+    "id": "hbmsntm:det_miner"
+  }
+}

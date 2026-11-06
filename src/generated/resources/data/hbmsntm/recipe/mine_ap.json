@@ -1,0 +1,24 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "equipment",
+  "key": {
+    "C": {
+      "item": "hbmsntm:cordite"
+    },
+    "I": {
+      "item": "hbmsntm:plate_polymer"
+    },
+    "S": {
+      "item": "hbmsntm:ingot_steel"
+    }
+  },
+  "pattern": [
+    "I",
+    "C",
+    "S"
+  ],
+  "result": {
+    "count": 4,
+    "id": "hbmsntm:mine_ap"
+  }
+}

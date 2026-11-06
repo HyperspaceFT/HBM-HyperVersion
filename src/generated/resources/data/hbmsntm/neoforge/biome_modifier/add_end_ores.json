@@ -1,0 +1,9 @@
+{
+  "type": "hbmsntm:config_gated_add_features",
+  "biomes": "#minecraft:is_end",
+  "config": [
+    "endOres"
+  ],
+  "features": "hbmsntm:ore_tikite_placed",
+  "step": "underground_ores"
+}

@@ -33,6 +33,11 @@ tasks.register('runData') {
         recipe.text = '{"type":"minecraft:crafting_shapeless"}\n'
     }
 }
+if (project.findProperty('fixtureNoGameTestRun')?.toString() != 'true') {
+    tasks.register('runGameTestServer') {
+        doLast { println 'fixture game tests ran' }
+    }
+}
 apply from: 'gradle/migration-resources.gradle'
 """.lstrip()
 
@@ -161,7 +166,36 @@ def main():
     source.write_text("class Input {}\n", encoding="utf-8")
     call(fixture, env, ["verifyMigrationResources"], False, "05-input-stale",
          "Migration resources are stale or modified")
+    call(fixture, env, ["runGameTestServer"], False, "05a-gametest-server-stale",
+         "Migration resources are stale or modified")
     source.unlink()
+    # GameTest sources are not generation inputs; a package that merely shares the name prefix is.
+    game_test = fixture / "src" / "main" / "java" / "com" / "hbm" / "gametest" / "FixtureGameTests.java"
+    game_test.parent.mkdir(parents=True)
+    game_test.write_text("package com.hbm.gametest;\n\nclass FixtureGameTests {}\n", encoding="utf-8")
+    call(fixture, env, ["verifyMigrationResources"], True, "05b-gametest-source-not-input")
+    output = call(fixture, env, ["runGameTestServer"], True, "05c-gametest-server-fresh")
+    require("fixture game tests ran" in output, "The gated GameTest server task did not run")
+    neighbour = fixture / "src" / "main" / "java" / "com" / "hbm" / "gametestx" / "Neighbour.java"
+    neighbour.parent.mkdir(parents=True)
+    neighbour.write_text("package com.hbm.gametestx;\n\nclass Neighbour {}\n", encoding="utf-8")
+    call(fixture, env, ["verifyMigrationResources"], False, "05d-neighbour-package-stale",
+         "Migration resources are stale or modified")
+    neighbour.unlink()
+    neighbour.parent.rmdir()
+    call(fixture, env, ["verifyMigrationResources"], True, "05e-fresh-again")
+    # A build that defines no GameTest server run still configures, verifies and generates.
+    call(fixture, env, ["-PfixtureNoGameTestRun=true", "verifyMigrationResources"], True,
+         "05f-no-gametest-run-verifies")
+    call(fixture, env, ["-PfixtureNoGameTestRun=true", "runData"], True, "05g-no-gametest-run-generates")
+    # Only Java sources of the GameTest package are left out; a resource directory of that name is an input.
+    resource = fixture / "src" / "main" / "resources" / "data" / "hbmsntm" / "gametest" / "input.json"
+    resource.parent.mkdir(parents=True)
+    resource.write_text("{}\n", encoding="utf-8")
+    call(fixture, env, ["verifyMigrationResources"], False, "05h-gametest-resource-stale",
+         "Migration resources are stale or modified")
+    resource.unlink()
+    resource.parent.rmdir()
 
     conflict = fixture / "src" / "main" / "resources" / "data" / "hbmsntm" / "recipe" / "old.json"
     conflict.parent.mkdir(parents=True)
@@ -185,6 +219,8 @@ def main():
     new.write_text('{"type":"minecraft:crafting_shapeless"}\n', encoding="utf-8")
     call(fixture, env, ["runData", "jar"], False, "10-combined-refused",
          "Run runData and build/check in separate Gradle invocations")
+    call(fixture, env, ["runData", "runGameTestServer"], False, "10a-combined-gametest-refused",
+         "Run runData and runGameTestServer in separate Gradle invocations")
 
     call(fixture, env, ["-PfixtureVariant=old", "-PmigrationArchiveOrphans=true",
                         "-PmigrationTestFailAfterCopies=1", "runData"], False,

@@ -1,0 +1,12 @@
+{
+  "type": "hbmsntm:config_gated_add_features",
+  "biomes": "#minecraft:is_nether",
+  "config": [
+    "netherOres"
+  ],
+  "features": [
+    "hbmsntm:depth_ore_nether_neodymium_low_placed",
+    "hbmsntm:depth_ore_nether_neodymium_high_placed"
+  ],
+  "step": "underground_ores"
+}

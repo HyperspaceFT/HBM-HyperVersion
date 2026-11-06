@@ -140,7 +140,8 @@ public class SmokeGameTests {
         check(!custom.exists(), "a custom acidizer table is active: " + custom.getAbsolutePath());
         int rows = CrystallizerRecipes.getJeiRecipes().size();
         // 41 rows through Goal 20A; Goal 22A appends the nether/schist uranium ores and the nether plutonium ore; Goal 26A appends the coal block -> graphite block row (original CrystallizerRecipes.java:99).
-        check(rows == 47, "the default acidizer table has " + rows + " rows, expected 47");
+        // Goal28A appends the nether phosphorus, sulfur, tungsten and cobalt ores, trixite and infernal coal rows (53); Goal28B the graphitic schist, schist ore and depth cinnabar rows (60); Goal28D the mustard willow leaf, oily scraps and three tar to wax rows (65).
+        check(rows == 65, "the default acidizer table has " + rows + " rows, expected 65");
         check(CrystallizerRecipes.getOutput(new ItemStack(Blocks.IRON_ORE), Fluids.SULFURIC_ACID) == null, "iron ore must not have a sulfuric acid row");
         check(CrystallizerRecipes.getOutput(new ItemStack(NtmBlocks.ORE_URANIUM.get()), Fluids.PEROXIDE) == null, "uranium ore must not have a peroxide row");
         CrystallizerRecipe uranium = CrystallizerRecipes.getOutput(new ItemStack(NtmBlocks.ORE_URANIUM_SCORCHED.get()), Fluids.SULFURIC_ACID);
@@ -469,7 +470,8 @@ public class SmokeGameTests {
         File custom = new File(NuclearTechMod.configDir, "hbmRecipes" + File.separator + "hbmCentrifuge.json");
         check(!custom.exists(), "a custom centrifuge table is active: " + custom.getAbsolutePath());
         int centrifuge = CentrifugeRecipes.getJeiRecipes().size();
-        check(centrifuge == 77, "the centrifuge table has " + centrifuge + " rows, expected 77");
+        // Goal28A adds the nether tungsten, cobalt and phosphorus ore rows (80); Goal28B the schist iron, gold and copper ore rows (83).
+        check(centrifuge == 83, "the centrifuge table has " + centrifuge + " rows, expected 83");
 
         assertCraftingResult(helper, "rod_zirnox_th232", ZirnoxType.TH232);
         assertCraftingResult(helper, "rod_zirnox_natural_uranium_fuel", ZirnoxType.NATURAL_URANIUM_FUEL);

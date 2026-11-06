@@ -1,0 +1,32 @@
+{
+  "parent": "minecraft:recipes/root",
+  "criteria": {
+    "has_cordite": {
+      "conditions": {
+        "items": [
+          {
+            "items": "hbmsntm:cordite"
+          }
+        ]
+      },
+      "trigger": "minecraft:inventory_changed"
+    },
+    "has_the_recipe": {
+      "conditions": {
+        "recipe": "hbmsntm:mine_ap"
+      },
+      "trigger": "minecraft:recipe_unlocked"
+    }
+  },
+  "requirements": [
+    [
+      "has_the_recipe",
+      "has_cordite"
+    ]
+  ],
+  "rewards": {
+    "recipes": [
+      "hbmsntm:mine_ap"
+    ]
+  }
+}

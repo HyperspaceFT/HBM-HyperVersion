@@ -1,0 +1,6 @@
+{
+  "parent": "minecraft:item/generated",
+  "textures": {
+    "layer0": "hbmsntm:block/plant_mustard_willow_cd0"
+  }
+}

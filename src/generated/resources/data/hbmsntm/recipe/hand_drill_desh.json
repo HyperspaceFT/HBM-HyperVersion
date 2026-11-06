@@ -1,0 +1,21 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "equipment",
+  "key": {
+    "D": {
+      "item": "hbmsntm:ingot_desh"
+    },
+    "S": {
+      "tag": "ntm:ingots_plastic"
+    }
+  },
+  "pattern": [
+    " D",
+    "S ",
+    " S"
+  ],
+  "result": {
+    "count": 1,
+    "id": "hbmsntm:hand_drill_desh"
+  }
+}

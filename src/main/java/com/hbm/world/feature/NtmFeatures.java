@@ -21,6 +21,12 @@ public class NtmFeatures {
 
     public static final DeferredHolder<Feature<?>, BlueprintChestFeature> BLUEPRINT_CHEST = FEATURES.register("blueprint_chest", () -> new BlueprintChestFeature(NoneFeatureConfiguration.CODEC));
 
+    public static final DeferredHolder<Feature<?>, SmolderingNetherrackFeature> SMOLDERING_NETHERRACK = FEATURES.register("smoldering_netherrack", () -> new SmolderingNetherrackFeature(NoneFeatureConfiguration.CODEC));
+
+    public static final DeferredHolder<Feature<?>, SchistStratumFeature> SCHIST_STRATUM = FEATURES.register("schist_stratum", () -> new SchistStratumFeature(NoneFeatureConfiguration.CODEC));
+    public static final DeferredHolder<Feature<?>, DepthDepositFeature> DEPTH_DEPOSIT = FEATURES.register("depth_deposit", () -> new DepthDepositFeature(DepthDepositConfiguration.CODEC));
+    public static final DeferredHolder<Feature<?>, OreLayerFeature> ORE_LAYER = FEATURES.register("ore_layer", () -> new OreLayerFeature(OreLayerConfiguration.CODEC));
+
     public static void register(IEventBus eventBus) {
         FEATURES.register(eventBus);
     }

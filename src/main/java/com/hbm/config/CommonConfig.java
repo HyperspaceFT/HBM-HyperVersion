@@ -6,6 +6,8 @@ import net.neoforged.neoforge.common.ModConfigSpec.ConfigValue;
 import net.neoforged.neoforge.common.ModConfigSpec.DoubleValue;
 import net.neoforged.neoforge.common.ModConfigSpec.IntValue;
 
+import java.util.Set;
+
 // YES im making one class for every config
 public class CommonConfig {
 
@@ -140,6 +142,36 @@ public class CommonConfig {
     public final DoubleValue CRATER_INNER_RAD;
     public final DoubleValue CRATER_OUTER_RAD;
     public final DoubleValue CRATER_WATER_MULT;
+    // WORLDGEN (the original 02_ores nether/end keys, WorldConfig.java:123-125,183-191, and 1.02_enablePlutoniumNetherOre, GeneralConfig.java:99)
+    public final BooleanValue NETHER_ORES;
+    public final BooleanValue END_ORES;
+    public final BooleanValue ENABLE_PLUTONIUM_NETHER_ORE;
+    public final IntValue NETHER_URANIUM_SPAWN_RATE;
+    public final IntValue NETHER_TUNGSTEN_SPAWN_RATE;
+    public final IntValue NETHER_SULFUR_SPAWN_RATE;
+    public final IntValue NETHER_PHOSPHORUS_SPAWN_RATE;
+    public final IntValue NETHER_COAL_SPAWN_RATE;
+    public final IntValue NETHER_PLUTONIUM_SPAWN_RATE;
+    public final IntValue NETHER_COBALT_SPAWN_RATE;
+    public final IntValue END_TIKITE_SPAWN_RATE;
+    // WORLDGEN, overworld (the original 02_ores keys, WorldConfig.java:121,127-147,176-179,193-195)
+    public final BooleanValue OVERWORLD_ORES;
+    public final IntValue GNEISS_IRON_SPAWN_RATE;
+    public final IntValue GNEISS_GOLD_SPAWN_RATE;
+    public final IntValue GNEISS_URANIUM_SPAWN_RATE;
+    public final IntValue GNEISS_COPPER_SPAWN_RATE;
+    public final IntValue GNEISS_ASBESTOS_SPAWN_RATE;
+    public final IntValue GNEISS_LITHIUM_SPAWN_RATE;
+    public final IntValue GNEISS_RARE_EARTH_SPAWN_RATE;
+    public final IntValue GNEISS_GAS_SHALE_SPAWN_RATE;
+    public final IntValue IRON_CLUSTER_SPAWN_RATE;
+    public final IntValue TITANIUM_CLUSTER_SPAWN_RATE;
+    public final IntValue ALUMINIUM_CLUSTER_SPAWN_RATE;
+    public final IntValue COPPER_CLUSTER_SPAWN_RATE;
+    public final IntValue ALEXANDRITE_SPAWN_RATE;
+    public final BooleanValue ENABLE_HEMATITE;
+    public final BooleanValue ENABLE_MALACHITE;
+    public final BooleanValue ENABLE_BAUXITE;
 
     // 528
     public final BooleanValue ENABLE_528;
@@ -644,6 +676,129 @@ public class CommonConfig {
 
         builder.pop();
 
+        /// WORLDGEN ///
+        // Read by the hbmsntm:config_gated_add_features biome modifiers and the hbmsntm:config_count and hbmsntm:config_rarity
+        // placements. Biome modifiers are applied once when the server starts, so changing a switch needs a restart; the counts
+        // and rarities are read per chunk.
+        builder.push("worldgen");
+
+        NETHER_ORES = builder
+                .comment("General switch for whether nether ores should be generated.")
+                .translation("hbmsntm.configuration.worldgen.netherOres")
+                .define("netherOres", true);
+        END_ORES = builder
+                .comment("General switch for whether end ores should be generated. Does not include special structures like trixite crystals.")
+                .translation("hbmsntm.configuration.worldgen.endOres")
+                .define("endOres", true);
+        ENABLE_PLUTONIUM_NETHER_ORE = builder
+                .comment("Enables plutonium ore generation in the nether")
+                .translation("hbmsntm.configuration.worldgen.enablePlutoniumNetherOre")
+                .define("enablePlutoniumNetherOre", false);
+        NETHER_URANIUM_SPAWN_RATE = builder
+                .comment("Amount of nether uranium per chunk")
+                .translation("hbmsntm.configuration.worldgen.netherUraniumSpawnRate")
+                .defineInRange("netherUraniumSpawnRate", 8, 0, 256);
+        NETHER_TUNGSTEN_SPAWN_RATE = builder
+                .comment("Amount of nether tungsten per chunk")
+                .translation("hbmsntm.configuration.worldgen.netherTungstenSpawnRate")
+                .defineInRange("netherTungstenSpawnRate", 10, 0, 256);
+        NETHER_SULFUR_SPAWN_RATE = builder
+                .comment("Amount of nether sulfur per chunk")
+                .translation("hbmsntm.configuration.worldgen.netherSulfurSpawnRate")
+                .defineInRange("netherSulfurSpawnRate", 26, 0, 256);
+        NETHER_PHOSPHORUS_SPAWN_RATE = builder
+                .comment("Amount of nether phosphorus per chunk")
+                .translation("hbmsntm.configuration.worldgen.netherPhosphorusSpawnRate")
+                .defineInRange("netherPhosphorusSpawnRate", 24, 0, 256);
+        NETHER_COAL_SPAWN_RATE = builder
+                .comment("Amount of nether coal per chunk")
+                .translation("hbmsntm.configuration.worldgen.netherCoalSpawnRate")
+                .defineInRange("netherCoalSpawnRate", 8, 0, 256);
+        NETHER_PLUTONIUM_SPAWN_RATE = builder
+                .comment("Amount of nether plutonium per chunk, if enabled")
+                .translation("hbmsntm.configuration.worldgen.netherPlutoniumSpawnRate")
+                .defineInRange("netherPlutoniumSpawnRate", 8, 0, 256);
+        NETHER_COBALT_SPAWN_RATE = builder
+                .comment("Amount of nether cobalt per chunk")
+                .translation("hbmsntm.configuration.worldgen.netherCobaltSpawnRate")
+                .defineInRange("netherCobaltSpawnRate", 2, 0, 256);
+        END_TIKITE_SPAWN_RATE = builder
+                .comment("Amount of end trixite per chunk")
+                .translation("hbmsntm.configuration.worldgen.endTikiteSpawnRate")
+                .defineInRange("endTikiteSpawnRate", 8, 0, 256);
+        OVERWORLD_ORES = builder
+                .comment("General switch for the schist ores, depth deposits and ore clusters. Does not include special structures like oil.")
+                .translation("hbmsntm.configuration.worldgen.overworldOres")
+                .define("overworldOres", true);
+        // The original derives the schist uranium, copper, asbestos and gas shale counts from the plain ore keys (x3) and uses the
+        // plain lithium and rare earth keys; NEO's plain ores are fixed JSON, so these keys hold the effective original counts
+        GNEISS_IRON_SPAWN_RATE = builder
+                .comment("Amount of schist iron ore veins per chunk")
+                .translation("hbmsntm.configuration.worldgen.gneissIronSpawnRate")
+                .defineInRange("gneissIronSpawnRate", 25, 0, 256);
+        GNEISS_GOLD_SPAWN_RATE = builder
+                .comment("Amount of schist gold ore veins per chunk")
+                .translation("hbmsntm.configuration.worldgen.gneissGoldSpawnRate")
+                .defineInRange("gneissGoldSpawnRate", 10, 0, 256);
+        GNEISS_URANIUM_SPAWN_RATE = builder
+                .comment("Amount of schist uranium ore veins per chunk")
+                .translation("hbmsntm.configuration.worldgen.gneissUraniumSpawnRate")
+                .defineInRange("gneissUraniumSpawnRate", 21, 0, 256);
+        GNEISS_COPPER_SPAWN_RATE = builder
+                .comment("Amount of schist copper ore veins per chunk")
+                .translation("hbmsntm.configuration.worldgen.gneissCopperSpawnRate")
+                .defineInRange("gneissCopperSpawnRate", 36, 0, 256);
+        GNEISS_ASBESTOS_SPAWN_RATE = builder
+                .comment("Amount of schist asbestos ore veins per chunk")
+                .translation("hbmsntm.configuration.worldgen.gneissAsbestosSpawnRate")
+                .defineInRange("gneissAsbestosSpawnRate", 6, 0, 256);
+        GNEISS_LITHIUM_SPAWN_RATE = builder
+                .comment("Amount of schist lithium ore veins per chunk")
+                .translation("hbmsntm.configuration.worldgen.gneissLithiumSpawnRate")
+                .defineInRange("gneissLithiumSpawnRate", 6, 0, 256);
+        GNEISS_RARE_EARTH_SPAWN_RATE = builder
+                .comment("Amount of schist rare earth ore veins per chunk")
+                .translation("hbmsntm.configuration.worldgen.gneissRareEarthSpawnRate")
+                .defineInRange("gneissRareEarthSpawnRate", 6, 0, 256);
+        GNEISS_GAS_SHALE_SPAWN_RATE = builder
+                .comment("Amount of gas shale veins per chunk")
+                .translation("hbmsntm.configuration.worldgen.gneissGasShaleSpawnRate")
+                .defineInRange("gneissGasShaleSpawnRate", 15, 0, 256);
+        IRON_CLUSTER_SPAWN_RATE = builder
+                .comment("Amount of iron cluster veins per chunk")
+                .translation("hbmsntm.configuration.worldgen.ironClusterSpawnRate")
+                .defineInRange("ironClusterSpawnRate", 4, 0, 256);
+        TITANIUM_CLUSTER_SPAWN_RATE = builder
+                .comment("Amount of titanium cluster veins per chunk")
+                .translation("hbmsntm.configuration.worldgen.titaniumClusterSpawnRate")
+                .defineInRange("titaniumClusterSpawnRate", 2, 0, 256);
+        ALUMINIUM_CLUSTER_SPAWN_RATE = builder
+                .comment("Amount of aluminium cluster veins per chunk")
+                .translation("hbmsntm.configuration.worldgen.aluminiumClusterSpawnRate")
+                .defineInRange("aluminiumClusterSpawnRate", 3, 0, 256);
+        COPPER_CLUSTER_SPAWN_RATE = builder
+                .comment("Amount of copper cluster veins per chunk")
+                .translation("hbmsntm.configuration.worldgen.copperClusterSpawnRate")
+                .defineInRange("copperClusterSpawnRate", 4, 0, 256);
+        ALEXANDRITE_SPAWN_RATE = builder
+                .comment("Spawns an alexandrite vein every nTH chunk")
+                .translation("hbmsntm.configuration.worldgen.alexandriteSpawnRate")
+                .defineInRange("alexandriteSpawnRate", 100, 0, 10000);
+        ENABLE_HEMATITE = builder
+                .comment("Toggles hematite deposits")
+                .translation("hbmsntm.configuration.worldgen.enableHematite")
+                .define("enableHematite", true);
+        ENABLE_MALACHITE = builder
+                .comment("Toggles malachite deposits")
+                .translation("hbmsntm.configuration.worldgen.enableMalachite")
+                .define("enableMalachite", true);
+        ENABLE_BAUXITE = builder
+                .comment("Toggles bauxite deposits")
+                .translation("hbmsntm.configuration.worldgen.enableBauxite")
+                .define("enableBauxite", true);
+
+        builder.pop();
+
         /// 528 ///
         builder.comment("528 Mode: Please proceed with caution!");
         builder.comment("528-Modus: Lassen Sie Vorsicht walten!");
@@ -673,5 +828,66 @@ public class CommonConfig {
                 .define("enableLBSM", false);
 
         builder.pop();
+    }
+
+    /** The worldgen switch names a biome modifier may reference; the codec rejects any other name. */
+    public static final Set<String> WORLDGEN_SWITCHES = Set.of("netherOres", "endOres", "enablePlutoniumNetherOre", "overworldOres",
+            "enableHematite", "enableMalachite", "enableBauxite");
+    /** The worldgen vein count names a placement may reference; the codec rejects any other name. */
+    public static final Set<String> WORLDGEN_COUNTS = Set.of("netherUraniumSpawnRate", "netherTungstenSpawnRate", "netherSulfurSpawnRate",
+            "netherPhosphorusSpawnRate", "netherCoalSpawnRate", "netherPlutoniumSpawnRate", "netherCobaltSpawnRate", "endTikiteSpawnRate",
+            "gneissIronSpawnRate", "gneissGoldSpawnRate", "gneissUraniumSpawnRate", "gneissCopperSpawnRate", "gneissAsbestosSpawnRate",
+            "gneissLithiumSpawnRate", "gneissRareEarthSpawnRate", "gneissGasShaleSpawnRate", "ironClusterSpawnRate",
+            "titaniumClusterSpawnRate", "aluminiumClusterSpawnRate", "copperClusterSpawnRate");
+    /** The worldgen "every nth chunk" names a placement may reference; the codec rejects any other name. */
+    public static final Set<String> WORLDGEN_RARITIES = Set.of("alexandriteSpawnRate");
+
+    /** The worldgen switch with this config key, or null for a name not in {@link #WORLDGEN_SWITCHES}. */
+    public BooleanValue worldgenSwitch(String name) {
+        return switch(name) {
+            case "netherOres" -> NETHER_ORES;
+            case "endOres" -> END_ORES;
+            case "enablePlutoniumNetherOre" -> ENABLE_PLUTONIUM_NETHER_ORE;
+            case "overworldOres" -> OVERWORLD_ORES;
+            case "enableHematite" -> ENABLE_HEMATITE;
+            case "enableMalachite" -> ENABLE_MALACHITE;
+            case "enableBauxite" -> ENABLE_BAUXITE;
+            default -> null;
+        };
+    }
+
+    /** The worldgen vein count with this config key, or null for a name not in {@link #WORLDGEN_COUNTS}. */
+    public IntValue worldgenCount(String name) {
+        return switch(name) {
+            case "netherUraniumSpawnRate" -> NETHER_URANIUM_SPAWN_RATE;
+            case "netherTungstenSpawnRate" -> NETHER_TUNGSTEN_SPAWN_RATE;
+            case "netherSulfurSpawnRate" -> NETHER_SULFUR_SPAWN_RATE;
+            case "netherPhosphorusSpawnRate" -> NETHER_PHOSPHORUS_SPAWN_RATE;
+            case "netherCoalSpawnRate" -> NETHER_COAL_SPAWN_RATE;
+            case "netherPlutoniumSpawnRate" -> NETHER_PLUTONIUM_SPAWN_RATE;
+            case "netherCobaltSpawnRate" -> NETHER_COBALT_SPAWN_RATE;
+            case "endTikiteSpawnRate" -> END_TIKITE_SPAWN_RATE;
+            case "gneissIronSpawnRate" -> GNEISS_IRON_SPAWN_RATE;
+            case "gneissGoldSpawnRate" -> GNEISS_GOLD_SPAWN_RATE;
+            case "gneissUraniumSpawnRate" -> GNEISS_URANIUM_SPAWN_RATE;
+            case "gneissCopperSpawnRate" -> GNEISS_COPPER_SPAWN_RATE;
+            case "gneissAsbestosSpawnRate" -> GNEISS_ASBESTOS_SPAWN_RATE;
+            case "gneissLithiumSpawnRate" -> GNEISS_LITHIUM_SPAWN_RATE;
+            case "gneissRareEarthSpawnRate" -> GNEISS_RARE_EARTH_SPAWN_RATE;
+            case "gneissGasShaleSpawnRate" -> GNEISS_GAS_SHALE_SPAWN_RATE;
+            case "ironClusterSpawnRate" -> IRON_CLUSTER_SPAWN_RATE;
+            case "titaniumClusterSpawnRate" -> TITANIUM_CLUSTER_SPAWN_RATE;
+            case "aluminiumClusterSpawnRate" -> ALUMINIUM_CLUSTER_SPAWN_RATE;
+            case "copperClusterSpawnRate" -> COPPER_CLUSTER_SPAWN_RATE;
+            default -> null;
+        };
+    }
+
+    /** The worldgen "every nth chunk" value with this config key, or null for a name not in {@link #WORLDGEN_RARITIES}. */
+    public IntValue worldgenRarity(String name) {
+        return switch(name) {
+            case "alexandriteSpawnRate" -> ALEXANDRITE_SPAWN_RATE;
+            default -> null;
+        };
     }
 }

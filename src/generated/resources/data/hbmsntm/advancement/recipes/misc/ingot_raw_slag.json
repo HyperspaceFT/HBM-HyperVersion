@@ -1,0 +1,32 @@
+{
+  "parent": "minecraft:recipes/root",
+  "criteria": {
+    "has_block_slag": {
+      "conditions": {
+        "items": [
+          {
+            "items": "hbmsntm:block_slag"
+          }
+        ]
+      },
+      "trigger": "minecraft:inventory_changed"
+    },
+    "has_the_recipe": {
+      "conditions": {
+        "recipe": "hbmsntm:ingot_raw_slag"
+      },
+      "trigger": "minecraft:recipe_unlocked"
+    }
+  },
+  "requirements": [
+    [
+      "has_the_recipe",
+      "has_block_slag"
+    ]
+  ],
+  "rewards": {
+    "recipes": [
+      "hbmsntm:ingot_raw_slag"
+    ]
+  }
+}

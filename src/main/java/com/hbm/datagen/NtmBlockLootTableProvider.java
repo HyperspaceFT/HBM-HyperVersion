@@ -16,11 +16,13 @@ import net.minecraft.world.item.enchantment.Enchantments;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.state.properties.IntegerProperty;
+import net.minecraft.world.level.storage.loot.IntRange;
 import net.minecraft.world.level.storage.loot.LootPool;
 import net.minecraft.world.level.storage.loot.LootTable;
 import net.minecraft.world.level.storage.loot.entries.AlternativesEntry;
 import net.minecraft.world.level.storage.loot.entries.LootItem;
 import net.minecraft.world.level.storage.loot.functions.ApplyBonusCount;
+import net.minecraft.world.level.storage.loot.functions.LimitCount;
 import net.minecraft.world.level.storage.loot.functions.SetItemCountFunction;
 import net.minecraft.world.level.storage.loot.predicates.LootItemBlockStatePropertyCondition;
 import net.minecraft.world.level.storage.loot.predicates.LootItemCondition;
@@ -92,18 +94,62 @@ public class NtmBlockLootTableProvider extends BlockLootSubProvider {
         this.dropSelf(NtmBlocks.ORE_NETHER_URANIUM_SCORCHED.get());
         this.dropSelf(NtmBlocks.ORE_NETHER_PLUTONIUM.get());
         this.dropSelf(NtmBlocks.ORE_NETHER_SCHRABIDIUM.get());
+        // Original BlockGeneric: nether tungsten ore drops itself
+        this.dropSelf(NtmBlocks.ORE_NETHER_TUNGSTEN.get());
+        // Original BlockOre.java:60-61,75-76,99-100,114-119 and its quantityDroppedWithBonus, which is the vanilla ore fortune bonus
+        // for any ore that does not drop itself; silk touch keeps the ore
+        this.add(NtmBlocks.ORE_NETHER_SULFUR.get(), block -> this.oreDrop(block, NtmItems.SULFUR.get(), 2, 4));
+        this.add(NtmBlocks.ORE_NETHER_FIRE.get(), block -> this.createSilkTouchDispatchTable(block, AlternativesEntry.alternatives(
+                LootItem.lootTableItem(NtmItems.INGOT_PHOSPHORUS.get())
+                        .when(LootItemRandomChanceCondition.randomChance(0.1F))
+                        .apply(ApplyBonusCount.addOreBonusCount(this.registries.lookupOrThrow(Registries.ENCHANTMENT).getOrThrow(Enchantments.FORTUNE))),
+                LootItem.lootTableItem(NtmItems.POWDER_FIRE.get())
+                        .apply(ApplyBonusCount.addOreBonusCount(this.registries.lookupOrThrow(Registries.ENCHANTMENT).getOrThrow(Enchantments.FORTUNE))))));
+        this.add(NtmBlocks.ORE_NETHER_COBALT.get(), block -> this.oreDrop(block, NtmItems.FRAGMENT_COBALT.get(), 5, 12));
+        // Original BlockNetherCoal extends BlockOutgas extends BlockOre: one infernal coal with the ore fortune bonus
+        this.add(NtmBlocks.ORE_NETHER_COAL.get(), block -> this.oreDrop(block, NtmItems.COAL_INFERNAL.get()));
+        // Original BlockSmolder is a plain Block: one fire powder, no fortune bonus
+        this.add(NtmBlocks.ORE_NETHER_SMOLDERING.get(), block -> this.oreDropNoFortune(block, NtmItems.POWDER_FIRE.get()));
         this.dropSelf(NtmBlocks.ORE_TIKITE.get());
         // Original BlockOre: one coltan fragment with the ore fortune bonus; silk touch keeps the ore
         this.add(NtmBlocks.ORE_COLTAN.get(), block -> this.oreDrop(block, NtmItems.FRAGMENT_COLTAN.get()));
         this.dropSelf(NtmBlocks.ORE_GNEISS_URANIUM.get());
         this.dropSelf(NtmBlocks.ORE_GNEISS_URANIUM_SCORCHED.get());
         this.dropSelf(NtmBlocks.ORE_GNEISS_SCHRABIDIUM.get());
+        this.dropSelf(NtmBlocks.STONE_GNEISS.get());
+        this.dropSelf(NtmBlocks.ORE_GNEISS_IRON.get());
+        this.dropSelf(NtmBlocks.ORE_GNEISS_GOLD.get());
+        this.dropSelf(NtmBlocks.ORE_GNEISS_COPPER.get());
+        this.dropSelf(NtmBlocks.ORE_GNEISS_LITHIUM.get());
+        this.dropSelf(NtmBlocks.ORE_GNEISS_GAS.get());
+        // Original BlockOre.java:84-88: the schist rare earth ore drops the rare earth chunk and the schist asbestos ore an asbestos
+        // ingot, both with the ore fortune bonus
+        this.add(NtmBlocks.ORE_GNEISS_RARE.get(), block -> this.oreDrop(block, NtmItems.RARE_EARTH_ORE_CHUNK.get()));
+        this.add(NtmBlocks.ORE_GNEISS_ASBESTOS.get(), block -> this.oreDrop(block, NtmItems.INGOT_ASBESTOS.get()));
         this.dropSelf(NtmBlocks.RESOURCE_LIMESTONE.get());
         this.dropSelf(NtmBlocks.RESOURCE_BAUXITE.get());
         this.dropSelf(NtmBlocks.RESOURCE_HEMATITE.get());
-        this.dropSelf(NtmBlocks.RESOURCE_MALACHITE.get());
+        // Original BlockResourceStone.java:33-41: 3 + fortune + rand(fortune + 2) malachite chunks, i.e. 3-4 without fortune; NEO's
+        // ore fortune bonus stands in for the original's fortune growth
+        this.add(NtmBlocks.RESOURCE_MALACHITE.get(), block -> this.oreDrop(block, NtmItems.CHUNK_MALACHITE.get(), 3, 4));
         this.dropSelf(NtmBlocks.RESOURCE_CHRYSOTILE.get());
         this.dropSelf(NtmBlocks.RESOURCE_SULFUROUS_STONE.get());
+        this.dropSelf(NtmBlocks.STONE_DEPTH.get());
+        this.dropSelf(NtmBlocks.STONE_DEPTH_NETHER.get());
+        // Original BlockDepthOre.java:12-64: its quantityDroppedWithBonus is the vanilla ore fortune bonus; alexandrite is capped at two
+        this.add(NtmBlocks.CLUSTER_DEPTH_IRON.get(), block -> this.depthOreDrop(block, NtmItems.CRYSTAL_IRON.get(), 1, 1, 0));
+        this.add(NtmBlocks.CLUSTER_DEPTH_TITANIUM.get(), block -> this.depthOreDrop(block, NtmItems.CRYSTAL_TITANIUM.get(), 1, 1, 0));
+        this.add(NtmBlocks.CLUSTER_DEPTH_TUNGSTEN.get(), block -> this.depthOreDrop(block, NtmItems.CRYSTAL_TUNGSTEN.get(), 1, 1, 0));
+        this.add(NtmBlocks.ORE_DEPTH_CINNABAR.get(), block -> this.depthOreDrop(block, NtmItems.CINNABAR.get(), 2, 4, 0));
+        this.add(NtmBlocks.ORE_DEPTH_ZIRCONIUM.get(), block -> this.depthOreDrop(block, NtmItems.NUGGET_ZIRCONIUM.get(), 2, 3, 0));
+        this.add(NtmBlocks.ORE_DEPTH_NETHER_NEODYMIUM.get(), block -> this.depthOreDrop(block, NtmItems.FRAGMENT_NEODYMIUM.get(), 2, 3, 0));
+        this.add(NtmBlocks.ORE_DEPTH_BORAX.get(), block -> this.depthOreDrop(block, NtmItems.POWDER_BORAX.get(), 1, 1, 0));
+        this.add(NtmBlocks.ORE_ALEXANDRITE.get(), block -> this.depthOreDrop(block, NtmItems.GEM_ALEXANDRITE.get(), 1, 1, 2));
+        // Original BlockCluster.java:19-28: one crystal, no fortune bonus
+        this.add(NtmBlocks.CLUSTER_IRON.get(), block -> this.oreDropNoFortune(block, NtmItems.CRYSTAL_IRON.get()));
+        this.add(NtmBlocks.CLUSTER_TITANIUM.get(), block -> this.oreDropNoFortune(block, NtmItems.CRYSTAL_TITANIUM.get()));
+        this.add(NtmBlocks.CLUSTER_ALUMINIUM.get(), block -> this.oreDropNoFortune(block, NtmItems.CRYSTAL_ALUMINIUM.get()));
+        this.add(NtmBlocks.CLUSTER_COPPER.get(), block -> this.oreDropNoFortune(block, NtmItems.CRYSTAL_COPPER.get()));
         this.dropSelf(NtmBlocks.DECO_ALUMINIUM.get());
         this.dropSelf(NtmBlocks.DECO_BERYLLIUM.get());
         this.dropSelf(NtmBlocks.DECO_LEAD.get());
@@ -332,6 +378,18 @@ public class NtmBlockLootTableProvider extends BlockLootSubProvider {
         this.dropSelf(NtmBlocks.MACHINE_PUMPJACK.get());
         this.dropSelf(NtmBlocks.MACHINE_FRACKING_TOWER.get());
         this.dropSelf(NtmBlocks.MACHINE_REFINERY.get());
+        this.dropSelf(NtmBlocks.MACHINE_VACUUM_DISTILL.get());
+        this.dropSelf(NtmBlocks.MACHINE_ROTARY_FURNACE.get());
+        // BlockTallPlant.java:61-66,344-349: every part gives back one sapling, the mature upper half also 3-6 leaves
+        this.add(NtmBlocks.PLANT_MUSTARD_WILLOW.get(), block -> LootTable.lootTable()
+                .withPool(LootPool.lootPool().setRolls(net.minecraft.world.level.storage.loot.providers.number.ConstantValue.exactly(1)).add(LootItem.lootTableItem(block)))
+                .withPool(LootPool.lootPool().setRolls(net.minecraft.world.level.storage.loot.providers.number.ConstantValue.exactly(1))
+                        .when(net.minecraft.world.level.storage.loot.predicates.LootItemBlockStatePropertyCondition.hasBlockStateProperties(block)
+                                .setProperties(net.minecraft.advancements.critereon.StatePropertiesPredicate.Builder.properties()
+                                        .hasProperty(com.hbm.blocks.generic.MustardWillowBlock.AGE, 4)
+                                        .hasProperty(com.hbm.blocks.generic.MustardWillowBlock.HALF, net.minecraft.world.level.block.state.properties.DoubleBlockHalf.UPPER)))
+                        .add(LootItem.lootTableItem(NtmItems.PLANT_ITEM_MUSTARDWILLOW.get())
+                                .apply(net.minecraft.world.level.storage.loot.functions.SetItemCountFunction.setCount(net.minecraft.world.level.storage.loot.providers.number.UniformGenerator.between(3, 6))))));
         this.dropSelf(NtmBlocks.MACHINE_CATALYTIC_CRACKER.get());
         this.dropSelf(NtmBlocks.MACHINE_FRACTION_TOWER.get());
         this.dropSelf(NtmBlocks.MACHINE_COMPRESSOR.get());
@@ -484,6 +542,18 @@ public class NtmBlockLootTableProvider extends BlockLootSubProvider {
                 .apply(SetItemCountFunction.setCount(UniformGenerator.between(min, max)))
                 .apply(ApplyBonusCount.addOreBonusCount(
                         this.registries.lookupOrThrow(Registries.ENCHANTMENT).getOrThrow(Enchantments.FORTUNE))));
+    }
+
+    // Depth ores can only be mined with a depth rock tool or blown up. The original drops every item as its own stack through the
+    // 1.7.10 explosion path, which keeps each item with chance 1 / radius: the explosion decay of vanilla ore tables. The ore
+    // fortune bonus, then the total limited to cap (0: no limit).
+    private LootTable.Builder depthOreDrop(Block block, Item item, int min, int max, int cap) {
+        var entry = LootItem.lootTableItem(item)
+                .apply(SetItemCountFunction.setCount(UniformGenerator.between(min, max)))
+                .apply(ApplyBonusCount.addOreBonusCount(
+                        this.registries.lookupOrThrow(Registries.ENCHANTMENT).getOrThrow(Enchantments.FORTUNE)));
+        if(cap > 0) entry.apply(LimitCount.limitCount(IntRange.upperBound(cap)));
+        return this.createSilkTouchDispatchTable(block, this.applyExplosionDecay(block, entry));
     }
 
     private LootTable.Builder oreDropNoSilk(Block block, Item item) {

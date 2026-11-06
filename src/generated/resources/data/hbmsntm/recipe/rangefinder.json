@@ -1,0 +1,26 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "equipment",
+  "key": {
+    "C": {
+      "item": "hbmsntm:circuit_integrated_board"
+    },
+    "G": {
+      "tag": "c:glass_panes"
+    },
+    "R": {
+      "item": "minecraft:redstone"
+    },
+    "S": {
+      "tag": "c:plates/steel"
+    }
+  },
+  "pattern": [
+    "GRC",
+    "  S"
+  ],
+  "result": {
+    "count": 1,
+    "id": "hbmsntm:rangefinder"
+  }
+}
