@@ -2,7 +2,6 @@
 
 import argparse
 import hashlib
-import msvcrt
 import os
 from pathlib import Path
 import subprocess
@@ -11,10 +10,17 @@ import uuid
 from urllib.parse import urlparse
 import zipfile
 
+WINDOWS = os.name == "nt"
+if WINDOWS:
+    import msvcrt
+else:
+    import fcntl
+
 
 ROOT = Path(__file__).resolve().parents[2]
 HELPER = ROOT / "gradle" / "migration-resources.gradle"
-WRAPPER = ROOT / "gradlew.bat"
+# gradlew is tracked without the executable bit, so POSIX runs it through sh.
+WRAPPER = [str(ROOT / "gradlew.bat")] if WINDOWS else ["sh", str(ROOT / "gradlew")]
 FIXTURE_BUILD = r"""
 plugins { id 'java' }
 ext.migrationFixture = true
@@ -47,8 +53,17 @@ def require(condition, message):
         raise AssertionError(message)
 
 
+def lock_first_byte(handle, acquire):
+    """Hold or release the OS lock the helper's FileChannel.tryLock() contends for."""
+    handle.seek(0)
+    if WINDOWS:
+        msvcrt.locking(handle.fileno(), msvcrt.LK_NBLCK if acquire else msvcrt.LK_UNLCK, 1)
+    else:
+        fcntl.lockf(handle.fileno(), fcntl.LOCK_EX | fcntl.LOCK_NB if acquire else fcntl.LOCK_UN, 1)
+
+
 def call(fixture, env, args, success, label, expected=None):
-    cmd = [str(WRAPPER), "--offline", "--no-daemon", "--console=plain",
+    cmd = [*WRAPPER, "--offline", "--no-daemon", "--console=plain",
            "-Porg.gradle.java.installations.auto-download=false", "-p", str(fixture), *args]
     result = subprocess.run(cmd, cwd=ROOT, env=env, capture_output=True,
                             text=True, encoding="utf-8", errors="replace", timeout=180)
@@ -90,7 +105,7 @@ def main():
               key / (distribution_name + ".ok"))
     require(marker.is_file(), f"Offline wrapper distribution is not installed at {marker.parent}")
     java_home = args.java_home or (Path(os.environ["JAVA_HOME"]) if "JAVA_HOME" in os.environ else None)
-    require(java_home is not None and (java_home / "bin" / "java.exe").is_file(),
+    require(java_home is not None and (java_home / "bin" / ("java.exe" if WINDOWS else "java")).is_file(),
             "Pass --java-home with an existing Java 21 JDK")
     java_home = java_home.resolve()
     require('JAVA_VERSION="21' in (java_home / "release").read_text(encoding="utf-8"),
@@ -136,8 +151,7 @@ def main():
     with lock_path.open("w+b") as held_lock:
         held_lock.write(b"0")
         held_lock.flush()
-        held_lock.seek(0)
-        msvcrt.locking(held_lock.fileno(), msvcrt.LK_NBLCK, 1)
+        lock_first_byte(held_lock, True)
         try:
             call(fixture, env, ["verifyMigrationResources"], False, "03a-locked-gate",
                  "Another migration resource generation or verification is active")
@@ -145,8 +159,7 @@ def main():
                  "Another migration resource generation or verification is active")
             require(old.is_file() and stamp.is_file(), "External lock rejection changed active outputs")
         finally:
-            held_lock.seek(0)
-            msvcrt.locking(held_lock.fileno(), msvcrt.LK_UNLCK, 1)
+            lock_first_byte(held_lock, False)
     if args.lock_smoke:
         print("External lock fixture passed; logs retained under build/migration.")
         return

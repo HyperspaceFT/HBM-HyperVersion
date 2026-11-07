@@ -5,14 +5,14 @@ import subprocess
 import sys
 import uuid
 
+from goal18a_regression.common import jdk
 from goal3b_network_regression.stubs import STUBS
 
 ROOT = Path(__file__).resolve().parents[2]
 SOURCE = ROOT / "src/main/java"
 FIXTURE = Path(__file__).with_name("goal3b_network_regression")
 OUTPUT = ROOT / "build/migration/goal3b/network-regression"
-JAVA = Path(r"C:\Program Files\Java\jdk-21\bin\java.exe")
-JAVAC = JAVA.with_name("javac.exe")
+JAVA, JAVAC = jdk()
 
 PRODUCTION = (
     "api/hbm/blockentity/ILoadedBE.java",

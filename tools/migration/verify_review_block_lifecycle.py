@@ -15,10 +15,11 @@ import subprocess
 import uuid
 import zipfile
 
+from goal18a_regression.common import jdk
 from review_fixes.block_stubs import BARREL, DUMMY, build_world, method
 
 ROOT = Path(__file__).resolve().parents[2]
-CACHE = ROOT / ".gradle/user-home/caches/neoformruntime/intermediate_results/sourcesAndCompiledWithNeoForge_c702bbab7b8c6d291bbd933a839c95c3a220b6b5_output.jar"
+CACHE_DIRECTORY = ROOT / ".gradle/user-home/caches/neoformruntime/intermediate_results"
 SOURCE = ROOT / "src/main/java"
 
 
@@ -28,7 +29,11 @@ def digest(path):
 
 def contracts():
     records = []
-    with zipfile.ZipFile(CACHE) as archive:
+    # The hash in the cache jar's name differs between machines.
+    caches = sorted(CACHE_DIRECTORY.glob("sourcesAndCompiledWithNeoForge_*_output.jar"))
+    if len(caches) != 1:
+        raise SystemExit(f"Expected one sourcesAndCompiledWithNeoForge cache jar in {CACHE_DIRECTORY}, found {len(caches)}")
+    with zipfile.ZipFile(caches[0]) as archive:
         def confirm(path, signature, ordered):
             text = archive.read(path).decode("utf-8")
             body = method(text, signature)
@@ -73,10 +78,11 @@ def run_world(root, label, world, java_home, expected_success=True):
     (target / "BlockLifecycleWorld.java").write_text(world, encoding="utf-8")
     fixture = ROOT / "tools/migration/review_fixes/BlockLifecycleRegression.java"
     (target / fixture.name).write_bytes(fixture.read_bytes())
+    java, javac = jdk(java_home)
     commands = [
-        [str(java_home / "bin/javac.exe"), "-encoding", "UTF-8", "-d", str(target / "classes"),
+        [str(javac), "-encoding", "UTF-8", "-d", str(target / "classes"),
          str(target / "BlockLifecycleWorld.java"), str(target / fixture.name)],
-        [str(java_home / "bin/java.exe"), "-cp", str(target / "classes"), "reviewfixes.BlockLifecycleRegression"],
+        [str(java), "-cp", str(target / "classes"), "reviewfixes.BlockLifecycleRegression"],
     ]
     result = {}
     for index, command in enumerate(commands):
@@ -93,7 +99,7 @@ def run_world(root, label, world, java_home, expected_success=True):
 
 def main():
     parser = argparse.ArgumentParser(description=__doc__)
-    parser.add_argument("--java-home", type=Path, default=Path("C:/Program Files/Java/jdk-21"))
+    parser.add_argument("--java-home", type=Path, help="Existing Java 21 JDK; looked up when omitted")
     args = parser.parse_args()
     root = ROOT / "build/migration/review-fixes/blocks" / uuid.uuid4().hex
     root.mkdir(parents=True)

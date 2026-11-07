@@ -15,13 +15,22 @@ VANILLA_TAGS = 'this.tag(BlockTags.BASE_STONE_OVERWORLD).add(Blocks.STONE).add(B
 
 def sha(path): return hashlib.sha256(Path(path).read_bytes()).hexdigest()
 
-def jdk():
-    for directory in ([Path(os.environ['JAVA_HOME']) / 'bin'] if os.environ.get('JAVA_HOME') else []) + [Path(r'C:\Program Files\Java\jdk-21\bin')]:
+def jdk(home=None):
+    if home is not None: directories = [Path(home) / 'bin']
+    else:
+        directories = ([Path(os.environ['JAVA_HOME']) / 'bin'] if os.environ.get('JAVA_HOME') else []) + [Path(r'C:\Program Files\Java\jdk-21\bin')]
+        if Path('/usr/libexec/java_home').is_file():
+            found = subprocess.run(['/usr/libexec/java_home', '-v', '21'], capture_output=True, text=True)
+            if found.returncode == 0 and found.stdout.strip(): directories.append(Path(found.stdout.strip()) / 'bin')
+    for directory in directories:
+        release = directory.parent / 'release'
+        if not (release.is_file() and any(line.startswith(('JAVA_VERSION="21.', 'JAVA_VERSION="21"', 'JAVA_VERSION="21-')) for line in release.read_text(encoding='utf-8', errors='replace').splitlines())): continue
         for suffix in ('.exe', ''):
             java, javac = directory / f'java{suffix}', directory / f'javac{suffix}'
             if java.is_file() and javac.is_file(): return java, javac
-    java, javac = shutil.which('java'), shutil.which('javac')
-    if java and javac: return Path(java), Path(javac)
+    if home is None:
+        java, javac = shutil.which('java'), shutil.which('javac')
+        if java and javac: return Path(java), Path(javac)
     raise SystemExit('Existing JDK 21 not found')
 
 def gson():

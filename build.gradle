@@ -114,6 +114,8 @@ configurations {
 // Refresh locks explicitly when a reviewed dependency change requires it.
 dependencyLocking {
     lockAllConfigurations()
+    // Minecraft ships this library for macOS only, so the runtime classpaths resolve it on macOS and nowhere else.
+    ignoredDependencies.add('ca.weblite:java-objc-bridge')
 }
 
 repositories {

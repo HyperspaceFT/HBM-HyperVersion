@@ -33,3 +33,4 @@ src/generated/resources/.cache/
 
 # Local Claude Code harness (project subagents and skills)
 /.claude/
+.DS_Store

@@ -43,6 +43,7 @@ import subprocess
 import uuid
 import zipfile
 
+from goal18a_regression.common import jdk
 from review_fixes.ability_harvest_stubs import PRODUCTION, VNT, build_world, method
 
 ROOT = Path(__file__).resolve().parents[2]
@@ -240,10 +241,11 @@ def run_world(root, label, world, java_home, expected_success=True):
     (target / "AbilityHarvestWorld.java").write_text(world, encoding="utf-8")
     for fixture in FIXTURES:
         (target / fixture.name).write_bytes(fixture.read_bytes())
+    java, javac = jdk(java_home)
     commands = [
-        [str(java_home / "bin/javac.exe"), "-encoding", "UTF-8", "-d", str(target / "classes"),
+        [str(javac), "-encoding", "UTF-8", "-d", str(target / "classes"),
          str(target / "AbilityHarvestWorld.java")] + [str(target / fixture.name) for fixture in FIXTURES],
-        [str(java_home / "bin/java.exe"), "-cp", str(target / "classes"), "abilityharvest.AbilityHarvestRegression"],
+        [str(java), "-cp", str(target / "classes"), "abilityharvest.AbilityHarvestRegression"],
     ]
     result = {}
     for index, command in enumerate(commands):
@@ -369,7 +371,7 @@ MUTATIONS.update({
 
 def main():
     parser = argparse.ArgumentParser(description=__doc__)
-    parser.add_argument("--java-home", type=Path, default=Path("C:/Program Files/Java/jdk-21"))
+    parser.add_argument("--java-home", type=Path, help="Existing Java 21 JDK; looked up when omitted")
     parser.add_argument("--out-root", type=Path, default=Path("build/migration/review-fixes/ability-harvest"),
                         help="run directory parent, relative to the NEO root unless absolute")
     args = parser.parse_args()
