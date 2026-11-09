@@ -8,16 +8,20 @@ import com.hbm.extprop.HbmPlayerAttachments;
 import com.hbm.handler.neutron.NeutronHandler;
 import com.hbm.handler.neutron.NeutronNodeWorld;
 import com.hbm.network.toclient.InformPlayer;
+import com.hbm.registry.NtmDamageTypes;
 import com.hbm.saveddata.satellite.SatelliteDetector;
 import com.hbm.uninos.UniNodespace;
+import com.hbm.util.TagsUtil;
 import com.hbm.world.MeteorStrikeSystem;
 import net.minecraft.ChatFormatting;
 import net.minecraft.network.chat.Component;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
 import net.neoforged.bus.api.SubscribeEvent;
 import net.neoforged.fml.common.EventBusSubscriber;
+import net.neoforged.neoforge.event.entity.living.LivingEntityUseItemEvent;
 import net.neoforged.neoforge.event.entity.player.PlayerEvent;
 import net.neoforged.neoforge.event.level.LevelEvent;
 import net.neoforged.neoforge.event.server.ServerStoppedEvent;
@@ -43,6 +47,21 @@ public class NtmEventHandler {
 
             if(NtmConfig.COMMON.ENABLE_DUCKS.get() && !HbmPlayerAttachments.getData(player).ducked) {
                 if(player instanceof ServerPlayer serverPlayer) PacketDistributor.sendToPlayer(serverPlayer, new InformPlayer(Component.translatable("info.duck"), NuclearTechModClient.ID_DUCK, 30_000));
+            }
+        }
+    }
+
+    // ModEventHandler.onFoodEaten (ModEventHandler.java:1339-1350): food marked "ntmCyanide" by AnvilSmithingCyanideRecipe kills the eater
+    // with ten 1,000-point hits, each randomly euthanizedSelf or euthanizedSelf2. The event's item is a copy taken before the food was eaten.
+    @SubscribeEvent
+    public static void onFoodEaten(LivingEntityUseItemEvent.Finish event) {
+        if(!(event.getEntity() instanceof Player player) || player.level().isClientSide) return;
+
+        ItemStack stack = event.getItem();
+
+        if(stack.getItem().getFoodProperties(stack, player) != null && TagsUtil.getCustomData(stack).getBoolean("ntmCyanide")) {
+            for(int i = 0; i < 10; i++) {
+                player.hurt(player.damageSources().source(player.getRandom().nextBoolean() ? NtmDamageTypes.EUTHANIZED_SELF : NtmDamageTypes.EUTHANIZED_SELF_2), 1000);
             }
         }
     }
