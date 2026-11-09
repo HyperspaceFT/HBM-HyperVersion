@@ -10,8 +10,8 @@ public interface NtmDamageTypes {
     ResourceKey<DamageType> NUCLEAR_BLAST = key("nuclear_blast"); // explosion
     ResourceKey<DamageType> MUD_POISONING = key("mud_poisoning"); // bypasses armor
     ResourceKey<DamageType> ACID = key("acid");
-    //public static final ResourceKey<DamageType> euthanizedSelf = create("euthanizedSelf"); // bypasses armor
-    //public static final ResourceKey<DamageType> euthanizedSelf2  = create("euthanizedSelf"); // bypasses armor
+    ResourceKey<DamageType> EUTHANIZED_SELF = key("euthanized_self"); // bypasses armor
+    ResourceKey<DamageType> EUTHANIZED_SELF_2 = key("euthanized_self_2"); // bypasses armor
     ResourceKey<DamageType> TAU_BLAST = key("tau_blast");
     ResourceKey<DamageType> RADIATION = key("radiation");
     ResourceKey<DamageType> DIGAMMA = key("digamma");
@@ -55,6 +55,9 @@ public interface NtmDamageTypes {
         context.register(MONOXIDE, new DamageType("monoxide", 0.1F));
         context.register(TURBOFAN, new DamageType("blender", 0.1F));
         context.register(METEORITE, new DamageType("meteorite", 0.1F));
+        // ModDamageSource.java:12-13; message IDs keep the original death.attack keys
+        context.register(EUTHANIZED_SELF, new DamageType("euthanizedSelf", 0.1F));
+        context.register(EUTHANIZED_SELF_2, new DamageType("euthanizedSelf2", 0.1F));
 
         context.register(PHYSICAL, new DamageType("sednaPhysical", 0.1F));
         context.register(FIRE, new DamageType("sednaFire", 0.1F));

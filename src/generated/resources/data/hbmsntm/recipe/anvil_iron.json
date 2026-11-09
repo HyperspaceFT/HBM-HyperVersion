@@ -15,6 +15,9 @@
     "III"
   ],
   "result": {
+    "components": {
+      "hbmsntm:meta": 0
+    },
     "count": 1,
     "id": "hbmsntm:anvil"
   }

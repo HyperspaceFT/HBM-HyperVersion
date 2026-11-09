@@ -34,7 +34,8 @@ public class RadarEntry {
     }
 
     public RadarEntry(IRadarDetectableNT detectable, Entity entity, boolean redstone) {
-        this(detectable.getName(), detectable.getBlipLevel(), entity.blockPosition(), entity.level.dimension(), entity.getId(), redstone);
+        // original RadarEntry.java:36 shows the radar.target.* key (a decoy reports tier 4), not the entity's own name
+        this(Component.translatable(detectable.getUnlocalizedName()), detectable.getBlipLevel(), entity.blockPosition(), entity.level.dimension(), entity.getId(), redstone);
     }
 
     public RadarEntry(Player player) {
@@ -42,7 +43,7 @@ public class RadarEntry {
     }
 
     public void decode(RegistryFriendlyByteBuf buf) {
-        ComponentSerialization.STREAM_CODEC.decode(buf);
+        this.name = ComponentSerialization.STREAM_CODEC.decode(buf);
         this.blipLevel = buf.readShort();
         this.pos = buf.readBlockPos();
         this.dim = buf.readResourceKey(Registries.DIMENSION);

@@ -9,10 +9,14 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.Level;
+import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.entity.BlockEntityTicker;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.level.block.state.StateDefinition;
+import net.minecraft.world.level.block.state.properties.BlockStateProperties;
+import net.minecraft.world.level.block.state.properties.BooleanProperty;
 import net.neoforged.api.distmarker.Dist;
 import net.neoforged.api.distmarker.OnlyIn;
 import net.neoforged.neoforge.client.event.RenderGuiEvent;
@@ -26,8 +30,22 @@ import java.util.List;
  */
 public abstract class RadioTorchRWBaseBlock extends RadioTorchBaseBlock {
 
+    /**
+     * Whether the last redstone state is above 0. The original RenderRTTY.java:38-52 picks the on/off texture from the tile entity's
+     * lastState; NEO keeps that as a block state set by the block entity, so plain block models draw it (as the electric furnace's LIT).
+     */
+    public static final BooleanProperty LIT = BlockStateProperties.LIT;
+
     public RadioTorchRWBaseBlock(Properties properties) {
         super(properties);
+        // a boolean property's first value is true, so the inherited stateDefinition.any() default would show a new torch lit
+        this.registerDefaultState(this.defaultBlockState().setValue(LIT, false));
+    }
+
+    @Override
+    protected void createBlockStateDefinition(StateDefinition.Builder<Block, BlockState> builder) {
+        super.createBlockStateDefinition(builder);
+        builder.add(LIT);
     }
 
     @Override

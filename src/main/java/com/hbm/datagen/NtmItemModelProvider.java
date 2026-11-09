@@ -865,6 +865,8 @@ public class NtmItemModelProvider extends ItemModelProvider {
         this.basicItem(NtmItems.RADAWAY.get());
         this.basicItem(NtmItems.RADX.get());
         this.basicItem(NtmItems.SIOX.get());
+        this.basicItem(NtmItems.PLAN_C.get());
+        this.basicItem(NtmItems.NO9.get());
         this.basicItem(NtmItems.IV_EMPTY.get());
         this.basicItem(NtmItems.IV_BLOOD.get());
 
@@ -1048,6 +1050,8 @@ public class NtmItemModelProvider extends ItemModelProvider {
         this.basicItem(NtmItems.TEMPLATE_FOLDER.get());
         this.basicItem(NtmItems.NOTHING.get());
 
+        // GunFactory.java:35: ammo_debug uses the ammo_45 icon
+        this.withExistingParent("ammo_debug", "item/generated").texture("layer0", this.modLoc("item/ammo_45"));
         this.entityItem(NtmItems.GUN_DEBUG.get(), true);
         this.entityItem(NtmItems.GUN_MARESLEG.get(), true);
         this.entityItem(NtmItems.GUN_SPAS12.get(), true);

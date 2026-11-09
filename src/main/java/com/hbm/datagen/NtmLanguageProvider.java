@@ -1,10 +1,12 @@
 package com.hbm.datagen;
 
+import com.electronwill.nightconfig.core.UnmodifiableConfig;
 import com.hbm.blocks.NtmBlocks;
 import com.hbm.blocks.generic.BarbedWireBlock.BarbedWireType;
 import com.hbm.blocks.generic.OreBasaltBlock.BasaltOreType;
 import com.hbm.blocks.generic.PlushieBlock.PlushieType;
 import com.hbm.blocks.machine.NTMAnvilBlock.Variant;
+import com.hbm.config.NtmConfig;
 import com.hbm.fluids.NtmFluidTypes;
 import com.hbm.items.CastPlateItem;
 import com.hbm.items.ItemEnums.CapType;
@@ -22,13 +24,17 @@ import com.hbm.main.NuclearTechMod;
 import net.minecraft.data.PackOutput;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.level.block.Block;
+import net.neoforged.neoforge.common.ModConfigSpec;
 import net.neoforged.neoforge.common.data.LanguageProvider;
 import net.neoforged.neoforge.fluids.FluidType;
 import net.neoforged.neoforge.registries.DeferredBlock;
 import net.neoforged.neoforge.registries.DeferredHolder;
 import net.neoforged.neoforge.registries.DeferredItem;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Locale;
+import java.util.stream.Collectors;
 
 public class NtmLanguageProvider extends LanguageProvider {
 
@@ -501,6 +507,7 @@ public class NtmLanguageProvider extends LanguageProvider {
         this.add(NtmBlocks.BLOCK_FIBERGLASS, "Roll of Fiberglass");
         this.add(NtmBlocks.BLOCK_INSULATOR, "Roll of Insulation");
         this.add(NtmBlocks.BLOCK_SLAG, "Block of Slag");
+        this.add(NtmBlocks.BLOCK_SCRAP, "Block of Scrap");
         this.add(NtmBlocks.BLOCK_GRAPHITE, "Block of Graphite");
 
         this.add("container.heaterFirebox", "Firebox");
@@ -1634,6 +1641,129 @@ public class NtmLanguageProvider extends LanguageProvider {
         this.add("item.hbmsntm.radx.desc", "Increases radiation resistance by 0.2 (37%%) for 3 minutes");
         this.add(NtmItems.SIOX, "SiOX Cancer Medication");
         this.add("item.hbmsntm.siox.desc", "Reverses mesothelioma with the power of Asbestos!");
+        this.add(NtmItems.PLAN_C, "Plan C");
+        this.add("item.hbmsntm.plan_c.desc", "Deadly");
+        this.add(NtmItems.NO9, "Mining Helmet");
+        this.add("item.hbmsntm.no9.dt", "+0.5 DT");
+        this.add("item.hbmsntm.no9.desc", "Lets you breathe coal, neat!");
+        this.add("item.hbmsntm.ammo_debug", "Debug Ammo");
+        // ammo_standard variants (EnumMultiItem names): original item.ammo_standard.<name>.name, en_US.lang:1834-1930
+        this.add("item.hbmsntm.ammo_standard.stone", "Ball and Powder");
+        this.add("item.hbmsntm.ammo_standard.stone_ap", "Flint and Powder");
+        this.add("item.hbmsntm.ammo_standard.stone_iron", "Iron Ball and Powder");
+        this.add("item.hbmsntm.ammo_standard.stone_shot", "Shot and Powder");
+        this.add("item.hbmsntm.ammo_standard.m357_bp", ".357 Magnum Round (Black Powder)");
+        this.add("item.hbmsntm.ammo_standard.m357_sp", ".357 Magnum Round (Soft Point)");
+        this.add("item.hbmsntm.ammo_standard.m357_fmj", ".357 Magnum Round (Full Metal Jacket)");
+        this.add("item.hbmsntm.ammo_standard.m357_jhp", ".357 Magnum Round (Jacketed Hollow Point)");
+        this.add("item.hbmsntm.ammo_standard.m357_ap", ".357 Magnum Round (Armor Piercing)");
+        this.add("item.hbmsntm.ammo_standard.m357_express", ".357 Magnum Round (FMJ Express)");
+        this.add("item.hbmsntm.ammo_standard.m44_bp", ".44 Magnum Round (Black Powder)");
+        this.add("item.hbmsntm.ammo_standard.m44_sp", ".44 Magnum Round (Soft Point)");
+        this.add("item.hbmsntm.ammo_standard.m44_fmj", ".44 Magnum Round (Full Metal Jacket)");
+        this.add("item.hbmsntm.ammo_standard.m44_jhp", ".44 Magnum Round (Jacketed Hollow Point)");
+        this.add("item.hbmsntm.ammo_standard.m44_ap", ".44 Magnum Round (Armor Piercing)");
+        this.add("item.hbmsntm.ammo_standard.m44_express", ".44 Magnum Round (FMJ Express)");
+        this.add("item.hbmsntm.ammo_standard.p22_sp", ".22 LR Round (Soft Point)");
+        this.add("item.hbmsntm.ammo_standard.p22_fmj", ".22 LR Round (Full Metal Jacket)");
+        this.add("item.hbmsntm.ammo_standard.p22_jhp", ".22 LR Round (Jacketed Hollow Point)");
+        this.add("item.hbmsntm.ammo_standard.p22_ap", ".22 LR Round (Armor Piercing)");
+        this.add("item.hbmsntm.ammo_standard.p9_sp", "9mm Round (Soft Point)");
+        this.add("item.hbmsntm.ammo_standard.p9_fmj", "9mm Round (Full Metal Jacket)");
+        this.add("item.hbmsntm.ammo_standard.p9_jhp", "9mm Round (Jacketed Hollow Point)");
+        this.add("item.hbmsntm.ammo_standard.p9_ap", "9mm Round (Armor Piercing)");
+        this.add("item.hbmsntm.ammo_standard.r556_sp", "5.56mm Round (Soft Point)");
+        this.add("item.hbmsntm.ammo_standard.r556_fmj", "5.56mm Round (Full Metal Jacket)");
+        this.add("item.hbmsntm.ammo_standard.r556_jhp", "5.56mm Round (Jacketed Hollow Point)");
+        this.add("item.hbmsntm.ammo_standard.r556_ap", "5.56mm Round (Armor Piercing)");
+        this.add("item.hbmsntm.ammo_standard.r762_sp", "7.62mm Round (Soft Point)");
+        this.add("item.hbmsntm.ammo_standard.r762_fmj", "7.62mm Round (Full Metal Jacket)");
+        this.add("item.hbmsntm.ammo_standard.r762_jhp", "7.62mm Round (Jacketed Hollow Point)");
+        this.add("item.hbmsntm.ammo_standard.r762_ap", "7.62mm Round (Armor Piercing)");
+        this.add("item.hbmsntm.ammo_standard.r762_du", "7.62mm Round (Depleted Uranium)");
+        this.add("item.hbmsntm.ammo_standard.bmg50_sp", ".50 BMG Round (Soft Point)");
+        this.add("item.hbmsntm.ammo_standard.bmg50_fmj", ".50 BMG Round (Full Metal Jacket)");
+        this.add("item.hbmsntm.ammo_standard.bmg50_jhp", ".50 BMG Round (Jacketed Hollow Point)");
+        this.add("item.hbmsntm.ammo_standard.bmg50_ap", ".50 BMG Round (Armor Piercing)");
+        this.add("item.hbmsntm.ammo_standard.bmg50_du", ".50 BMG Round (Depleted Uranium)");
+        this.add("item.hbmsntm.ammo_standard.b75", ".75 Bolt");
+        this.add("item.hbmsntm.ammo_standard.b75_inc", ".75 Bolt (Incendiary)");
+        this.add("item.hbmsntm.ammo_standard.b75_exp", ".75 Bolt (Explosive)");
+        this.add("item.hbmsntm.ammo_standard.g12_bp", "12 Gauge Black Powder Buckshot");
+        this.add("item.hbmsntm.ammo_standard.g12_bp_magnum", "12 Gauge Black Powder Magnum Shell");
+        this.add("item.hbmsntm.ammo_standard.g12_bp_slug", "12 Gauge Black Powder Slug");
+        this.add("item.hbmsntm.ammo_standard.g12", "12 Gauge Buckshot");
+        this.add("item.hbmsntm.ammo_standard.g12_slug", "12 Gauge Slug");
+        this.add("item.hbmsntm.ammo_standard.g12_flechette", "12 Gauge Flechette Shell");
+        this.add("item.hbmsntm.ammo_standard.g12_magnum", "12 Gauge Magnum Shell");
+        this.add("item.hbmsntm.ammo_standard.g12_explosive", "12 Gauge Explosive Shell");
+        this.add("item.hbmsntm.ammo_standard.g12_phosphorus", "12 Gauge Phosphorus Shell");
+        this.add("item.hbmsntm.ammo_standard.g26_flare", "26mm Signal Flare");
+        this.add("item.hbmsntm.ammo_standard.g26_flare_supply", "26mm Signal Flare (Supply Airdrop)");
+        this.add("item.hbmsntm.ammo_standard.g26_flare_weapon", "26mm Signal Flare (Weapon Airdrop)");
+        this.add("item.hbmsntm.ammo_standard.g40_he", "40mm Grenade, High-Explosive");
+        this.add("item.hbmsntm.ammo_standard.g40_heat", "40mm Grenade, Shaped Charge");
+        this.add("item.hbmsntm.ammo_standard.g40_demo", "40mm Grenade, Demolition");
+        this.add("item.hbmsntm.ammo_standard.g40_inc", "40mm Grenade, Incendiary");
+        this.add("item.hbmsntm.ammo_standard.g40_phosphorus", "40mm Grenade, White Phosphorus");
+        this.add("item.hbmsntm.ammo_standard.rocket_he", "Rocket, High-Explosive");
+        this.add("item.hbmsntm.ammo_standard.rocket_heat", "Rocket, Shaped Charge");
+        this.add("item.hbmsntm.ammo_standard.rocket_demo", "Rocket, Demolition");
+        this.add("item.hbmsntm.ammo_standard.rocket_inc", "Rocket, Incendiary");
+        this.add("item.hbmsntm.ammo_standard.rocket_phosphorus", "Rocket, White Phosphorus");
+        this.add("item.hbmsntm.ammo_standard.flame_diesel", "Flamer Fuel, Diesel");
+        this.add("item.hbmsntm.ammo_standard.flame_gas", "Flamer Fuel, Gas");
+        this.add("item.hbmsntm.ammo_standard.flame_napalm", "Flamer Fuel, Napalm");
+        this.add("item.hbmsntm.ammo_standard.flame_balefire", "Flamer Fuel, Balefire");
+        this.add("item.hbmsntm.ammo_standard.capacitor", "Capacitor (Standard)");
+        this.add("item.hbmsntm.ammo_standard.capacitor_overcharge", "Capacitor (Overcharge)");
+        this.add("item.hbmsntm.ammo_standard.capacitor_ir", "Capacitor (Low Wavelength)");
+        this.add("item.hbmsntm.ammo_standard.tau_uranium", "Depleted Uranium-235 Box");
+        this.add("item.hbmsntm.ammo_standard.coil_tungsten", "Coilgun Tungsten Ball");
+        this.add("item.hbmsntm.ammo_standard.coil_ferrouranium", "Coilgun Ferrouranium Ball");
+        this.add("item.hbmsntm.ammo_standard.nuke_standard", "Mini Nuke");
+        this.add("item.hbmsntm.ammo_standard.nuke_demo", "Mini Nuke, Demolition");
+        this.add("item.hbmsntm.ammo_standard.nuke_high", "Mini Nuke, High Yield");
+        this.add("item.hbmsntm.ammo_standard.nuke_tots", "Mini Nuke, Tiny Tots");
+        this.add("item.hbmsntm.ammo_standard.nuke_hive", "Rocket Hive");
+        this.add("item.hbmsntm.ammo_standard.g10", "10 Gauge Buckshot");
+        this.add("item.hbmsntm.ammo_standard.g10_shrapnel", "10 Gauge Shrapnel Buckshot");
+        this.add("item.hbmsntm.ammo_standard.g10_du", "10 Gauge Uranium Buckshot");
+        this.add("item.hbmsntm.ammo_standard.g10_slug", "10 Gauge Slug");
+        this.add("item.hbmsntm.ammo_standard.r762_he", "7.62mm Round (High-Explosive)");
+        this.add("item.hbmsntm.ammo_standard.bmg50_he", ".50 BMG Round (High-Explosive)");
+        this.add("item.hbmsntm.ammo_standard.g10_explosive", "10 Gauge Explosive Buckshot");
+        this.add("item.hbmsntm.ammo_standard.p45_sp", ".45 Round (Soft Point)");
+        this.add("item.hbmsntm.ammo_standard.p45_fmj", ".45 Round (Full Metal Jacket)");
+        this.add("item.hbmsntm.ammo_standard.p45_jhp", ".45 Round (Jacketed Hollow Point)");
+        this.add("item.hbmsntm.ammo_standard.p45_ap", ".45 Round (Armor Piercing)");
+        this.add("item.hbmsntm.ammo_standard.p45_du", ".45 Round (Depleted Uranium)");
+        this.add("item.hbmsntm.ammo_standard.ct_hook", "Grappling Hook");
+        this.add("item.hbmsntm.ammo_standard.ct_mortar", "Demolition Charge");
+        this.add("item.hbmsntm.ammo_standard.ct_mortar_charge", "Heavy Demolition Charge");
+        this.add("item.hbmsntm.ammo_standard.nuke_balefire", "Mini Nuke, Balefire Egg");
+        this.add("item.hbmsntm.ammo_standard.bmg50_sm", ".50 BMG Round (Starmetal)");
+        // Armor mod tooltips (ItemArmorMod, ItemModCladding): en_US.lang:170-185; "Slot:" and the cladding line are hard-coded in the original
+        this.add("armorMod.all", "All");
+        this.add("armorMod.applicableTo", "Applicable To:");
+        this.add("armorMod.boots", "Boots");
+        this.add("armorMod.chestplates", "Chestplates");
+        this.add("armorMod.helmets", "Helmets");
+        this.add("armorMod.leggings", "Leggings");
+        this.add("armorMod.slot", "Slot:");
+        this.add("armorMod.radRes", "+%s rad-resistance");
+        this.add("armorMod.type.battery", "Battery");
+        this.add("armorMod.type.boots", "Boots");
+        this.add("armorMod.type.chestplate", "Chestplate");
+        this.add("armorMod.type.cladding", "Cladding");
+        this.add("armorMod.type.helmet", "Helmet");
+        this.add("armorMod.type.insert", "Insert");
+        this.add("armorMod.type.leggings", "Leggings");
+        this.add("armorMod.type.servo", "Servos");
+        this.add("armorMod.type.special", "Special");
+        // Loading screen (LoadingScreenRendererNT): the prefix and the offline fallback are hard-coded in the original; remote tips stay as sent
+        this.add("loading.tipOfTheDay", "Tip of the day: %s");
+        this.add("loading.tipFallback", "Explore! There's tons of free stuff to find.");
         this.add(NtmItems.IV_EMPTY, "IV Bag");
         this.add(NtmItems.IV_BLOOD, "Blood Bag");
         this.add("geiger.title", "===== ☢ GEIGER COUNTER ☢ =====");
@@ -2267,6 +2397,41 @@ public class NtmLanguageProvider extends LanguageProvider {
         this.add(NtmBlocks.MACHINE_FLUID_TANK, "Tank");
         this.add(NtmBlocks.MACHINE_RADAR, "Radar");
         this.add(NtmBlocks.MACHINE_RADAR_LARGE, "Large Radar");
+        // original MachineRadarLarge.java:44-48 sends this as hard-coded English
+        this.add("radar.error.altitude", "[Radar] Error: Radar altitude not sufficient.");
+        // radar screen buttons: en_US.lang:4983-4990
+        this.add("radar.detectMissiles", "Detect Missiles");
+        this.add("radar.detectShells", "Detect Shells");
+        this.add("radar.detectPlayers", "Detect Players");
+        this.add("radar.smartMode", "Smart Mode$Redstone output ignores ascending missiles");
+        this.add("radar.redMode", "Redstone Mode$On: Redstone output based on range$Off: Redstone output based on tier");
+        this.add("radar.showMap", "Show Map");
+        this.add("radar.toggleGui", "Switch View");
+        this.add("radar.clearMap", "Clear Map");
+        // original GUIMachineRadarNT.java:102 hard-codes "Alt.: " before the target's height
+        this.add("radar.altitude", "Alt.: %s");
+        // radar blip names (IRadarDetectableNT.getUnlocalizedName): en_US.lang:4992,5002-5006, original typo "Ballsitic" kept
+        this.add("radar.target.abm", "Anti-Ballsitic Missile");
+        this.add("radar.target.tier0", "Tier 0 Missile");
+        this.add("radar.target.tier1", "Tier 1 Missile");
+        this.add("radar.target.tier2", "Tier 2 Missile");
+        this.add("radar.target.tier3", "Tier 3 Missile");
+        this.add("radar.target.tier4", "Tier 4 Missile");
+        this.add(NtmBlocks.RADIO_TORCH_SENDER, "Redstone-over-Radio Transmitter");
+        this.add(NtmBlocks.RADIO_TORCH_SENDER, DESC, "Placable on flat surfaces or comparator-compatible blocks$Reads redstone signals or comparator input");
+        this.add(NtmBlocks.RADIO_TORCH_RECEIVER, "Redstone-over-Radio Receiver");
+        this.add(NtmBlocks.RADIO_TORCH_RECEIVER, DESC, "Placable on flat surfaces or comparator-compatible blocks");
+        this.add(NtmBlocks.RADIO_TORCH_RELAY, "Redstone-over-Radio Calculation Relay");
+        this.add(NtmBlocks.RADIO_TORCH_RELAY, DESC, "Can receive multiple signals$and perform math on them.");
+        this.add("container.rtty_sender", "Redstone-over-Radio Transmitter");
+        this.add("container.rtty_receiver", "Redstone-over-Radio Receiver");
+        this.add("container.rtty_relay", "Redstone-over-Radio Calculation Relay");
+        // original GUIScreenRadioTorch.java:94-103 and GUIScreenRadioTorchRelay.java:76-81 draw these as hard-coded English
+        this.add("container.rtty.custom", "Custom Mapping");
+        this.add("container.rtty.pass", "Redstone Passthrough");
+        this.add("container.rtty.polling", "Polling");
+        this.add("container.rtty.change", "State Change");
+        this.add("container.rtty.save", "Save Settings");
         this.add(NtmBlocks.MACHINE_CHUNGUS, "Leviathan Steam Turbine");
         this.add("machine_chungus.compressor_locked", "Cannot change compressor setting while operational!");
         this.add(NtmBlocks.MACHINE_INDUSTRIAL_TURBINE, "Industrial Steam Turbine");
@@ -3045,6 +3210,25 @@ public class NtmLanguageProvider extends LanguageProvider {
         this.addDamage("rubble", "%1$s was squashed by debris");
         this.addDamage("monoxide", "%1$s forgot to change the batteries in their carbon monoxide detector");
         this.addDamage("meteorite", "%1$s was hit by a falling rock from outer space");
+        this.addDamage("euthanizedSelf", "%1$s euthanized himself, what a dork.");
+        this.addDamage("euthanizedSelf2", "%1$s wins the Darwin Award.");
+        // 1.21.1 DamageSource.getLocalizedDeathMessage uses <msgId>.player whenever the victim has kill credit and the source has
+        // no entity; 1.7.10 fell back to the plain key when .player had no translation. The same text keeps that fallback.
+        this.addDamagePlayer("nuclearBlast", "%1$s was blown away by a nuclear explosion");
+        this.addDamagePlayer("digamma", "%1$s stepped into the abyss");
+        this.addDamagePlayer("radiation", "%1$s died from radiation poisoning");
+        this.addDamagePlayer("asbestos", "%1$s is now entitled to financial compensation");
+        this.addDamagePlayer("blacklung", "%1$s died from black lung disease");
+        this.addDamagePlayer("blackhole", "%1$s was spaghettified");
+        this.addDamagePlayer("taint", "%1$s died from flux tumors");
+        this.addDamagePlayer("bang", "%1$s was blasted into bite-sized pieces");
+        this.addDamagePlayer("lead", "%1$s died from lead poisoning");
+        this.addDamagePlayer("shrapnel", "%1$s was ragged by a shrapnel");
+        this.addDamagePlayer("rubble", "%1$s was squashed by debris");
+        this.addDamagePlayer("monoxide", "%1$s forgot to change the batteries in their carbon monoxide detector");
+        this.addDamagePlayer("meteorite", "%1$s was hit by a falling rock from outer space");
+        this.addDamagePlayer("euthanizedSelf", "%1$s euthanized himself, what a dork.");
+        this.addDamagePlayer("euthanizedSelf2", "%1$s wins the Darwin Award.");
 
         this.addDamage("sednaPhysical", "%1$s was shot");
         this.addDamagePlayer("sednaPhysical", "%1$s was shot by %2$s");
@@ -3189,35 +3373,184 @@ public class NtmLanguageProvider extends LanguageProvider {
         this.add("purex.recycle", "Reprocessing of %s");
         this.add("purex.schrab", "Schrabidium extraction from %s");
 
-        // Config screen names of the worldgen group (CommonConfig); the text is the config comment
-        this.add("hbmsntm.configuration.worldgen.netherOres", "General switch for whether nether ores should be generated.");
-        this.add("hbmsntm.configuration.worldgen.endOres", "General switch for whether end ores should be generated. Does not include special structures like trixite crystals.");
-        this.add("hbmsntm.configuration.worldgen.enablePlutoniumNetherOre", "Enables plutonium ore generation in the nether");
-        this.add("hbmsntm.configuration.worldgen.netherUraniumSpawnRate", "Amount of nether uranium per chunk");
-        this.add("hbmsntm.configuration.worldgen.netherTungstenSpawnRate", "Amount of nether tungsten per chunk");
-        this.add("hbmsntm.configuration.worldgen.netherSulfurSpawnRate", "Amount of nether sulfur per chunk");
-        this.add("hbmsntm.configuration.worldgen.netherPhosphorusSpawnRate", "Amount of nether phosphorus per chunk");
-        this.add("hbmsntm.configuration.worldgen.netherCoalSpawnRate", "Amount of nether coal per chunk");
-        this.add("hbmsntm.configuration.worldgen.netherPlutoniumSpawnRate", "Amount of nether plutonium per chunk, if enabled");
-        this.add("hbmsntm.configuration.worldgen.netherCobaltSpawnRate", "Amount of nether cobalt per chunk");
-        this.add("hbmsntm.configuration.worldgen.endTikiteSpawnRate", "Amount of end trixite per chunk");
-        this.add("hbmsntm.configuration.worldgen.overworldOres", "General switch for the schist ores, depth deposits and ore clusters. Does not include special structures like oil.");
-        this.add("hbmsntm.configuration.worldgen.gneissIronSpawnRate", "Amount of schist iron ore veins per chunk");
-        this.add("hbmsntm.configuration.worldgen.gneissGoldSpawnRate", "Amount of schist gold ore veins per chunk");
-        this.add("hbmsntm.configuration.worldgen.gneissUraniumSpawnRate", "Amount of schist uranium ore veins per chunk");
-        this.add("hbmsntm.configuration.worldgen.gneissCopperSpawnRate", "Amount of schist copper ore veins per chunk");
-        this.add("hbmsntm.configuration.worldgen.gneissAsbestosSpawnRate", "Amount of schist asbestos ore veins per chunk");
-        this.add("hbmsntm.configuration.worldgen.gneissLithiumSpawnRate", "Amount of schist lithium ore veins per chunk");
-        this.add("hbmsntm.configuration.worldgen.gneissRareEarthSpawnRate", "Amount of schist rare earth ore veins per chunk");
-        this.add("hbmsntm.configuration.worldgen.gneissGasShaleSpawnRate", "Amount of gas shale veins per chunk");
-        this.add("hbmsntm.configuration.worldgen.ironClusterSpawnRate", "Amount of iron cluster veins per chunk");
-        this.add("hbmsntm.configuration.worldgen.titaniumClusterSpawnRate", "Amount of titanium cluster veins per chunk");
-        this.add("hbmsntm.configuration.worldgen.aluminiumClusterSpawnRate", "Amount of aluminium cluster veins per chunk");
-        this.add("hbmsntm.configuration.worldgen.copperClusterSpawnRate", "Amount of copper cluster veins per chunk");
-        this.add("hbmsntm.configuration.worldgen.alexandriteSpawnRate", "Spawns an alexandrite vein every nTH chunk");
-        this.add("hbmsntm.configuration.worldgen.enableHematite", "Toggles hematite deposits");
-        this.add("hbmsntm.configuration.worldgen.enableMalachite", "Toggles malachite deposits");
-        this.add("hbmsntm.configuration.worldgen.enableBauxite", "Toggles bauxite deposits");
+        // NeoForge configuration screen (ConfigurationScreen.java:280,328,554-579,927-939): the mod title, the three config files,
+        // the sections and short display names; every value and commented section gets its spec comment as the .tooltip.
+        this.add("hbmsntm.configuration.title", "%s Configuration");
+        this.add("hbmsntm.configuration.section.hbmsntm.common.toml", "Common settings");
+        this.add("hbmsntm.configuration.section.hbmsntm.common.toml.title", "%s Common Configuration");
+        this.add("hbmsntm.configuration.section.hbmsntm.server.toml", "Server Settings");
+        this.add("hbmsntm.configuration.section.hbmsntm.server.toml.title", "%s Server Configuration");
+        this.add("hbmsntm.configuration.section.hbmsntm.client.toml", "Client Settings");
+        this.add("hbmsntm.configuration.section.hbmsntm.client.toml.title", "%s Client Configuration");
+        this.addConfigSection("general", "General", "General settings.");
+        this.addConfigSection("nukes", "Nukes", "Blast radii of the nuclear bombs, missiles and grenades.");
+        this.addConfigSection("explosion", "Explosions", "Meteors, the MK3 and MK5 explosion systems and fallout.");
+        this.addConfigSection("dangerous_drops", "Dangerous Drops", "What happens when dangerous items are dropped.");
+        this.addConfigSection("tools", "Tools", "Tool abilities.");
+        this.addConfigSection("mobs", "Mobs", "Ducking and soot emission.");
+        this.addConfigSection("radiation", "Radiation", "Radiation, contamination and smog.");
+        this.addConfigSection("hazards", "Hazards", "Item hazards.");
+        this.addConfigSection("potion", "Potions", "Potion sickness.");
+        this.addConfigSection("rtg", "RTG", "RTG and betavoltaic fuel.");
+        this.addConfigSection("rbmk", "RBMK", "RBMK reactor dials.");
+        this.addConfigSection("pollution", "Pollution", "Pollution.");
+        this.addConfigSection("biomes", "Biomes", "Crater biomes left by nuclear explosions.");
+        this.addConfigSection("worldgen", "World Generation", "Ore generation switches and vein counts.");
+        this.addConfigSection("528", "528 Mode");
+        this.addConfigSection("LESS BULLSHIT MODE", "Less Bullshit Mode");
+        this.add("hbmsntm.configuration.enableDebugMode", "Debug Mode");
+        this.add("hbmsntm.configuration.enableMOTD", "Join Message");
+        this.add("hbmsntm.configuration.enableExtendedLogging", "Extended Logging");
+        this.add("hbmsntm.configuration.enableBomberShortMode", "Bomber Short Mode");
+        this.add("hbmsntm.configuration.enableSilentCompStackErrors", "Silent ComparableStack Errors");
+        this.add("hbmsntm.configuration.enableKeybindOverlap", "Keybind Overlap");
+        this.add("hbmsntm.configuration.enableExplosionEffects", "Explosion Cloud Effects");
+        this.add("hbmsntm.configuration.enableMachineGravity", "Machine Gravity");
+        this.add("hbmsntm.configuration.enableExpensiveMode", "Expensive Mode");
+        this.add("hbmsntm.configuration.gadgetRadius", "Gadget Radius");
+        this.add("hbmsntm.configuration.boyRadius", "Little Boy Radius");
+        this.add("hbmsntm.configuration.manRadius", "Fat Man Radius");
+        this.add("hbmsntm.configuration.mikeRadius", "Ivy Mike Radius");
+        this.add("hbmsntm.configuration.tsarRadius", "Tsar Bomba Radius");
+        this.add("hbmsntm.configuration.prototypeRadius", "Prototype Radius");
+        this.add("hbmsntm.configuration.fleijaRadius", "F.L.E.I.J.A. Radius");
+        this.add("hbmsntm.configuration.soliniumRadius", "Blue Rinse Radius");
+        this.add("hbmsntm.configuration.n2Radius", "N² Mine Radius");
+        this.add("hbmsntm.configuration.missileRadius", "Nuclear Missile Radius");
+        this.add("hbmsntm.configuration.mirvRadius", "MIRV Radius");
+        this.add("hbmsntm.configuration.fatmanRadius", "Fatman Launcher Radius");
+        this.add("hbmsntm.configuration.nukaRadius", "Nuka Grenade Radius");
+        this.add("hbmsntm.configuration.aSchrabRadius", "Dropped Antischrabidium Radius");
+        this.add("hbmsntm.configuration.enableMeteorStrikes", "Meteor Strikes");
+        this.add("hbmsntm.configuration.enableMeteorShowers", "Meteor Showers");
+        this.add("hbmsntm.configuration.enableMeteorTails", "Meteor Tails");
+        this.add("hbmsntm.configuration.enableSpecialMeteors", "Special Meteors");
+        this.add("hbmsntm.configuration.meteorStrikeChance", "Meteor Strike Chance");
+        this.add("hbmsntm.configuration.meteorShowerChance", "Meteor Shower Strike Chance");
+        this.add("hbmsntm.configuration.meteorShowerDuration", "Meteor Shower Duration");
+        this.add("hbmsntm.configuration.mk5BlastTime", "MK5 Time per Tick");
+        this.add("hbmsntm.configuration.propBlastSpeed", "MK3 Blast Speed");
+        this.add("hbmsntm.configuration.falloutRange", "Fallout Range");
+        this.add("hbmsntm.configuration.falloutDelay", "Fallout Delay");
+        this.add("hbmsntm.configuration.limitExplosionLifespan", "Unloaded Explosion Lifespan");
+        this.add("hbmsntm.configuration.dropCell", "Antimatter Cell Drops");
+        this.add("hbmsntm.configuration.dropSing", "Singularity Drops");
+        this.add("hbmsntm.configuration.dropStar", "Star Blaster Cell Drops");
+        this.add("hbmsntm.configuration.dropCrys", "Xen Crystal Drops");
+        this.add("hbmsntm.configuration.dropDead", "Dead Man's Explosive Drops");
+        this.add("hbmsntm.configuration.recursionDepth", "Vein Miner Depth");
+        this.add("hbmsntm.configuration.recursionStone", "Vein Miner Stone");
+        this.add("hbmsntm.configuration.recursionNetherrack", "Vein Miner Netherrack");
+        this.add("hbmsntm.configuration.hammerAbility", "AoE Ability");
+        this.add("hbmsntm.configuration.abilityVein", "Vein Miner Ability");
+        this.add("hbmsntm.configuration.abilityLuck", "Fortune Ability");
+        this.add("hbmsntm.configuration.abilitySilk", "Silk Touch Ability");
+        this.add("hbmsntm.configuration.abilityFurnace", "Auto-Smelter Ability");
+        this.add("hbmsntm.configuration.abilityShredder", "Auto-Shredder Ability");
+        this.add("hbmsntm.configuration.abilityCentrifuge", "Auto-Centrifuge Ability");
+        this.add("hbmsntm.configuration.abilityCrystallizer", "Auto-Crystallizer Ability");
+        this.add("hbmsntm.configuration.abilityMercury", "Mercury Touch Ability");
+        this.add("hbmsntm.configuration.abilityExplosion", "Explosion Ability");
+        this.add("hbmsntm.configuration.enableDucks", "Ducking");
+        this.add("hbmsntm.configuration.pollutionMult", "Soot Multiplier");
+        this.add("hbmsntm.configuration.hellRad", "Nether Radiation");
+        this.add("hbmsntm.configuration.fogRad", "Fog Radiation");
+        this.add("hbmsntm.configuration.fogRadChance", "Fog Chance");
+        this.add("hbmsntm.configuration.worldRadEffects", "World Radiation Effects");
+        this.add("hbmsntm.configuration.enableContamination", "Player Contamination");
+        this.add("hbmsntm.configuration.enableChunkRads", "Chunk Radiation");
+        this.add("hbmsntm.configuration.enableSootFog", "Smog");
+        this.add("hbmsntm.configuration.sootFogThreshold", "Smog Threshold");
+        this.add("hbmsntm.configuration.sootFogDivisor", "Smog Divisor");
+        this.add("hbmsntm.configuration.disableAsbestos", "Disable Asbestos");
+        this.add("hbmsntm.configuration.disableCoaldust", "Disable Coal Dust");
+        this.add("hbmsntm.configuration.disableHot", "Disable Hot");
+        this.add("hbmsntm.configuration.disableExplosive", "Disable Explosive");
+        this.add("hbmsntm.configuration.disableHydroactive", "Disable Hydroactive");
+        this.add("hbmsntm.configuration.disableBlinding", "Disable Blinding");
+        this.add("hbmsntm.configuration.potionSickness", "Potion Sickness");
+        this.add("hbmsntm.configuration.scaleRTGPower", "Scale RTG Power");
+        this.add("hbmsntm.configuration.doRTGsDecay", "RTG Decay");
+        this.add("hbmsntm.configuration.dialPassiveCooling", "Passive Cooling");
+        this.add("hbmsntm.configuration.dialPassiveCoolingInner", "Inner Passive Cooling");
+        this.add("hbmsntm.configuration.dialColumnHeatFlow", "Column Heat Flow");
+        this.add("hbmsntm.configuration.dialDiffusionMod", "Fuel Diffusion");
+        this.add("hbmsntm.configuration.dialHeatProvision", "Heat Provision");
+        this.add("hbmsntm.configuration.dialColumnHeight", "Column Height");
+        this.add("hbmsntm.configuration.dialEnablePermaScrap", "Permanent Scrap");
+        this.add("hbmsntm.configuration.dialBoilerHeatConsumption", "Boiler Heat Consumption");
+        this.add("hbmsntm.configuration.dialControlSpeed", "Control Rod Speed");
+        this.add("hbmsntm.configuration.dialReactivityMod", "Reactivity");
+        this.add("hbmsntm.configuration.dialOutgasserSpeedMod", "Outgasser Speed");
+        this.add("hbmsntm.configuration.dialControlSurgeMod", "Control Rod Surge");
+        this.add("hbmsntm.configuration.dialFluxRange", "Flux Range");
+        this.add("hbmsntm.configuration.dialDisableMeltdowns", "Disable Meltdowns");
+        this.add("hbmsntm.configuration.dialEnableMeltdownOverpressure", "Meltdown Overpressure");
+        this.add("hbmsntm.configuration.dialModeratorEfficiency", "Moderator Efficiency");
+        this.add("hbmsntm.configuration.dialAbsorberEfficiency", "Absorber Efficiency");
+        this.add("hbmsntm.configuration.dialReflectorEfficiency", "Reflector Efficiency");
+        this.add("hbmsntm.configuration.dialDisableDepletion", "Disable Depletion");
+        this.add("hbmsntm.configuration.dialDisableXenon", "Disable Xenon");
+        this.add("hbmsntm.configuration.dialAbsorberHeatConversion", "Absorber Heat Conversion");
+        this.add("hbmsntm.configuration.enablePol", "Pollution");
+        this.add("hbmsntm.configuration.craterBiome", "Crater Biome");
+        this.add("hbmsntm.configuration.craterBiomeRad", "Crater Radiation");
+        this.add("hbmsntm.configuration.craterBiomeInnerRad", "Inner Crater Radiation");
+        this.add("hbmsntm.configuration.craterBiomeOuterRad", "Outer Crater Radiation");
+        this.add("hbmsntm.configuration.craterBiomeWaterMultiplier", "Crater Water Multiplier");
+        this.add("hbmsntm.configuration.worldgen.netherOres", "Nether Ores");
+        this.add("hbmsntm.configuration.worldgen.endOres", "End Ores");
+        this.add("hbmsntm.configuration.worldgen.enablePlutoniumNetherOre", "Nether Plutonium Ore");
+        this.add("hbmsntm.configuration.worldgen.netherUraniumSpawnRate", "Nether Uranium Veins");
+        this.add("hbmsntm.configuration.worldgen.netherTungstenSpawnRate", "Nether Tungsten Veins");
+        this.add("hbmsntm.configuration.worldgen.netherSulfurSpawnRate", "Nether Sulfur Veins");
+        this.add("hbmsntm.configuration.worldgen.netherPhosphorusSpawnRate", "Nether Phosphorus Veins");
+        this.add("hbmsntm.configuration.worldgen.netherCoalSpawnRate", "Nether Coal Veins");
+        this.add("hbmsntm.configuration.worldgen.netherPlutoniumSpawnRate", "Nether Plutonium Veins");
+        this.add("hbmsntm.configuration.worldgen.netherCobaltSpawnRate", "Nether Cobalt Veins");
+        this.add("hbmsntm.configuration.worldgen.endTikiteSpawnRate", "End Trixite Veins");
+        this.add("hbmsntm.configuration.worldgen.overworldOres", "Overworld Ores");
+        this.add("hbmsntm.configuration.worldgen.gneissIronSpawnRate", "Schist Iron Veins");
+        this.add("hbmsntm.configuration.worldgen.gneissGoldSpawnRate", "Schist Gold Veins");
+        this.add("hbmsntm.configuration.worldgen.gneissUraniumSpawnRate", "Schist Uranium Veins");
+        this.add("hbmsntm.configuration.worldgen.gneissCopperSpawnRate", "Schist Copper Veins");
+        this.add("hbmsntm.configuration.worldgen.gneissAsbestosSpawnRate", "Schist Asbestos Veins");
+        this.add("hbmsntm.configuration.worldgen.gneissLithiumSpawnRate", "Schist Lithium Veins");
+        this.add("hbmsntm.configuration.worldgen.gneissRareEarthSpawnRate", "Schist Rare Earth Veins");
+        this.add("hbmsntm.configuration.worldgen.gneissGasShaleSpawnRate", "Gas Shale Veins");
+        this.add("hbmsntm.configuration.worldgen.ironClusterSpawnRate", "Iron Cluster Veins");
+        this.add("hbmsntm.configuration.worldgen.titaniumClusterSpawnRate", "Titanium Cluster Veins");
+        this.add("hbmsntm.configuration.worldgen.aluminiumClusterSpawnRate", "Aluminium Cluster Veins");
+        this.add("hbmsntm.configuration.worldgen.copperClusterSpawnRate", "Copper Cluster Veins");
+        this.add("hbmsntm.configuration.worldgen.alexandriteSpawnRate", "Alexandrite Rarity");
+        this.add("hbmsntm.configuration.worldgen.enableHematite", "Hematite Deposits");
+        this.add("hbmsntm.configuration.worldgen.enableMalachite", "Malachite Deposits");
+        this.add("hbmsntm.configuration.worldgen.enableBauxite", "Bauxite Deposits");
+        this.add("hbmsntm.configuration.enable528", "528 Mode");
+        this.add("hbmsntm.configuration.enable528MachineGravity", "528 Machine Gravity");
+        this.add("hbmsntm.configuration.enableLBSM", "Less Bullshit Mode");
+        this.add("hbmsntm.configuration.mine_ap_damage", "Anti-Personnel Mine Damage");
+        this.add("hbmsntm.configuration.mine_he_damage", "Anti-Tank Mine Damage");
+        this.add("hbmsntm.configuration.mine_shrap_damage", "Shrapnel Mine Damage");
+        this.add("hbmsntm.configuration.mine_nuke_damage", "Fat Mine Damage");
+        this.add("hbmsntm.configuration.mine_naval_damage", "Naval Mine Damage");
+        this.add("hbmsntm.configuration.taint_trails", "Taint Trails");
+        this.add("hbmsntm.configuration.crate_open_held", "Open Held Crates");
+        this.add("hbmsntm.configuration.crate_keep_contents", "Crates Keep Contents");
+        this.add("hbmsntm.configuration.enableNtmSkybox", "NTM Skybox");
+        this.add("hbmsntm.configuration.enableNukeHudFlash", "Nuke Flash");
+        this.add("hbmsntm.configuration.enableNukeHudShake", "Nuke HUD Shake");
+        this.add("hbmsntm.configuration.infoPosition", "Info Panel Position");
+        this.add("hbmsntm.configuration.infoOffsetHorizontal", "Info Panel X Offset");
+        this.add("hbmsntm.configuration.infoOffsetVertical", "Info Panel Y Offset");
+        this.add("hbmsntm.configuration.mainMenuWackySplashes", "Wacky Splashes");
+        this.add("hbmsntm.configuration.tips", "Loading Tips");
+        this.add("hbmsntm.configuration.toolHudIndicatorX", "Tool HUD X Offset");
+        this.add("hbmsntm.configuration.toolHudIndicatorY", "Tool HUD Y Offset");
+        this.add("hbmsntm.configuration.gunAnimationSpeed", "Gun Animation Speed");
+        this.addConfigTooltips(NtmConfig.COMMON_SPEC);
+        this.addConfigTooltips(NtmConfig.SERVER_SPEC);
+        this.addConfigTooltips(NtmConfig.CLIENT_SPEC);
     }
 
     // HELPERS //
@@ -3233,4 +3566,38 @@ public class NtmLanguageProvider extends LanguageProvider {
     public void addDamagePlayer(String msgId, String message) { this.add("death.attack." + msgId + ".player", message); }
 
     public String getName(Enum<?> theEnum) { return "." + theEnum.name().toLowerCase(Locale.US); }
+
+    private static final String CONFIG = "hbmsntm.configuration.";
+
+    /** A config section's name, its NeoForge "Edit" button and, when it has no spec comment, a written description. */
+    private void addConfigSection(String section, String name, String description) {
+        this.addConfigSection(section, name);
+        this.add(CONFIG + section + ".tooltip", description);
+    }
+
+    private void addConfigSection(String section, String name) {
+        this.add(CONFIG + section, name);
+        this.add(CONFIG + section + ".button", "Edit");
+    }
+
+    /** The .tooltip of every value and commented section is its spec comment, the text the screen shows without a translation. */
+    private void addConfigTooltips(ModConfigSpec spec) { this.addConfigTooltips(spec, spec.getSpec(), new ArrayList<>()); }
+
+    private void addConfigTooltips(ModConfigSpec spec, UnmodifiableConfig level, List<String> path) {
+        for(UnmodifiableConfig.Entry entry : level.entrySet()) {
+            List<String> sub = new ArrayList<>(path);
+            sub.add(entry.getKey());
+            Object value = entry.getRawValue();
+            if(value instanceof ModConfigSpec.ValueSpec valueSpec) {
+                // defineInRange adds " Default: x" and " Range: r" lines to the comment (ModConfigSpec.java:366-367); the screen shows
+                // its own "Range: %s" line under a translated tooltip (ConfigurationScreen.java:584-585), so the copy here leaves it out
+                String comment = valueSpec.getComment().lines().filter(line -> !line.startsWith(" Range: ")).collect(Collectors.joining("\n"));
+                this.add(valueSpec.getTranslationKey() + ".tooltip", comment);
+            } else if(value instanceof UnmodifiableConfig section) {
+                String comment = spec.getLevelComment(sub);
+                if(comment != null) this.add(CONFIG + entry.getKey() + ".tooltip", comment);
+                this.addConfigTooltips(spec, section, sub);
+            }
+        }
+    }
 }

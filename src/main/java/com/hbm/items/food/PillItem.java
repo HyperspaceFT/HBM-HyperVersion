@@ -4,6 +4,7 @@ import com.hbm.blocks.ITooltipProvider;
 import com.hbm.config.NtmConfig;
 import com.hbm.extprop.HbmLivingAttachments;
 import com.hbm.lib.ModEffect;
+import com.hbm.registry.NtmDamageTypes;
 import net.minecraft.ChatFormatting;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.InteractionHand;
@@ -22,8 +23,8 @@ import java.util.List;
 import java.util.function.Consumer;
 
 /**
- * Original ItemPill (ItemPill.java, an always edible ItemFood with 0 hunger), reduced to the two pills of Goal 26D: radx and siox.
- * The other pills (iodine, plan_c, pill_red, pill_herbal, xanax, chocolate, fmn, five_htp) are NOT ported.
+ * Original ItemPill (ItemPill.java, an always edible ItemFood with 0 hunger), reduced to the pills NEO ports: radx and siox (Goal 26D)
+ * and plan_c (Goal 29A). The other pills (iodine, pill_red, pill_herbal, xanax, chocolate, fmn, five_htp) are NOT ported.
  * The effect that follows potion sickness is chosen per item through the constructor.
  */
 public class PillItem extends Item {
@@ -39,6 +40,13 @@ public class PillItem extends Item {
     public static final Consumer<LivingEntity> LAMBDA_SIOX = (eater) -> {
         HbmLivingAttachments.setAsbestos(eater, 0);
         HbmLivingAttachments.setBlackLung(eater, Math.min(HbmLivingAttachments.getBlackLung(eater), HbmLivingAttachments.maxBlacklung / 5));
+    };
+
+    // ItemPill.java:48-51: ten 1,000-point hits, each randomly euthanizedSelf or euthanizedSelf2 (both bypass armor, ModDamageSource.java:12-13)
+    public static final Consumer<LivingEntity> LAMBDA_PLAN_C = (eater) -> {
+        for(int i = 0; i < 10; i++) {
+            eater.hurt(eater.damageSources().source(eater.getRandom().nextBoolean() ? NtmDamageTypes.EUTHANIZED_SELF : NtmDamageTypes.EUTHANIZED_SELF_2), 1000);
+        }
     };
 
     @Nullable

@@ -41,7 +41,9 @@ public class NtmDamageTypeTagsProvider extends DamageTypeTagsProvider {
                         NtmDamageTypes.BANG,
                         NtmDamageTypes.LEAD,
                         NtmDamageTypes.MONOXIDE,
-                        NtmDamageTypes.TURBOFAN
+                        NtmDamageTypes.TURBOFAN,
+                        NtmDamageTypes.EUTHANIZED_SELF,
+                        NtmDamageTypes.EUTHANIZED_SELF_2
                 );
 
         this.tag(DamageTypeTags.IS_PROJECTILE)

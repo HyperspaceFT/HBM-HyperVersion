@@ -31,8 +31,9 @@ public class ArmorNo9 extends ArmorItem {
 
     @Override
     public void appendHoverText(ItemStack stack, TooltipContext context, List<Component> components, TooltipFlag flag) {
-        components.add(Component.literal("+0.5 DT").withStyle(ChatFormatting.BLUE));
-        components.add(Component.literal("Lets you breathe coal, neat!").withStyle(ChatFormatting.YELLOW));
+        // ArmorNo9.java:43-46 hard-codes these two lines
+        components.add(Component.translatable("item.hbmsntm.no9.dt").withStyle(ChatFormatting.BLUE));
+        components.add(Component.translatable("item.hbmsntm.no9.desc").withStyle(ChatFormatting.YELLOW));
     }
 
     @Override

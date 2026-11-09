@@ -20,6 +20,7 @@ import com.hbm.blockentity.machine.storage.*;
 import com.hbm.blockentity.network.CableBaseBlockEntity;
 import com.hbm.blockentity.network.PipeBaseBlockEntity;
 import com.hbm.blockentity.network.RadioTorchReceiverBlockEntity;
+import com.hbm.blockentity.network.RadioTorchRelayBlockEntity;
 import com.hbm.blockentity.network.RadioTorchSenderBlockEntity;
 import com.hbm.blocks.NtmBlocks;
 import com.hbm.blocks.bomb.VolcanoBlock.VolcanoCoreBlockEntity;
@@ -172,6 +173,7 @@ public class NtmBlockEntityTypes {
 
     public static final Supplier<BlockEntityType<RadioTorchReceiverBlockEntity>> RADIO_TORCH_RECEIVER = BLOCK_ENTITY_TYPES.register("radio_torch_receiver", () -> BlockEntityType.Builder.of(RadioTorchReceiverBlockEntity::new, NtmBlocks.RADIO_TORCH_RECEIVER.get()).build(null));
     public static final Supplier<BlockEntityType<RadioTorchSenderBlockEntity>> RADIO_TORCH_SENDER = BLOCK_ENTITY_TYPES.register("radio_torch_sender", () -> BlockEntityType.Builder.of(RadioTorchSenderBlockEntity::new, NtmBlocks.RADIO_TORCH_SENDER.get()).build(null));
+    public static final Supplier<BlockEntityType<RadioTorchRelayBlockEntity>> RADIO_TORCH_RELAY = BLOCK_ENTITY_TYPES.register("radio_torch_relay", () -> BlockEntityType.Builder.of(RadioTorchRelayBlockEntity::new, NtmBlocks.RADIO_TORCH_RELAY.get()).build(null));
 
     public static final Supplier<BlockEntityType<MachineOilWellBlockEntity>> MACHINE_OIL_WELL = BLOCK_ENTITY_TYPES.register("machine_oil_well", () -> BlockEntityType.Builder.of(MachineOilWellBlockEntity::new, NtmBlocks.MACHINE_WELL.get()).build(null));
     public static final Supplier<BlockEntityType<MachinePumpjackBlockEntity>> MACHINE_PUMPJACK = BLOCK_ENTITY_TYPES.register("machine_pumpjack", () -> BlockEntityType.Builder.of(MachinePumpjackBlockEntity::new, NtmBlocks.MACHINE_PUMPJACK.get()).build(null));
@@ -432,6 +434,7 @@ public class NtmBlockEntityTypes {
     public static final Supplier<BlockEntityType<LaunchPadLargeBlockEntity>> LAUNCH_PAD_LARGE = BLOCK_ENTITY_TYPES.register("launch_pad_large", () -> BlockEntityType.Builder.of(LaunchPadLargeBlockEntity::new, NtmBlocks.LAUNCH_PAD_LARGE.get()).build(null));
     public static final Supplier<BlockEntityType<SoyuzLauncherBlockEntity>> SOYUZ_LAUNCHER = BLOCK_ENTITY_TYPES.register("soyuz_launcher", () -> BlockEntityType.Builder.of(SoyuzLauncherBlockEntity::new, NtmBlocks.SOYUZ_LAUNCHER.get()).build(null));
     public static final Supplier<BlockEntityType<MachineRadarBlockEntity>> MACHINE_RADAR = BLOCK_ENTITY_TYPES.register("machine_radar", () -> BlockEntityType.Builder.of(MachineRadarBlockEntity::new, NtmBlocks.MACHINE_RADAR.get()).build(null));
+    public static final Supplier<BlockEntityType<MachineRadarLargeBlockEntity>> MACHINE_RADAR_LARGE = BLOCK_ENTITY_TYPES.register("machine_radar_large", () -> BlockEntityType.Builder.of(MachineRadarLargeBlockEntity::new, NtmBlocks.MACHINE_RADAR_LARGE.get()).build(null));
 
     public static final Supplier<BlockEntityType<GeigerBlockEntity>> GEIGER_COUNTER = BLOCK_ENTITY_TYPES.register("geiger_counter", () -> BlockEntityType.Builder.of(GeigerBlockEntity::new, NtmBlocks.GEIGER.get()).build(null));
 

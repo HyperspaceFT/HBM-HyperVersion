@@ -4,7 +4,6 @@ import com.hbm.blockentity.NtmBlockEntityTypes;
 import com.hbm.blocks.network.RadioTorchBaseBlock;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
-import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.state.BlockState;
 
 public class RadioTorchSenderBlockEntity extends RadioTorchBaseBlockEntity {
@@ -31,9 +30,8 @@ public class RadioTorchSenderBlockEntity extends RadioTorchBaseBlockEntity {
 
             if(input != this.lastState) {
                 this.setChanged();
-                BlockState state = this.getBlockState();
-                level.sendBlockUpdated(worldPosition, state, state, Block.UPDATE_CLIENTS);
                 this.lastState = input;
+                this.onStateChanged();
                 shouldSend = true;
             }
 

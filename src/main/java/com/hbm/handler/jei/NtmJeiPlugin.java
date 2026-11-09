@@ -14,6 +14,7 @@ import com.hbm.handler.jei.AssemblyMachineTransferInfo;
 import com.hbm.handler.jei.BoilerRecipeHandler;
 import com.hbm.handler.jei.ShredderRecipeHandler;
 import com.hbm.handler.jei.subtypes.BatterySubtypeInterpreter;
+import com.hbm.handler.jei.subtypes.BlueprintsSubtypeInterpreter;
 import com.hbm.handler.jei.subtypes.MetaSubtypeInterpreter;
 import com.hbm.handler.jei.subtypes.ScrapsSubtypeInterpreter;
 import com.hbm.inventory.MetaHelper;
@@ -584,6 +585,11 @@ public class NtmJeiPlugin implements IModPlugin {
                 NtmItems.MISSILE_SOYUZ.get(),
 
                 NtmItems.BATTERY_SC.get(),
+                NtmItems.PISTON_SET.get(),
+                NtmItems.FUEL_ADDITIVE.get(),
+                NtmItems.ROD_ZIRNOX.get(),
+                NtmItems.BLUEPRINT_FOLDER.get(),
+                NtmItems.BOMB_CALLER.get(),
                 NtmItems.WIRE_DENSE.get(),
                 NtmItems.BOLT.get(),
                 NtmItems.PART_GENERIC.get(),
@@ -612,7 +618,12 @@ public class NtmJeiPlugin implements IModPlugin {
 
                 NtmBlocks.FLUID_DUCT_NEO.asItem(),
 
-                NtmBlocks.CRASHED_BOMB.asItem()
+                NtmBlocks.CRASHED_BOMB.asItem(),
+
+                NtmBlocks.ORE_BASALT.asItem(),
+                NtmBlocks.ANVIL.asItem(),
+                NtmBlocks.VOLCANO_CORE.asItem(),
+                NtmBlocks.VOLCANO_RAD_CORE.asItem()
         );
 
         for(Item item : ignoreMeta) {
@@ -627,6 +638,7 @@ public class NtmJeiPlugin implements IModPlugin {
 
         registration.registerSubtypeInterpreter(NtmItems.BATTERY_PACK.get(), BatterySubtypeInterpreter.INSTANCE);
         registration.registerSubtypeInterpreter(NtmItems.SCRAPS.get(), ScrapsSubtypeInterpreter.INSTANCE);
+        registration.registerSubtypeInterpreter(NtmItems.BLUEPRINTS.get(), BlueprintsSubtypeInterpreter.INSTANCE);
     }
 
     @Override
@@ -639,6 +651,10 @@ public class NtmJeiPlugin implements IModPlugin {
 
             extra.add(FluidIconItem.make(type, 1000));
         }
+
+        // Not in any creative tab (as in the original), but the original NEI lists every item; JEI only lists tabs and extras.
+        extra.add(new ItemStack(NtmItems.NO9.get()));
+        extra.add(new ItemStack(NtmItems.AMMO_DEBUG.get()));
 
         registration.addExtraItemStacks(extra);
     }

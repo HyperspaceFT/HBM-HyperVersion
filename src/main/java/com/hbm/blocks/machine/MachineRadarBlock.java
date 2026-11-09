@@ -6,7 +6,9 @@ import com.hbm.blockentity.machine.MachineRadarBlockEntity;
 import com.hbm.inventory.screens.MachineRadarScreen;
 import com.hbm.main.NuclearTechMod;
 import com.mojang.serialization.MapCodec;
+import net.minecraft.ChatFormatting;
 import net.minecraft.core.BlockPos;
+import net.minecraft.network.chat.Component;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.BlockGetter;
@@ -42,6 +44,12 @@ public class MachineRadarBlock extends BaseEntityBlock implements IScreenProvide
 
     @Override
     protected InteractionResult useWithoutItem(BlockState state, Level level, BlockPos pos, Player player, BlockHitResult hitResult) {
+
+        // original MachineRadar.java:46-50
+        if(pos.getY() < MachineRadarBlockEntity.radarAltitude) {
+            if(level.isClientSide) player.sendSystemMessage(Component.translatable("radar.error.altitude").withStyle(ChatFormatting.RED));
+            return InteractionResult.sidedSuccess(level.isClientSide);
+        }
 
         if(!player.isShiftKeyDown()) {
             NuclearTechMod.proxy.openScreen(player, pos);

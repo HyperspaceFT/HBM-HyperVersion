@@ -9,7 +9,7 @@ import com.hbm.inventory.fluid.tank.FluidTank;
 import com.hbm.inventory.menus.MachineBlastFurnaceMenu;
 import com.hbm.inventory.recipes.BlastFurnaceRecipe;
 import com.hbm.inventory.recipes.BlastFurnaceRecipes;
-import com.hbm.items.NtmItems;
+import com.hbm.module.ModuleBurnTime;
 import com.hbm.util.fauxpointtwelve.DirPos;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
@@ -23,8 +23,6 @@ import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.inventory.AbstractContainerMenu;
 import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.item.Items;
-import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.state.BlockState;
 
 public class MachineBlastFurnaceBlockEntity extends MachineBaseBlockEntity implements IFluidStandardTransceiverMK2 {
@@ -32,6 +30,10 @@ public class MachineBlastFurnaceBlockEntity extends MachineBaseBlockEntity imple
     public static final int MAX_FUEL = 25_600;
     public static final int FUEL_RATE = 800;
     public static final int FLUE_GAS = 100;
+
+    /** Original TileEntityMachineBlastFurnace.java:53-54. */
+    public static final ModuleBurnTime BURN_MODULE = new ModuleBurnTime()
+            .setWoodHeatMod(0D);
 
     public static final int SLOT_FUEL = 0;
     public static final int SLOT_INPUT_1 = 1;
@@ -115,18 +117,14 @@ public class MachineBlastFurnaceBlockEntity extends MachineBaseBlockEntity imple
         this.setChanged();
     }
 
+    /**
+     * Original TileEntityMachineBlastFurnace.java:216-219: fuel by burn category; uncategorized items (def 0) and wood give nothing. NEO's ModuleBurnTime
+     * categorises by registry path where the original uses ore names (ModuleBurnTime.java:116-124, OreDictManager.java:335 gives "Coal" only to coal and
+     * coal powder), so charcoal, crystal_coal, coal_infernal and powder_ash_coal count as coal here and burn, while the original gives them 0.
+     */
     public static int getBurnTime(ItemStack stack) {
-        if(stack.isEmpty()) return 0;
-        if(stack.is(Items.COAL)) return 1_600;
-        if(stack.is(Items.CHARCOAL)) return 1_600;
-        if(stack.is(Blocks.COAL_BLOCK.asItem())) return 16_000;
-        if(stack.is(Items.BLAZE_ROD)) return 8_000;
-        if(stack.is(Items.FIRE_CHARGE)) return 2_400;
-        if(stack.is(NtmItems.LIGNITE.get())) return 1_200;
-        if(stack.is(NtmItems.POWDER_COAL.get())) return 1_760;
-        if(stack.is(NtmItems.POWDER_LIGNITE.get())) return 1_200;
-        if(stack.is(NtmItems.OIL_TAR_COAL.get())) return 3_200;
-        return 0;
+        if(stack.isEmpty() || stack.hasCraftingRemainingItem()) return 0;
+        return BURN_MODULE.getBurnHeat(BURN_MODULE.getBurnTime(stack, 0D), stack, 0D);
     }
 
     private boolean canOutput(BlastFurnaceRecipe recipe) {

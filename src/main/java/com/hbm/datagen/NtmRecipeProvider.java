@@ -16,6 +16,9 @@ import com.hbm.items.component.NtmDataComponents;
 import com.hbm.items.machine.BatteryPackItem;
 import com.hbm.items.machine.RTGPelletDepletedItem.DepletedRTGMaterial;
 import com.hbm.items.machine.ZirnoxRodItem.ZirnoxType;
+import com.hbm.items.weapon.sedna.factory.GunFactory;
+import net.minecraft.advancements.Criterion;
+import net.minecraft.advancements.critereon.InventoryChangeTrigger;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.data.PackOutput;
@@ -764,6 +767,18 @@ public class NtmRecipeProvider extends RecipeProvider {
                 .requires(NtmItems.FLUORITE.get())
                 .unlockedBy("has_fluorite", has(NtmItems.FLUORITE.get()))
                 .save(recipeOutput, ResourceLocation.fromNamespaceAndPath("hbmsntm", "radx"));
+        // ConsumableRecipes.java:119: plan_c, "PFP" with P = powder_poison and F = F.dust() (the fluorite).
+        ShapedRecipeBuilder.shaped(RecipeCategory.MISC, NtmItems.PLAN_C.get(), 1)
+                .pattern("PFP")
+                .define('P', NtmItems.POWDER_POISON.get())
+                .define('F', NtmItems.FLUORITE.get())
+                .unlockedBy("has_powder_poison", has(NtmItems.POWDER_POISON.get()))
+                .save(recipeOutput, ResourceLocation.fromNamespaceAndPath("hbmsntm", "plan_c"));
+        // CraftingManager.java:214,215,220: the RoR torches, 4 each from glowstone dust over a redstone torch over quartz, an iron ingot
+        // or (EnumCircuitType.BASIC) the integrated circuit board
+        this.radioTorch(recipeOutput, NtmBlocks.RADIO_TORCH_SENDER.get(), Ingredient.of(Tags.Items.GEMS_QUARTZ), "has_quartz", has(Tags.Items.GEMS_QUARTZ));
+        this.radioTorch(recipeOutput, NtmBlocks.RADIO_TORCH_RECEIVER.get(), Ingredient.of(Tags.Items.INGOTS_IRON), "has_iron_ingot", has(Tags.Items.INGOTS_IRON));
+        this.radioTorch(recipeOutput, NtmBlocks.RADIO_TORCH_RELAY.get(), Ingredient.of(NtmItems.CIRCUIT_INTEGRATED_BOARD.get()), "has_circuit_integrated_board", has(NtmItems.CIRCUIT_INTEGRATED_BOARD.get()));
         // ConsumableRecipes.java:130 (the default branch; the LBSM gold nugget variant at :127 is deferred). The bismuth nugget has no
         // survival source in NEO yet (GOAL26 decision 4, unreachable: bismuth).
         ShapelessRecipeBuilder.shapeless(RecipeCategory.MISC, NtmItems.SIOX.get(), 8)
@@ -838,6 +853,44 @@ public class NtmRecipeProvider extends RecipeProvider {
                 .define('A', NtmBlocks.RAD_ABSORBER.get())
                 .unlockedBy("has_rad_absorber", has(NtmBlocks.RAD_ABSORBER.get()))
                 .save(recipeOutput, ResourceLocation.fromNamespaceAndPath("hbmsntm", "decontaminator"));
+        // Original PowderRecipes.java:67-73: flux from sand (KEY_SAND) and charcoal (Items.coal meta 1), coal dust, fluorite (F.dust()),
+        // lead dust and sulfur (S.dust()), limestone, calcium or borax dust.
+        ShapelessRecipeBuilder.shapeless(RecipeCategory.MISC, NtmItems.POWDER_FLUX.get(), 1)
+                .requires(Items.CHARCOAL)
+                .requires(Tags.Items.SANDS)
+                .unlockedBy("has_charcoal", has(Items.CHARCOAL))
+                .save(recipeOutput, ResourceLocation.fromNamespaceAndPath("hbmsntm", "powder_flux_from_charcoal"));
+        ShapelessRecipeBuilder.shapeless(RecipeCategory.MISC, NtmItems.POWDER_FLUX.get(), 2)
+                .requires(NtmItems.POWDER_COAL.get())
+                .requires(Tags.Items.SANDS)
+                .unlockedBy("has_powder_coal", has(NtmItems.POWDER_COAL.get()))
+                .save(recipeOutput, ResourceLocation.fromNamespaceAndPath("hbmsntm", "powder_flux_from_coal"));
+        ShapelessRecipeBuilder.shapeless(RecipeCategory.MISC, NtmItems.POWDER_FLUX.get(), 4)
+                .requires(NtmItems.FLUORITE.get())
+                .requires(Tags.Items.SANDS)
+                .unlockedBy("has_fluorite", has(NtmItems.FLUORITE.get()))
+                .save(recipeOutput, ResourceLocation.fromNamespaceAndPath("hbmsntm", "powder_flux_from_fluorite"));
+        ShapelessRecipeBuilder.shapeless(RecipeCategory.MISC, NtmItems.POWDER_FLUX.get(), 8)
+                .requires(NtmItems.POWDER_LEAD.get())
+                .requires(NtmItems.SULFUR.get())
+                .requires(Tags.Items.SANDS)
+                .unlockedBy("has_powder_lead", has(NtmItems.POWDER_LEAD.get()))
+                .save(recipeOutput, ResourceLocation.fromNamespaceAndPath("hbmsntm", "powder_flux_from_lead_sulfur"));
+        ShapelessRecipeBuilder.shapeless(RecipeCategory.MISC, NtmItems.POWDER_FLUX.get(), 12)
+                .requires(NtmItems.POWDER_LIMESTONE.get())
+                .requires(Tags.Items.SANDS)
+                .unlockedBy("has_powder_limestone", has(NtmItems.POWDER_LIMESTONE.get()))
+                .save(recipeOutput, ResourceLocation.fromNamespaceAndPath("hbmsntm", "powder_flux_from_limestone"));
+        ShapelessRecipeBuilder.shapeless(RecipeCategory.MISC, NtmItems.POWDER_FLUX.get(), 12)
+                .requires(NtmItems.POWDER_CALCIUM.get())
+                .requires(Tags.Items.SANDS)
+                .unlockedBy("has_powder_calcium", has(NtmItems.POWDER_CALCIUM.get()))
+                .save(recipeOutput, ResourceLocation.fromNamespaceAndPath("hbmsntm", "powder_flux_from_calcium"));
+        ShapelessRecipeBuilder.shapeless(RecipeCategory.MISC, NtmItems.POWDER_FLUX.get(), 16)
+                .requires(NtmItems.POWDER_BORAX.get())
+                .requires(Tags.Items.SANDS)
+                .unlockedBy("has_powder_borax", has(NtmItems.POWDER_BORAX.get()))
+                .save(recipeOutput, ResourceLocation.fromNamespaceAndPath("hbmsntm", "powder_flux_from_borax"));
         // Original CraftingManager.java:687-688 (BlockNTMSand BORON and LEAD) and SmeltingRecipes.java:132-133 (the lead and boron glass).
         ShapelessRecipeBuilder.shapeless(RecipeCategory.BUILDING_BLOCKS, NtmBlocks.SAND_BORON.get(), 8)
                 .requires(Ingredient.of(Tags.Items.SANDS), 8)
@@ -1898,8 +1951,9 @@ public class NtmRecipeProvider extends RecipeProvider {
                 .unlockedBy("has_dura_ingot", has(NtmItems.INGOT_DURA_STEEL.get()))
                 .save(recipeOutput, ResourceLocation.fromNamespaceAndPath("hbmsntm", "machine_mixer"));
 
-        // The first anvil must be craftable before any plate or steel production.
-        ShapedRecipeBuilder.shaped(RecipeCategory.MISC, NtmBlocks.ANVIL.get())
+        // The first anvil must be craftable before any plate or steel production. The output carries the IRON variant like the creative and mined iron
+        // anvil (NTMAnvilBlock.getDrops), so JEI's META subtype keeps them one ingredient and crafted anvils stack with mined ones.
+        ShapedRecipeBuilder.shaped(RecipeCategory.MISC, MetaHelper.newStack(NtmBlocks.ANVIL.asItem(), 1, NTMAnvilBlock.Variant.IRON.ordinal()))
                 .pattern("III")
                 .pattern(" B ")
                 .pattern("III")
@@ -2474,6 +2528,24 @@ public class NtmRecipeProvider extends RecipeProvider {
                 .define('S', NtmTags.Items.PLATES_STEEL)
                 .unlockedBy("has_integrated_board", has(NtmItems.CIRCUIT_INTEGRATED_BOARD.get()))
                 .save(recipeOutput, ResourceLocation.fromNamespaceAndPath("hbmsntm", "rangefinder"));
+        // Original ConsumableRecipes.java:33-36. The original meta 4 (atomic bomb) is NEO meta 2 (BombCallerItem, Bomber.statFacABomb);
+        // the napalm (grenade_filling INC) and poison gas (pellet_gas) rows are not registered: neither input exists in NEO.
+        ShapedRecipeBuilder.shaped(RecipeCategory.TOOLS, MetaHelper.newStack(NtmItems.BOMB_CALLER.get(), 1, 0))
+                .pattern("TTT")
+                .pattern("TRT")
+                .pattern("TTT")
+                .define('T', Items.TNT)
+                .define('R', NtmItems.RANGEFINDER.get())
+                .unlockedBy("has_rangefinder", has(NtmItems.RANGEFINDER.get()))
+                .save(recipeOutput, ResourceLocation.fromNamespaceAndPath("hbmsntm", "bomb_caller_carpet"));
+        // EnumCircuitType.CONTROLLER is the control unit.
+        ShapedRecipeBuilder.shaped(RecipeCategory.TOOLS, MetaHelper.newStack(NtmItems.BOMB_CALLER.get(), 1, 2))
+                .pattern("TRC")
+                .define('T', DataComponentIngredient.of(false, NtmDataComponents.META, GunFactory.Ammo.NUKE_HIGH.ordinal(), NtmItems.AMMO_STANDARD.get()))
+                .define('R', NtmItems.RANGEFINDER.get())
+                .define('C', NtmItems.CIRCUIT_CONTROL_UNIT.get())
+                .unlockedBy("has_rangefinder", has(NtmItems.RANGEFINDER.get()))
+                .save(recipeOutput, ResourceLocation.fromNamespaceAndPath("hbmsntm", "bomb_caller_atomic"));
         // Original MineralRecipes.java:58 (add1To9Pair): the slag block and nine slag raw ingots.
         ShapedRecipeBuilder.shaped(RecipeCategory.MISC, NtmBlocks.BLOCK_SLAG.get(), 1)
                 .pattern("###")
@@ -2488,6 +2560,19 @@ public class NtmRecipeProvider extends RecipeProvider {
                 .save(recipeOutput, ResourceLocation.fromNamespaceAndPath("hbmsntm", "ingot_raw_slag"));
 
         registerMaterialConversionRecipes(recipeOutput);
+    }
+
+    /** Original CraftingManager.java:214,215,220: glowstone dust over a redstone torch over the torch's base, four torches. */
+    private void radioTorch(RecipeOutput recipeOutput, Block torch, Ingredient base, String criterion, Criterion<InventoryChangeTrigger.TriggerInstance> trigger) {
+        ShapedRecipeBuilder.shaped(RecipeCategory.REDSTONE, torch, 4)
+                .pattern("G")
+                .pattern("R")
+                .pattern("I")
+                .define('G', Tags.Items.DUSTS_GLOWSTONE)
+                .define('R', Items.REDSTONE_TORCH)
+                .define('I', base)
+                .unlockedBy(criterion, trigger)
+                .save(recipeOutput, ResourceLocation.fromNamespaceAndPath("hbmsntm", BuiltInRegistries.BLOCK.getKey(torch).getPath()));
     }
 
     /** Original RodRecipes.addRBMKRod (:242-247); the recipe id is the rod's item id. */

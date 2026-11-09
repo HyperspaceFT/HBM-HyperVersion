@@ -1,0 +1,19 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "key": {
+    "F": {
+      "item": "hbmsntm:fluorite"
+    },
+    "P": {
+      "item": "hbmsntm:powder_poison"
+    }
+  },
+  "pattern": [
+    "PFP"
+  ],
+  "result": {
+    "count": 1,
+    "id": "hbmsntm:plan_c"
+  }
+}

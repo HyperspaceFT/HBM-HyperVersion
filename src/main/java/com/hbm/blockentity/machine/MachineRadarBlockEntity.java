@@ -27,7 +27,10 @@ import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.inventory.AbstractContainerMenu;
+import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.level.chunk.ChunkAccess;
+import net.minecraft.world.level.chunk.status.ChunkStatus;
 import net.minecraft.world.level.levelgen.Heightmap;
 import net.minecraft.world.phys.Vec3;
 
@@ -76,6 +79,10 @@ public class MachineRadarBlockEntity extends MachineBaseBlockEntity implements I
         super(NtmBlockEntityTypes.MACHINE_RADAR.get(), pos, state, 10);
     }
 
+    protected MachineRadarBlockEntity(BlockEntityType<? extends MachineRadarBlockEntity> type, BlockPos pos, BlockState state) {
+        super(type, pos, state, 10);
+    }
+
     @Override public Component getDefaultName() { return Component.translatable("container.radar"); }
 
     @Override
@@ -100,7 +107,7 @@ public class MachineRadarBlockEntity extends MachineBaseBlockEntity implements I
 
             if(this.lastPower != getRedPower()) {
                 this.setChanged();
-                for(DirPos pos : this.getConPos()) this.level.updateNeighbourForOutputSignal(pos.makeCompat(), this.getBlockState().getBlock());
+                this.onRedPowerChanged();
             }
             this.lastPower = getRedPower();
 
@@ -130,15 +137,23 @@ public class MachineRadarBlockEntity extends MachineBaseBlockEntity implements I
                         this.map[index] = (byte) Mth.clamp(level.getHeight(Heightmap.Types.MOTION_BLOCKING, x, z), 50, 128);
                     } else {
                         if(this.map[index] == 0 && chunkLoads < chunkLoadCap) {
-//                            if(this.generateChunks) {
-                            level.getChunk(x >> 4, z >> 4);
-                            this.map[index] = (byte) Mth.clamp(level.getHeight(Heightmap.Types.MOTION_BLOCKING, x, z), 50, 128);
-                            chunkLoads++;
-//                            } else {
-//                                WorldUtil.provideChunk((WorldServer) worldObj, x >> 4, z >> 4);
-//                                this.map[index] = (byte) MathHelper.clamp_int(worldObj.getHeightValue(x, z), 50, 128);
-//                                if(worldObj.getChunkProvider().chunkExists(x >> 4, z >> 4)) chunkLoads++;
-//                            }
+                            if(generateChunks) {
+                                level.getChunk(x >> 4, z >> 4);
+                                this.map[index] = (byte) Mth.clamp(level.getHeight(Heightmap.Types.MOTION_BLOCKING, x, z), 50, 128);
+                                chunkLoads++;
+                            } else {
+                                // Original WorldUtil.provideChunk: read a chunk that is already saved, never generate one.
+                                // Requesting only EMPTY loads it from disk if present; a missing chunk stays an unsaved empty proto-chunk.
+                                // Like the original (TileEntityMachineRadarNT.java:197-200) the cell is written either way: a missing chunk's
+                                // height is 0, clamped to 50, so it is not requested again until the map is cleared; only an existing chunk counts as a load.
+                                ChunkAccess chunk = level.getChunk(x >> 4, z >> 4, ChunkStatus.EMPTY, true);
+                                if(chunk != null && chunk.getPersistedStatus().isOrAfter(ChunkStatus.FULL)) {
+                                    this.map[index] = (byte) Mth.clamp(chunk.getHeight(Heightmap.Types.MOTION_BLOCKING, x & 15, z & 15) + 1, 50, 128);
+                                    chunkLoads++;
+                                } else {
+                                    this.map[index] = 50;
+                                }
+                            }
                         }
                     }
                 }
@@ -158,6 +173,10 @@ public class MachineRadarBlockEntity extends MachineBaseBlockEntity implements I
                 prevRotation -= 360F;
             }
         }
+    }
+
+    protected void onRedPowerChanged() {
+        for(DirPos pos : this.getConPos()) this.level.updateNeighbourForOutputSignal(pos.makeCompat(), this.getBlockState().getBlock());
     }
 
     public DirPos[] getConPos() {

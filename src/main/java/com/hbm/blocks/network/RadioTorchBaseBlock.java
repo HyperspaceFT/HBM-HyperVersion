@@ -94,7 +94,7 @@ public abstract class RadioTorchBaseBlock extends Block implements EntityBlock, 
         return super.updateShape(state, direction, neighborState, level, pos, neighborPos);
     }
 
-    private static boolean canAttachTo(LevelReader level, BlockPos pos, Direction facing) {
+    protected boolean canAttachTo(LevelReader level, BlockPos pos, Direction facing) {
         BlockPos supportPos = pos.relative(facing.getOpposite());
         BlockState supportState = level.getBlockState(supportPos);
         return supportState.isFaceSturdy(level, supportPos, facing) || supportState.hasAnalogOutputSignal() || supportState.isSignalSource();
@@ -102,6 +102,7 @@ public abstract class RadioTorchBaseBlock extends Block implements EntityBlock, 
 
     @Override
     protected InteractionResult useWithoutItem(BlockState state, Level level, BlockPos pos, Player player, BlockHitResult hitResult) {
+        if(player.isShiftKeyDown()) return InteractionResult.PASS; // original RadioTorchBase.java:115-122
 
         NuclearTechMod.proxy.openScreen(player, pos);
         return InteractionResult.sidedSuccess(level.isClientSide);

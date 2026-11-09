@@ -16,7 +16,7 @@ import org.lwjgl.glfw.GLFW;
 
 public class RadioTorchScreen extends Screen {
 
-    public static final int MAX_CHAN_LENGTH = 15;
+    public static final int MAX_CHAN_LENGTH = RadioTorchBaseBlockEntity.MAX_CHAN_LENGTH;
     protected static final ResourceLocation TEXTURE_SENDER = NuclearTechMod.withDefaultNamespace("textures/gui/machine/gui_rtty_sender.png");
     protected static final ResourceLocation TEXTURE_RECEIVER = NuclearTechMod.withDefaultNamespace("textures/gui/machine/gui_rtty_receiver.png");
     protected ResourceLocation texture;
@@ -52,7 +52,7 @@ public class RadioTorchScreen extends Screen {
         int oY = 4;
         int in = radio instanceof RadioTorchSenderBlockEntity ? 18 : 0;
 
-        this.frequency = new EditBox(this.font, this.leftPos + 66, this.topPos + 21, 48, 12, Component.empty());
+        this.frequency = new EditBox(this.font, this.leftPos + 25 + oX, this.topPos + 17 + oY, 90 - oX * 2, 14, Component.empty());
         this.frequency.setTextColor(0x00ff00);
         this.frequency.setTextColorUneditable(0x00ff00);
         this.frequency.setBordered(false);
@@ -67,7 +67,7 @@ public class RadioTorchScreen extends Screen {
             this.remap[i].setTextColor(0x00ff00);
             this.remap[i].setTextColorUneditable(0x00ff00);
             this.remap[i].setBordered(false);
-            this.remap[i].setMaxLength(32);
+            this.remap[i].setMaxLength(RadioTorchBaseBlockEntity.MAX_MAPPING_LENGTH);
             this.remap[i].setValue(radio.mapping[i] == null ? "" : radio.mapping[i]);
             this.addRenderableWidget(this.remap[i]);
         }
@@ -158,6 +158,12 @@ public class RadioTorchScreen extends Screen {
 
         if(this.frequency.keyPressed(keyCode, scanCode, modifiers)) return true;
         if(radio.customMap) for(int j = 0; j < 16; j++) if(this.remap[j].keyPressed(keyCode, scanCode, modifiers)) return true;
+
+        // original keyTyped (GUIScreenRadioTorch.java:159): a focused text box takes every key, so typing never closes the screen on the inventory key
+        if(keyCode != GLFW.GLFW_KEY_ESCAPE) {
+            if(this.frequency.canConsumeInput()) return true;
+            if(radio.customMap) for(int j = 0; j < 16; j++) if(this.remap[j].canConsumeInput()) return true;
+        }
 
         InputConstants.Key key = InputConstants.getKey(keyCode, scanCode);
         if(keyCode == GLFW.GLFW_KEY_ESCAPE || this.minecraft.options.keyInventory.isActiveAndMatches(key)) {

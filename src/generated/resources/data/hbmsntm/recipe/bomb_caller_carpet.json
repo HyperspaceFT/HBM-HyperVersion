@@ -1,0 +1,24 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "equipment",
+  "key": {
+    "R": {
+      "item": "hbmsntm:rangefinder"
+    },
+    "T": {
+      "item": "minecraft:tnt"
+    }
+  },
+  "pattern": [
+    "TTT",
+    "TRT",
+    "TTT"
+  ],
+  "result": {
+    "components": {
+      "hbmsntm:meta": 0
+    },
+    "count": 1,
+    "id": "hbmsntm:bomb_caller"
+  }
+}

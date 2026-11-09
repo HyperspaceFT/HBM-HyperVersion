@@ -7,7 +7,6 @@ import com.hbm.explosion.vanillant.standard.EntityProcessorCrossSmooth;
 import com.hbm.explosion.vanillant.standard.ExplosionEffectWeapon;
 import net.minecraft.core.BlockPos;
 import net.minecraft.util.Mth;
-import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.state.BlockState;
 
 public class RadioTorchReceiverBlockEntity extends RadioTorchBaseBlockEntity {
@@ -22,9 +21,8 @@ public class RadioTorchReceiverBlockEntity extends RadioTorchBaseBlockEntity {
 
         if(!this.level.isClientSide) {
 
-            if(!this.channel.isEmpty()) {
-
-                RTTYChannel chan = RTTYSystem.listen(level, this.channel);
+            if(!this.channel.isEmpty() || this.polling) {
+                RTTYChannel chan = this.channel.isEmpty() ? null : RTTYSystem.listen(level, this.channel);
 
                 if(chan != null && (this.polling || (chan.timeStamp > this.lastUpdate - 1 && chan.timeStamp != -1))) { // if we're either polling or a new message has come in
                     String msg = "" + chan.signal;
@@ -33,6 +31,8 @@ public class RadioTorchReceiverBlockEntity extends RadioTorchBaseBlockEntity {
 
                     if("selfdestruct".equals(msg)) {
                         BlockPos pos = this.getBlockPos();
+                        // the original also sets PlayerProcessorStandard (TileEntityRadioTorchReceiver.java:30); NEO's ExplosionVNT has no player
+                        // stage because the entity processor already sends the knockback to players (EntityProcessorCross.java:139)
                         this.level.removeBlock(pos, false);
                         ExplosionVNT vnt = new ExplosionVNT(this.level, pos.getX() + 0.5, pos.getY() + 0.5, pos.getZ() + 0.5, 5)
                                 .setEntityProcessor(new EntityProcessorCrossSmooth(1, 50).setupPiercing(5F, 0.5F))
@@ -54,17 +54,23 @@ public class RadioTorchReceiverBlockEntity extends RadioTorchBaseBlockEntity {
                         nextState = Mth.clamp(sig, 0, 15);
                     }
 
-                    if(chan.timeStamp < this.lastUpdate - 2 && this.polling) {
+                    // RTTYSystem publishes in ServerTickEvent.Pre before the levels tick, the same order as the original's START phase,
+                    // so a message older than the previous tick is stale (original TileEntityRadioTorchReceiver.java:49)
+                    if(chan.timeStamp < this.lastUpdate - 1 && this.polling) {
                         nextState = 0;
                     }
 
                     if(this.lastState != nextState) {
                         this.lastState = nextState;
-                        BlockState state = this.getBlockState();
-                        level.sendBlockUpdated(worldPosition, state, state, Block.UPDATE_CLIENTS);
-                        level.updateNeighborsAt(worldPosition, state.getBlock());
+                        this.onStateChanged();
+                        level.updateNeighborsAt(worldPosition, this.getBlockState().getBlock());
                         this.setChanged();
                     }
+                } else if(this.polling && this.lastState != 0) { // polling with no signal on the channel (original :59-64)
+                    this.lastState = 0;
+                    this.onStateChanged();
+                    level.updateNeighborsAt(worldPosition, this.getBlockState().getBlock());
+                    this.setChanged();
                 }
             }
         }
@@ -75,6 +81,8 @@ public class RadioTorchReceiverBlockEntity extends RadioTorchBaseBlockEntity {
     @Override
     public void onLoad() {
         super.onLoad();
-        if(this.level != null) this.lastUpdate = this.level.getGameTime();
+        // a new receiver starts listening from now (the original sets it on creation, RadioTorchReceiver.java:28); a loaded one keeps its
+        // saved "u", so a message sent while its chunk was unloaded is still picked up as in the original
+        if(this.level != null && this.lastUpdate == 0) this.lastUpdate = this.level.getGameTime();
     }
 }

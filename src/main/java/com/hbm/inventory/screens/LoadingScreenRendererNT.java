@@ -15,20 +15,22 @@ public class LoadingScreenRendererNT {
 
     public LoadingScreenRendererNT() { }
 
+    /** A remote tip (shown as it is), or null for the translated fallback; the prefix and fallback are hard-coded English in the original. */
     private static String chooseTip() {
-        if(HTTPHandler.tipOfTheDay.isEmpty()) return "Explore! There's tons of free stuff to find.";
+        if(HTTPHandler.tipOfTheDay.isEmpty()) return null;
         return HTTPHandler.tipOfTheDay.get(random.nextInt(HTTPHandler.tipOfTheDay.size()));
     }
 
-    private static String tipOfTheDay = "Tip of the day: " + chooseTip();
-    public static void resetMessage() { tipOfTheDay = "Tip of the day: " + chooseTip(); }
+    private static String tipOfTheDay = chooseTip();
+    public static void resetMessage() { tipOfTheDay = chooseTip(); }
 
     public static void render(GuiGraphics guiGraphics) {
         Font font = Minecraft.getInstance().font;
         int width = guiGraphics.guiWidth();
         int height = guiGraphics.guiHeight();
 
-        String[] frags = I18nUtil.resolveKeyArray(tipOfTheDay);
+        String tip = tipOfTheDay != null ? tipOfTheDay : I18nUtil.resolveKey("loading.tipFallback");
+        String[] frags = I18nUtil.resolveKeyArray("loading.tipOfTheDay", tip);
         int y = (height / 2) / 3;
         for(int i = 0; i < frags.length; i++) {
             String frag = frags[i];

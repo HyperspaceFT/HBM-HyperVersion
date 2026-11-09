@@ -17,6 +17,7 @@ import net.minecraft.util.RandomSource;
 import net.minecraft.world.level.WorldGenLevel;
 import net.minecraft.world.level.biome.Biome;
 import net.minecraft.world.level.block.Blocks;
+import net.minecraft.world.level.block.state.properties.BlockStateProperties;
 import net.minecraft.world.level.chunk.ChunkAccess;
 import net.minecraft.world.level.levelgen.Heightmap;
 import net.minecraft.world.level.levelgen.feature.Feature;
@@ -174,7 +175,9 @@ public class OilBubbleFeature extends Feature<NoneFeatureConfiguration> {
                         if(inWriteRange(targetPos, xCoord, zCoord)) level.setBlock(targetPos, inner ? NtmBlocks.DIRT_OILY.get().defaultBlockState() : NtmBlocks.DIRT_DEAD.get().defaultBlockState(), 3);
                         if(!inner && oy == 0 && random.nextInt(20) == 0) {
                             BlockPos above = targetPos.above();
-                            if(level.getBlockState(above).canBeReplaced() && inWriteRange(above, xCoord, zCoord)) {
+                            // the original wrote the terrain before decoration (MapGenBubble.java:118-125); a double plant's lower half is replaceable, its upper half would be left floating
+                            var aboveState = level.getBlockState(above);
+                            if(aboveState.canBeReplaced() && !aboveState.hasProperty(BlockStateProperties.DOUBLE_BLOCK_HALF) && inWriteRange(above, xCoord, zCoord)) {
                                 level.setBlock(above, Blocks.DEAD_BUSH.defaultBlockState(), 3);
                             }
                         }

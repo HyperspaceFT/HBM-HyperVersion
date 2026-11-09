@@ -1,0 +1,29 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "equipment",
+  "key": {
+    "C": {
+      "item": "hbmsntm:circuit_control_unit"
+    },
+    "R": {
+      "item": "hbmsntm:rangefinder"
+    },
+    "T": {
+      "type": "neoforge:components",
+      "components": {
+        "hbmsntm:meta": 75
+      },
+      "items": "hbmsntm:ammo_standard"
+    }
+  },
+  "pattern": [
+    "TRC"
+  ],
+  "result": {
+    "components": {
+      "hbmsntm:meta": 2
+    },
+    "count": 1,
+    "id": "hbmsntm:bomb_caller"
+  }
+}

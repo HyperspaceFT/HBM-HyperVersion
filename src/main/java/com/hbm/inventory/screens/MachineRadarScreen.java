@@ -22,6 +22,9 @@ import net.neoforged.neoforge.network.PacketDistributor;
 import org.joml.Matrix4f;
 import org.joml.Vector3f;
 
+import java.util.ArrayList;
+import java.util.List;
+
 public class MachineRadarScreen extends Screen {
 
     public static final ResourceLocation TEXTURE = NuclearTechMod.withDefaultNamespace("textures/gui/machine/gui_radar_nt.png");
@@ -92,15 +95,41 @@ public class MachineRadarScreen extends Screen {
 
         if(this.isHovered(mouseX, mouseY, 8, 221, 200, 7)) guiGraphics.renderTooltip(this.font, Component.translatable(BobMathUtil.getShortNumber(be.power) + "/" + BobMathUtil.getShortNumber(MachineRadarBlockEntity.maxPower) + I18nUtil.resolveKey("he")), mouseX, mouseY);
 
-        if(this.isHovered(mouseX, mouseY, -10, 88, 8, 8)) guiGraphics.renderTooltip(this.font, Component.translatable("radar.detectMissiles"), mouseX, mouseY);
-        if(this.isHovered(mouseX, mouseY, -10, 98, 8, 8)) guiGraphics.renderTooltip(this.font, Component.translatable("radar.detectShells"), mouseX, mouseY);
-        if(this.isHovered(mouseX, mouseY, -10, 108, 8, 8)) guiGraphics.renderTooltip(this.font, Component.translatable("radar.detectPlayers"), mouseX, mouseY);
-        if(this.isHovered(mouseX, mouseY, -10, 118, 8, 8)) guiGraphics.renderTooltip(this.font, Component.translatable("radar.smartMode"), mouseX, mouseY);
-        if(this.isHovered(mouseX, mouseY, -10, 128, 8, 8)) guiGraphics.renderTooltip(this.font, Component.translatable("radar.redMode"), mouseX, mouseY);
-        if(this.isHovered(mouseX, mouseY, -10, 138, 8, 8)) guiGraphics.renderTooltip(this.font, Component.translatable("radar.showMap"), mouseX, mouseY);
-        if(this.isHovered(mouseX, mouseY, -10, 158, 8, 8)) guiGraphics.renderTooltip(this.font, Component.translatable("radar.toggleGui"), mouseX, mouseY);
-        if(this.isHovered(mouseX, mouseY, -10, 178, 8, 8)) guiGraphics.renderTooltip(this.font, Component.translatable("radar.clearMap"), mouseX, mouseY);
+        if(this.isHovered(mouseX, mouseY, -10, 88, 8, 8)) this.renderLines(guiGraphics, "radar.detectMissiles", mouseX, mouseY);
+        if(this.isHovered(mouseX, mouseY, -10, 98, 8, 8)) this.renderLines(guiGraphics, "radar.detectShells", mouseX, mouseY);
+        if(this.isHovered(mouseX, mouseY, -10, 108, 8, 8)) this.renderLines(guiGraphics, "radar.detectPlayers", mouseX, mouseY);
+        if(this.isHovered(mouseX, mouseY, -10, 118, 8, 8)) this.renderLines(guiGraphics, "radar.smartMode", mouseX, mouseY);
+        if(this.isHovered(mouseX, mouseY, -10, 128, 8, 8)) this.renderLines(guiGraphics, "radar.redMode", mouseX, mouseY);
+        if(this.isHovered(mouseX, mouseY, -10, 138, 8, 8)) this.renderLines(guiGraphics, "radar.showMap", mouseX, mouseY);
+        if(this.isHovered(mouseX, mouseY, -10, 158, 8, 8)) this.renderLines(guiGraphics, "radar.toggleGui", mouseX, mouseY);
+        if(this.isHovered(mouseX, mouseY, -10, 178, 8, 8)) this.renderLines(guiGraphics, "radar.clearMap", mouseX, mouseY);
 
+        // GUIMachineRadarNT.java:95-113: a blip under the cursor shows its name, X / Z and height; otherwise the map shows the world X / Z
+        if(!be.entries.isEmpty()) {
+            for(RadarEntry m : be.entries) {
+                int x = this.leftPos + (int) ((m.pos.getX() - be.getBlockPos().getX()) / ((double) be.getRange() * 2 + 1) * (200D - 8D)) + 108;
+                int z = this.topPos + (int) ((m.pos.getZ() - be.getBlockPos().getZ()) / ((double) be.getRange() * 2 + 1) * (200D - 8D)) + 117;
+
+                if(mouseX + 5 > x && mouseX - 4 <= x && mouseY + 5 > z && mouseY - 4 <= z) {
+                    List<Component> text = List.of(m.name, Component.literal(m.pos.getX() + " / " + m.pos.getZ()), Component.translatable("radar.altitude", m.pos.getY()));
+                    guiGraphics.renderComponentTooltip(this.font, text, x, z);
+                    return;
+                }
+            }
+        }
+
+        if(this.isHovered(mouseX, mouseY, 8, 17, 200, 200)) {
+            int tX = (int) ((lastMouseX - this.leftPos - 108) * ((double) be.getRange() * 2 + 1) / 192D + be.getBlockPos().getX());
+            int tZ = (int) ((lastMouseY - this.topPos - 117) * ((double) be.getRange() * 2 + 1) / 192D + be.getBlockPos().getZ());
+            guiGraphics.renderTooltip(this.font, Component.literal(tX + " / " + tZ), lastMouseX, lastMouseY);
+        }
+    }
+
+    /** Splits the translation at NTM's $ line break, as the original I18nUtil.resolveKeyArray tooltips. */
+    protected void renderLines(GuiGraphics guiGraphics, String key, int mouseX, int mouseY) {
+        List<Component> lines = new ArrayList<>();
+        for(String s : I18nUtil.resolveKeyArray(key)) lines.add(Component.literal(s));
+        guiGraphics.renderComponentTooltip(this.font, lines, mouseX, mouseY);
     }
 
     @SuppressWarnings("DataFlowIssue")
@@ -149,7 +178,9 @@ public class MachineRadarScreen extends Screen {
                     buffer.addVertex(matrix, this.leftPos + 8 + iX,	this.topPos + 17 + iZ,	1F).setColor(color);
                 }
             }
-            BufferUploader.drawWithShader(buffer.buildOrThrow());
+            // an all-zero map adds no vertex; the 1.7.10 Tessellator drew nothing, buildOrThrow would throw
+            MeshData data = buffer.build();
+            if(data != null) BufferUploader.drawWithShader(data);
         }
 
         Vector3f tr = new Vector3f(100, 0, 0);

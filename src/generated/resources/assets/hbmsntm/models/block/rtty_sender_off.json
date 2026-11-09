@@ -1,0 +1,66 @@
+{
+  "elements": [
+    {
+      "faces": {
+        "north": {
+          "texture": "#torch"
+        },
+        "south": {
+          "texture": "#torch"
+        }
+      },
+      "from": [
+        6,
+        0,
+        7
+      ],
+      "to": [
+        10,
+        10,
+        9
+      ]
+    },
+    {
+      "faces": {
+        "east": {
+          "texture": "#torch"
+        },
+        "west": {
+          "texture": "#torch"
+        }
+      },
+      "from": [
+        7,
+        0,
+        6
+      ],
+      "to": [
+        9,
+        10,
+        10
+      ]
+    },
+    {
+      "faces": {
+        "up": {
+          "texture": "#torch"
+        }
+      },
+      "from": [
+        7,
+        9,
+        7
+      ],
+      "to": [
+        9,
+        9,
+        9
+      ]
+    }
+  ],
+  "render_type": "minecraft:cutout",
+  "textures": {
+    "particle": "hbmsntm:block/rtty_sender_off",
+    "torch": "hbmsntm:block/rtty_sender_off"
+  }
+}

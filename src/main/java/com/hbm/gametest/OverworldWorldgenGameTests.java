@@ -451,9 +451,12 @@ public class OverworldWorldgenGameTests {
                         String key = "hbmsntm.configuration.worldgen." + e.getKey();
                         check(key.equals(spec.getTranslationKey()), e.getKey() + " translation key " + spec.getTranslationKey());
                         JsonElement en = english.getAsJsonObject().get(key);
+                        JsonElement tooltip = english.getAsJsonObject().get(key + ".tooltip");
                         // defineInRange appends a " Range: a ~ b" line to the comment
                         String comment = spec.getComment() == null ? null : spec.getComment().split("\n")[0];
-                        check(en != null && en.getAsString().equals(comment), key + " English " + en + ", comment " + comment);
+                        // Goal 29B: the display name is a short name and the comment is the tooltip
+                        check(en != null && !en.getAsString().isEmpty() && !en.getAsString().equals(comment), key + " English " + en + ", comment " + comment);
+                        check(tooltip != null && tooltip.getAsString().split("\n")[0].equals(comment), key + " English tooltip " + tooltip + ", comment " + comment);
                     }
                     ModConfigSpec.IntValue rarity = NtmConfig.COMMON.worldgenRarity("alexandriteSpawnRate");
                     check(rarity != null && rarity.getDefault() == 100 && rarity.get() == 100, "alexandriteSpawnRate default " + (rarity == null ? null : rarity.getDefault()) + ", original 100");

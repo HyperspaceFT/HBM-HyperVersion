@@ -1071,6 +1071,10 @@ public class NtmCreativeTabs {
                         output.accept(NtmBlocks.CRATE_DESH);
                         output.accept(NtmBlocks.CRATE_TEMPLATE);
                         output.accept(NtmBlocks.MACHINE_SATLINKER);
+                        // original machineTab (ModBlocks.java:1898-1904, registration order :3187-3191)
+                        output.accept(NtmBlocks.RADIO_TORCH_SENDER);
+                        output.accept(NtmBlocks.RADIO_TORCH_RECEIVER);
+                        output.accept(NtmBlocks.RADIO_TORCH_RELAY);
                         output.accept(NtmBlocks.DECONTAMINATOR);
                         output.accept(NtmBlocks.RAD_ABSORBER);
                         output.accept(NtmBlocks.RAD_ABSORBER_RED);
@@ -1197,6 +1201,8 @@ public class NtmCreativeTabs {
 
                         output.accept(NtmBlocks.LAUNCH_PAD);
                         output.accept(NtmBlocks.LAUNCH_PAD_LARGE);
+                        output.accept(NtmBlocks.MACHINE_RADAR);
+                        output.accept(NtmBlocks.MACHINE_RADAR_LARGE);
                         output.accept(NtmBlocks.SOYUZ_LAUNCHER);
 
                         output.accept(NtmItems.DESIGNATOR);
@@ -1317,6 +1323,7 @@ public class NtmCreativeTabs {
                         output.accept(NtmItems.RADAWAY);
                         output.accept(NtmItems.RADX);
                         output.accept(NtmItems.SIOX);
+                        output.accept(NtmItems.PLAN_C);
 
                         output.accept(NtmItems.BALEFIRE_AND_STEEL);
 

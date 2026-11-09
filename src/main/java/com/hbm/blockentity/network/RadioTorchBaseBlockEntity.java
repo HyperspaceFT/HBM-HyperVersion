@@ -2,21 +2,27 @@ package com.hbm.blockentity.network;
 
 import com.hbm.blockentity.ITickable;
 import com.hbm.blockentity.LoadedBaseBlockEntity;
+import com.hbm.blocks.network.RadioTorchRWBaseBlock;
 import com.hbm.interfaces.IControlReceiver;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.nbt.CompoundTag;
+import net.minecraft.network.Connection;
 import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.network.protocol.Packet;
 import net.minecraft.network.protocol.game.ClientGamePacketListener;
 import net.minecraft.network.protocol.game.ClientboundBlockEntityDataPacket;
-import net.minecraft.world.Container;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
 
 public class RadioTorchBaseBlockEntity extends LoadedBaseBlockEntity implements ITickable, IControlReceiver {
+
+    /** Longest channel name; the screens cap their text boxes at it and the server cuts longer control input. Original GUIScreenRadioTorch.java:24 */
+    public static final int MAX_CHAN_LENGTH = 15;
+    /** Longest custom mapping value, the screen's text box limit (original GUIScreenRadioTorch.java:76) */
+    public static final int MAX_MAPPING_LENGTH = 32;
 
     /** channel we're broadcasting on/listening to */
     public String channel = "";
@@ -75,7 +81,9 @@ public class RadioTorchBaseBlockEntity extends LoadedBaseBlockEntity implements 
         buf.writeBoolean(this.polling);
         buf.writeBoolean(this.customMap);
         buf.writeUtf(this.channel);
-        for(int i = 0; i < 16; i++) if(mapping[i] != null) buf.writeUtf(this.mapping[i]);
+        // all 16 entries, an unset one as an empty string, so deserialize always reads as many as were written (the original
+        // BufferUtil.writeString writes a length of -1 for null, BufferUtil.java:20-28)
+        for(int i = 0; i < 16; i++) buf.writeUtf(this.mapping[i] == null ? "" : this.mapping[i]);
     }
 
     @Override
@@ -94,28 +102,51 @@ public class RadioTorchBaseBlockEntity extends LoadedBaseBlockEntity implements 
         return tag;
     }
 
+    /**
+     * Only the redstone state, as the original onDataPacket (TileEntityRadioTorchBase.java:92-99). NeoForge's default would load the
+     * whole block entity from this sparse tag and reset the channel, modes and mapping that networkPackNT syncs.
+     */
     @Override
     public void handleUpdateTag(CompoundTag tag, HolderLookup.Provider registries) {
-        super.handleUpdateTag(tag, registries);
-        int last = this.lastState;
         this.lastState = tag.getByte("l");
-        if(this.lastState != last && level != null) level.sendBlockUpdated(worldPosition, getBlockState(), getBlockState(), Block.UPDATE_CLIENTS);
     }
 
+    @Override
+    public void onDataPacket(Connection net, ClientboundBlockEntityDataPacket pkt, HolderLookup.Provider registries) {
+        this.handleUpdateTag(pkt.getTag(), registries);
+    }
+
+    /** Sends the changed lastState to clients and mirrors "lastState > 0" into the LIT block state that picks the on/off model. */
+    protected void onStateChanged() {
+        if(this.level == null) return;
+        BlockState state = this.getBlockState();
+        boolean lit = this.lastState > 0;
+        if(state.hasProperty(RadioTorchRWBaseBlock.LIT) && state.getValue(RadioTorchRWBaseBlock.LIT) != lit) {
+            this.level.setBlock(this.worldPosition, state.setValue(RadioTorchRWBaseBlock.LIT, lit), Block.UPDATE_CLIENTS);
+        } else {
+            this.level.sendBlockUpdated(this.worldPosition, state, state, Block.UPDATE_CLIENTS);
+        }
+    }
 
     @Override
     public boolean hasPermission(Player player) {
-        return Container.stillValidBlockEntity(this, player);
+        // original TileEntityRadioTorchBase.java:101-104: closer than 16 blocks to the block centre
+        return player.distanceToSqr(worldPosition.getX() + 0.5D, worldPosition.getY() + 0.5D, worldPosition.getZ() + 0.5D) < 16D * 16D;
     }
 
     @Override
     public void receiveControl(CompoundTag data) {
         if(data.contains("p")) this.polling = data.getBoolean("p");
         if(data.contains("m")) this.customMap = data.getBoolean("m");
-        if(data.contains("c")) this.channel = data.getString("c");
-        for(int i = 0; i < 16; i++) if(data.contains("m" + i)) this.mapping[i] = data.getString("m" + i);
+        // the client text boxes stop at these lengths; longer input only comes from a modified client and is cut here
+        if(data.contains("c")) this.channel = truncate(data.getString("c"), MAX_CHAN_LENGTH);
+        for(int i = 0; i < 16; i++) if(data.contains("m" + i)) this.mapping[i] = truncate(data.getString("m" + i), MAX_MAPPING_LENGTH);
 
         this.setChanged();
+    }
+
+    public static String truncate(String text, int maxLength) {
+        return text.length() > maxLength ? text.substring(0, maxLength) : text;
     }
 
     @Override

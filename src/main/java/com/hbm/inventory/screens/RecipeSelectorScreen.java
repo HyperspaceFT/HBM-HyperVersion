@@ -76,7 +76,7 @@ public class RecipeSelectorScreen extends Screen {
         this.search.setTextColorUneditable(-1);
         this.search.setBordered(false);
         this.search.setMaxLength(32);
-        this.addWidget(this.search);
+        this.addRenderableWidget(this.search);
     }
 
     private void regenerateRecipes() {
@@ -321,6 +321,9 @@ public class RecipeSelectorScreen extends Screen {
         if(keyCode == GLFW.GLFW_KEY_END) pageIndex = size;
 
         pageIndex = Mth.clamp(pageIndex, 0, size);
+
+        // original keyTyped (GUIScreenRecipeSelector.java:328): a focused search box takes every typed key, so typing never closes the screen on the inventory key
+        if(keyCode != GLFW.GLFW_KEY_ESCAPE && this.search.canConsumeInput()) return true;
 
         InputConstants.Key key = InputConstants.getKey(keyCode, scanCode);
 

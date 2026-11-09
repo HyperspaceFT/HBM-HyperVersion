@@ -357,6 +357,7 @@ public class NtmBlockLootTableProvider extends BlockLootSubProvider {
         this.dropSelf(NtmBlocks.FLUID_DUCT_NEO.get());
         this.dropSelf(NtmBlocks.RADIO_TORCH_SENDER.get());
         this.dropSelf(NtmBlocks.RADIO_TORCH_RECEIVER.get());
+        this.dropSelf(NtmBlocks.RADIO_TORCH_RELAY.get());
 
         this.dropSelf(NtmBlocks.MACHINE_BATTERY_SOCKET.get());
         this.dropSelf(NtmBlocks.MACHINE_BATTERY_REDD.get());

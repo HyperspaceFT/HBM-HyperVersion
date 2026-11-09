@@ -1,0 +1,7 @@
+{
+  "variants": {
+    "": {
+      "model": "hbmsntm:block/gas_meltdown_particle"
+    }
+  }
+}

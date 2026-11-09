@@ -45,7 +45,7 @@ public class SmolderingNetherrackFeature extends Feature<NoneFeatureConfiguratio
 
             for(int y = d - SCAN_DEPTH; y <= d; y++) {
                 BlockPos pos = new BlockPos(x, y, z);
-                if(level.getBlockState(pos.above()).is(Blocks.AIR) && level.getBlockState(pos).is(Blocks.NETHERRACK)) {
+                if(level.getBlockState(pos.above()).isAir() && level.getBlockState(pos).is(Blocks.NETHERRACK)) {
                     level.setBlock(pos, smoldering, 3);
                     placed = true;
                 }

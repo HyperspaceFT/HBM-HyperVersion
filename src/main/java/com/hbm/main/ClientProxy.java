@@ -264,6 +264,7 @@ public class ClientProxy extends ServerProxy {
         BlockEntityRenderers.register(NtmBlockEntityTypes.LAUNCH_PAD_LARGE.get(), new RenderLaunchPadLarge());
         BlockEntityRenderers.register(NtmBlockEntityTypes.SOYUZ_LAUNCHER.get(), new RenderSoyuzLauncher());
         BlockEntityRenderers.register(NtmBlockEntityTypes.MACHINE_RADAR.get(), new RenderRadar());
+        BlockEntityRenderers.register(NtmBlockEntityTypes.MACHINE_RADAR_LARGE.get(), new RenderRadarLarge());
     }
 
     @Override

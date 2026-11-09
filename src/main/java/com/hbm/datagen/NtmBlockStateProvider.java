@@ -360,6 +360,7 @@ public class NtmBlockStateProvider extends BlockStateProvider {
         this.particleOnlyBlock(NtmBlocks.HEATER_HEATEX, modLoc("block/block_steel"));
         this.registerMachineShredder();
         this.registerMachineElectricFurnace();
+        this.registerRadioTorches();
         this.particleOnlyBlock(NtmBlocks.MACHINE_CHUNGUS, modLoc("block/block_steel"));
         this.particleOnlyBlock(NtmBlocks.MACHINE_INDUSTRIAL_TURBINE, modLoc("block/block_steel"));
         this.particleOnlyBlock(NtmBlocks.MACHINE_FLUID_TANK, modLoc("block/block_steel"));
@@ -463,6 +464,18 @@ public class NtmBlockStateProvider extends BlockStateProvider {
         this.itemModels().basicItem(NtmBlocks.GAS_COAL.asItem());
         this.itemModels().basicItem(NtmBlocks.GAS_FLAMMABLE.asItem());
         this.itemModels().basicItem(NtmBlocks.GAS_EXPLOSIVE.asItem());
+        // Invisible gases and the two lava fluid blocks (LiquidBlock, all 16 levels) only need a particle texture.
+        this.particleOnlyState(NtmBlocks.GAS_RADON, modLoc("item/gas_radon"));
+        this.particleOnlyState(NtmBlocks.GAS_RADON_DENSE, modLoc("item/gas_radon_dense"));
+        this.particleOnlyState(NtmBlocks.GAS_RADON_TOMB, modLoc("item/gas_radon_tomb"));
+        this.particleOnlyState(NtmBlocks.GAS_MELTDOWN, modLoc("item/gas_meltdown"));
+        this.particleOnlyState(NtmBlocks.GAS_MONOXIDE, modLoc("item/gas_monoxide"));
+        this.particleOnlyState(NtmBlocks.GAS_ASBESTOS, modLoc("item/gas_asbestos"));
+        this.particleOnlyState(NtmBlocks.GAS_COAL, modLoc("item/gas_coal"));
+        this.particleOnlyState(NtmBlocks.GAS_FLAMMABLE, modLoc("item/gas_flammable"));
+        this.particleOnlyState(NtmBlocks.GAS_EXPLOSIVE, modLoc("item/gas_explosive"));
+        this.particleOnlyState(NtmBlocks.RAD_LAVA, modLoc("block/rad_lava_still"));
+        this.particleOnlyState(NtmBlocks.VOLCANIC_LAVA, modLoc("block/volcanic_lava_still"));
         this.simpleCubeAllBlock(NtmBlocks.OIL_PIPE);
 
         this.simpleCubeAllBlock(NtmBlocks.TAINT);
@@ -709,6 +722,57 @@ public class NtmBlockStateProvider extends BlockStateProvider {
         });
 
         this.simpleBlockItem(block, off);
+    }
+
+    /**
+     * The RoR torches. The original draws models/blocks/rtty.obj with one texture (RenderRTTY.java:33-76): two crossed 4x10 pixel
+     * panels and a 2x2 top, standing on the support face and rotated by the facing. Here the same quads are block model elements;
+     * the sender and receiver swap to the _on texture while LIT, the relay always uses its animated rtty_relay texture. The items
+     * use the flat texture as the original item icons (RadioTorchRWBase.java:30-32 returns iconOn for the item's side).
+     */
+    private void registerRadioTorches() {
+        this.radioTorch(NtmBlocks.RADIO_TORCH_SENDER.get(), "rtty_sender_off", "rtty_sender_on");
+        this.radioTorch(NtmBlocks.RADIO_TORCH_RECEIVER.get(), "rtty_rec_off", "rtty_rec_on");
+        this.radioTorch(NtmBlocks.RADIO_TORCH_RELAY.get(), "rtty_relay", null);
+    }
+
+    private void radioTorch(Block block, String offTexture, String onTexture) {
+        ModelFile off = this.rttyModel(offTexture, offTexture);
+        ModelFile on = onTexture == null ? off : this.rttyModel(onTexture, onTexture);
+
+        this.getVariantBuilder(block).forAllStates(state -> {
+            // vanilla end_rod rotations for a model that points up
+            Direction facing = state.getValue(com.hbm.blocks.network.RadioTorchBaseBlock.FACING);
+            int x = facing == Direction.UP ? 0 : facing == Direction.DOWN ? 180 : 90;
+            int y = switch(facing) {
+                case EAST -> 90;
+                case SOUTH -> 180;
+                case WEST -> 270;
+                default -> 0;
+            };
+            boolean lit = state.hasProperty(com.hbm.blocks.network.RadioTorchRWBaseBlock.LIT) && state.getValue(com.hbm.blocks.network.RadioTorchRWBaseBlock.LIT);
+            return ConfiguredModel.builder().modelFile(lit ? on : off).rotationX(x).rotationY(y).build();
+        });
+
+        this.itemModels().withExistingParent(this.key(block).getPath(), mcLoc("item/generated")).texture("layer0", modLoc("block/" + (onTexture == null ? offTexture : onTexture)));
+    }
+
+    private ModelFile rttyModel(String name, String texture) {
+        return this.models().getBuilder(name)
+                .renderType("cutout")
+                .texture("torch", modLoc("block/" + texture))
+                .texture("particle", modLoc("block/" + texture))
+                .element().from(6, 0, 7).to(10, 10, 9)
+                .face(Direction.NORTH).uvs(6, 6, 10, 16).texture("#torch").end()
+                .face(Direction.SOUTH).uvs(6, 6, 10, 16).texture("#torch").end()
+                .end()
+                .element().from(7, 0, 6).to(9, 10, 10)
+                .face(Direction.WEST).uvs(6, 6, 10, 16).texture("#torch").end()
+                .face(Direction.EAST).uvs(6, 6, 10, 16).texture("#torch").end()
+                .end()
+                .element().from(7, 9, 7).to(9, 9, 9)
+                .face(Direction.UP).uvs(7, 7, 9, 9).texture("#torch").end()
+                .end();
     }
 
     private ModelFile electricFurnaceModel(String name, String front) {
@@ -1067,6 +1131,11 @@ public class NtmBlockStateProvider extends BlockStateProvider {
     private void particleOnlyBlock(DeferredBlock<? extends Block> block, ResourceLocation particleTexture, boolean frontLight) {
         this.simpleBlock(block.get(), this.models().getBuilder(name(block) + "_particle").texture("particle", particleTexture));
         this.entityBlockItem(block.get(), frontLight);
+    }
+
+    /** One particle-only model for every state of the block; leaves the item model alone. */
+    private void particleOnlyState(DeferredBlock<? extends Block> block, ResourceLocation particleTexture) {
+        this.simpleBlock(block.get(), this.models().getBuilder(name(block) + "_particle").texture("particle", particleTexture));
     }
 
     private void entityBlockItem(Block block, boolean frontLight) {

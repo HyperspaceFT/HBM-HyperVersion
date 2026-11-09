@@ -42,11 +42,11 @@ public class ClientConfig {
                 .translation("hbmsntm.configuration.infoPosition")
                 .defineInRange("infoPosition", 0, 0, 2);
         INFO_OFFSET_X = builder
-                .comment("Offset for the y position of the info panel")
+                .comment("Offset for the x position of the info panel")
                 .translation("hbmsntm.configuration.infoOffsetHorizontal")
                 .defineInRange("infoOffsetHorizontal", 0, Integer.MIN_VALUE, Integer.MAX_VALUE);
         INFO_OFFSET_Y = builder
-                .comment("Offset for the x position of the info panel")
+                .comment("Offset for the y position of the info panel")
                 .translation("hbmsntm.configuration.infoOffsetVertical")
                 .defineInRange("infoOffsetVertical", 0, Integer.MIN_VALUE, Integer.MAX_VALUE);
 
@@ -64,7 +64,7 @@ public class ClientConfig {
                 .translation("hbmsntm.configuration.toolHudIndicatorX")
                 .defineInRange("toolHudIndicatorX", 0, Integer.MIN_VALUE, Integer.MAX_VALUE);
         TOOL_HUD_OFFSET_VERTICAL = builder
-                .comment("Tool hud indicator x offset.")
+                .comment("Tool hud indicator y offset.")
                 .translation("hbmsntm.configuration.toolHudIndicatorY")
                 .defineInRange("toolHudIndicatorY", 0, Integer.MIN_VALUE, Integer.MAX_VALUE);
 
