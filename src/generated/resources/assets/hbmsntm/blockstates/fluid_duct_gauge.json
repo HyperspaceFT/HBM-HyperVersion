@@ -1,0 +1,22 @@
+{
+  "variants": {
+    "facing=down": {
+      "model": "hbmsntm:block/fluid_duct_gauge_down"
+    },
+    "facing=east": {
+      "model": "hbmsntm:block/fluid_duct_gauge_east"
+    },
+    "facing=north": {
+      "model": "hbmsntm:block/fluid_duct_gauge_north"
+    },
+    "facing=south": {
+      "model": "hbmsntm:block/fluid_duct_gauge_south"
+    },
+    "facing=up": {
+      "model": "hbmsntm:block/fluid_duct_gauge_up"
+    },
+    "facing=west": {
+      "model": "hbmsntm:block/fluid_duct_gauge_west"
+    }
+  }
+}

@@ -109,10 +109,10 @@ public abstract class BatteryBaseBlockEntity extends MachineBaseBlockEntity impl
     public void setRemoved() {
         super.setRemoved();
 
-        if (this.level != null && !this.level.isClientSide) {
-            if (this.node != null) {
-                UniNodespace.destroyNode(level, this.getBlockPos(), Nodespace.THE_POWER_PROVIDER);
-            }
+        // A chunk unload calls onChunkUnloaded first and keeps the node, as the original destroys it only on invalidate; removing the block calls setRemoved alone
+        // // A reloaded block entity finds its kept node only on its first tick, so the node is destroyed by position
+        if (this.level != null && !this.level.isClientSide && this.isLoaded) {
+            UniNodespace.destroyNode(level, this.getBlockPos(), Nodespace.THE_POWER_PROVIDER);
         }
     }
 

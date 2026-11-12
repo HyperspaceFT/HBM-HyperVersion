@@ -229,6 +229,15 @@ public class ClientProxy extends ServerProxy {
         BlockEntityRenderers.register(NtmBlockEntityTypes.ASSEMBLY_MACHINE.get(), new RenderAssemblyMachine());
         BlockEntityRenderers.register(NtmBlockEntityTypes.FLUID_TANK.get(), new RenderFluidTank());
         BlockEntityRenderers.register(NtmBlockEntityTypes.MACHINE_CHUNGUS.get(), new RenderChungus());
+        BlockEntityRenderers.register(NtmBlockEntityTypes.PYLON.get(), new RenderPylon());
+        BlockEntityRenderers.register(NtmBlockEntityTypes.PYLON_MEDIUM.get(), new RenderPylonMedium());
+        BlockEntityRenderers.register(NtmBlockEntityTypes.PYLON_LARGE.get(), new RenderPylonLarge());
+        BlockEntityRenderers.register(NtmBlockEntityTypes.SUBSTATION.get(), new RenderSubstation());
+        BlockEntityRenderers.register(NtmBlockEntityTypes.CONNECTOR.get(), new RenderConnector());
+        BlockEntityRenderers.register(NtmBlockEntityTypes.CONNECTOR_SUPER.get(), new RenderConnectorBase());
+        BlockEntityRenderers.register(NtmBlockEntityTypes.PIPE_ANCHOR.get(), new RenderPipeAnchor());
+        BlockEntityRenderers.register(NtmBlockEntityTypes.FLOW_CONTROL_PUMP.get(), new RenderFlowControlPump());
+        BlockEntityRenderers.register(NtmBlockEntityTypes.NETWORK_SEPARATOR.get(), new RenderNetworkSeparator());
         BlockEntityRenderers.register(NtmBlockEntityTypes.MACHINE_INDUSTRIAL_TURBINE.get(), new RenderIndustrialTurbine());
         BlockEntityRenderers.register(NtmBlockEntityTypes.PRESS.get(), new RenderPress());
         BlockEntityRenderers.register(NtmBlockEntityTypes.GEIGER_COUNTER.get(), new RenderGeigerBlock());

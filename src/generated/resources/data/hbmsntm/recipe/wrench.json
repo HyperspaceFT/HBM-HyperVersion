@@ -1,0 +1,21 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "equipment",
+  "key": {
+    "I": {
+      "item": "minecraft:iron_ingot"
+    },
+    "S": {
+      "item": "hbmsntm:ingot_steel"
+    }
+  },
+  "pattern": [
+    " S ",
+    " IS",
+    "I  "
+  ],
+  "result": {
+    "count": 1,
+    "id": "hbmsntm:wrench"
+  }
+}

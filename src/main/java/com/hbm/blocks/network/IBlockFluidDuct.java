@@ -5,5 +5,5 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.world.level.Level;
 
 public interface IBlockFluidDuct {
-    void changeTypeRecursively(Level level, BlockPos pos, FluidType type, int loopsRemaining);
+    void changeTypeRecursively(Level level, BlockPos pos, FluidType prevType, FluidType type, int loopsRemaining);
 }

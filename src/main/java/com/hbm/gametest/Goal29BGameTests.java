@@ -155,7 +155,7 @@ public class Goal29BGameTests {
         return lang.has(key) && lang.get(key).isJsonPrimitive() ? lang.get(key).getAsString() : null;
     }
 
-    // ConfigurationScreen.java:280,328,554-579,927-939 key rules; the 150 values (Common 131, Server 8, Client 11) and 16 Common sections
+    // ConfigurationScreen.java:280,328,554-579,927-939 key rules; the 151 values (Common 131, Server 8, Client 12) and 16 Common sections
     @GameTest(template = TEMPLATE, batch = "hbm29b_config_keys", timeoutTicks = 100)
     public static void config_screen_keys(GameTestHelper helper) {
         guard(() -> {
@@ -172,8 +172,8 @@ public class Goal29BGameTests {
             long server = values.stream().filter(v -> v.spec().equals("server")).count();
             long client = values.stream().filter(v -> v.spec().equals("client")).count();
             Set<String> commonSections = sections.stream().filter(s -> s.spec().equals("common")).map(ConfigSection::key).collect(Collectors.toCollection(TreeSet::new));
-            check(values.size() == 150, "the three specs hold " + values.size() + " values (common " + common + ", server " + server + ", client " + client + "), expected 150");
-            check(common == 131 && server == 8 && client == 11, "values per spec: common " + common + ", server " + server + ", client " + client + ", expected 131 / 8 / 11");
+            check(values.size() == 151, "the three specs hold " + values.size() + " values (common " + common + ", server " + server + ", client " + client + "), expected 151");
+            check(common == 131 && server == 8 && client == 12, "values per spec: common " + common + ", server " + server + ", client " + client + ", expected 131 / 8 / 12");
             check(commonSections.size() == 16, "the common spec holds " + commonSections.size() + " sections " + commonSections + ", expected 16");
 
             // every value: the name and the .tooltip, in both languages

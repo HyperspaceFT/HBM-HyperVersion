@@ -7,6 +7,7 @@ import com.hbm.blockentity.LoadedBaseBlockEntity;
 import com.hbm.blockentity.NtmBlockEntityTypes;
 import com.hbm.blockentity.ITickable;
 import net.minecraft.core.BlockPos;
+import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
 
 public class CableBaseBlockEntity extends LoadedBaseBlockEntity implements IEnergyConductorMK2, ITickable {
@@ -14,7 +15,11 @@ public class CableBaseBlockEntity extends LoadedBaseBlockEntity implements IEner
     public PowerNode node;
 
     public CableBaseBlockEntity(BlockPos pos, BlockState state) {
-        super(NtmBlockEntityTypes.NETWORK_CABLE.get(), pos, state);
+        this(NtmBlockEntityTypes.NETWORK_CABLE.get(), pos, state);
+    }
+
+    protected CableBaseBlockEntity(BlockEntityType<? extends CableBaseBlockEntity> type, BlockPos pos, BlockState state) {
+        super(type, pos, state);
     }
 
     @Override
@@ -44,10 +49,10 @@ public class CableBaseBlockEntity extends LoadedBaseBlockEntity implements IEner
     public void setRemoved() {
         super.setRemoved();
 
-        if (this.level != null && !this.level.isClientSide) {
-            if (this.node != null) {
-                Nodespace.destroyNode(level, this.getBlockPos());
-            }
+        // A chunk unload calls onChunkUnloaded first and keeps the node, as the original destroys it only on invalidate; removing the block calls setRemoved alone
+        // // A reloaded block entity finds its kept node only on its first tick, so the node is destroyed by position
+        if (this.level != null && !this.level.isClientSide && this.isLoaded) {
+            Nodespace.destroyNode(level, this.getBlockPos());
         }
     }
 }

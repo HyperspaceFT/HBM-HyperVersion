@@ -200,12 +200,10 @@ public class MachineFluidTankBlockEntity extends MachineBaseBlockEntity implemen
     @Override
     public void setRemoved() {
         super.setRemoved();
-        this.destroyNode();
-    }
-
-    @Override
-    public void onChunkUnloaded() {
-        super.onChunkUnloaded();
+        // A chunk unload calls onChunkUnloaded first and keeps the node, as the original destroys it only on invalidate; removing the block calls setRemoved alone
+        if(!this.isLoaded || this.level == null || this.level.isClientSide) return;
+        // A reloaded block entity finds its kept node only on its first tick
+        if(this.node == null) this.node = (FluidNode) UniNodespace.getNode(this.level, this.getBlockPos(), this.tank.getTankType().getNetworkProvider());
         this.destroyNode();
     }
 

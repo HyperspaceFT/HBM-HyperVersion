@@ -1,0 +1,7 @@
+{
+  "variants": {
+    "": {
+      "model": "hbmsntm:block/flow_control_pump_particle"
+    }
+  }
+}

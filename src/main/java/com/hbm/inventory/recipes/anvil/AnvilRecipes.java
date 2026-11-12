@@ -484,6 +484,27 @@ public class AnvilRecipes {
                 new AnvilOutput(new ItemStack(NtmBlocks.MACHINE_STEAM_ENGINE.asItem()))
         ).setTier(2).setOverlay(OverlayType.CONSTRUCTION));
 
+        // Large pylon and substation, original AnvilRecipes.java:486-502; no recycling entries
+        CONSTRUCTION_RECIPES.add(new AnvilConstructionRecipe(
+                new AStack[] {
+                        new RecipesCommon.TagStack(ItemTags.create(ResourceLocation.fromNamespaceAndPath("ntm", "any_concrete")), 2),
+                        new ComparableStack(NtmBlocks.STEEL_SCAFFOLD.asItem(), 8),
+                        new ComparableStack(NtmItems.PLATE_POLYMER.get(), 8),
+                        new ComparableStack(NtmItems.COIL_COPPER.get(), 4)
+                },
+                new AnvilOutput(new ItemStack(NtmBlocks.RED_PYLON_LARGE.asItem()))
+        ).setTier(2).setOverlay(OverlayType.CONSTRUCTION));
+
+        CONSTRUCTION_RECIPES.add(new AnvilConstructionRecipe(
+                new AStack[] {
+                        new RecipesCommon.TagStack(ItemTags.create(ResourceLocation.fromNamespaceAndPath("ntm", "any_concrete")), 8),
+                        new ComparableStack(NtmItems.INGOT_STEEL.get(), 8),
+                        new ComparableStack(NtmItems.PLATE_POLYMER.get(), 12),
+                        new ComparableStack(NtmItems.COIL_COPPER.get(), 8)
+                },
+                new AnvilOutput(new ItemStack(NtmBlocks.SUBSTATION.asItem(), 2))
+        ).setTier(2).setOverlay(OverlayType.CONSTRUCTION));
+
         // Heating oven, original AnvilRecipes.java:269-274 and :672-678: one construction entry per copper ingot item,
         // as for the firebox, and the original's disassembly into firebricks and copper.
         CONSTRUCTION_RECIPES.add(new AnvilConstructionRecipe(

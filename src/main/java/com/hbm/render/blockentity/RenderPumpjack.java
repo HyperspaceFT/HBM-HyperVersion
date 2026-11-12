@@ -157,26 +157,20 @@ public class RenderPumpjack extends BlockEntityRendererNT<MachinePumpjackBlockEn
         consumer.addVertex(matrix, -p, 0.75F, p).setColor(0.2F, 0.2F, 0.2F, 1F).setLight(packedLight);
     }
 
-    private AABB bb = null;
-
     @Override
     public AABB getRenderBoundingBox(MachinePumpjackBlockEntity be) {
-        if(bb == null) {
-            BlockPos pos = be.getBlockPos();
-            int x = pos.getX();
-            int y = pos.getY();
-            int z = pos.getZ();
-            bb = new AABB(
-                    x - 7,
-                    y - 0,
-                    z - 7,
-                    x + 8,
-                    y + 6,
-                    z + 8
-            );
-        }
-
-        return bb;
+        BlockPos pos = be.getBlockPos();
+        int x = pos.getX();
+        int y = pos.getY();
+        int z = pos.getZ();
+        return new AABB(
+                x - 7,
+                y - 0,
+                z - 7,
+                x + 8,
+                y + 6,
+                z + 8
+        );
     }
 
     @Override

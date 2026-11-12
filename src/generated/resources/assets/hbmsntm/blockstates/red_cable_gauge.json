@@ -1,0 +1,22 @@
+{
+  "variants": {
+    "facing=down": {
+      "model": "hbmsntm:block/red_cable_gauge_down"
+    },
+    "facing=east": {
+      "model": "hbmsntm:block/red_cable_gauge_east"
+    },
+    "facing=north": {
+      "model": "hbmsntm:block/red_cable_gauge_north"
+    },
+    "facing=south": {
+      "model": "hbmsntm:block/red_cable_gauge_south"
+    },
+    "facing=up": {
+      "model": "hbmsntm:block/red_cable_gauge_up"
+    },
+    "facing=west": {
+      "model": "hbmsntm:block/red_cable_gauge_west"
+    }
+  }
+}

@@ -25,10 +25,12 @@ public class GenNode<N extends NodeNet> {
     }
 
     public GenNode<N> addConnection(DirPos connection) {
-        DirPos[] newCons = new DirPos[this.connections.length + 1];
-        for (int i = 0; i < this.connections.length; i++) newCons[i] = this.connections[i];
+        int length = this.connections == null ? 0 : this.connections.length;
+        DirPos[] newCons = new DirPos[length + 1];
+        for (int i = 0; i < length; i++) newCons[i] = this.connections[i];
         newCons[newCons.length - 1] = connection;
         this.connections = newCons;
+        this.recentlyChanged = true;
         return this;
     }
 

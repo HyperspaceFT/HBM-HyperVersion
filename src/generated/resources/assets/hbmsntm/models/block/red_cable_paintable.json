@@ -1,0 +1,8 @@
+{
+  "type": "paintable_cable",
+  "loader": "hbmsntm:ntm_geometry_loader",
+  "textures": {
+    "overlay": "hbmsntm:block/red_cable_overlay",
+    "texture": "hbmsntm:block/red_cable_base"
+  }
+}

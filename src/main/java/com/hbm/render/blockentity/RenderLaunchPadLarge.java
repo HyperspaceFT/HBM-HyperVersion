@@ -110,27 +110,21 @@ public class RenderLaunchPadLarge extends BlockEntityRendererNT<LaunchPadLargeBl
         RenderContext.end();
     }
 
-    private AABB bb = null;
-
     @Override
     public AABB getRenderBoundingBox(LaunchPadLargeBlockEntity be) {
 
-        if(bb == null) {
-            int x = be.getBlockPos().getX();
-            int y = be.getBlockPos().getY();
-            int z = be.getBlockPos().getZ();
+        int x = be.getBlockPos().getX();
+        int y = be.getBlockPos().getY();
+        int z = be.getBlockPos().getZ();
 
-            bb = new AABB(
-                    x - 10,
-                    y - 0,
-                    z - 10,
-                    x + 11,
-                    y + 15,
-                    z + 11
-            );
-        }
-
-        return bb;
+        return new AABB(
+                x - 10,
+                y - 0,
+                z - 10,
+                x + 11,
+                y + 15,
+                z + 11
+        );
     }
 
     @Override

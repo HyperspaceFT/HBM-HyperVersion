@@ -56,8 +56,8 @@ public abstract class FluidDuctBaseBlock extends Block implements EntityBlock, I
                     }
                 }
             } else {
-                if(level.getBlockEntity(pos) instanceof PipeBaseBlockEntity) {
-                    this.changeTypeRecursively(level, pos, type, 64);
+                if(level.getBlockEntity(pos) instanceof PipeBaseBlockEntity pipe) {
+                    this.changeTypeRecursively(level, pos, pipe.getFluidType(), type, 64);
                     return ItemInteractionResult.SUCCESS;
                 }
             }
@@ -67,17 +67,19 @@ public abstract class FluidDuctBaseBlock extends Block implements EntityBlock, I
     }
 
 
+    /** Changes only the ducts of the starting duct's type, as the original (FluidDuctBase.java:100,108-126). */
     @Override
-    public void changeTypeRecursively(Level level, BlockPos pos, FluidType type, int loopsRemaining) {
+    public void changeTypeRecursively(Level level, BlockPos pos, FluidType prevType, FluidType type, int loopsRemaining) {
         if(level.getBlockEntity(pos) instanceof PipeBaseBlockEntity pipe) {
-            if(pipe.getFluidType() != type) {
+            if(pipe.getFluidType() == prevType && pipe.getFluidType() != type) {
                 pipe.setFluidType(type);
                 if(level.getBlockState(pos).getBlock() instanceof FluidDuctConnectingBlock connectingDuct) connectingDuct.updateConnections(level, pos, type);
 
                 if(loopsRemaining > 0) {
                     for(Direction dir : Direction.values()) {
-                        if(level.getBlockState(pos).getBlock() instanceof IBlockFluidDuct ibfi) {
-                            ibfi.changeTypeRecursively(level, pos.relative(dir), type, loopsRemaining - 1);
+                        BlockPos next = pos.relative(dir);
+                        if(level.getBlockState(next).getBlock() instanceof IBlockFluidDuct ibfi) {
+                            ibfi.changeTypeRecursively(level, next, prevType, type, loopsRemaining - 1);
                         }
                     }
                 }

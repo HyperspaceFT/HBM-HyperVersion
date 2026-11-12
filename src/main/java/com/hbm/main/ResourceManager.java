@@ -285,6 +285,22 @@ public class ResourceManager {
     public static final ResourceLocation RBMK_CRANE_CONSOLE_TEX = NuclearTechMod.withDefaultNamespace("textures/models/machines/crane_console.png");
     public static final ResourceLocation RBMK_CRANE_TEX = NuclearTechMod.withDefaultNamespace("textures/models/machines/rbmk_crane.png");
 
+    // Pylons, connectors and the substation (original ResourceManager.java:881-890)
+    public static final ResourceLocation CONNECTOR_TEX = NuclearTechMod.withDefaultNamespace("textures/models/network/connector.png");
+    public static final ResourceLocation CONNECTOR_SUPER_TEX = NuclearTechMod.withDefaultNamespace("textures/models/network/connector_super.png");
+    public static final ResourceLocation PYLON_TEX = NuclearTechMod.withDefaultNamespace("textures/models/network/pylon.png");
+    public static final ResourceLocation PYLON_STEEL_TEX = NuclearTechMod.withDefaultNamespace("textures/models/network/pylon_steel.png");
+    public static final ResourceLocation PYLON_MEDIUM_TEX = NuclearTechMod.withDefaultNamespace("textures/models/network/pylon_medium.png");
+    public static final ResourceLocation PYLON_MEDIUM_STEEL_TEX = NuclearTechMod.withDefaultNamespace("textures/models/network/pylon_medium_steel.png");
+    public static final ResourceLocation PYLON_LARGE_TEX = NuclearTechMod.withDefaultNamespace("textures/models/network/pylon_large.png");
+    public static final ResourceLocation SUBSTATION_TEX = NuclearTechMod.withDefaultNamespace("textures/models/network/substation.png");
+    public static final ResourceLocation WIRE_TEX = NuclearTechMod.withDefaultNamespace("textures/models/network/wire.png");
+    public static final ResourceLocation WIRE_GREYSCALE_TEX = NuclearTechMod.withDefaultNamespace("textures/models/network/wire_greyscale.png");
+    // Pipe anchor, flow control pump and network separator (original ResourceManager.java:891,894,898)
+    public static final ResourceLocation PIPE_ANCHOR_TEX = NuclearTechMod.withDefaultNamespace("textures/models/network/pipe_anchor.png");
+    public static final ResourceLocation FLOW_CONTROL_PUMP_TEX = NuclearTechMod.withDefaultNamespace("textures/models/network/flow_control_pump.png");
+    public static final ResourceLocation NETWORK_SEPARATOR_TEX = NuclearTechMod.withDefaultNamespace("textures/models/network/network_separator.png");
+
     public static final ResourceLocation WHITE_TEX = NuclearTechMod.withDefaultNamespace("textures/models/white.png");
 
     // Landmines
@@ -292,6 +308,18 @@ public class ResourceManager {
     public static IModelCustom mine_he;
     public static IModelCustom mine_naval;
     public static IModelCustom mine_fat;
+
+    // Pylons, connectors and the substation (original ResourceManager.java:426-431)
+    public static IModelCustom connector;
+    public static IModelCustom connector_super;
+    public static IModelCustom pylon;
+    public static IModelCustom pylon_medium;
+    public static IModelCustom pylon_large;
+    public static IModelCustom substation;
+    // Pipe anchor, flow control pump and network separator (original ResourceManager.java:432,434-435)
+    public static IModelCustom pipe_anchor;
+    public static IModelCustom flow_control_pump;
+    public static IModelCustom network_separator;
 
     // Tank
     public static IModelCustom fluid_tank;
@@ -474,6 +502,15 @@ public class ResourceManager {
         mine_naval = new HFRWavefrontObject("models/obj/bomb/mine_naval.obj").asVBO();
         mine_fat = new HFRWavefrontObject("models/obj/bomb/mine_fat.obj").asVBO();
 
+        connector = new HFRWavefrontObject("models/obj/network/connector.obj").noSmooth().asVBO();
+        connector_super = new HFRWavefrontObject("models/obj/network/connector_super.obj").noSmooth().asVBO();
+        pylon = new HFRWavefrontObject("models/obj/network/pylon.obj").noSmooth().asVBO();
+        pylon_medium = new HFRWavefrontObject("models/obj/network/pylon_medium.obj").noSmooth().asVBO();
+        pylon_large = new HFRWavefrontObject("models/obj/network/pylon_large.obj").noSmooth().asVBO();
+        substation = new HFRWavefrontObject("models/obj/network/substation.obj").asVBO();
+        pipe_anchor = new HFRWavefrontObject("models/obj/network/pipe_anchor.obj").asVBO();
+        flow_control_pump = new HFRWavefrontObject("models/obj/network/flow_control_pump.obj").asVBO();
+        network_separator = new HFRWavefrontObject("models/obj/network/network_separator.obj").asVBO();
         fluid_tank = new HFRWavefrontObject("models/obj/machines/fluid_tank.obj").asVBO();
         fluid_tank_exploded = new HFRWavefrontObject("models/obj/machines/fluid_tank_exploded.obj").asVBO();
 

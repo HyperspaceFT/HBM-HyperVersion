@@ -1263,6 +1263,11 @@ public class NtmItems {
     public static final DeferredItem<Item> DEFUSER = ITEMS.register("defuser", () -> new ToolingItem(ToolType.DEFUSER, new Item.Properties().durability(100)));
     public static final DeferredItem<Item> REACHER = ITEMS.register("reacher", () -> new Item(new Item.Properties().stacksTo(1)));
     public static final DeferredItem<Item> MELTDOWN_TOOL = ITEMS.register("meltdown_tool", () -> new DyatlovItem(new Item.Properties().stacksTo(1)));
+    // Original ModItems.java:2645 (ItemWiring, cable drum)
+    public static final DeferredItem<Item> WIRING_RED_COPPER = ITEMS.register("wiring_red_copper", () -> new WiringItem(new Item.Properties()));
+    // Pipe wrench (original ModItems.java:2646): an ItemSword of tMatSteel (MainRegistry.java:114: 750 uses, efficiency 8, damage 2),
+    // whose weapon modifier is 4 + 2 = 6; TOOL_STEEL has the uses and efficiency and no damage bonus, so the modifier is passed whole
+    public static final DeferredItem<Item> WRENCH = ITEMS.register("wrench", () -> new WrenchItem(NtmTiers.TOOL_STEEL, new Item.Properties().attributes(SwordItem.createAttributes(NtmTiers.TOOL_STEEL, 6, -2.4F))));
     // Original ModItems.java:3838; the +2 attack damage modifier is added by RBMKToolItem.
     public static final DeferredItem<Item> RBMK_TOOL = ITEMS.register("rbmk_tool", () -> new RBMKToolItem(new Item.Properties().stacksTo(1)));
     public static final DeferredItem<Item> DRILL_TITANIUM = ITEMS.register("drill_titanium", () -> new Item(new Item.Properties()));

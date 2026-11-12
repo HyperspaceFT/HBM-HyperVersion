@@ -1,6 +1,8 @@
 package com.hbm.main;
 
 import com.hbm.blockentity.network.PipeBaseBlockEntity;
+import com.hbm.blockentity.network.IPaintableBlockEntity;
+import com.hbm.render.model.PaintableBakedModel;
 import com.hbm.blocks.ICustomBlockHighlight;
 import com.hbm.blocks.ILookOverlay;
 import com.hbm.blocks.IMultiBlock;
@@ -607,6 +609,18 @@ public class NuclearTechModClient {
                     return 0xFF000000 | type.getColor();
                 },
                 NtmBlocks.FLUID_DUCT_NEO.get()
+        );
+        event.register(
+                (state, level, pos, tintIndex) -> {
+                    if (level == null || pos == null) return 0xFFFFFFFF;
+                    BlockEntity te = level.getBlockEntity(pos);
+                    // a painted block takes the paint's own tint (its overlay is untinted); unpainted, the duct overlay (tint index 1) shows the fluid colour
+                    if (te instanceof IPaintableBlockEntity paintable && paintable.getPaint() != null) return event.getBlockColors().getColor(paintable.getPaint(), level, pos, tintIndex);
+                    if (tintIndex == PaintableBakedModel.OVERLAY_TINT && te instanceof PipeBaseBlockEntity pipe) return 0xFF000000 | pipe.getFluidType().getColor();
+                    return 0xFFFFFFFF;
+                },
+                NtmBlocks.RED_CABLE_PAINTABLE.get(),
+                NtmBlocks.FLUID_DUCT_PAINTABLE.get()
         );
     }
 

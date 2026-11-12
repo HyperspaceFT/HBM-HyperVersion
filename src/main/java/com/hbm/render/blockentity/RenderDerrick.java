@@ -40,26 +40,20 @@ public class RenderDerrick extends BlockEntityRendererNT<MachineOilWellBlockEnti
         ResourceManager.oil_derrick.renderAll();
     }
 
-    private AABB bb = null;
-
     @Override
     public AABB getRenderBoundingBox(MachineOilWellBlockEntity be) {
-        if(bb == null) {
-            BlockPos pos = be.getBlockPos();
-            int x = pos.getX();
-            int y = pos.getY();
-            int z = pos.getZ();
-            bb = new AABB(
-                    x - 1,
-                    y - 0,
-                    z - 1,
-                    x + 2,
-                    y + 10,
-                    z + 2
-            );
-        }
-
-        return bb;
+        BlockPos pos = be.getBlockPos();
+        int x = pos.getX();
+        int y = pos.getY();
+        int z = pos.getZ();
+        return new AABB(
+                x - 1,
+                y - 0,
+                z - 1,
+                x + 2,
+                y + 10,
+                z + 2
+        );
     }
 
     @Override

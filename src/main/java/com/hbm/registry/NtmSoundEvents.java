@@ -69,6 +69,7 @@ public class NtmSoundEvents {
     public static final DeferredHolder<SoundEvent, SoundEvent> RBMK_AZ5_COVER = reg("block.rbmk_az5_cover");
     public static final DeferredHolder<SoundEvent, SoundEvent> SHUTDOWN = reg("block.shutdown");
     public static final DeferredHolder<SoundEvent, SoundEvent> TURBINE_LEVER = reg("block.chungus_lever");
+    public static final DeferredHolder<SoundEvent, SoundEvent> REACTOR_START = reg("block.reactor_start");
     public static final DeferredHolder<SoundEvent, SoundEvent> BOBBLE = reg("block.bobble"); // BLOCKS CATEGORY
     public static final DeferredHolder<SoundEvent, SoundEvent> FENSU_HUM = reg("block.fensu_hum"); // BLOCKS CATEGORY
     public static final DeferredHolder<SoundEvent, SoundEvent> DEBRIS = reg("block.debris"); // BLOCKS CATEGORY

@@ -36,20 +36,14 @@ public class RenderRadar extends BlockEntityRendererNT<MachineRadarBlockEntity> 
         RenderSystem.enableCull();
     }
 
-    private AABB bb = null;
-
     @Override
     public AABB getRenderBoundingBox(MachineRadarBlockEntity be) {
 
-        if(bb == null) {
-            int x = be.getBlockPos().getX();
-            int y = be.getBlockPos().getY();
-            int z = be.getBlockPos().getZ();
+        int x = be.getBlockPos().getX();
+        int y = be.getBlockPos().getY();
+        int z = be.getBlockPos().getZ();
 
-            bb = new AABB(x - 1, y, z - 1, x + 2, y + 3, z + 2);
-        }
-
-        return bb;
+        return new AABB(x - 1, y, z - 1, x + 2, y + 3, z + 2);
     }
 
     @Override

@@ -84,6 +84,29 @@ public class NtmBlockTagProvider extends BlockTagsProvider {
 
         this.tag(BlockTags.MINEABLE_WITH_PICKAXE)
                 .add(
+                        NtmBlocks.RED_WIRE_COATED.get(),
+                        NtmBlocks.RED_CABLE_PAINTABLE.get(),
+                        NtmBlocks.RED_CABLE_GAUGE.get(),
+                        NtmBlocks.CABLE_SWITCH.get(),
+                        NtmBlocks.CABLE_DETECTOR.get(),
+                        NtmBlocks.MACHINE_DETECTOR.get(),
+                        NtmBlocks.FLUID_DUCT_PAINTABLE.get(),
+                        NtmBlocks.FLUID_DUCT_GAUGE.get(),
+                        NtmBlocks.FLUID_VALVE.get(),
+                        NtmBlocks.FLUID_SWITCH.get(),
+                        NtmBlocks.FLUID_COUNTER_VALVE.get(),
+                        NtmBlocks.RED_CONNECTOR.get(),
+                        NtmBlocks.RED_CONNECTOR_SUPER.get(),
+                        NtmBlocks.RED_PYLON.get(),
+                        NtmBlocks.RED_PYLON_STEEL.get(),
+                        NtmBlocks.RED_PYLON_MEDIUM_STEEL.get(),
+                        NtmBlocks.RED_PYLON_MEDIUM_STEEL_TRANSFORMER.get(),
+                        NtmBlocks.RED_PYLON_LARGE.get(),
+                        NtmBlocks.SUBSTATION.get(),
+                        NtmBlocks.PIPE_ANCHOR.get(),
+                        NtmBlocks.FLOW_CONTROL_PUMP.get(),
+                        NtmBlocks.NETWORK_SEPARATOR.get(),
+
                         NtmBlocks.ORE_BASALT.get(),
 
                         NtmBlocks.ORE_OIL.get(),
@@ -418,7 +441,10 @@ public class NtmBlockTagProvider extends BlockTagsProvider {
                         NtmBlocks.WASTE_LOG.get(),
                         NtmBlocks.WASTE_PLANKS.get(),
                         NtmBlocks.FROZEN_LOG.get(),
-                        NtmBlocks.FROZEN_PLANKS.get()
+                        NtmBlocks.FROZEN_PLANKS.get(),
+                        // Material.wood in the original (ModBlocks.java:1872-1873)
+                        NtmBlocks.RED_PYLON_MEDIUM_WOOD.get(),
+                        NtmBlocks.RED_PYLON_MEDIUM_WOOD_TRANSFORMER.get()
                 );
 
         this.tag(BlockTags.MINEABLE_WITH_SHOVEL)

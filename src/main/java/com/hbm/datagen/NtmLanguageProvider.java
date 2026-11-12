@@ -2378,6 +2378,93 @@ public class NtmLanguageProvider extends LanguageProvider {
 
         this.add(NtmBlocks.FLUID_DUCT_NEO, "Universal Fluid Duct");
 
+        // Goal 30A power and fluid control blocks (original en_US.lang); the gauge and counter overlays were hard-coded English
+        this.add(NtmBlocks.RED_WIRE_COATED, "Coated Red Copper Cable");
+        this.add(NtmBlocks.RED_CABLE_PAINTABLE, "Paintable Red Copper Cable");
+        this.add(NtmBlocks.RED_CABLE_PAINTABLE, DESC, "Right-click with a solid block to set a paint$Paint can be cleared with a screwdriver$Port texture can be disabled with a defuser$Paints can be copied with the copy tool");
+        this.add(NtmBlocks.RED_CABLE_GAUGE, "Power Gauge");
+        this.add(NtmBlocks.RED_CABLE_GAUGE, DESC, "Cable that displays how much power$moves within the network per tick.$Split networks connected by energy$storage blocks are considered as one shared network.");
+        this.add("block.hbmsntm.red_cable_gauge.per_tick", "%sHE/t");
+        this.add("block.hbmsntm.red_cable_gauge.per_second", "%sHE/s");
+        this.add(NtmBlocks.CABLE_SWITCH, "Power Switch");
+        this.add(NtmBlocks.CABLE_DETECTOR, "Redstone Power Switch");
+        this.add(NtmBlocks.MACHINE_DETECTOR, "Power Detector");
+        this.add(NtmBlocks.FLUID_DUCT_PAINTABLE, "Paintable Coated Universal Fluid Duct");
+        this.add(NtmBlocks.FLUID_DUCT_PAINTABLE, DESC, "Right-click with a solid block to set a paint$Paint can be cleared with a screwdriver$Port texture can be disabled with a defuser$Paints can be copied with the copy tool");
+        this.add(NtmBlocks.FLUID_DUCT_GAUGE, "Flow Gauge Pipe");
+        this.add(NtmBlocks.FLUID_DUCT_GAUGE, DESC, "Pipe that displays how much fluid$moves within the network per tick.$Split networks connected by barrels$or tanks are considered as one shared network.");
+        this.add("block.hbmsntm.fluid_duct_gauge.per_tick", "%s mB/t");
+        this.add("block.hbmsntm.fluid_duct_gauge.per_second", "%s mB/s");
+        this.add(NtmBlocks.FLUID_VALVE, "Fluid Valve");
+        this.add(NtmBlocks.FLUID_SWITCH, "Redstone Fluid Valve");
+        this.add(NtmBlocks.FLUID_COUNTER_VALVE, "Fluid Valve with Counter");
+        this.add(NtmBlocks.FLUID_COUNTER_VALVE, DESC, "Beware of loops in your fluid network...");
+        this.add("block.hbmsntm.fluid_counter_valve.counter", "Counter: %s");
+
+        // Goal 30B pylons, connectors and the substation (original en_US.lang:6342-6350,6460); the tooltips were hard-coded English (e.g. ConnectorRedWire.java:64-65, PylonLarge.java:37)
+        this.add(NtmBlocks.RED_CONNECTOR, "Electricity Connector");
+        this.add(NtmBlocks.RED_CONNECTOR_SUPER, "Heavy Duty Electricity Connector");
+        this.add(NtmBlocks.RED_PYLON, "Wooden Electricity Pylon");
+        this.add(NtmBlocks.RED_PYLON_STEEL, "Steel Electricity Pylon");
+        this.add(NtmBlocks.RED_PYLON_LARGE, "Large Electricity Pylon");
+        this.add(NtmBlocks.RED_PYLON_MEDIUM_STEEL, "Medium Steel Electricity Pylon");
+        this.add(NtmBlocks.RED_PYLON_MEDIUM_STEEL_TRANSFORMER, "Medium Steel Electricity Pylon with Transformer");
+        this.add(NtmBlocks.RED_PYLON_MEDIUM_WOOD, "Medium Wooden Electricity Pylon");
+        this.add(NtmBlocks.RED_PYLON_MEDIUM_WOOD_TRANSFORMER, "Medium Wooden Electricity Pylon with Transformer");
+        this.add(NtmBlocks.SUBSTATION, "Substation");
+        this.add("block.hbmsntm.pylon.connection_type", "Connection Type: ");
+        this.add("block.hbmsntm.pylon.connection_range", "Connection Range: ");
+        this.add("block.hbmsntm.pylon.type_single", "Single");
+        this.add("block.hbmsntm.pylon.type_triple", "Triple");
+        this.add("block.hbmsntm.pylon.type_quadruple", "Quadruple");
+        this.add("block.hbmsntm.pylon.range", "%sm");
+        this.add("block.hbmsntm.red_pylon_large.substation", "This pylon requires a substation!");
+        // Cable drum (original en_US.lang:4916); chat, tooltip and distance were hard-coded English (ItemWiring.java:51,68-77,86,103-107,121)
+        this.add(NtmItems.WIRING_RED_COPPER.get(), "Cable Drum");
+        this.add("item.hbmsntm.wiring_red_copper.start", "Wire start");
+        this.add("item.hbmsntm.wiring_red_copper.end", "Wire end");
+        this.add("item.hbmsntm.wiring_red_copper.error", "Wire error");
+        this.add("item.hbmsntm.wiring_red_copper.error_type", "Wire error - Pylons are not the same type");
+        this.add("item.hbmsntm.wiring_red_copper.error_same", "Wire error - Cannot connect to the same pylon");
+        this.add("item.hbmsntm.wiring_red_copper.error_far", "Wire error - Pylon is too far away");
+        this.add("item.hbmsntm.wiring_red_copper.start_x", "Wire start x: %s");
+        this.add("item.hbmsntm.wiring_red_copper.start_y", "Wire start y: %s");
+        this.add("item.hbmsntm.wiring_red_copper.start_z", "Wire start z: %s");
+        this.add("item.hbmsntm.wiring_red_copper.desc", "Right-click poles to connect");
+        this.add("item.hbmsntm.wiring_red_copper.distance", "%s: %sm");
+        // Goal 30C pipe wrench, pipe anchor, flow control pump and network separator (original en_US.lang:4918,5596,6000,6132); chat,
+        // tooltips, hover text and screen labels were hard-coded English (ItemWrench.java:57-129, FlowControlPump.java:84,108-111,
+        // BlockNetworkSeparator.java:88-92, GUIPump.java:45,54-61, GUIDiode.java:49-53)
+        this.add(NtmItems.WRENCH.get(), "Pipe Wrench");
+        this.add("item.hbmsntm.wrench.start", "Pipe start");
+        this.add("item.hbmsntm.wrench.end", "Pipe end");
+        this.add("item.hbmsntm.wrench.error", "Pipe error");
+        this.add("item.hbmsntm.wrench.error_same", "Pipe error - Cannot connect to the same pipe anchor");
+        this.add("item.hbmsntm.wrench.error_far", "Pipe error - Pipe anchor is too far away");
+        this.add("item.hbmsntm.wrench.error_fluid", "Pipe error - Pipe anchor fluid types do not match");
+        this.add("item.hbmsntm.wrench.start_x", "Pipe start x: %s");
+        this.add("item.hbmsntm.wrench.start_y", "Pipe start y: %s");
+        this.add("item.hbmsntm.wrench.start_z", "Pipe start z: %s");
+        this.add("item.hbmsntm.wrench.desc", "Right-click anchor to connect");
+        this.add("item.hbmsntm.wrench.distance", "%s: %sm");
+        this.add(NtmBlocks.PIPE_ANCHOR, "Pipe Anchor");
+        this.add(NtmBlocks.FLOW_CONTROL_PUMP, "Flow Control Pump");
+        this.add("block.hbmsntm.flow_control_pump.changed_type_to", "Changed type to %s!");
+        this.add("block.hbmsntm.flow_control_pump.flow", "%s (%s PU): %smB/t");
+        this.add("block.hbmsntm.flow_control_pump.buffered", "%smB buffered");
+        this.add(NtmBlocks.NETWORK_SEPARATOR, "Network Separator");
+        this.add("block.hbmsntm.network_separator.per_tick", "%sHE/t");
+        this.add("block.hbmsntm.network_separator.per_second", "%sHE/s");
+        this.add("block.hbmsntm.network_separator.configured", "Configured: %sHE/t");
+        this.add("block.hbmsntm.network_control.priority", "Priority: %s");
+        this.add("block.hbmsntm.network_control.redstone", "Disabled by redstone");
+        this.add("gui.hbmsntm.network_control.throughput", "Throughput:");
+        this.add("gui.hbmsntm.network_control.priority", "Priority:");
+        this.add("gui.hbmsntm.flow_control_pump.max", "(max. 10,000mB)");
+        this.add("gui.hbmsntm.flow_control_pump.pressure", "Pressure:");
+        this.add("gui.hbmsntm.flow_control_pump.pu", "%s PU");
+        this.add("gui.hbmsntm.network_separator.max", "(max. 10,000,000,000 HE)");
+
         this.add(NtmBlocks.MACHINE_BATTERY_SOCKET, "Battery Socket");
         this.add(NtmBlocks.MACHINE_BATTERY_SOCKET, DESC,"Allows battery items to be connected$to the power grid directly.$Acts as a cable, all ports are connected$to the same network.");
         this.add(NtmBlocks.MACHINE_BATTERY_REDD, "FEnSU");
@@ -3545,6 +3632,7 @@ public class NtmLanguageProvider extends LanguageProvider {
         this.add("hbmsntm.configuration.infoOffsetVertical", "Info Panel Y Offset");
         this.add("hbmsntm.configuration.mainMenuWackySplashes", "Wacky Splashes");
         this.add("hbmsntm.configuration.tips", "Loading Tips");
+        this.add("hbmsntm.configuration.renderCableHang", "Sagging Wires");
         this.add("hbmsntm.configuration.toolHudIndicatorX", "Tool HUD X Offset");
         this.add("hbmsntm.configuration.toolHudIndicatorY", "Tool HUD Y Offset");
         this.add("hbmsntm.configuration.gunAnimationSpeed", "Gun Animation Speed");

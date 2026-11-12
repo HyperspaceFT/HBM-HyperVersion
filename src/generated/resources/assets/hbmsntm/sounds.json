@@ -154,6 +154,11 @@
       "hbmsntm:block/rbmk_explosion"
     ]
   },
+  "block.reactor_start": {
+    "sounds": [
+      "hbmsntm:block/reactor_start"
+    ]
+  },
   "block.shutdown": {
     "sounds": [
       {

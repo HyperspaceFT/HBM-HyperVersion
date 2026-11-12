@@ -82,20 +82,14 @@ public class RenderPress extends BlockEntityRendererNT<MachinePressBlockEntity> 
         return packedLight;
     }
 
-    private AABB bb = null;
-
     @Override
     public AABB getRenderBoundingBox(MachinePressBlockEntity be) {
 
-        if(bb == null) {
-            int x = be.getBlockPos().getX();
-            int y = be.getBlockPos().getY();
-            int z = be.getBlockPos().getZ();
+        int x = be.getBlockPos().getX();
+        int y = be.getBlockPos().getY();
+        int z = be.getBlockPos().getZ();
 
-            bb = new AABB(x, y, z, x + 1, y + 3, z + 1);
-        }
-
-        return bb;
+        return new AABB(x, y, z, x + 1, y + 3, z + 1);
     }
 
     @Override

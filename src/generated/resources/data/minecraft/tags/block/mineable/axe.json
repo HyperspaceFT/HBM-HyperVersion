@@ -3,6 +3,8 @@
     "hbmsntm:waste_log",
     "hbmsntm:waste_planks",
     "hbmsntm:frozen_log",
-    "hbmsntm:frozen_planks"
+    "hbmsntm:frozen_planks",
+    "hbmsntm:red_pylon_medium_wood",
+    "hbmsntm:red_pylon_medium_wood_transformer"
   ]
 }

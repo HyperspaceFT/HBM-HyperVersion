@@ -1,0 +1,9 @@
+{
+  "type": "paintable_duct",
+  "loader": "hbmsntm:ntm_geometry_loader",
+  "textures": {
+    "overlay": "hbmsntm:block/fluid_duct_paintable_overlay",
+    "overlay_color": "hbmsntm:block/fluid_duct_paintable_color",
+    "texture": "hbmsntm:block/fluid_duct_paintable"
+  }
+}

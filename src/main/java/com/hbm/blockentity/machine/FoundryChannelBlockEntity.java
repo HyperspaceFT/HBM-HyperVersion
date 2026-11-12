@@ -178,15 +178,14 @@ public class FoundryChannelBlockEntity extends FoundryBaseBlockEntity {
         tag.putByte("flow", (byte) this.lastFlow);
     }
 
-    /** Upstream destroys the node on invalidate; 1.21 calls setRemoved for both removal and chunk unload (PipeBaseBlockEntity precedent). */
+    /** Upstream destroys the node on invalidate; 1.21 also calls setRemoved on chunk unload, after onChunkUnloaded, which keeps the node. */
     @Override
     public void setRemoved() {
         super.setRemoved();
 
-        if(this.level != null && !this.level.isClientSide) {
-            if(this.node != null) {
-                UniNodespace.destroyNode(this.level, this.worldPosition, FoundryNetworkProvider.THE_PROVIDER);
-            }
+        // A reloaded block entity finds its kept node only on its first tick, so the node is destroyed by position
+        if(this.level != null && !this.level.isClientSide && this.isLoaded) {
+            UniNodespace.destroyNode(this.level, this.worldPosition, FoundryNetworkProvider.THE_PROVIDER);
         }
     }
 

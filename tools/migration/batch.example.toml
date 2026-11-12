@@ -1,0 +1,51 @@
+# Batch manifest for tools/migration/batch.py. Copy to migration/<batch>-batch.toml before the batch's first write,
+# fill in the header and [carried], run `batch.py freeze`, then add what the batch owns as it changes files.
+# `batch.py package --check` lists every changed path that nothing here owns.
+
+batch = "goal31a"                                            # release directory and owner name
+previous = "goal30c"                                         # the package this one builds on
+task_book = "migration/GOAL31A.md"
+source_head = "0000000000000000000000000000000000000000"     # original HEAD, clean
+start_head = "0000000000000000000000000000000000000000"      # NEO HEAD at the start; it must not move during the batch
+snapshot = "migration/baselines/review-000000000000.json"    # current observation snapshot (a new one when the original moved)
+compare = false                                              # true when the batch runs `batch.py compare` (批次验证链 item 4)
+
+# Free text of the receipt.
+scope = "What the package contains and its gameplay impact."
+evidence = "What the final chain proved and what was not run (client, saved worlds, real players)."
+gametest_note = "What the GameTests cover and what they cannot see."
+radiation_note = "Goal31A: no new radiation source."
+meltdown_note = "Goal31A: no new meltdown path."
+
+# Shared records this batch must change, may change, and the ones that must name the package JAR.
+records = ["migration/LOG.md", "migration/features.json", "migration/UPSTREAM-REVIEWS-LOG.md"]
+optional_records = ["migration/GOAL31.md", "migration/LOCALIZATION-LOG.md"]
+names_package = ["migration/LOG.md", "migration/UPSTREAM-REVIEWS-LOG.md"]
+
+# GameTests: new classes, and existing files this batch changed with the reason (批次验证链 item 6).
+gametests_new = ["src/main/java/com/hbm/gametest/Goal31AGameTests.java"]
+[gametests_changed]
+"src/main/java/com/hbm/gametest/Goal29BGameTests.java" = "config_screen_keys: one more client value because ClientConfig gained an option"
+
+# Changes made between the previous package and this start (small fixes, tooling), by the group their log line names.
+# `batch.py freeze --dry` prints the paths that need a group here.
+[carried]
+"counter valve hand toggle" = ["src/main/java/com/hbm/blocks/network/FluidCounterValveBlock.java"]
+
+# What the batch owns, by group. A path may sit in several groups. Patterns use fnmatch, and * also crosses "/".
+# Every literal path must change and every pattern must match a changed path, unless `optional` lists it.
+# Owned without being listed: the generation stamp, en_us.json, zh_cn.json and its mapping record, the task book,
+# this batch's own records (migration/goal31a-*, migration/GOAL31A*.md; the data files goal31a-zh.toml and
+# goal31a-features.toml are among them), `records`, and the byte-identical imports
+# of migration/goal31a-resource-ownership.json.
+[groups]
+machine = ["src/main/java/com/hbm/blockentity/machine/Example*.java", "src/main/java/com/hbm/blocks/machine/ExampleBlock.java"]
+registration = ["src/main/java/com/hbm/blocks/NtmBlocks.java", "src/main/java/com/hbm/items/NtmItems.java"]
+datagen = ["src/main/java/com/hbm/datagen/NtmRecipeProvider.java", "src/generated/resources/*example_machine*"]
+
+# Less common keys, with their defaults:
+# optional = []                 paths or patterns of [groups] that may stay unchanged
+# deleted = []                  paths the batch deletes
+# row_diff = []                 row-diff scripts for tables ported from the original, run at the end of the chain
+# status_changes = []           features.json groups whose status this batch changes
+# language_keys_removed = false

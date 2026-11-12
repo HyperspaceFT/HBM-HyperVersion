@@ -1017,6 +1017,8 @@ public class NtmItemModelProvider extends ItemModelProvider {
         this.handheldItem(NtmItems.REACHER.get());
         this.basicItem(NtmItems.MELTDOWN_TOOL.get());
         this.basicItem(NtmItems.RBMK_TOOL.get());
+        this.basicItem(NtmItems.WIRING_RED_COPPER.get());
+        this.handheldItem(NtmItems.WRENCH.get());
         this.handheldItem(NtmItems.DRILL_TITANIUM.get());
 
         this.handheldItem(NtmItems.UPGRADE_TEMPLATE.get());

@@ -3,6 +3,7 @@ package com.hbm.uninos;
 import com.hbm.util.Tuple.Pair;
 import com.hbm.util.fauxpointtwelve.DirPos;
 import net.minecraft.core.BlockPos;
+import net.minecraft.core.Direction;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.world.level.Level;
 
@@ -54,7 +55,7 @@ public class UniNodespace {
         }
     }
 
-    /** Release a whole world, while ordinary chunk unload still retains conductor nodes. */
+    /** Release a whole world. An ordinary chunk unload keeps the nodes; only removing their block destroys them. */
     public static void removeLevel(Level level) {
         UniNodeWorld nodeWorld = levels.remove(level);
         if(nodeWorld == null) return;
@@ -111,12 +112,23 @@ public class UniNodespace {
     /** Checks if the node can be connected to given the DirPos, skipSideCheck will ignore the DirPos' direction value */
     public static boolean checkConnection(GenNode connectsTo, DirPos connectFrom, boolean skipSideCheck) {
         for (DirPos revCon : connectsTo.connections) {
-            if (revCon.getX() - revCon.getDir().getStepX() == connectFrom.getX() && revCon.getY() - revCon.getDir().getStepY() == connectFrom.getY() && revCon.getZ() - revCon.getDir().getStepZ() == connectFrom.getZ() && (revCon.getDir() == connectFrom.getDir().getOpposite() || skipSideCheck)) {
+            Direction revDir = revCon.getDir();
+            if (revCon.getX() - stepX(revDir) == connectFrom.getX() && revCon.getY() - stepY(revDir) == connectFrom.getY() && revCon.getZ() - stepZ(revDir) == connectFrom.getZ() && (revDir == opposite(connectFrom.getDir()) || skipSideCheck)) {
                 return true;
             }
         }
         return false;
     }
+
+    /*
+     * A null direction is the original's ForgeDirection.UNKNOWN: a zero-length step whose opposite is itself. Wire links
+     * (pylons and connectors) are recorded with it, and such nodes also carry a null record of their own position, which is
+     * what a wire from the other end matches (original UniNodespace.java:113-120, TileEntityPylonBase.java:68-74).
+     */
+    private static int stepX(Direction dir) { return dir == null ? 0 : dir.getStepX(); }
+    private static int stepY(Direction dir) { return dir == null ? 0 : dir.getStepY(); }
+    private static int stepZ(Direction dir) { return dir == null ? 0 : dir.getStepZ(); }
+    private static Direction opposite(Direction dir) { return dir == null ? null : dir.getOpposite(); }
 
     /** Links two nodes with different or potentially no networks */
     private static void connectToNode(GenNode origin, GenNode connection) {

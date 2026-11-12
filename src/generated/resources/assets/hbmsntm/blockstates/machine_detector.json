@@ -1,0 +1,10 @@
+{
+  "variants": {
+    "powered=false": {
+      "model": "hbmsntm:block/machine_detector_off"
+    },
+    "powered=true": {
+      "model": "hbmsntm:block/machine_detector"
+    }
+  }
+}

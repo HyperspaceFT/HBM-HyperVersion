@@ -32,6 +32,7 @@ public class PowerNetMK2 extends NodeNet<IEnergyReceiverMK2, IEnergyProviderMK2,
         long timestamp = System.currentTimeMillis();
 
         List<Pair<IEnergyProviderMK2, Long>> providers = new ArrayList<>();
+        long totalPowerInNetwork = 0;
         long powerAvailable = 0;
 
         // sum up available power
@@ -43,6 +44,7 @@ public class PowerNetMK2 extends NodeNet<IEnergyReceiverMK2, IEnergyProviderMK2,
             if (src > 0) {
                 providers.add(new Pair(entry.getKey(), src));
                 powerAvailable += src;
+                totalPowerInNetwork += entry.getKey().getPower();
             }
         }
 
@@ -85,7 +87,6 @@ public class PowerNetMK2 extends NodeNet<IEnergyReceiverMK2, IEnergyProviderMK2,
             toTransfer -= priorityUsed;
         }
 
-        this.energyTracker += energyUsed;
         long leftover = energyUsed;
 
         // remove power from providers
@@ -108,6 +109,11 @@ public class PowerNetMK2 extends NodeNet<IEnergyReceiverMK2, IEnergyProviderMK2,
             scapegoat.usePower(toUse);
             leftover -= toUse;
         }
+
+        // the tracker is what the providers actually lost this tick (original PowerNetMK2.java:109-122), read by the power gauge
+        long powerAvailableAfter = 0;
+        for (IEnergyProviderMK2 provider : providerEntries.keySet()) powerAvailableAfter += Math.max(provider.getPower(), 0);
+        this.energyTracker += totalPowerInNetwork - powerAvailableAfter;
     }
 
     public long sendPowerDiode(long power) {

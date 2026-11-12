@@ -13,4 +13,7 @@ public class NtmBlockStateProperties {
     public static final BooleanProperty WEST =  BooleanProperty.create("connected_west");
 
     public static final IntegerProperty META =  IntegerProperty.create("meta", 0, 15);
+
+    /** Paintable cable and duct: the defuser hides the port overlay of a painted block (original metadata 1). */
+    public static final BooleanProperty HIDE_OVERLAY = BooleanProperty.create("hide_overlay");
 }

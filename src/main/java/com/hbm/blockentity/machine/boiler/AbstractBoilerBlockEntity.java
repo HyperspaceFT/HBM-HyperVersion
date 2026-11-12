@@ -233,7 +233,7 @@ public abstract class AbstractBoilerBlockEntity extends LoadedBaseBlockEntity im
 
     @Override
     public boolean canConnect(FluidType type, Direction dir) {
-        return dir != null && dir.getAxis().isHorizontal();
+        return dir != null;
     }
 
     @Override

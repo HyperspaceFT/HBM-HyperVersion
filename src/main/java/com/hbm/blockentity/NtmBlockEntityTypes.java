@@ -18,7 +18,24 @@ import com.hbm.blockentity.machine.MachineRotaryFurnaceBlockEntity;
 import com.hbm.blockentity.machine.rbmk.*;
 import com.hbm.blockentity.machine.storage.*;
 import com.hbm.blockentity.network.CableBaseBlockEntity;
+import com.hbm.blockentity.network.CableGaugeBlockEntity;
+import com.hbm.blockentity.network.ConnectorBlockEntity;
+import com.hbm.blockentity.network.ConnectorSuperBlockEntity;
+import com.hbm.blockentity.network.FlowControlPumpBlockEntity;
+import com.hbm.blockentity.network.NetworkSeparatorBlockEntity;
+import com.hbm.blockentity.network.PipeAnchorBlockEntity;
+import com.hbm.blockentity.network.PylonBlockEntity;
+import com.hbm.blockentity.network.PylonLargeBlockEntity;
+import com.hbm.blockentity.network.PylonMediumBlockEntity;
+import com.hbm.blockentity.network.SubstationBlockEntity;
+import com.hbm.blockentity.network.CablePaintableBlockEntity;
+import com.hbm.blockentity.network.CableSwitchBlockEntity;
+import com.hbm.blockentity.network.FluidCounterValveBlockEntity;
+import com.hbm.blockentity.network.FluidValveBlockEntity;
+import com.hbm.blockentity.network.MachineDetectorBlockEntity;
 import com.hbm.blockentity.network.PipeBaseBlockEntity;
+import com.hbm.blockentity.network.PipeGaugeBlockEntity;
+import com.hbm.blockentity.network.PipePaintableBlockEntity;
 import com.hbm.blockentity.network.RadioTorchReceiverBlockEntity;
 import com.hbm.blockentity.network.RadioTorchRelayBlockEntity;
 import com.hbm.blockentity.network.RadioTorchSenderBlockEntity;
@@ -407,8 +424,26 @@ public class NtmBlockEntityTypes {
     public static final Supplier<BlockEntityType<BobbleBlockEntity>> BOBBLEHEAD = BLOCK_ENTITY_TYPES.register("bobblehead", () -> BlockEntityType.Builder.of(BobbleBlockEntity::new, NtmBlocks.BOBBLEHEAD.get()).build(null));
     public static final Supplier<BlockEntityType<PlushieBlockEntity>> PLUSHIE = BLOCK_ENTITY_TYPES.register("plushie", () -> BlockEntityType.Builder.of(PlushieBlockEntity::new, NtmBlocks.PLUSHIE.get()).build(null));
 
-    public static final Supplier<BlockEntityType<CableBaseBlockEntity>> NETWORK_CABLE = BLOCK_ENTITY_TYPES.register("network_cable", () -> BlockEntityType.Builder.of(CableBaseBlockEntity::new, NtmBlocks.RED_CABLE.get()).build(null));
+    public static final Supplier<BlockEntityType<CableBaseBlockEntity>> NETWORK_CABLE = BLOCK_ENTITY_TYPES.register("network_cable", () -> BlockEntityType.Builder.of(CableBaseBlockEntity::new, NtmBlocks.RED_CABLE.get(), NtmBlocks.RED_WIRE_COATED.get()).build(null));
     public static final Supplier<BlockEntityType<PipeBaseBlockEntity>> FLUID_DUCT = BLOCK_ENTITY_TYPES.register("fluid_duct", () -> BlockEntityType.Builder.of(PipeBaseBlockEntity::new, NtmBlocks.FLUID_DUCT_NEO.get()).build(null));
+    public static final Supplier<BlockEntityType<CableSwitchBlockEntity>> CABLE_SWITCH = BLOCK_ENTITY_TYPES.register("cable_switch", () -> BlockEntityType.Builder.of(CableSwitchBlockEntity::new, NtmBlocks.CABLE_SWITCH.get(), NtmBlocks.CABLE_DETECTOR.get()).build(null));
+    public static final Supplier<BlockEntityType<CableGaugeBlockEntity>> CABLE_GAUGE = BLOCK_ENTITY_TYPES.register("cable_gauge", () -> BlockEntityType.Builder.of(CableGaugeBlockEntity::new, NtmBlocks.RED_CABLE_GAUGE.get()).build(null));
+    public static final Supplier<BlockEntityType<CablePaintableBlockEntity>> CABLE_PAINTABLE = BLOCK_ENTITY_TYPES.register("cable_paintable", () -> BlockEntityType.Builder.of(CablePaintableBlockEntity::new, NtmBlocks.RED_CABLE_PAINTABLE.get()).build(null));
+    public static final Supplier<BlockEntityType<MachineDetectorBlockEntity>> MACHINE_DETECTOR = BLOCK_ENTITY_TYPES.register("machine_detector", () -> BlockEntityType.Builder.of(MachineDetectorBlockEntity::new, NtmBlocks.MACHINE_DETECTOR.get()).build(null));
+    public static final Supplier<BlockEntityType<PipePaintableBlockEntity>> FLUID_DUCT_PAINTABLE = BLOCK_ENTITY_TYPES.register("fluid_duct_paintable", () -> BlockEntityType.Builder.of(PipePaintableBlockEntity::new, NtmBlocks.FLUID_DUCT_PAINTABLE.get()).build(null));
+    public static final Supplier<BlockEntityType<PipeGaugeBlockEntity>> FLUID_DUCT_GAUGE = BLOCK_ENTITY_TYPES.register("fluid_duct_gauge", () -> BlockEntityType.Builder.of(PipeGaugeBlockEntity::new, NtmBlocks.FLUID_DUCT_GAUGE.get()).build(null));
+    public static final Supplier<BlockEntityType<FluidValveBlockEntity>> FLUID_VALVE = BLOCK_ENTITY_TYPES.register("fluid_valve", () -> BlockEntityType.Builder.of(FluidValveBlockEntity::new, NtmBlocks.FLUID_VALVE.get(), NtmBlocks.FLUID_SWITCH.get()).build(null));
+    public static final Supplier<BlockEntityType<FluidCounterValveBlockEntity>> FLUID_COUNTER_VALVE = BLOCK_ENTITY_TYPES.register("fluid_counter_valve", () -> BlockEntityType.Builder.of(FluidCounterValveBlockEntity::new, NtmBlocks.FLUID_COUNTER_VALVE.get()).build(null));
+
+    public static final Supplier<BlockEntityType<PylonBlockEntity>> PYLON = BLOCK_ENTITY_TYPES.register("pylon", () -> BlockEntityType.Builder.of(PylonBlockEntity::new, NtmBlocks.RED_PYLON.get(), NtmBlocks.RED_PYLON_STEEL.get()).build(null));
+    public static final Supplier<BlockEntityType<PylonMediumBlockEntity>> PYLON_MEDIUM = BLOCK_ENTITY_TYPES.register("pylon_medium", () -> BlockEntityType.Builder.of(PylonMediumBlockEntity::new, NtmBlocks.RED_PYLON_MEDIUM_WOOD.get(), NtmBlocks.RED_PYLON_MEDIUM_WOOD_TRANSFORMER.get(), NtmBlocks.RED_PYLON_MEDIUM_STEEL.get(), NtmBlocks.RED_PYLON_MEDIUM_STEEL_TRANSFORMER.get()).build(null));
+    public static final Supplier<BlockEntityType<PylonLargeBlockEntity>> PYLON_LARGE = BLOCK_ENTITY_TYPES.register("pylon_large", () -> BlockEntityType.Builder.of(PylonLargeBlockEntity::new, NtmBlocks.RED_PYLON_LARGE.get()).build(null));
+    public static final Supplier<BlockEntityType<SubstationBlockEntity>> SUBSTATION = BLOCK_ENTITY_TYPES.register("substation", () -> BlockEntityType.Builder.of(SubstationBlockEntity::new, NtmBlocks.SUBSTATION.get()).build(null));
+    public static final Supplier<BlockEntityType<ConnectorBlockEntity>> CONNECTOR = BLOCK_ENTITY_TYPES.register("connector", () -> BlockEntityType.Builder.of(ConnectorBlockEntity::new, NtmBlocks.RED_CONNECTOR.get()).build(null));
+    public static final Supplier<BlockEntityType<ConnectorSuperBlockEntity>> CONNECTOR_SUPER = BLOCK_ENTITY_TYPES.register("connector_super", () -> BlockEntityType.Builder.of(ConnectorSuperBlockEntity::new, NtmBlocks.RED_CONNECTOR_SUPER.get()).build(null));
+    public static final Supplier<BlockEntityType<PipeAnchorBlockEntity>> PIPE_ANCHOR = BLOCK_ENTITY_TYPES.register("pipe_anchor", () -> BlockEntityType.Builder.of(PipeAnchorBlockEntity::new, NtmBlocks.PIPE_ANCHOR.get()).build(null));
+    public static final Supplier<BlockEntityType<FlowControlPumpBlockEntity>> FLOW_CONTROL_PUMP = BLOCK_ENTITY_TYPES.register("flow_control_pump", () -> BlockEntityType.Builder.of(FlowControlPumpBlockEntity::new, NtmBlocks.FLOW_CONTROL_PUMP.get()).build(null));
+    public static final Supplier<BlockEntityType<NetworkSeparatorBlockEntity>> NETWORK_SEPARATOR = BLOCK_ENTITY_TYPES.register("network_separator", () -> BlockEntityType.Builder.of(NetworkSeparatorBlockEntity::new, NtmBlocks.NETWORK_SEPARATOR.get()).build(null));
 
     public static final Supplier<BlockEntityType<TowerSmallBlockEntity>> TOWER_SMALL = BLOCK_ENTITY_TYPES.register("tower_small", () -> BlockEntityType.Builder.of(TowerSmallBlockEntity::new, NtmBlocks.FLUID_DUCT_NEO.get()).build(null));
 

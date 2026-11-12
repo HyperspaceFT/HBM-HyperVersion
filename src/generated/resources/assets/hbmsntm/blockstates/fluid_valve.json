@@ -1,0 +1,10 @@
+{
+  "variants": {
+    "enabled=false": {
+      "model": "hbmsntm:block/fluid_valve_off"
+    },
+    "enabled=true": {
+      "model": "hbmsntm:block/fluid_valve_on"
+    }
+  }
+}

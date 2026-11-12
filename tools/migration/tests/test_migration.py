@@ -182,6 +182,18 @@ class MigrationTests(unittest.TestCase):
                 migration.compare(baseline, self.source, self.target, self.manifest)
         self.assertEqual(first_state, migration.checkout_state(self.source))
 
+    def test_feature_query_by_id_by_path_and_as_a_list(self):
+        self.assertEqual([self.manifest['features'][0]], migration.feature_query(self.manifest, ['press'], None))
+        self.assertEqual([{'id': 'press', 'status': 'partial-unverified', 'sides': ['source', 'target']}],
+                         migration.feature_query(self.manifest, [], 'src/A.java'))
+        self.assertEqual([{'id': 'press', 'status': 'partial-unverified', 'sides': ['source']}],
+                         migration.feature_query(self.manifest, [], 'src/new/B.java'))
+        self.assertEqual([], migration.feature_query(self.manifest, [], 'src/Other.java'))
+        self.assertEqual([{'id': 'press', 'status': 'partial-unverified', 'dependencies': [], 'target_paths': 1, 'notes': 0}],
+                         migration.feature_query(self.manifest, [], None))
+        with self.assertRaisesRegex(migration.MigrationError, 'Unknown feature IDs'):
+            migration.feature_query(self.manifest, ['missing'], None)
+
 
 if __name__ == '__main__':
     unittest.main()

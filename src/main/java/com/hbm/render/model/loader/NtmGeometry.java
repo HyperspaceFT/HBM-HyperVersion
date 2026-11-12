@@ -36,7 +36,9 @@ public class NtmGeometry implements IUnbakedGeometry<NtmGeometry> {
         PIPE,
         ANVIL,
         RBMK_DEBRIS,
-        RBMK_ELEMENT
+        RBMK_ELEMENT,
+        PAINTABLE_CABLE,
+        PAINTABLE_DUCT
     }
 
     private final BakedModelType type;
@@ -62,6 +64,10 @@ public class NtmGeometry implements IUnbakedGeometry<NtmGeometry> {
             case DET_CORD -> new DetCordBakedModel(new HFRWavefrontObject("models/obj/block/cable_neo.obj"), textureSprite);
             case PIPE -> new PipeNeoBakedModel(new HFRWavefrontObject("models/obj/block/pipe_neo.obj"), textureSprite, overlaySprite);
             case ANVIL -> new AnvilBakedModel(new HFRWavefrontObject("models/obj/block/anvil.obj"), textureSprite);
+            // paintable cable: red_cable_base with red_cable_overlay, painted or not (BlockCablePaintable.java:53-70)
+            case PAINTABLE_CABLE -> new PaintableBakedModel(textureSprite, overlaySprite, false, overlaySprite);
+            // paintable duct: the fluid-coloured overlay while unpainted, the plain port overlay over a paint (FluidDuctPaintable.java:54-92)
+            case PAINTABLE_DUCT -> new PaintableBakedModel(textureSprite, spriteGetter.apply(context.getMaterial("overlay_color")), true, overlaySprite);
             case RBMK_DEBRIS -> new SimpleWavefrontBakedModel(new HFRWavefrontObject("models/obj/rbmk/debris.obj"), textureSprite);
             // The fuel channel body; "fuel" is the rod texture of its item form. The display transforms come from the model's parent.
             // rbmk_element.obj mixes triangles and quads inside its "Cap" group, so it is read in mixed mode as the original

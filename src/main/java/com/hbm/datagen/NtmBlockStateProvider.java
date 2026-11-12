@@ -19,6 +19,8 @@ import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.data.PackOutput;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.level.block.Block;
+import net.minecraft.world.level.block.state.properties.BlockStateProperties;
+import net.minecraft.world.level.block.state.properties.BooleanProperty;
 import net.neoforged.neoforge.client.model.generators.*;
 import net.neoforged.neoforge.common.data.ExistingFileHelper;
 import net.neoforged.neoforge.registries.DeferredBlock;
@@ -343,8 +345,24 @@ public class NtmBlockStateProvider extends BlockStateProvider {
 
         this.registerFluidDuct();
 
+        this.registerNetworkControls();
+
         this.particleOnlyBlock(NtmBlocks.MACHINE_BATTERY_SOCKET, modLoc("block/block_steel"));
         this.particleOnlyBlock(NtmBlocks.MACHINE_BATTERY_REDD, modLoc("block/block_steel"));
+        // pylons, connectors and the substation: drawn by their renderers; particles from the original block icons (ModBlocks.java:1868-1877)
+        this.particleOnlyBlock(NtmBlocks.RED_CONNECTOR, modLoc("block/red_connector"));
+        this.particleOnlyBlock(NtmBlocks.RED_CONNECTOR_SUPER, modLoc("block/red_connector"));
+        this.particleOnlyBlock(NtmBlocks.RED_PYLON, modLoc("block/red_pylon"));
+        this.particleOnlyBlock(NtmBlocks.RED_PYLON_STEEL, modLoc("block/red_pylon"));
+        this.particleOnlyBlock(NtmBlocks.RED_PYLON_MEDIUM_WOOD, modLoc("block/red_pylon"));
+        this.particleOnlyBlock(NtmBlocks.RED_PYLON_MEDIUM_WOOD_TRANSFORMER, modLoc("block/red_pylon"));
+        this.particleOnlyBlock(NtmBlocks.RED_PYLON_MEDIUM_STEEL, modLoc("block/red_pylon"));
+        this.particleOnlyBlock(NtmBlocks.RED_PYLON_MEDIUM_STEEL_TRANSFORMER, modLoc("block/red_pylon"));
+        this.particleOnlyBlock(NtmBlocks.RED_PYLON_LARGE, modLoc("block/red_pylon_large"));
+        this.particleOnlyBlock(NtmBlocks.SUBSTATION, modLoc("block/substation"));
+        this.particleOnlyBlock(NtmBlocks.PIPE_ANCHOR, modLoc("block/block_steel"));
+        this.particleOnlyBlock(NtmBlocks.FLOW_CONTROL_PUMP, modLoc("block/block_steel"));
+        this.particleOnlyBlock(NtmBlocks.NETWORK_SEPARATOR, modLoc("block/block_steel"));
         this.particleOnlyBlock(NtmBlocks.MACHINE_ASSEMBLY_MACHINE, modLoc("block/block_steel"));
         this.particleOnlyBlock(NtmBlocks.HEAT_BOILER, modLoc("block/block_steel"));
         this.particleOnlyBlock(NtmBlocks.MACHINE_INDUSTRIAL_BOILER, modLoc("block/block_steel"));
@@ -722,6 +740,65 @@ public class NtmBlockStateProvider extends BlockStateProvider {
         });
 
         this.simpleBlockItem(block, off);
+    }
+
+    /** Goal 30A power and fluid control blocks; the item models show the base texture only, as the original inventory renders pass 0. */
+    private void registerNetworkControls() {
+        this.simpleCubeAllBlock(NtmBlocks.RED_WIRE_COATED);
+
+        this.onOffCube(NtmBlocks.CABLE_SWITCH.get(), BlockStateProperties.ENABLED, "cable_switch_on", "cable_switch_off");
+        this.onOffCube(NtmBlocks.CABLE_DETECTOR.get(), BlockStateProperties.ENABLED, "cable_detector_on", "cable_detector_off");
+        this.onOffCube(NtmBlocks.MACHINE_DETECTOR.get(), BlockStateProperties.POWERED, "machine_detector", "machine_detector_off");
+        this.onOffCube(NtmBlocks.FLUID_VALVE.get(), BlockStateProperties.ENABLED, "fluid_valve_on", "fluid_valve_off");
+        this.onOffCube(NtmBlocks.FLUID_SWITCH.get(), BlockStateProperties.ENABLED, "fluid_switch_on", "fluid_switch_off");
+        this.onOffCube(NtmBlocks.FLUID_COUNTER_VALVE.get(), BlockStateProperties.ENABLED, "fluid_counter_valve_on", "fluid_counter_valve_off");
+
+        // original BlockCableGauge.getIcon / FluidDuctGauge.getIcon: base on every face, then the dial on the facing face and the other overlay elsewhere
+        this.gauge(NtmBlocks.RED_CABLE_GAUGE.get(), "deco_red_copper", "cable_gauge", null);
+        this.gauge(NtmBlocks.FLUID_DUCT_GAUGE.get(), "deco_steel", "pipe_gauge", "fluid_duct_paintable_overlay");
+
+        Block cable = NtmBlocks.RED_CABLE_PAINTABLE.get();
+        this.simpleBlock(cable, this.models().getBuilder(this.key(cable).getPath()).customLoader(PaintableCableLoaderBuilder::new)
+                .texture("texture", modLoc("block/red_cable_base")).texture("overlay", modLoc("block/red_cable_overlay")).end());
+        this.itemModels().cubeAll(this.key(cable).getPath(), modLoc("block/red_cable_base"));
+
+        Block duct = NtmBlocks.FLUID_DUCT_PAINTABLE.get();
+        this.simpleBlock(duct, this.models().getBuilder(this.key(duct).getPath()).customLoader(PaintableDuctLoaderBuilder::new)
+                .texture("texture", modLoc("block/fluid_duct_paintable")).texture("overlay", modLoc("block/fluid_duct_paintable_overlay"))
+                .texture("overlay_color", modLoc("block/fluid_duct_paintable_color")).end());
+        this.itemModels().cubeAll(this.key(duct).getPath(), modLoc("block/fluid_duct_paintable"));
+    }
+
+    /** Original getIcon(side, meta): the on texture for metadata 1; the item is the off block. */
+    private void onOffCube(Block block, BooleanProperty property, String onTexture, String offTexture) {
+        ModelFile on = this.models().cubeAll(onTexture, modLoc("block/" + onTexture));
+        ModelFile off = this.models().cubeAll(offTexture, modLoc("block/" + offTexture));
+        this.getVariantBuilder(block).forAllStates(state -> ConfiguredModel.builder().modelFile(state.getValue(property) ? on : off).build());
+        this.itemModels().withExistingParent(this.key(block).getPath(), modLoc("block/" + offTexture));
+    }
+
+    private void gauge(Block block, String base, String dial, String otherOverlay) {
+        String name = this.key(block).getPath();
+        this.getVariantBuilder(block).forAllStates(state -> {
+            Direction facing = state.getValue(BlockStateProperties.FACING);
+            BlockModelBuilder model = this.models().withExistingParent(name + "_" + facing.getSerializedName(), mcLoc("block/block"))
+                    .renderType("cutout")
+                    .texture("base", modLoc("block/" + base))
+                    .texture("dial", modLoc("block/" + dial))
+                    .texture("particle", modLoc("block/" + base))
+                    .element().from(0, 0, 0).to(16, 16, 16)
+                    .allFaces((dir, face) -> face.texture("#base").cullface(dir))
+                    .end();
+            if(otherOverlay != null) model.texture("overlay", modLoc("block/" + otherOverlay));
+            ModelBuilder<BlockModelBuilder>.ElementBuilder overlay = model.element().from(0, 0, 0).to(16, 16, 16);
+            for(Direction dir : Direction.values()) {
+                if(dir == facing) overlay.face(dir).texture("#dial").cullface(dir).end();
+                else if(otherOverlay != null) overlay.face(dir).texture("#overlay").cullface(dir).end();
+            }
+            overlay.end();
+            return ConfiguredModel.builder().modelFile(model).build();
+        });
+        this.itemModels().cubeAll(name, modLoc("block/" + base));
     }
 
     /**
@@ -1193,6 +1270,18 @@ public class NtmBlockStateProvider extends BlockStateProvider {
             super(parent, helper);
         }
         @Override public BakedModelType getType() { return BakedModelType.CABLE; }
+    }
+    protected static class PaintableCableLoaderBuilder extends BlockModelBuilderBase {
+        public PaintableCableLoaderBuilder(BlockModelBuilder parent, ExistingFileHelper helper) {
+            super(parent, helper);
+        }
+        @Override public BakedModelType getType() { return BakedModelType.PAINTABLE_CABLE; }
+    }
+    protected static class PaintableDuctLoaderBuilder extends BlockModelBuilderBase {
+        public PaintableDuctLoaderBuilder(BlockModelBuilder parent, ExistingFileHelper helper) {
+            super(parent, helper);
+        }
+        @Override public BakedModelType getType() { return BakedModelType.PAINTABLE_DUCT; }
     }
     protected static class DetCordBlockLoaderBuilder extends BlockModelBuilderBase {
         public DetCordBlockLoaderBuilder(BlockModelBuilder parent, ExistingFileHelper helper) {

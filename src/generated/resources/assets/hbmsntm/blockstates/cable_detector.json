@@ -1,0 +1,10 @@
+{
+  "variants": {
+    "enabled=false": {
+      "model": "hbmsntm:block/cable_detector_off"
+    },
+    "enabled=true": {
+      "model": "hbmsntm:block/cable_detector_on"
+    }
+  }
+}

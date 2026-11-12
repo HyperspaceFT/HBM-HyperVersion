@@ -15,6 +15,7 @@ public class ClientConfig {
 
     public final ModConfigSpec.BooleanValue ENABLE_MAIN_MENU_WACKY_SPLASHES;
     public final ModConfigSpec.BooleanValue ENABLE_TIPS;
+    public final ModConfigSpec.BooleanValue RENDER_CABLE_HANG;
 
     public final ModConfigSpec.IntValue TOOL_HUD_OFFSET_HORIZONTAL;
     public final ModConfigSpec.IntValue TOOL_HUD_OFFSET_VERTICAL;
@@ -58,6 +59,11 @@ public class ClientConfig {
                 .comment("Toggles tips in the world loading screen")
                 .translation("hbmsntm.configuration.tips")
                 .define("tips", true);
+        // original ClientConfig.java:29,57
+        RENDER_CABLE_HANG = builder
+                .comment("Toggles the sag of the wires between pylons; off draws them straight")
+                .translation("hbmsntm.configuration.renderCableHang")
+                .define("renderCableHang", true);
 
         TOOL_HUD_OFFSET_HORIZONTAL = builder
                 .comment("Tool hud indicator x offset.")

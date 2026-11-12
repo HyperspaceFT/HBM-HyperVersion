@@ -1,8 +1,9 @@
 #!/usr/bin/env python3
 """Local, read-only comparison of HBM upstream snapshots and NEO adaptations.
 
-Only explicit snapshot/report commands write files, inside dedicated NEO folders.
-No command fetches Git, changes a checkout, copies assets, or accepts a port.
+Only explicit snapshot/report commands write files, inside dedicated NEO folders, and the two
+--apply options write the records a batch data file names (records.py). No command fetches Git,
+changes a checkout, copies assets, or accepts a port.
 """
 
 from __future__ import annotations
@@ -197,6 +198,23 @@ def matches(feature: dict, side: str, path: str) -> bool:
             any(fnmatch.fnmatchcase(path, pattern) for pattern in feature.get(f"{side}_watch", [])))
 
 
+def feature_query(manifest: dict, ids: list[str], path: str | None) -> list[dict]:
+    """One or more feature mappings by ID, the features that map a path, or one summary row per feature."""
+    features = manifest["features"]
+    if path:
+        relative_path(path)
+        sides = {item["id"]: [side for side in ("source", "target") if matches(item, side, path)] for item in features}
+        return [{"id": item["id"], "status": item["status"], "sides": sides[item["id"]]} for item in features if sides[item["id"]]]
+    if ids:
+        by_id = {item["id"]: item for item in features}
+        unknown = [name for name in ids if name not in by_id]
+        if unknown:
+            raise MigrationError(f"Unknown feature IDs: {unknown}")
+        return [by_id[name] for name in ids]
+    return [{"id": item["id"], "status": item["status"], "dependencies": item.get("dependencies", []),
+             "target_paths": len(item.get("target_paths", [])), "notes": len(item.get("notes", []))} for item in features]
+
+
 def compare(baseline: dict, source: Path, target: Path, manifest: dict) -> dict:
     if baseline.get("kind") != "observed-snapshot-not-parity-acceptance":
         raise MigrationError("Input is not an observed migration snapshot")
@@ -324,7 +342,13 @@ def main(argv: list[str] | None = None) -> int:
     audit.add_argument("--output", type=Path, help="Optional JSON, inside TARGET/build/migration")
     localization = sub.add_parser("localization", help="Check Chinese coverage, reviewed sources and formatting without changing translations")
     localization.add_argument("--output", type=Path, help="Optional JSON, inside TARGET/build/migration")
+    localization.add_argument("--apply", type=Path, metavar="FILE",
+                              help="First write zh_cn.json and the reviewed map from a batch data file (TOML), then audit")
     sub.add_parser("validate", help="Validate feature mapping paths and dependency graph")
+    query = sub.add_parser("feature", help="Print feature mappings by ID, the features that map a path, or one row per feature")
+    query.add_argument("ids", nargs="*", help="Feature IDs; none lists every feature in one row each")
+    query.add_argument("--path", help="Repository-relative path in the original or in NEO")
+    query.add_argument("--apply", type=Path, metavar="FILE", help="Write features.json from a batch data file (TOML) and validate it")
     args = parser.parse_args(argv)
     source, target = args.source.resolve(), args.target.resolve()
     try:
@@ -335,6 +359,9 @@ def main(argv: list[str] | None = None) -> int:
         manifest_path = args.manifest or target / "migration/features.json"
         if args.command == "localization":
             from localization import audit_localization
+            if args.apply:
+                from records import apply_localization
+                print(json.dumps(apply_localization(source, target, args.apply), ensure_ascii=False, indent=2))
             result = audit_localization(source, target)
         elif args.command == "audit":
             from resource_audit import audit_resources
@@ -343,6 +370,29 @@ def main(argv: list[str] | None = None) -> int:
             result = asset_candidates(inventory(source), inventory(target, target=True))
         else:
             manifest = load_json(manifest_path)
+            if args.command == "feature" and args.apply:
+                from records import apply_features, encode_like, load_data, FEATURE_KEYS
+                if args.ids or args.path:
+                    raise MigrationError("--apply takes no feature IDs and no --path")
+                report = apply_features(manifest, load_data(args.apply, FEATURE_KEYS), git(source, "rev-parse", "HEAD"))
+                missing = validate_manifest(manifest, source, target)
+                if missing:
+                    raise MigrationError(f"{args.apply} was not applied; it maps missing files:\n" + "\n".join(missing))
+                encoded = encode_like(manifest_path, manifest)
+                report["written"] = encoded != manifest_path.read_bytes()
+                if report["written"]:
+                    manifest_path.write_bytes(encoded)
+                print(json.dumps(report, ensure_ascii=False, indent=2))
+                return 0
+            if args.command == "feature":
+                rows = feature_query(manifest, args.ids, args.path)
+                if args.ids or args.path:
+                    print(json.dumps(rows, ensure_ascii=False, indent=2))
+                else:
+                    for row in rows:
+                        print(f"{row['id']}\t{row['status']}\t{row['target_paths']} files, {row['notes']} notes\t"
+                              f"depends on: {', '.join(row['dependencies']) or '-'}")
+                return 0
             if args.command == "validate":
                 missing = validate_manifest(manifest, source, target)
                 if missing:
@@ -360,6 +410,11 @@ def main(argv: list[str] | None = None) -> int:
             write_json(result, args.output, inside(target, target / "build/migration"))
             print_summary(result)
             print(f"JSON: {args.output}")
+        elif args.command == "localization" and args.apply:
+            print_summary(result)
+            for finding in result["findings"]:
+                if finding["severity"] == "error":
+                    print(f"  error: {finding['code']} {finding.get('reference', finding['path'])}")
         else:
             print(json.dumps(result, ensure_ascii=False, indent=2, sort_keys=True))
         if args.command in {"audit", "localization"}:

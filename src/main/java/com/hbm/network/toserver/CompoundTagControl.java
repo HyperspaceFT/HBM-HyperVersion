@@ -41,7 +41,8 @@ public record CompoundTagControl(CompoundTag tag, BlockPos pos) implements Custo
     /**
      * NEO-only defence: the block entity is only looked up for a loaded position within this distance of the player. The original
      * NBTControlPacket.java:75,86 fetched the tile entity before the permission check as well; at default reach 64 blocks is wider than
-     * every receiver's own hasPermission distance (fixed 16 or 20 blocks, or the menu's stillValid range), so it only keeps a client from
+     * every receiver's own hasPermission distance (fixed 16 or 20 blocks, a squared distance of 128 to the centre for the flow control
+     * pump and the network separator, or the menu's stillValid range), so it only keeps a client from
      * loading or probing far-away positions. A block interaction range raised to about 56 blocks or more would be cut at 64.
      */
     public static final double MAX_DISTANCE = 64D;

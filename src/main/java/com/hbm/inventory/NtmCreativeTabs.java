@@ -511,6 +511,8 @@ public class NtmCreativeTabs {
                         output.accept(NtmItems.LAUNCH_CODE);
                         output.accept(NtmItems.LAUNCH_KEY);
                         output.accept(NtmItems.DRILL_TITANIUM);
+                        output.accept(NtmItems.WIRING_RED_COPPER);
+                        output.accept(NtmItems.WRENCH);
                     }).build());
 
     // items that belong in machines, fuels, etc
@@ -999,8 +1001,33 @@ public class NtmCreativeTabs {
                         output.accept(NtmBlocks.PRIBRIS_BURNING);
                         output.accept(NtmBlocks.PRIBRIS_RADIATING);
                         output.accept(NtmBlocks.RED_CABLE);
+                        // original registration order, ModBlocks.java:3150-3183
+                        output.accept(NtmBlocks.RED_CABLE_PAINTABLE);
+                        output.accept(NtmBlocks.RED_CABLE_GAUGE);
+                        output.accept(NtmBlocks.RED_WIRE_COATED);
+                        output.accept(NtmBlocks.RED_CONNECTOR);
+                        output.accept(NtmBlocks.RED_CONNECTOR_SUPER);
+                        output.accept(NtmBlocks.RED_PYLON);
+                        output.accept(NtmBlocks.RED_PYLON_STEEL);
+                        output.accept(NtmBlocks.RED_PYLON_MEDIUM_WOOD);
+                        output.accept(NtmBlocks.RED_PYLON_MEDIUM_WOOD_TRANSFORMER);
+                        output.accept(NtmBlocks.RED_PYLON_MEDIUM_STEEL);
+                        output.accept(NtmBlocks.RED_PYLON_MEDIUM_STEEL_TRANSFORMER);
+                        output.accept(NtmBlocks.RED_PYLON_LARGE);
+                        output.accept(NtmBlocks.SUBSTATION);
+                        output.accept(NtmBlocks.PIPE_ANCHOR);
+                        output.accept(NtmBlocks.FLOW_CONTROL_PUMP);
+                        output.accept(NtmBlocks.NETWORK_SEPARATOR);
+                        output.accept(NtmBlocks.CABLE_SWITCH);
+                        output.accept(NtmBlocks.CABLE_DETECTOR);
+                        output.accept(NtmBlocks.MACHINE_DETECTOR);
 
                         addMetaItems(output, NtmBlocks.FLUID_DUCT_NEO.asItem());
+                        output.accept(NtmBlocks.FLUID_DUCT_PAINTABLE);
+                        output.accept(NtmBlocks.FLUID_DUCT_GAUGE);
+                        output.accept(NtmBlocks.FLUID_VALVE);
+                        output.accept(NtmBlocks.FLUID_COUNTER_VALVE);
+                        output.accept(NtmBlocks.FLUID_SWITCH);
 
                         output.accept(NtmBlocks.PRESS_PREHEATER);
                         output.accept(NtmBlocks.MACHINE_PRESS);

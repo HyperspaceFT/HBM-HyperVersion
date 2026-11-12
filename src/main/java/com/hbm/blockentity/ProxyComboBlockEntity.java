@@ -3,6 +3,7 @@ package com.hbm.blockentity;
 import api.hbm.energymk2.IEnergyConductorMK2;
 import api.hbm.energymk2.IEnergyConnectorMK2;
 import api.hbm.energymk2.IEnergyReceiverMK2;
+import api.hbm.fluidmk2.IFluidConnectorMK2;
 import api.hbm.fluidmk2.IFluidReceiverMK2;
 import api.hbm.redstoneoverradio.IRORInfo;
 import api.hbm.redstoneoverradio.IRORInteractive;
@@ -209,6 +210,18 @@ public class ProxyComboBlockEntity extends ProxyBaseBlockEntity implements IEner
         }
 
         return 0;
+    }
+
+    /** A proxy without the fluid flag refuses every duct; one with it follows the core's rule (original TileEntityProxyCombo.java:163-171). */
+    @Override
+    public boolean canConnect(FluidType type, Direction dir) {
+        if (!fluid) return false;
+
+        if (getCoreObject() instanceof IFluidConnectorMK2 con) {
+            return con.canConnect(type, dir);
+        }
+
+        return true;
     }
 
     @Override

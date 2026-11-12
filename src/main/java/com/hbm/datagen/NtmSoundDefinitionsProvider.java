@@ -260,6 +260,9 @@ public class NtmSoundDefinitionsProvider extends SoundDefinitionsProvider {
         this.add(NtmSoundEvents.TURBINE_LEVER, SoundDefinition.definition()
                 .with(sound(NuclearTechMod.withDefaultNamespace("block/chungus_lever")))
         );
+        this.add(NtmSoundEvents.REACTOR_START, SoundDefinition.definition()
+                .with(sound(NuclearTechMod.withDefaultNamespace("block/reactor_start")))
+        );
         this.add(NtmSoundEvents.BOBBLE, SoundDefinition.definition()
                 .with(sound("hbmsntm:block/bobble"))
         );

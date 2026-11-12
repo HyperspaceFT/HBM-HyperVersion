@@ -21,6 +21,8 @@ import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.Level;
+import net.minecraft.world.level.block.Block;
+import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
 
 public class PipeBaseBlockEntity extends LoadedBaseBlockEntity implements IFluidPipeMK2, IFluidCopiable, ITickable {
@@ -29,7 +31,11 @@ public class PipeBaseBlockEntity extends LoadedBaseBlockEntity implements IFluid
     protected FluidType type = Fluids.NONE;
 
     public PipeBaseBlockEntity(BlockPos pos, BlockState state) {
-        super(NtmBlockEntityTypes.FLUID_DUCT.get(), pos, state);
+        this(NtmBlockEntityTypes.FLUID_DUCT.get(), pos, state);
+    }
+
+    protected PipeBaseBlockEntity(BlockEntityType<? extends PipeBaseBlockEntity> type, BlockPos pos, BlockState state) {
+        super(type, pos, state);
     }
 
     @Override
@@ -68,6 +74,10 @@ public class PipeBaseBlockEntity extends LoadedBaseBlockEntity implements IFluid
         this.type = type;
         this.setChanged();
 
+        // The tint follows the type: re-render the block and notify clients, as the original's markBlockForUpdate (TileEntityPipeBaseNT.java:69-72)
+        BlockState state = this.getBlockState();
+        this.level.sendBlockUpdated(this.worldPosition, state, state, Block.UPDATE_CLIENTS);
+
         UniNodespace.destroyNode(this.level, this.worldPosition, prev.getNetworkProvider());
 
         if (this.node != null) {
@@ -84,10 +94,10 @@ public class PipeBaseBlockEntity extends LoadedBaseBlockEntity implements IFluid
     public void setRemoved() {
         super.setRemoved();
 
-        if (this.level != null && !this.level.isClientSide) {
-            if (this.node != null) {
-                UniNodespace.destroyNode(level, worldPosition, type.getNetworkProvider());
-            }
+        // A chunk unload calls onChunkUnloaded first and keeps the node, as the original destroys it only on invalidate; removing the block calls setRemoved alone
+        // A reloaded block entity finds its kept node only on its first tick, so the node is destroyed by position
+        if (this.level != null && !this.level.isClientSide && this.isLoaded) {
+            UniNodespace.destroyNode(level, worldPosition, type.getNetworkProvider());
         }
     }
 
@@ -100,7 +110,13 @@ public class PipeBaseBlockEntity extends LoadedBaseBlockEntity implements IFluid
     @Override
     public void deserialize(RegistryFriendlyByteBuf buf) {
         super.deserialize(buf);
+        FluidType prev = this.type;
         this.type = Fluids.fromID(buf.readInt());
+        // A new type that leaves the connections unchanged would not re-render the block, and the tint would keep the old colour
+        if (prev != this.type && this.level != null) {
+            BlockState state = this.getBlockState();
+            this.level.sendBlockUpdated(this.worldPosition, state, state, Block.UPDATE_ALL_IMMEDIATE);
+        }
     }
 
     @Override
@@ -143,7 +159,7 @@ public class PipeBaseBlockEntity extends LoadedBaseBlockEntity implements IFluid
 
             if (data.getKeyPressed(EnumKeybind.TOOL_CTRL)) {
                 if (level.getBlockState(this.worldPosition).getBlock() instanceof IBlockFluidDuct ibfd) {
-                    ibfd.changeTypeRecursively(level, pos, fluid, 64);
+                    ibfd.changeTypeRecursively(level, pos, this.type, fluid, 64);
                 }
             } else {
                 this.setFluidType(fluid);
