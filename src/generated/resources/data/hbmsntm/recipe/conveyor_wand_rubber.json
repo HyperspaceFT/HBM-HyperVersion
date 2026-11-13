@@ -1,0 +1,21 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "equipment",
+  "key": {
+    "I": {
+      "tag": "c:ingots/iron"
+    },
+    "L": {
+      "tag": "ntm:any_rubbers"
+    }
+  },
+  "pattern": [
+    "LLL",
+    "I I",
+    "LLL"
+  ],
+  "result": {
+    "count": 64,
+    "id": "hbmsntm:conveyor_wand"
+  }
+}

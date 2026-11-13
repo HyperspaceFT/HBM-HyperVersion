@@ -241,8 +241,9 @@ public class MachineCombustionEngineBlockEntity extends MachineBaseBlockEntity i
         return tag;
     }
     @Override public void pasteSettings(CompoundTag tag, int index, Level level, Player player, BlockPos pos) {
-        // No clipboard bypass: copying is limited to the same current-menu context as controls.
-        if(!this.hasPermission(player) || level != this.level || !this.worldPosition.equals(pos) || tag == null || index < 0) return;
+        // The settings tool pastes without the screen open: server only, the same level and a player within reach.
+        if(tag == null || player == null || level != this.level || level.isClientSide || !this.worldPosition.equals(pos)
+                || player.level() != level || !this.stillValid(player) || index < 0) return;
         int[] ids = tag.getIntArray("FluidID");
         if(index >= ids.length || !tag.contains("FluidID", Tag.TAG_INT_ARRAY)
                 || (tag.contains("isOn") && !tag.contains("isOn", Tag.TAG_BYTE))

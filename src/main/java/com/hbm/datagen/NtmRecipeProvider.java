@@ -1,5 +1,8 @@
 package com.hbm.datagen;
 
+import com.hbm.main.NuclearTechMod;
+import com.hbm.items.PartGenericItem;
+import com.hbm.items.tools.ConveyorWandItem;
 import com.hbm.blocks.NtmBlocks;
 import com.hbm.blocks.generic.BarbedWireBlock;
 import com.hbm.blocks.machine.NTMAnvilBlock;
@@ -1511,6 +1514,197 @@ public class NtmRecipeProvider extends RecipeProvider {
                 .define('C', NtmItems.CIRCUIT_INTEGRATED_BOARD.get())
                 .define('T', NtmBlocks.TRANSFORMER.get())
                 .unlockedBy("has_transformer", has(NtmBlocks.TRANSFORMER.get()))
+                .save(recipeOutput);
+        // Goal 31A: conveyor wands and the three pistons (original CraftingManager.java:224-229,863-865). The 1,000 mB lubricant
+        // container (container1000lubricant, FluidType.java:183-186) is a full universal or lead fluid tank of lubricant.
+        Ingredient lubricant = DataComponentIngredient.of(false, NtmDataComponents.META, Fluids.LUBRICANT.getID(), NtmItems.FLUID_TANK_FULL.get(), NtmItems.FLUID_TANK_LEAD_FULL.get());
+        Ingredient regularWand = DataComponentIngredient.of(false, NtmDataComponents.META, ConveyorWandItem.ConveyorType.REGULAR.ordinal(), NtmItems.CONVEYOR_WAND.get());
+        Ingredient doubleWand = DataComponentIngredient.of(false, NtmDataComponents.META, ConveyorWandItem.ConveyorType.DOUBLE.ordinal(), NtmItems.CONVEYOR_WAND.get());
+        ShapedRecipeBuilder.shaped(RecipeCategory.TOOLS, MetaHelper.newStack(NtmItems.CONVEYOR_WAND.get(), 16, ConveyorWandItem.ConveyorType.REGULAR.ordinal()))
+                .pattern("LLL")
+                .pattern("I I")
+                .pattern("LLL")
+                .define('L', Items.LEATHER)
+                .define('I', Tags.Items.INGOTS_IRON)
+                .unlockedBy("has_leather", has(Items.LEATHER))
+                .save(recipeOutput, NuclearTechMod.withDefaultNamespace("conveyor_wand_leather"));
+        ShapedRecipeBuilder.shaped(RecipeCategory.TOOLS, MetaHelper.newStack(NtmItems.CONVEYOR_WAND.get(), 16, ConveyorWandItem.ConveyorType.REGULAR.ordinal()))
+                .pattern("RSR")
+                .pattern("I I")
+                .pattern("RSR")
+                .define('R', NtmItems.PLANT_ITEM.get())
+                .define('S', NtmItems.PLATE_IRON.get())
+                .define('I', Tags.Items.INGOTS_IRON)
+                .unlockedBy("has_plant_item", has(NtmItems.PLANT_ITEM.get()))
+                .save(recipeOutput, NuclearTechMod.withDefaultNamespace("conveyor_wand_rope"));
+        ShapedRecipeBuilder.shaped(RecipeCategory.TOOLS, MetaHelper.newStack(NtmItems.CONVEYOR_WAND.get(), 64, ConveyorWandItem.ConveyorType.REGULAR.ordinal()))
+                .pattern("LLL")
+                .pattern("I I")
+                .pattern("LLL")
+                .define('L', ItemTags.create(ResourceLocation.fromNamespaceAndPath("ntm", "any_rubbers")))
+                .define('I', Tags.Items.INGOTS_IRON)
+                .unlockedBy("has_iron_ingot", has(Items.IRON_INGOT))
+                .save(recipeOutput, NuclearTechMod.withDefaultNamespace("conveyor_wand_rubber"));
+        ShapedRecipeBuilder.shaped(RecipeCategory.TOOLS, MetaHelper.newStack(NtmItems.CONVEYOR_WAND.get(), 8, ConveyorWandItem.ConveyorType.EXPRESS.ordinal()))
+                .pattern("CCC")
+                .pattern("CLC")
+                .pattern("CCC")
+                .define('C', regularWand)
+                .define('L', lubricant)
+                .unlockedBy("has_conveyor_wand", has(NtmItems.CONVEYOR_WAND.get()))
+                .save(recipeOutput, NuclearTechMod.withDefaultNamespace("conveyor_wand_express"));
+        ShapedRecipeBuilder.shaped(RecipeCategory.TOOLS, MetaHelper.newStack(NtmItems.CONVEYOR_WAND.get(), 1, ConveyorWandItem.ConveyorType.DOUBLE.ordinal()))
+                .pattern("CPC")
+                .define('C', regularWand)
+                .define('P', NtmItems.PLATE_IRON.get())
+                .unlockedBy("has_conveyor_wand", has(NtmItems.CONVEYOR_WAND.get()))
+                .save(recipeOutput, NuclearTechMod.withDefaultNamespace("conveyor_wand_double"));
+        ShapedRecipeBuilder.shaped(RecipeCategory.TOOLS, MetaHelper.newStack(NtmItems.CONVEYOR_WAND.get(), 1, ConveyorWandItem.ConveyorType.TRIPLE.ordinal()))
+                .pattern("DPC")
+                .define('C', regularWand)
+                .define('D', doubleWand)
+                .define('P', NtmTags.Items.PLATES_STEEL)
+                .unlockedBy("has_conveyor_wand", has(NtmItems.CONVEYOR_WAND.get()))
+                .save(recipeOutput, NuclearTechMod.withDefaultNamespace("conveyor_wand_triple"));
+        ShapedRecipeBuilder.shaped(RecipeCategory.MISC, MetaHelper.newStack(NtmItems.PART_GENERIC.get(), 4, PartGenericItem.Type.PISTON_PNEUMATIC.ordinal()))
+                .pattern(" I ")
+                .pattern("CPC")
+                .pattern(" I ")
+                .define('I', Tags.Items.INGOTS_IRON)
+                .define('C', Ingredient.of(NtmItems.INGOT_COPPER.get(), Items.COPPER_INGOT))
+                .define('P', NtmItems.PLATE_IRON.get())
+                .unlockedBy("has_plate_iron", has(NtmItems.PLATE_IRON.get()))
+                .save(recipeOutput, NuclearTechMod.withDefaultNamespace("piston_pneumatic"));
+        ShapedRecipeBuilder.shaped(RecipeCategory.MISC, MetaHelper.newStack(NtmItems.PART_GENERIC.get(), 4, PartGenericItem.Type.PISTON_HYDRAULIC.ordinal()))
+                .pattern(" I ")
+                .pattern("CPC")
+                .pattern(" I ")
+                .define('I', NtmItems.INGOT_STEEL.get())
+                .define('C', NtmItems.INGOT_TITANIUM.get())
+                .define('P', lubricant)
+                .unlockedBy("has_ingot_titanium", has(NtmItems.INGOT_TITANIUM.get()))
+                .save(recipeOutput, NuclearTechMod.withDefaultNamespace("piston_hydraulic"));
+        ShapedRecipeBuilder.shaped(RecipeCategory.MISC, MetaHelper.newStack(NtmItems.PART_GENERIC.get(), 4, PartGenericItem.Type.PISTON_ELECTRIC.ordinal()))
+                .pattern(" I ")
+                .pattern("CPC")
+                .pattern(" I ")
+                .define('I', ItemTags.create(ResourceLocation.fromNamespaceAndPath("ntm", "ingots_resistant_alloy")))
+                .define('C', ItemTags.create(ResourceLocation.fromNamespaceAndPath("ntm", "ingots_plastic")))
+                .define('P', NtmItems.MOTOR.get())
+                .unlockedBy("has_motor", has(NtmItems.MOTOR.get()))
+                .save(recipeOutput, NuclearTechMod.withDefaultNamespace("piston_electric"));
+        // Goal31B conveyor cranes, CraftingManager.java:867-879: three casings giving 1, 2 or 4. Only the conveyor wand half is
+        // ported, NEO belts have no item. The stone brick casing takes the stone_bricks item tag (1.7.10's ore recipes match every
+        // stonebrick variant by wildcard metadata, unconfirmed here); iron takes the common tag, steel the item (no common tag).
+        Ingredient pneumatic = DataComponentIngredient.of(false, NtmDataComponents.META, PartGenericItem.Type.PISTON_PNEUMATIC.ordinal(), NtmItems.PART_GENERIC.get());
+        Ingredient hydraulic = DataComponentIngredient.of(false, NtmDataComponents.META, PartGenericItem.Type.PISTON_HYDRAULIC.ordinal(), NtmItems.PART_GENERIC.get());
+        Ingredient electric = DataComponentIngredient.of(false, NtmDataComponents.META, PartGenericItem.Type.PISTON_ELECTRIC.ordinal(), NtmItems.PART_GENERIC.get());
+        Object[][] craneCasings = { { "stone_bricks", Ingredient.of(ItemTags.STONE_BRICKS), 1 }, { "iron", Ingredient.of(Tags.Items.INGOTS_IRON), 2 }, { "steel", Ingredient.of(NtmItems.INGOT_STEEL.get()), 4 } };
+        for(Object[] casing : craneCasings) {
+            ShapedRecipeBuilder.shaped(RecipeCategory.MISC, NtmBlocks.CRANE_INSERTER.get(), (int) casing[2])
+                    .pattern("CCC")
+                    .pattern("C C")
+                    .pattern("CBC")
+                    .define('C', (Ingredient) casing[1])
+                    .define('B', regularWand)
+                    .unlockedBy("has_conveyor_wand", has(NtmItems.CONVEYOR_WAND.get()))
+                    .save(recipeOutput, NuclearTechMod.withDefaultNamespace("crane_inserter_" + casing[0]));
+            ShapedRecipeBuilder.shaped(RecipeCategory.MISC, NtmBlocks.CRANE_EXTRACTOR.get(), (int) casing[2])
+                    .pattern("CCC")
+                    .pattern("CPC")
+                    .pattern("CBC")
+                    .define('C', (Ingredient) casing[1])
+                    .define('P', pneumatic)
+                    .define('B', regularWand)
+                    .unlockedBy("has_conveyor_wand", has(NtmItems.CONVEYOR_WAND.get()))
+                    .save(recipeOutput, NuclearTechMod.withDefaultNamespace("crane_extractor_" + casing[0]));
+            // Goal31C, :880
+            ShapedRecipeBuilder.shaped(RecipeCategory.MISC, NtmBlocks.CRANE_GRABBER.get(), (int) casing[2])
+                    .pattern("C C")
+                    .pattern("P P")
+                    .pattern("CBC")
+                    .define('C', (Ingredient) casing[1])
+                    .define('P', pneumatic)
+                    .define('B', regularWand)
+                    .unlockedBy("has_conveyor_wand", has(NtmItems.CONVEYOR_WAND.get()))
+                    .save(recipeOutput, NuclearTechMod.withDefaultNamespace("crane_grabber_" + casing[0]));
+        }
+        // Goal31C, CraftingManager.java:884-885: planks and sticks by their tags (the original plankWood and stickWood ore keys); the
+        // original's shears are an item, which a 1.7.10 shaped ore recipe matches only undamaged (unconfirmed here), NEO takes any
+        ShapedRecipeBuilder.shaped(RecipeCategory.MISC, NtmBlocks.CRANE_BOXER.get())
+                .pattern("WWW")
+                .pattern("WPW")
+                .pattern("CCC")
+                .define('W', ItemTags.PLANKS)
+                .define('P', pneumatic)
+                .define('C', regularWand)
+                .unlockedBy("has_conveyor_wand", has(NtmItems.CONVEYOR_WAND.get()))
+                .save(recipeOutput);
+        ShapedRecipeBuilder.shaped(RecipeCategory.MISC, NtmBlocks.CRANE_UNBOXER.get())
+                .pattern("WWW")
+                .pattern("WPW")
+                .pattern("CCC")
+                .define('W', Tags.Items.RODS_WOODEN)
+                .define('P', Items.SHEARS)
+                .define('C', regularWand)
+                .unlockedBy("has_conveyor_wand", has(NtmItems.CONVEYOR_WAND.get()))
+                .save(recipeOutput);
+        // CraftingManager.java:731-736: the crane upgrades, each tier from the one below
+        Object[][] craneUpgrades = {
+                { NtmItems.UPGRADE_STACK_1.get(), Ingredient.of(NtmItems.CIRCUIT_VACUUM_TUBE.get()), pneumatic, NtmItems.UPGRADE_TEMPLATE.get() },
+                { NtmItems.UPGRADE_STACK_2.get(), Ingredient.of(NtmItems.CIRCUIT_CAPACITOR.get()), hydraulic, NtmItems.UPGRADE_STACK_1.get() },
+                { NtmItems.UPGRADE_STACK_3.get(), Ingredient.of(NtmItems.CIRCUIT_MICROCHIP.get()), electric, NtmItems.UPGRADE_STACK_2.get() },
+                { NtmItems.UPGRADE_EJECTOR_1.get(), Ingredient.of(NtmTags.Items.PLATES_COPPER), Ingredient.of(NtmItems.MOTOR.get()), NtmItems.UPGRADE_TEMPLATE.get() },
+                { NtmItems.UPGRADE_EJECTOR_2.get(), Ingredient.of(NtmItems.PLATE_GOLD.get()), Ingredient.of(NtmItems.MOTOR.get()), NtmItems.UPGRADE_EJECTOR_1.get() },
+                { NtmItems.UPGRADE_EJECTOR_3.get(), Ingredient.of(NtmItems.PLATE_SATURNITE.get()), Ingredient.of(NtmItems.MOTOR.get()), NtmItems.UPGRADE_EJECTOR_2.get() } };
+        for(Object[] upgrade : craneUpgrades) {
+            ShapedRecipeBuilder.shaped(RecipeCategory.MISC, (Item) upgrade[0])
+                    .pattern(" C ")
+                    .pattern("PUP")
+                    .pattern(" C ")
+                    .define('C', (Ingredient) upgrade[1])
+                    .define('P', (Ingredient) upgrade[2])
+                    .define('U', (Item) upgrade[3])
+                    .unlockedBy("has_upgrade", has((Item) upgrade[3]))
+                    .save(recipeOutput);
+        }
+        // Goal31D, CraftingManager.java:886-888: the sorter (BASIC circuit = integrated board), the splitter (steel ingot by item, no
+        // common tag) and the acidizer input partitioner (CHIP = microchip, the regular conveyor wand, the steel crate)
+        ShapedRecipeBuilder.shaped(RecipeCategory.MISC, NtmBlocks.CRANE_ROUTER.get())
+                .pattern("PIP")
+                .pattern("ICI")
+                .pattern("PIP")
+                .define('P', pneumatic)
+                .define('I', NtmItems.PLATE_POLYMER.get())
+                .define('C', NtmItems.CIRCUIT_INTEGRATED_BOARD.get())
+                .unlockedBy("has_conveyor_wand", has(NtmItems.CONVEYOR_WAND.get()))
+                .save(recipeOutput);
+        ShapedRecipeBuilder.shaped(RecipeCategory.MISC, NtmBlocks.CRANE_SPLITTER.get())
+                .pattern("III")
+                .pattern("PCP")
+                .pattern("III")
+                .define('P', pneumatic)
+                .define('I', NtmItems.INGOT_STEEL.get())
+                .define('C', NtmItems.CIRCUIT_VACUUM_TUBE.get())
+                .unlockedBy("has_conveyor_wand", has(NtmItems.CONVEYOR_WAND.get()))
+                .save(recipeOutput);
+        ShapedRecipeBuilder.shaped(RecipeCategory.MISC, NtmBlocks.CRANE_PARTITIONER.get())
+                .pattern(" M ")
+                .pattern("BCB")
+                .define('M', NtmItems.CIRCUIT_MICROCHIP.get())
+                .define('B', regularWand)
+                .define('C', NtmBlocks.CRATE_STEEL.get())
+                .unlockedBy("has_conveyor_wand", has(NtmItems.CONVEYOR_WAND.get()))
+                .save(recipeOutput);
+        // Goal31D, ToolRecipes.java:124: the settings tool (iron plate by item, no common tag)
+        ShapedRecipeBuilder.shaped(RecipeCategory.TOOLS, NtmItems.SETTINGS_TOOL.get())
+                .pattern(" P ")
+                .pattern("PCP")
+                .pattern("III")
+                .define('P', NtmItems.PLATE_IRON.get())
+                .define('C', NtmItems.CIRCUIT_ANALOG_BOARD.get())
+                .define('I', NtmItems.PLATE_POLYMER.get())
+                .unlockedBy("has_circuit_analog_board", has(NtmItems.CIRCUIT_ANALOG_BOARD.get()))
                 .save(recipeOutput);
         ShapedRecipeBuilder.shaped(RecipeCategory.MISC, NtmBlocks.RED_PYLON.get(), 4)
                 .pattern("CWC")

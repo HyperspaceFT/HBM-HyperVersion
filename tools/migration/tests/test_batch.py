@@ -237,6 +237,23 @@ class BatchTests(unittest.TestCase):
         _, output = self.run_step(batch.cmd_package, item, True, None)
         self.assertIn('FAILURE: line endings differ from the start style: migration/LOG.md', output)
 
+    def test_imported_asset_keeps_the_original_crlf(self):
+        item = self.manifest()
+        self.assertEqual(0, self.run_step(batch.cmd_freeze, item, False)[0])
+        source = 'src/main/resources/assets/hbm/textures/blocks/belt.png.mcmeta'
+        target = 'src/main/resources/assets/hbmsntm/textures/block/belt.png.mcmeta'
+        (self.source / source).parent.mkdir(parents=True, exist_ok=True)
+        (self.source / source).write_bytes(b'{\r\n"animation": {}\r\n}')
+        (self.root / target).parent.mkdir(parents=True, exist_ok=True)
+        (self.root / target).write_bytes(b'{\r\n"animation": {}\r\n}')
+        self.write(self.root / 'migration/b1-resource-ownership.json',
+                   json.dumps({'imported_assets': [{'source_path': source, 'target_path': target}]}))
+        self.write(self.root / 'migration/notes.mcmeta', '{\r\n}\n')
+        _, output = self.run_step(batch.cmd_package, item, True, None)
+        eol = [line for line in output.splitlines() if 'line endings differ' in line]
+        self.assertTrue(eol and 'migration/notes.mcmeta' in eol[0], output)
+        self.assertNotIn('belt.png.mcmeta', eol[0])
+
     def test_chain_order_tail_reruns_and_gradle_failure(self):
         item = self.manifest()
         self.assertEqual(0, self.run_step(batch.cmd_freeze, item, False)[0])

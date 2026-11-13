@@ -1,0 +1,49 @@
+{
+  "variants": {
+    "facing=east,part=bottom": {
+      "model": "hbmsntm:block/conveyor_lift_bottom",
+      "y": 90
+    },
+    "facing=east,part=middle": {
+      "model": "hbmsntm:block/conveyor_lift_middle",
+      "y": 90
+    },
+    "facing=east,part=top": {
+      "model": "hbmsntm:block/conveyor_lift_top",
+      "y": 90
+    },
+    "facing=north,part=bottom": {
+      "model": "hbmsntm:block/conveyor_lift_bottom"
+    },
+    "facing=north,part=middle": {
+      "model": "hbmsntm:block/conveyor_lift_middle"
+    },
+    "facing=north,part=top": {
+      "model": "hbmsntm:block/conveyor_lift_top"
+    },
+    "facing=south,part=bottom": {
+      "model": "hbmsntm:block/conveyor_lift_bottom",
+      "y": 180
+    },
+    "facing=south,part=middle": {
+      "model": "hbmsntm:block/conveyor_lift_middle",
+      "y": 180
+    },
+    "facing=south,part=top": {
+      "model": "hbmsntm:block/conveyor_lift_top",
+      "y": 180
+    },
+    "facing=west,part=bottom": {
+      "model": "hbmsntm:block/conveyor_lift_bottom",
+      "y": 270
+    },
+    "facing=west,part=middle": {
+      "model": "hbmsntm:block/conveyor_lift_middle",
+      "y": 270
+    },
+    "facing=west,part=top": {
+      "model": "hbmsntm:block/conveyor_lift_top",
+      "y": 270
+    }
+  }
+}

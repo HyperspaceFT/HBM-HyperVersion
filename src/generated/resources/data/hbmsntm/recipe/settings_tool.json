@@ -1,0 +1,24 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "equipment",
+  "key": {
+    "C": {
+      "item": "hbmsntm:circuit_analog_board"
+    },
+    "I": {
+      "item": "hbmsntm:plate_polymer"
+    },
+    "P": {
+      "item": "hbmsntm:plate_iron"
+    }
+  },
+  "pattern": [
+    " P ",
+    "PCP",
+    "III"
+  ],
+  "result": {
+    "count": 1,
+    "id": "hbmsntm:settings_tool"
+  }
+}

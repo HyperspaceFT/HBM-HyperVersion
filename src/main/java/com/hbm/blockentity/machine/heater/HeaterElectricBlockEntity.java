@@ -248,8 +248,10 @@ public class HeaterElectricBlockEntity extends LoadedBaseBlockEntity implements 
 
     @Override
     public void pasteSettings(CompoundTag tag, int index, net.minecraft.world.level.Level level, Player player, BlockPos pos) {
+        // the settings tool's data is player-writable (Goal 31D): kept within 0-10 as the control payload does, and marked for saving
         if(tag.contains("setting")) {
-            this.setting = tag.getInt("setting");
+            this.setting = Math.max(0, Math.min(tag.getInt("setting"), 10));
+            this.setChanged();
         }
     }
 

@@ -1,0 +1,28 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "key": {
+    "C": {
+      "item": "hbmsntm:circuit_vacuum_tube"
+    },
+    "P": {
+      "type": "neoforge:components",
+      "components": {
+        "hbmsntm:meta": 0
+      },
+      "items": "hbmsntm:part_generic"
+    },
+    "U": {
+      "item": "hbmsntm:upgrade_template"
+    }
+  },
+  "pattern": [
+    " C ",
+    "PUP",
+    " C "
+  ],
+  "result": {
+    "count": 1,
+    "id": "hbmsntm:upgrade_stack_1"
+  }
+}

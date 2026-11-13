@@ -21,6 +21,14 @@ import com.hbm.blockentity.network.CableBaseBlockEntity;
 import com.hbm.blockentity.network.CableGaugeBlockEntity;
 import com.hbm.blockentity.network.ConnectorBlockEntity;
 import com.hbm.blockentity.network.ConnectorSuperBlockEntity;
+import com.hbm.blockentity.network.CraneBoxerBlockEntity;
+import com.hbm.blockentity.network.CraneExtractorBlockEntity;
+import com.hbm.blockentity.network.CraneGrabberBlockEntity;
+import com.hbm.blockentity.network.CraneInserterBlockEntity;
+import com.hbm.blockentity.network.CraneUnboxerBlockEntity;
+import com.hbm.blockentity.network.CraneRouterBlockEntity;
+import com.hbm.blockentity.network.CraneSplitterBlockEntity;
+import com.hbm.blockentity.network.CranePartitionerBlockEntity;
 import com.hbm.blockentity.network.FlowControlPumpBlockEntity;
 import com.hbm.blockentity.network.NetworkSeparatorBlockEntity;
 import com.hbm.blockentity.network.PipeAnchorBlockEntity;
@@ -187,6 +195,15 @@ public class NtmBlockEntityTypes {
     public static final Supplier<BlockEntityType<RBMKConsoleBlockEntity>> RBMK_CONSOLE = BLOCK_ENTITY_TYPES.register("rbmk_console", () -> BlockEntityType.Builder.of(RBMKConsoleBlockEntity::new, NtmBlocks.RBMK_CONSOLE.get()).build(null));
     public static final Supplier<BlockEntityType<RBMKCraneConsoleBlockEntity>> RBMK_CRANE_CONSOLE = BLOCK_ENTITY_TYPES.register("rbmk_crane_console", () -> BlockEntityType.Builder.of(RBMKCraneConsoleBlockEntity::new, NtmBlocks.RBMK_CRANE_CONSOLE.get()).build(null));
     public static final Supplier<BlockEntityType<RBMKAutoloaderBlockEntity>> RBMK_AUTOLOADER = BLOCK_ENTITY_TYPES.register("rbmk_autoloader", () -> BlockEntityType.Builder.of(RBMKAutoloaderBlockEntity::new, NtmBlocks.RBMK_AUTOLOADER.get()).build(null));
+
+    public static final Supplier<BlockEntityType<CraneInserterBlockEntity>> CRANE_INSERTER = BLOCK_ENTITY_TYPES.register("crane_inserter", () -> BlockEntityType.Builder.of(CraneInserterBlockEntity::new, NtmBlocks.CRANE_INSERTER.get()).build(null));
+    public static final Supplier<BlockEntityType<CraneExtractorBlockEntity>> CRANE_EXTRACTOR = BLOCK_ENTITY_TYPES.register("crane_extractor", () -> BlockEntityType.Builder.of(CraneExtractorBlockEntity::new, NtmBlocks.CRANE_EXTRACTOR.get()).build(null));
+    public static final Supplier<BlockEntityType<CraneGrabberBlockEntity>> CRANE_GRABBER = BLOCK_ENTITY_TYPES.register("crane_grabber", () -> BlockEntityType.Builder.of(CraneGrabberBlockEntity::new, NtmBlocks.CRANE_GRABBER.get()).build(null));
+    public static final Supplier<BlockEntityType<CraneBoxerBlockEntity>> CRANE_BOXER = BLOCK_ENTITY_TYPES.register("crane_boxer", () -> BlockEntityType.Builder.of(CraneBoxerBlockEntity::new, NtmBlocks.CRANE_BOXER.get()).build(null));
+    public static final Supplier<BlockEntityType<CraneUnboxerBlockEntity>> CRANE_UNBOXER = BLOCK_ENTITY_TYPES.register("crane_unboxer", () -> BlockEntityType.Builder.of(CraneUnboxerBlockEntity::new, NtmBlocks.CRANE_UNBOXER.get()).build(null));
+    public static final Supplier<BlockEntityType<CraneRouterBlockEntity>> CRANE_ROUTER = BLOCK_ENTITY_TYPES.register("crane_router", () -> BlockEntityType.Builder.of(CraneRouterBlockEntity::new, NtmBlocks.CRANE_ROUTER.get()).build(null));
+    public static final Supplier<BlockEntityType<CraneSplitterBlockEntity>> CRANE_SPLITTER = BLOCK_ENTITY_TYPES.register("crane_splitter", () -> BlockEntityType.Builder.of(CraneSplitterBlockEntity::new, NtmBlocks.CRANE_SPLITTER.get()).build(null));
+    public static final Supplier<BlockEntityType<CranePartitionerBlockEntity>> CRANE_PARTITIONER = BLOCK_ENTITY_TYPES.register("crane_partitioner", () -> BlockEntityType.Builder.of(CranePartitionerBlockEntity::new, NtmBlocks.CRANE_PARTITIONER.get()).build(null));
 
     public static final Supplier<BlockEntityType<RadioTorchReceiverBlockEntity>> RADIO_TORCH_RECEIVER = BLOCK_ENTITY_TYPES.register("radio_torch_receiver", () -> BlockEntityType.Builder.of(RadioTorchReceiverBlockEntity::new, NtmBlocks.RADIO_TORCH_RECEIVER.get()).build(null));
     public static final Supplier<BlockEntityType<RadioTorchSenderBlockEntity>> RADIO_TORCH_SENDER = BLOCK_ENTITY_TYPES.register("radio_torch_sender", () -> BlockEntityType.Builder.of(RadioTorchSenderBlockEntity::new, NtmBlocks.RADIO_TORCH_SENDER.get()).build(null));

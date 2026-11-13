@@ -1410,6 +1410,14 @@ public class NtmLanguageProvider extends LanguageProvider {
         this.add(NtmItems.RBMK_TOOL, DESC, "Sneak and right-click RBMK to save the position,$sneak and right-click console to link!");
         this.add(NtmItems.RBMK_TOOL, ".linked", "Position set!");
         this.add(NtmItems.RBMK_TOOL, ".set", "RBMK linked!");
+        // Goal 31D settings tool (original en_US.lang:4521); its tooltip and chat lines were hard-coded English (ItemSettingsTool.java:67-69,75,104-114)
+        this.add(NtmItems.SETTINGS_TOOL, "Settings Tool");
+        this.add(NtmItems.SETTINGS_TOOL, ".desc1", "Can copy the settings (filters, fluid ID, etc) of machines");
+        this.add(NtmItems.SETTINGS_TOOL, ".desc2", "Shift right-click to copy, right click to paste");
+        this.add(NtmItems.SETTINGS_TOOL, ".desc3", "Ctrl click on pipes to paste settings to multiple pipes");
+        this.add(NtmItems.SETTINGS_TOOL, ".none", " None ");
+        this.add(NtmItems.SETTINGS_TOOL, ".copied", "Copied settings of %s");
+        this.add(NtmItems.SETTINGS_TOOL, ".copy_failed", "Copy failed, machine has no settings tool support: %s");
         this.add("rbmk.heat", "Column temperature: %s");
         this.add("rbmk.console.assign", "Assign selected columns to screen #%s");
         this.add("rbmk.console.none", "Off");
@@ -2381,7 +2389,7 @@ public class NtmLanguageProvider extends LanguageProvider {
         // Goal 30A power and fluid control blocks (original en_US.lang); the gauge and counter overlays were hard-coded English
         this.add(NtmBlocks.RED_WIRE_COATED, "Coated Red Copper Cable");
         this.add(NtmBlocks.RED_CABLE_PAINTABLE, "Paintable Red Copper Cable");
-        this.add(NtmBlocks.RED_CABLE_PAINTABLE, DESC, "Right-click with a solid block to set a paint$Paint can be cleared with a screwdriver$Port texture can be disabled with a defuser$Paints can be copied with the copy tool");
+        this.add(NtmBlocks.RED_CABLE_PAINTABLE, DESC, "Right-click with a solid block to set a paint$Paint can be cleared with a screwdriver$Port texture can be disabled with a defuser$Paints can be copied with the Settings Tool");
         this.add(NtmBlocks.RED_CABLE_GAUGE, "Power Gauge");
         this.add(NtmBlocks.RED_CABLE_GAUGE, DESC, "Cable that displays how much power$moves within the network per tick.$Split networks connected by energy$storage blocks are considered as one shared network.");
         this.add("block.hbmsntm.red_cable_gauge.per_tick", "%sHE/t");
@@ -2390,7 +2398,7 @@ public class NtmLanguageProvider extends LanguageProvider {
         this.add(NtmBlocks.CABLE_DETECTOR, "Redstone Power Switch");
         this.add(NtmBlocks.MACHINE_DETECTOR, "Power Detector");
         this.add(NtmBlocks.FLUID_DUCT_PAINTABLE, "Paintable Coated Universal Fluid Duct");
-        this.add(NtmBlocks.FLUID_DUCT_PAINTABLE, DESC, "Right-click with a solid block to set a paint$Paint can be cleared with a screwdriver$Port texture can be disabled with a defuser$Paints can be copied with the copy tool");
+        this.add(NtmBlocks.FLUID_DUCT_PAINTABLE, DESC, "Right-click with a solid block to set a paint$Paint can be cleared with a screwdriver$Port texture can be disabled with a defuser$Paints can be copied with the Settings Tool");
         this.add(NtmBlocks.FLUID_DUCT_GAUGE, "Flow Gauge Pipe");
         this.add(NtmBlocks.FLUID_DUCT_GAUGE, DESC, "Pipe that displays how much fluid$moves within the network per tick.$Split networks connected by barrels$or tanks are considered as one shared network.");
         this.add("block.hbmsntm.fluid_duct_gauge.per_tick", "%s mB/t");
@@ -2452,6 +2460,90 @@ public class NtmLanguageProvider extends LanguageProvider {
         this.add("block.hbmsntm.flow_control_pump.changed_type_to", "Changed type to %s!");
         this.add("block.hbmsntm.flow_control_pump.flow", "%s (%s PU): %smB/t");
         this.add("block.hbmsntm.flow_control_pump.buffered", "%smB buffered");
+        // Goal 31A conveyor belts and the conveyor wand (original en_US.lang:2607-2612,5420-5431); the wand's chat messages and
+        // its look overlay line were hard-coded English (ItemConveyorWand.java:211,213,215,514)
+        this.add(NtmBlocks.CONVEYOR, "Conveyor Belt");
+        this.add(NtmBlocks.CONVEYOR, DESC, "Moves items dropped on it$Can be rotated clockwise with a screwdriver$Shift-click with screwdriver to bend");
+        this.add(NtmBlocks.CONVEYOR_CHUTE, "Conveyor Chute");
+        this.add(NtmBlocks.CONVEYOR_CHUTE, DESC, "Moves items down$The bottom-most chute will act like a regular conveyor belt");
+        this.add(NtmBlocks.CONVEYOR_DOUBLE, "Double-Lane Conveyor Belt");
+        this.add(NtmBlocks.CONVEYOR_DOUBLE, DESC, "Moves items dropped on it$Can be rotated clockwise with a screwdriver$Shift-click with screwdriver to bend");
+        this.add(NtmBlocks.CONVEYOR_EXPRESS, "Express Conveyor Belt");
+        this.add(NtmBlocks.CONVEYOR_EXPRESS, DESC, "Moves items dropped on it very fast$Can be rotated clockwise with a screwdriver$Shift-click with screwdriver to bend");
+        this.add(NtmBlocks.CONVEYOR_LIFT, "Conveyor Chain Lift");
+        this.add(NtmBlocks.CONVEYOR_LIFT, DESC, "Moves items up$Requires at least two blocks on top of each other to work properly");
+        this.add(NtmBlocks.CONVEYOR_TRIPLE, "Triple-Lane Conveyor Belt");
+        this.add(NtmBlocks.CONVEYOR_TRIPLE, DESC, "Moves items dropped on it$Can be rotated clockwise with a screwdriver$Shift-click with screwdriver to bend");
+        this.add("item.hbmsntm.conveyor_wand.regular", "Conveyor Belt");
+        this.add("item.hbmsntm.conveyor_wand.express", "Express Conveyor Belt");
+        this.add("item.hbmsntm.conveyor_wand.double", "Double-Lane Conveyor Belt");
+        this.add("item.hbmsntm.conveyor_wand.triple", "Triple-Lane Conveyor Belt");
+        this.add("item.hbmsntm.conveyor_wand.desc", "Moves items dropped on it$Click two points to create a conveyor$Crouch click to manually place$Click with a screwdriver to rotate$Crouch click with a screwdriver to change types");
+        this.add("item.hbmsntm.conveyor_wand.vertical.desc", "Is capable of placing lifts & chutes to move items vertically");
+        this.add("item.hbmsntm.conveyor_wand.built", "Conveyor built!");
+        this.add("item.hbmsntm.conveyor_wand.not_enough", "Not enough conveyors, build cancelled");
+        this.add("item.hbmsntm.conveyor_wand.obstructed", "Conveyor obstructed, build cancelled");
+        this.add("item.hbmsntm.conveyor_wand.break_line", "Break whole conveyor line");
+        this.add("entity.hbmsntm.moving_item", "Conveyor Item");
+        // Goal 31B conveyor cranes, their upgrades and the filter (original en_US.lang:653,655,854,857,4725-4727,4748-4750,
+        // 5435-5440); the screen texts and filter mode labels were hard-coded English (GUICraneInserter.java:39,
+        // GUICraneExtractor.java:44,50, ModulePatternMatcher.java:186-193); the tag mode replaces the ore dictionary mode
+        this.add(NtmBlocks.CRANE_EXTRACTOR, "Conveyor Ejector");
+        this.add(NtmBlocks.CRANE_EXTRACTOR, DESC, "Takes items from inventories and places them on conveyor belts$Has up to 9 filter slots with black and whitelist$Right-click with screwdriver to set output side$Shift-click with screwdriver to set the input side$Click twice to set the opposite side");
+        this.add(NtmBlocks.CRANE_INSERTER, "Conveyor Inserter");
+        this.add(NtmBlocks.CRANE_INSERTER, DESC, "Accepts items from conveyors and places them into containers$Right-click with screwdriver to set input side$Shift-click with screwdriver to set the output side$Click twice to set the opposite side");
+        this.add("container.craneExtractor", "Conveyor Ejector");
+        this.add("container.craneInserter", "Conveyor Inserter");
+        this.add(NtmItems.UPGRADE_STACK_1, "Stack Ejection Upgrade Mk.I");
+        this.add(NtmItems.UPGRADE_STACK_2, "Stack Ejection Upgrade Mk.II");
+        this.add(NtmItems.UPGRADE_STACK_3, "Stack Ejection Upgrade Mk.III");
+        this.add(NtmItems.UPGRADE_EJECTOR_1, "Ejection Speed Upgrade Mk.I");
+        this.add(NtmItems.UPGRADE_EJECTOR_2, "Ejection Speed Upgrade Mk.II");
+        this.add(NtmItems.UPGRADE_EJECTOR_3, "Ejection Speed Upgrade Mk.III");
+        this.add("copytool.filter", "Filter");
+        this.add("copytool.orientation", "Orientation");
+        this.add("gui.hbmsntm.crane.on", "ON");
+        this.add("gui.hbmsntm.crane.off", "OFF");
+        this.add("gui.hbmsntm.crane_inserter.destroyer", "Destroy overflow: %s");
+        this.add("gui.hbmsntm.crane_extractor.max_eject", "Only take maximum possible: %s");
+        this.add("gui.hbmsntm.filter.right_click", "Right click to change");
+        this.add("gui.hbmsntm.filter.exact", "Item and meta match");
+        this.add("gui.hbmsntm.filter.wildcard", "Item matches");
+        this.add("gui.hbmsntm.filter.tag", "Item tag matches: %s");
+        // Goal 31C grabber, boxer, unboxer and the moving package (original en_US.lang:652,654,657,5433-5434,5437-5438,5447-5448)
+        this.add(NtmBlocks.CRANE_GRABBER, "Conveyor Grabber");
+        this.add(NtmBlocks.CRANE_GRABBER, DESC, "Takes items from passing conveyors and places them into containers$Will only take items from the closest lane$Has up to 9 filter slots with black and whitelist$Right-click with screwdriver to set input side$Shift-click with screwdriver to set the output side$Click twice to set the opposite side");
+        this.add(NtmBlocks.CRANE_BOXER, "Conveyor Boxer");
+        this.add(NtmBlocks.CRANE_BOXER, DESC, "Loads a configurable amount of stacks into boxes which move along conveyor belts$Right-click with screwdriver to set input side$Shift-click with screwdriver to set the output side$Click twice to set the opposite side");
+        this.add(NtmBlocks.CRANE_UNBOXER, "Conveyor Unboxer");
+        this.add(NtmBlocks.CRANE_UNBOXER, DESC, "Receives boxes and extracts their contents$Right-click with screwdriver to set output side$Shift-click with screwdriver to set the input side$Click twice to set the opposite side");
+        this.add("container.craneGrabber", "Conveyor Grabber");
+        // Goal 31D sorter, splitter and partitioner (original en_US.lang:656,858-863,5441-5446); the sorter screen's mode names and the
+        // splitter's ratio line were hard-coded English (GUICraneRouter.java:67-72, CraneSplitter.java:200)
+        this.add(NtmBlocks.CRANE_ROUTER, "Conveyor Sorter");
+        this.add(NtmBlocks.CRANE_ROUTER, DESC, "Sorts item based on defined criteria$Sides can be defined as blacklist, whitelist or wildcard$Wildcard sides are only chosen if no other filter matches");
+        this.add("container.craneRouter", "Conveyor Router");
+        this.add("gui.hbmsntm.crane_router.mode0", "OFF");
+        this.add("gui.hbmsntm.crane_router.mode1", "WHITELIST");
+        this.add("gui.hbmsntm.crane_router.mode1.desc", "Route if filter matches");
+        this.add("gui.hbmsntm.crane_router.mode2", "BLACKLIST");
+        this.add("gui.hbmsntm.crane_router.mode2.desc", "Route if filter doesn't match");
+        this.add("gui.hbmsntm.crane_router.mode3", "WILDCARD");
+        this.add("gui.hbmsntm.crane_router.mode3.desc", "Route if no other route is valid");
+        this.add("copytool.pattern0", "Red Side");
+        this.add("copytool.pattern1", "Orange Side");
+        this.add("copytool.pattern2", "Yellow Side");
+        this.add("copytool.pattern3", "Green Side");
+        this.add("copytool.pattern4", "Blue Side");
+        this.add("copytool.pattern5", "Purple Side");
+        this.add(NtmBlocks.CRANE_SPLITTER, "Conveyor Splitter");
+        this.add(NtmBlocks.CRANE_SPLITTER, DESC, "Splits items and stacks evenly onto two conveyor belts$Is a conveyor belt itself, so it can directly input into an inserter or sorter$Ratio can be configured with a screwdriver");
+        this.add("block.hbmsntm.crane_splitter.ratio", "Splitter ratio: %s:%s");
+        this.add(NtmBlocks.CRANE_PARTITIONER, "Acidizer Input Partitioner");
+        this.add(NtmBlocks.CRANE_PARTITIONER, DESC, "Receives and stores up to 45 Ore Acidizer inputs$and releases them if they match the required input size.$Invalid items are also saved, and need to be extracted from the side.");
+        this.add("container.craneBoxer", "Conveyor Boxer");
+        this.add("container.craneUnboxer", "Conveyor Unboxer");
+        this.add("entity.hbmsntm.moving_package", "Conveyor Package");
         this.add(NtmBlocks.NETWORK_SEPARATOR, "Network Separator");
         this.add("block.hbmsntm.network_separator.per_tick", "%sHE/t");
         this.add("block.hbmsntm.network_separator.per_second", "%sHE/s");
@@ -3367,6 +3459,8 @@ public class NtmLanguageProvider extends LanguageProvider {
         this.add("hbmsntm.keys.craneMoveLeft", "Move Crane Left");
         this.add("hbmsntm.keys.craneMoveRight", "Move Crane Right");
         this.add("hbmsntm.keys.craneLoad", "Load/Unload Crane");
+        this.add("hbmsntm.keys.copyToolAlt", "Copy Tool: Switch Paste");
+        this.add("hbmsntm.keys.copyToolCtrl", "Copy Tool: Paste to Pipes");
 
         // Original potion.hbm_mutation (en_US.lang:4954).
         this.add("effect.hbmsntm.mutation", "Tainted Heart");
@@ -3624,6 +3718,8 @@ public class NtmLanguageProvider extends LanguageProvider {
         this.add("hbmsntm.configuration.taint_trails", "Taint Trails");
         this.add("hbmsntm.configuration.crate_open_held", "Open Held Crates");
         this.add("hbmsntm.configuration.crate_keep_contents", "Crates Keep Contents");
+        this.add("hbmsntm.configuration.conveyor_cram_max", "Conveyor Cram Limit");
+        this.add("hbmsntm.configuration.conveyor_cram_explode", "Crammed Conveyors Break");
         this.add("hbmsntm.configuration.enableNtmSkybox", "NTM Skybox");
         this.add("hbmsntm.configuration.enableNukeHudFlash", "Nuke Flash");
         this.add("hbmsntm.configuration.enableNukeHudShake", "Nuke HUD Shake");

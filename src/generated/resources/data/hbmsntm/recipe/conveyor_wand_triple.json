@@ -1,0 +1,33 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "equipment",
+  "key": {
+    "C": {
+      "type": "neoforge:components",
+      "components": {
+        "hbmsntm:meta": 0
+      },
+      "items": "hbmsntm:conveyor_wand"
+    },
+    "D": {
+      "type": "neoforge:components",
+      "components": {
+        "hbmsntm:meta": 2
+      },
+      "items": "hbmsntm:conveyor_wand"
+    },
+    "P": {
+      "tag": "c:plates/steel"
+    }
+  },
+  "pattern": [
+    "DPC"
+  ],
+  "result": {
+    "components": {
+      "hbmsntm:meta": 3
+    },
+    "count": 1,
+    "id": "hbmsntm:conveyor_wand"
+  }
+}

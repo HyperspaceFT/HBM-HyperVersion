@@ -1017,6 +1017,7 @@ public class NtmItemModelProvider extends ItemModelProvider {
         this.handheldItem(NtmItems.REACHER.get());
         this.basicItem(NtmItems.MELTDOWN_TOOL.get());
         this.basicItem(NtmItems.RBMK_TOOL.get());
+        this.basicItem(NtmItems.SETTINGS_TOOL.get());
         this.basicItem(NtmItems.WIRING_RED_COPPER.get());
         this.handheldItem(NtmItems.WRENCH.get());
         this.handheldItem(NtmItems.DRILL_TITANIUM.get());
@@ -1025,6 +1026,12 @@ public class NtmItemModelProvider extends ItemModelProvider {
         this.handheldItem(NtmItems.UPGRADE_SPEED_1.get());
         this.handheldItem(NtmItems.UPGRADE_SPEED_2.get());
         this.handheldItem(NtmItems.UPGRADE_SPEED_3.get());
+        this.handheldItem(NtmItems.UPGRADE_STACK_1.get());
+        this.handheldItem(NtmItems.UPGRADE_STACK_2.get());
+        this.handheldItem(NtmItems.UPGRADE_STACK_3.get());
+        this.handheldItem(NtmItems.UPGRADE_EJECTOR_1.get());
+        this.handheldItem(NtmItems.UPGRADE_EJECTOR_2.get());
+        this.handheldItem(NtmItems.UPGRADE_EJECTOR_3.get());
         this.handheldItem(NtmItems.UPGRADE_EFFECT_1.get());
         this.handheldItem(NtmItems.UPGRADE_EFFECT_2.get());
         this.handheldItem(NtmItems.UPGRADE_EFFECT_3.get());

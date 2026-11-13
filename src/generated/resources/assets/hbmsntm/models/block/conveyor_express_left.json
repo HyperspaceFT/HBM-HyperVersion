@@ -1,0 +1,45 @@
+{
+  "parent": "minecraft:block/block",
+  "elements": [
+    {
+      "faces": {
+        "down": {
+          "texture": "#top"
+        },
+        "east": {
+          "texture": "#side"
+        },
+        "north": {
+          "texture": "#side"
+        },
+        "south": {
+          "texture": "#side"
+        },
+        "up": {
+          "rotation": 180,
+          "texture": "#top"
+        },
+        "west": {
+          "texture": "#side"
+        }
+      },
+      "from": [
+        0,
+        0,
+        0
+      ],
+      "to": [
+        16,
+        4,
+        16
+      ]
+    }
+  ],
+  "textures": {
+    "belt": "hbmsntm:block/conveyor_express",
+    "concrete": "hbmsntm:block/concrete_smooth",
+    "particle": "hbmsntm:block/conveyor_express",
+    "side": "hbmsntm:block/conveyor_side",
+    "top": "hbmsntm:block/conveyor_express_curve_left"
+  }
+}

@@ -1,0 +1,27 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "key": {
+    "C": {
+      "tag": "ntm:ingots_plastic"
+    },
+    "I": {
+      "tag": "ntm:ingots_resistant_alloy"
+    },
+    "P": {
+      "item": "hbmsntm:motor"
+    }
+  },
+  "pattern": [
+    " I ",
+    "CPC",
+    " I "
+  ],
+  "result": {
+    "components": {
+      "hbmsntm:meta": 2
+    },
+    "count": 4,
+    "id": "hbmsntm:part_generic"
+  }
+}

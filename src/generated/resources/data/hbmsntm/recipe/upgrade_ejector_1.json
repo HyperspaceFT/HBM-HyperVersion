@@ -1,0 +1,24 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "key": {
+    "C": {
+      "tag": "c:plates/copper"
+    },
+    "P": {
+      "item": "hbmsntm:motor"
+    },
+    "U": {
+      "item": "hbmsntm:upgrade_template"
+    }
+  },
+  "pattern": [
+    " C ",
+    "PUP",
+    " C "
+  ],
+  "result": {
+    "count": 1,
+    "id": "hbmsntm:upgrade_ejector_1"
+  }
+}

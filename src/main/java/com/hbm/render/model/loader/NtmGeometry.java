@@ -22,7 +22,9 @@ import org.joml.Matrix4f;
 
 import javax.annotation.Nullable;
 import java.util.Collections;
+import java.util.LinkedHashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.function.Function;
 
 public class NtmGeometry implements IUnbakedGeometry<NtmGeometry> {
@@ -38,7 +40,9 @@ public class NtmGeometry implements IUnbakedGeometry<NtmGeometry> {
         RBMK_DEBRIS,
         RBMK_ELEMENT,
         PAINTABLE_CABLE,
-        PAINTABLE_DUCT
+        PAINTABLE_DUCT,
+        CRANE_SPLITTER,
+        CRANE_PARTITIONER
     }
 
     private final BakedModelType type;
@@ -69,6 +73,14 @@ public class NtmGeometry implements IUnbakedGeometry<NtmGeometry> {
             // paintable duct: the fluid-coloured overlay while unpainted, the plain port overlay over a paint (FluidDuctPaintable.java:54-92)
             case PAINTABLE_DUCT -> new PaintableBakedModel(textureSprite, spriteGetter.apply(context.getMaterial("overlay_color")), true, overlaySprite);
             case RBMK_DEBRIS -> new SimpleWavefrontBakedModel(new HFRWavefrontObject("models/obj/rbmk/debris.obj"), textureSprite);
+            // original ResourceManager.java:1713-1714 load both with noSmooth(); NEO's noSmooth() has no effect (S_Face ignores the
+            // flag) and both OBJs carry flat per-face normals, so it is not called
+            case CRANE_SPLITTER -> new ConveyorObjBakedModel(new HFRWavefrontObject("models/obj/block/splitter.obj"),
+                    splitterParts(context, spriteGetter, true), splitterParts(context, spriteGetter, false),
+                    spriteGetter.apply(context.getMaterial("particle")), context.getTransforms());
+            case CRANE_PARTITIONER -> new ConveyorObjBakedModel(new HFRWavefrontObject("models/obj/block/crane_buffer.obj"),
+                    namedParts(context, spriteGetter, "Side", "side", "Back", "back", "Top_Top.001", "top", "Inner", "inner", "InnerSide", "inner_side", "Belt", "belt"),
+                    null, spriteGetter.apply(context.getMaterial("side")), context.getTransforms());
             // The fuel channel body; "fuel" is the rod texture of its item form. The display transforms come from the model's parent.
             // rbmk_element.obj mixes triangles and quads inside its "Cap" group, so it is read in mixed mode as the original
             // ResourceManager.java:1675 does; the baker emits each face by its own vertex count (Goal 24 acceptance D1).
@@ -76,5 +88,27 @@ public class NtmGeometry implements IUnbakedGeometry<NtmGeometry> {
                     spriteGetter.apply(context.getMaterial("side")), spriteGetter.apply(context.getMaterial("top")), spriteGetter.apply(context.getMaterial("inner")),
                     spriteGetter.apply(context.getMaterial("fuel")), context.getTransforms());
         };
+    }
+
+    /** OBJ group to the sprite of a named material, in pairs (RenderPartitioner.java:61-69). */
+    private static Map<String, TextureAtlasSprite> namedParts(IGeometryBakingContext context, Function<Material, TextureAtlasSprite> spriteGetter, String... pairs) {
+        Map<String, TextureAtlasSprite> parts = new LinkedHashMap<>();
+        for(int i = 0; i < pairs.length; i += 2) parts.put(pairs[i], spriteGetter.apply(context.getMaterial(pairs[i + 1])));
+        return parts;
+    }
+
+    /** RenderSplitter.java:61-74: the left half (the core) or the right half (the second block) of the splitter. */
+    private static Map<String, TextureAtlasSprite> splitterParts(IGeometryBakingContext context, Function<Material, TextureAtlasSprite> spriteGetter, boolean left) {
+        return namedParts(context, spriteGetter,
+                "Top", left ? "top_left" : "top_right",
+                "Bottom", left ? "top_right" : "top_left",
+                left ? "Left" : "Right", left ? "left" : "right",
+                "Back", left ? "back_left" : "back_right",
+                "Front", left ? "front_left" : "front_right",
+                "Inner", "inner",
+                "InnerLeft", "inner_side",
+                "InnerRight", "inner_side",
+                "InnerTop", "inner_side",
+                "InnerBottom", "belt");
     }
 }

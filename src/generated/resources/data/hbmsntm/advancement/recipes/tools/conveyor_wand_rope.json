@@ -1,0 +1,32 @@
+{
+  "parent": "minecraft:recipes/root",
+  "criteria": {
+    "has_plant_item": {
+      "conditions": {
+        "items": [
+          {
+            "items": "hbmsntm:plant_item"
+          }
+        ]
+      },
+      "trigger": "minecraft:inventory_changed"
+    },
+    "has_the_recipe": {
+      "conditions": {
+        "recipe": "hbmsntm:conveyor_wand_rope"
+      },
+      "trigger": "minecraft:recipe_unlocked"
+    }
+  },
+  "requirements": [
+    [
+      "has_the_recipe",
+      "has_plant_item"
+    ]
+  ],
+  "rewards": {
+    "recipes": [
+      "hbmsntm:conveyor_wand_rope"
+    ]
+  }
+}

@@ -66,6 +66,13 @@ public class NtmMenuTypes {
     public static final DeferredHolder<MenuType<?>, MenuType<RBMKConsoleMenu>> RBMK_CONSOLE = reg("rbmk_console", RBMKConsoleMenu::new);
     public static final DeferredHolder<MenuType<?>, MenuType<RBMKAutoloaderMenu>> RBMK_AUTOLOADER = reg("rbmk_autoloader", RBMKAutoloaderMenu::new);
 
+    public static final DeferredHolder<MenuType<?>, MenuType<CraneInserterMenu>> CRANE_INSERTER = reg("crane_inserter", CraneInserterMenu::new);
+    public static final DeferredHolder<MenuType<?>, MenuType<CraneExtractorMenu>> CRANE_EXTRACTOR = reg("crane_extractor", CraneExtractorMenu::new);
+    public static final DeferredHolder<MenuType<?>, MenuType<CraneGrabberMenu>> CRANE_GRABBER = reg("crane_grabber", CraneGrabberMenu::new);
+    public static final DeferredHolder<MenuType<?>, MenuType<CraneBoxerMenu>> CRANE_BOXER = reg("crane_boxer", CraneBoxerMenu::new);
+    public static final DeferredHolder<MenuType<?>, MenuType<CraneUnboxerMenu>> CRANE_UNBOXER = reg("crane_unboxer", CraneUnboxerMenu::new);
+    public static final DeferredHolder<MenuType<?>, MenuType<CraneRouterMenu>> CRANE_ROUTER = reg("crane_router", CraneRouterMenu::new);
+
     public static final DeferredHolder<MenuType<?>, MenuType<MachineFluidTankMenu>> FLUID_TANK = reg("fluid_tank", MachineFluidTankMenu::new);
 
     public static final DeferredHolder<MenuType<?>, MenuType<BatterySocketMenu>> BATTERY_SOCKET = reg("battery_socket", BatterySocketMenu::new);

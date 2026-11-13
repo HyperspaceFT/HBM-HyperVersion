@@ -174,6 +174,8 @@ public class HeaterHeatexBlockEntity extends AbstractHeaterMachineBlockEntity im
     public void pasteSettings(CompoundTag tag, int index, net.minecraft.world.level.Level level, Player player, BlockPos pos) {
         if(tag.contains("toCool")) this.amountToCool = Math.max(1, Math.min(tag.getInt("toCool"), this.tanks[0].getMaxFill()));
         if(tag.contains("delay")) this.tickDelay = Math.max(tag.getInt("delay"), 1);
+        // marked for saving (Goal 31D): the tick only marks while it cools
+        this.setChanged();
     }
 
     @Override

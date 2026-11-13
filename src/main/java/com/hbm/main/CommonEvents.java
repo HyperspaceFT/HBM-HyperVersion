@@ -1,8 +1,11 @@
 package com.hbm.main;
 
+import com.hbm.items.tools.ConveyorWandItem;
 import com.hbm.blockentity.bomb.LaunchPadBaseBlockEntity;
 import com.hbm.blockentity.machine.MachineRadarBlockEntity;
 import com.hbm.blocks.NtmBlocks;
+import com.hbm.blockentity.NtmBlockEntityTypes;
+import com.hbm.blockentity.ProxyComboBlockEntity;
 import com.hbm.commands.ChunkRadCommand;
 import com.hbm.commands.LivingPropsCommand;
 import com.hbm.commands.PollutionCommand;
@@ -38,7 +41,21 @@ import net.minecraft.world.entity.item.ItemEntity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
+import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.Blocks;
+import net.minecraft.world.level.block.EntityBlock;
+import net.minecraft.world.Container;
+import net.minecraft.world.WorldlyContainer;
+import net.minecraft.world.level.block.entity.BlockEntity;
+import net.minecraft.world.level.block.entity.BlockEntityType;
+import net.neoforged.neoforge.capabilities.Capabilities;
+import net.neoforged.neoforge.capabilities.RegisterCapabilitiesEvent;
+import net.neoforged.neoforge.items.IItemHandler;
+import net.neoforged.neoforge.items.wrapper.InvWrapper;
+import net.neoforged.neoforge.items.wrapper.SidedInvWrapper;
+import net.neoforged.neoforge.registries.DeferredHolder;
+import javax.annotation.Nullable;
+import net.neoforged.bus.api.EventPriority;
 import net.neoforged.bus.api.SubscribeEvent;
 import net.neoforged.fml.common.EventBusSubscriber;
 import net.neoforged.fml.event.lifecycle.FMLCommonSetupEvent;
@@ -95,6 +112,35 @@ public class CommonEvents {
         event.put(NtmEntityTypes.CREEPER_NUCLEAR.get(), CreeperNuclear.createAttributes().build());
     }
 
+    /**
+     * Every NEO block entity type offers the item handler capability (GOAL31 decision 2), so other mods' pipes and vanilla hoppers
+     * reach NEO machines through it, with each machine's own face rules: a WorldlyContainer is wrapped in SidedInvWrapper (inserting
+     * still asks canPlaceItemThroughFace and canPlaceItem), a plain Container in InvWrapper. Queries without a side get nothing,
+     * because SidedInvWrapper would then expose every slot by index with no face rule (phantom filter and upgrade slots, machine
+     * internals); that is stricter than NeoForge's vanilla containers. A multiblock proxy only answers while its inventory flag is
+     * set. Types registered by later batches are covered by the loop.
+     */
+    @SubscribeEvent
+    public static void registerCapabilities(RegisterCapabilitiesEvent event) {
+        for(DeferredHolder<BlockEntityType<?>, ? extends BlockEntityType<?>> type : NtmBlockEntityTypes.BLOCK_ENTITY_TYPES.getEntries()) {
+            event.registerBlockEntity(Capabilities.ItemHandler.BLOCK, type.get(), CommonEvents::itemHandlerOf);
+        }
+
+        // The multiblock proxy type has no valid blocks (each multiblock creates its proxies itself), so registering the type reaches
+        // no block; its ports are registered on every block that has a block entity and answer only for a proxy.
+        Block[] entityBlocks = NtmBlocks.BLOCKS.getEntries().stream().map(DeferredHolder::get).filter(block -> block instanceof EntityBlock).toArray(Block[]::new);
+        event.registerBlock(Capabilities.ItemHandler.BLOCK, (level, pos, state, be, side) -> be instanceof ProxyComboBlockEntity ? itemHandlerOf(be, side) : null, entityBlocks);
+    }
+
+    @Nullable
+    public static IItemHandler itemHandlerOf(BlockEntity be, @Nullable Direction side) {
+        if(side == null) return null;
+        if(be instanceof ProxyComboBlockEntity proxy && !proxy.hasInventory()) return null;
+        if(be instanceof WorldlyContainer sided) return new SidedInvWrapper(sided, side);
+        if(be instanceof Container container) return new InvWrapper(container);
+        return null;
+    }
+
     @SubscribeEvent
     public static void onLivingTick(EntityTickEvent.Pre event) {
         Entity entity = event.getEntity();
@@ -133,6 +179,12 @@ public class CommonEvents {
         if(to.getItem() instanceof IEquipReceiver receiver) {
             receiver.onEquip(player, to);
         }
+    }
+
+    /** Last, so a listener that cancels the break also keeps the rest of the conveyor line. */
+    @SubscribeEvent(priority = EventPriority.LOWEST)
+    public static void onBlockBreakConveyorLine(BreakEvent event) {
+        ConveyorWandItem.onBlockBreak(event);
     }
 
     @SubscribeEvent

@@ -218,6 +218,11 @@ public class RBMKControlAutoBlockEntity extends RBMKControlBlockEntity implement
     // NEO: setChanged so the pasted settings are saved; the original does not mark the tile here.
     @Override
     public void pasteSettings(CompoundTag nbt, int index, Level world, Player player, BlockPos pos) {
+        // the settings tool's data is player-writable (Goal 31D): a present value outside the control payload's range rejects the paste
+        if(nbt.contains("levelLower") && !inRange(nbt.getDouble("levelLower"), 100D)) return;
+        if(nbt.contains("levelUpper") && !inRange(nbt.getDouble("levelUpper"), 100D)) return;
+        if(nbt.contains("heatLower") && !inRange(nbt.getDouble("heatLower"), 9999D)) return;
+        if(nbt.contains("heatUpper") && !inRange(nbt.getDouble("heatUpper"), 9999D)) return;
         if(nbt.contains("levelLower")) levelLower = nbt.getDouble("levelLower");
         if(nbt.contains("levelUpper")) levelUpper = nbt.getDouble("levelUpper");
         if(nbt.contains("heatLower")) heatLower = nbt.getDouble("heatLower");

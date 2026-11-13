@@ -1,0 +1,34 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "key": {
+    "C": {
+      "item": "hbmsntm:ingot_titanium"
+    },
+    "I": {
+      "item": "hbmsntm:ingot_steel"
+    },
+    "P": {
+      "type": "neoforge:components",
+      "components": {
+        "hbmsntm:meta": 18
+      },
+      "items": [
+        "hbmsntm:fluid_tank_full",
+        "hbmsntm:fluid_tank_lead_full"
+      ]
+    }
+  },
+  "pattern": [
+    " I ",
+    "CPC",
+    " I "
+  ],
+  "result": {
+    "components": {
+      "hbmsntm:meta": 1
+    },
+    "count": 4,
+    "id": "hbmsntm:part_generic"
+  }
+}

@@ -1,0 +1,32 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "key": {
+    "B": {
+      "type": "neoforge:components",
+      "components": {
+        "hbmsntm:meta": 0
+      },
+      "items": "hbmsntm:conveyor_wand"
+    },
+    "C": {
+      "tag": "minecraft:stone_bricks"
+    },
+    "P": {
+      "type": "neoforge:components",
+      "components": {
+        "hbmsntm:meta": 0
+      },
+      "items": "hbmsntm:part_generic"
+    }
+  },
+  "pattern": [
+    "CCC",
+    "CPC",
+    "CBC"
+  ],
+  "result": {
+    "count": 1,
+    "id": "hbmsntm:crane_extractor"
+  }
+}

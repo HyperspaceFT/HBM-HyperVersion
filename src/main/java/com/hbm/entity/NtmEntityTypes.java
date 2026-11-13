@@ -23,6 +23,8 @@ import com.hbm.entity.mob.CreeperNuclear;
 import com.hbm.entity.mob.Duck;
 import com.hbm.entity.projectile.*;
 import com.hbm.main.NuclearTechMod;
+import com.hbm.entity.item.MovingItem;
+import com.hbm.entity.item.MovingPackage;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.MobCategory;
@@ -94,6 +96,11 @@ public class NtmEntityTypes {
                     .updateInterval(10)
                     .build("tnt_primed_base"));
 
+    // Original EntityMappings.java:118-119,215-221 tracks it at 1000 blocks every tick with velocity; here the item entity's
+    // 6 chunks and the 1.21 default interval of 3 ticks, with clients interpolating between updates.
+    public static final DeferredHolder<EntityType<?>, EntityType<MovingItem>> MOVING_ITEM = ENTITY_TYPES.register("moving_item", () -> EntityType.Builder.<MovingItem>of(MovingItem::new, MobCategory.MISC).sized(0.375F, 0.375F).clientTrackingRange(6).updateInterval(3).build("moving_item"));
+    // Original EntityMovingPackage (0.5 x 0.5, :24), tracked as the moving item
+    public static final DeferredHolder<EntityType<?>, EntityType<MovingPackage>> MOVING_PACKAGE = ENTITY_TYPES.register("moving_package", () -> EntityType.Builder.<MovingPackage>of(MovingPackage::new, MobCategory.MISC).sized(0.5F, 0.5F).clientTrackingRange(6).updateInterval(3).build("moving_package"));
     public static final DeferredHolder<EntityType<?>, EntityType<Shrapnel>> SHRAPNEL = ENTITY_TYPES.register("shrapnel", () -> EntityType.Builder.<Shrapnel>of(Shrapnel::new, MobCategory.MISC).sized(0.25F, 0.25F).fireImmune().build("shrapnel"));
     public static final DeferredHolder<EntityType<?>, EntityType<Rubble>> RUBBLE = ENTITY_TYPES.register("rubble", () -> EntityType.Builder.of(Rubble::new, MobCategory.MISC).sized(0.25F, 0.25F).build("rubble"));
     // 8 chunks = 128 blocks, matching DebrisBase's render distance (the original tracked it at 1000 blocks, EntityMappings.java:134).

@@ -180,7 +180,8 @@ public class MachineFractionTowerBlockEntity extends LoadedBaseBlockEntity imple
 
     @Override
     public void pasteSettings(CompoundTag tag, int index, Level level, Player player, BlockPos pos) {
-        if(level != this.level || !this.worldPosition.equals(pos)) return;
+        // settings tool (Goal 31D): server only, like the type change itself
+        if(level != this.level || level.isClientSide || player == null || !this.worldPosition.equals(pos)) return;
         int[] ids = tag.getIntArray("FluidID");
         if(index >= 0 && index < ids.length) this.changeInputType(Fluids.fromID(ids[index]), player);
     }

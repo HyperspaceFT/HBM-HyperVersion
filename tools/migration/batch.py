@@ -630,7 +630,8 @@ def cmd_package(batch: Batch, check: bool, gametest_log: str | None) -> int:
     production = sorted(path for path in changes if path.startswith(SRC) and path.endswith(".java") and changes[path] != "deleted")
     tools_changed = any(path.startswith("tools/") for path in changes)
 
-    # 3a. Line endings: a modified file keeps its start style, a new file carries no CRLF.
+    # 3a. Line endings: a modified file keeps its start style, a new file carries no CRLF. An imported asset keeps the
+    # original's bytes, CRLF included; step 3b checks it against the original.
     line_endings, eol_bad = {}, []
     for path, change in sorted(changes.items()):
         if change == "deleted" or Path(path).suffix.lower() not in TEXT_SUFFIXES:
@@ -638,7 +639,7 @@ def cmd_package(batch: Batch, check: bool, gametest_log: str | None) -> int:
         now = eol_counts((root / path).read_bytes())
         if change == "added":
             line_endings[path] = {"start_crlf_lf": None, "now_crlf_lf": list(now)}
-            if now[0]:
+            if now[0] and path not in import_entries:
                 eol_bad.append(f"{path}: new file with CRLF {now}")
             continue
         data = start_bytes(batch, base, path)

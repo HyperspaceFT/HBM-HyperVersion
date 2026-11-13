@@ -9,6 +9,11 @@ import com.hbm.blocks.generic.OreBasaltBlock;
 import com.hbm.blocks.generic.OreBasaltBlock.BasaltOreType;
 import com.hbm.blocks.generic.SellafieldSlakedBlock;
 import com.hbm.blocks.generic.SteelGrateBlock;
+import com.hbm.blocks.network.ConveyorBaseBlock;
+import com.hbm.blocks.network.ConveyorBlock;
+import com.hbm.blocks.network.ConveyorChuteBlock;
+import com.hbm.blocks.network.ConveyorLiftBlock;
+import com.hbm.blocks.network.CraneBaseBlock;
 import com.hbm.blocks.network.FluidDuctConnectingBlock;
 import com.hbm.blocks.states.NtmBlockStateProperties;
 import com.hbm.main.NuclearTechMod;
@@ -363,6 +368,9 @@ public class NtmBlockStateProvider extends BlockStateProvider {
         this.particleOnlyBlock(NtmBlocks.PIPE_ANCHOR, modLoc("block/block_steel"));
         this.particleOnlyBlock(NtmBlocks.FLOW_CONTROL_PUMP, modLoc("block/block_steel"));
         this.particleOnlyBlock(NtmBlocks.NETWORK_SEPARATOR, modLoc("block/block_steel"));
+        this.conveyorBlocks();
+        this.craneBlocks();
+        this.conveyorSorterAndBelts();
         this.particleOnlyBlock(NtmBlocks.MACHINE_ASSEMBLY_MACHINE, modLoc("block/block_steel"));
         this.particleOnlyBlock(NtmBlocks.HEAT_BOILER, modLoc("block/block_steel"));
         this.particleOnlyBlock(NtmBlocks.MACHINE_INDUSTRIAL_BOILER, modLoc("block/block_steel"));
@@ -541,6 +549,37 @@ public class NtmBlockStateProvider extends BlockStateProvider {
         this.rbmkElement(NtmBlocks.RBMK_ROD_MOD, "rbmk_element_mod");
 
         this.simpleBlockWithItem(NtmBlocks.CORIUM_BLOCK.get(), this.models().cubeBottomTop(name(NtmBlocks.CORIUM_BLOCK), modLoc("block/corium_flowing"), modLoc("block/corium_still"), modLoc("block/corium_still")));
+    }
+
+    /**
+     * Goal 31D. The sorter (original CraneRouter.java:78-117) draws crane_in on every face and, in six more passes, the overlay on one
+     * face each tinted by that side's colour; here one cube with crane_in and a cutout overlay cube whose face d has tint index d
+     * (NuclearTechModClient.registerBlockColors). Its item icon is plain crane_in. The splitter and the partitioner are baked OBJ
+     * shapes (ConveyorObjBakedModel); one splitter model holds both halves' textures and every blockstate maps to it.
+     */
+    private void conveyorSorterAndBelts() {
+        ModelFile router = models().withExistingParent("crane_router", mcLoc("block/block"))
+                .renderType("cutout")
+                .texture("base", modLoc("block/crane_in")).texture("overlay", modLoc("block/crane_router_overlay")).texture("particle", modLoc("block/crane_in"))
+                .element().from(0, 0, 0).to(16, 16, 16).allFaces((dir, face) -> face.texture("#base").cullface(dir)).end()
+                .element().from(0, 0, 0).to(16, 16, 16).allFaces((dir, face) -> face.texture("#overlay").cullface(dir).tintindex(dir.get3DDataValue())).end();
+        this.simpleBlock(NtmBlocks.CRANE_ROUTER.get(), router);
+        this.simpleBlockItem(NtmBlocks.CRANE_ROUTER.get(), models().cubeAll("crane_router_item", modLoc("block/crane_in")));
+
+        ModelFile splitter = this.models().withExistingParent("crane_splitter", mcLoc("block/block")).customLoader(CraneSplitterLoaderBuilder::new)
+                .texture("top_left", modLoc("block/crane_splitter_top_left")).texture("top_right", modLoc("block/crane_splitter_top_right"))
+                .texture("front_left", modLoc("block/crane_splitter_front_left")).texture("front_right", modLoc("block/crane_splitter_front_right"))
+                .texture("back_left", modLoc("block/crane_splitter_back_left")).texture("back_right", modLoc("block/crane_splitter_back_right"))
+                .texture("left", modLoc("block/crane_splitter_left")).texture("right", modLoc("block/crane_splitter_right"))
+                .texture("belt", modLoc("block/crane_splitter_belt")).texture("inner", modLoc("block/crane_splitter_inner"))
+                .texture("inner_side", modLoc("block/crane_splitter_inner_side")).texture("particle", modLoc("block/crane_side")).end();
+        this.simpleBlockWithItem(NtmBlocks.CRANE_SPLITTER.get(), splitter);
+
+        ModelFile partitioner = this.models().withExistingParent("crane_partitioner", mcLoc("block/block")).customLoader(CranePartitionerLoaderBuilder::new)
+                .texture("side", modLoc("block/crane_partitioner_side")).texture("back", modLoc("block/crane_partitioner_back"))
+                .texture("top", modLoc("block/crane_top")).texture("inner", modLoc("block/crane_splitter_inner"))
+                .texture("inner_side", modLoc("block/crane_splitter_inner_side")).texture("belt", modLoc("block/crane_splitter_belt")).end();
+        this.simpleBlockWithItem(NtmBlocks.CRANE_PARTITIONER.get(), partitioner);
     }
 
     private void rbmkElement(DeferredBlock<? extends Block> block, String texture) {
@@ -1157,6 +1196,333 @@ public class NtmBlockStateProvider extends BlockStateProvider {
         this.simpleBlockItem(block, item);
     }
 
+    /*
+     * Goal 31B conveyor cranes. The original picks every face's icon from the input side I and the output side O
+     * (BlockCraneBase.java:118-215) and turns only the top face (getRotationFromSide, uvRotateTop; 1 = 90 degrees clockwise, 2 = 90
+     * counter-clockwise, 3 = 180 as for the conveyors). One model per valid (I, O) pair; the six states with I == O never occur and
+     * point at the default model. The skin is a parameter, so the five cranes share the generator.
+     */
+
+    /** The 13 directional icon fields of BlockCraneBase (:41-56), in this order. */
+    private enum CraneIcon { DIRECTIONAL, DIRECTIONAL_UP, DIRECTIONAL_DOWN, TURN_LEFT, TURN_RIGHT, SIDE_LEFT_TURN_UP, SIDE_RIGHT_TURN_UP,
+        SIDE_LEFT_TURN_DOWN, SIDE_RIGHT_TURN_DOWN, SIDE_UP_TURN_LEFT, SIDE_UP_TURN_RIGHT, SIDE_DOWN_TURN_LEFT, SIDE_DOWN_TURN_RIGHT }
+
+    /** ForgeDirection.ROTATION_MATRIX of 1.7.10: {@code output.getRotation(input)} is ROTATION[input][output]. */
+    private static final int[][] CRANE_ROTATION = {
+            { 0, 1, 4, 5, 3, 2 }, { 0, 1, 5, 4, 2, 3 }, { 5, 4, 2, 3, 0, 1 }, { 4, 5, 2, 3, 1, 0 }, { 2, 3, 1, 0, 4, 5 }, { 3, 2, 0, 1, 4, 5 } };
+
+    /**
+     * One crane's textures. {@code icons} are the texture names of the 13 directional fields in CraneIcon order; {@code in},
+     * {@code sideIn}, {@code out}, {@code sideOut} the four base faces that a crane may replace; {@code topRotation} gives the
+     * original's uvRotateTop from the input side and the "left hand" side.
+     */
+    private record CraneSkin(String[] icons, String in, String sideIn, String out, String sideOut, java.util.function.BiFunction<Direction, Direction, Integer> topRotation) {
+        String icon(CraneIcon field) { return this.icons[field.ordinal()]; }
+    }
+
+    /** BlockCraneBase.getRotationFromSide (:249-261): the top turns by the input side only; the inserter, grabber and boxer use it. */
+    private static final java.util.function.BiFunction<Direction, Direction, Integer> CRANE_TOP_BASE =
+            (input, left) -> switch(input) { case NORTH -> 3; case WEST -> 1; case EAST -> 2; default -> 0; };
+
+    /** CraneExtractor.java:45-76 and the identical CraneUnboxer.java:54-84: the top turns by the input side and the left hand. */
+    private static final java.util.function.BiFunction<Direction, Direction, Integer> CRANE_TOP_REVERSED = (input, left) -> {
+        if(left == Direction.UP) return switch(input) { case NORTH -> 2; case SOUTH -> 1; case WEST -> 3; default -> 0; };
+        if(left == Direction.DOWN) return switch(input) { case NORTH -> 1; case SOUTH -> 2; case WEST -> 0; default -> 3; };
+        return switch(input) { case NORTH -> 0; case SOUTH -> 3; case WEST -> 2; default -> 1; };
+    };
+
+    /** The 13 icon names of a crane that registers its fields in BlockCraneBase order (CraneInserter, CraneGrabber, CraneBoxer). */
+    private static String[] craneIcons(String prefix) {
+        return new String[] { prefix + "_top", prefix + "_side_up", prefix + "_side_down", prefix + "_top_left", prefix + "_top_right",
+                prefix + "_side_left_turn_up", prefix + "_side_right_turn_up", prefix + "_side_left_turn_down", prefix + "_side_right_turn_down",
+                prefix + "_side_up_turn_left", prefix + "_side_up_turn_right", prefix + "_side_down_turn_left", prefix + "_side_down_turn_right" };
+    }
+
+    /** The 13 icon names of a crane whose fields point at its files in the extractor's order (CraneExtractor, CraneUnboxer). */
+    private static String[] craneIconsReversed(String prefix) {
+        return new String[] { prefix + "_top", prefix + "_side_down", prefix + "_side_up", prefix + "_top_right", prefix + "_top_left",
+                prefix + "_side_up_turn_left", prefix + "_side_up_turn_right", prefix + "_side_down_turn_left", prefix + "_side_down_turn_right",
+                prefix + "_side_left_turn_up", prefix + "_side_right_turn_up", prefix + "_side_left_turn_down", prefix + "_side_right_turn_down" };
+    }
+
+    private void craneBlocks() {
+        // CraneInserter.java:37-52
+        CraneSkin inserter = new CraneSkin(craneIcons("crane_in"), "crane_in", "crane_side_in", "crane_out", "crane_side_out", CRANE_TOP_BASE);
+        // CraneExtractor.java:28-42: the fields point at the crane_out_ files in a different order, which is kept as it is
+        CraneSkin extractor = new CraneSkin(craneIconsReversed("crane_out"), "crane_in", "crane_side_in", "crane_out", "crane_side_out", CRANE_TOP_REVERSED);
+        // CraneGrabber.java:26-42: pulls on the input side
+        CraneSkin grabber = new CraneSkin(craneIcons("crane_grabber"), "crane_pull", "crane_side_pull", "crane_out", "crane_side_out", CRANE_TOP_BASE);
+        // CraneBoxer.java:34-50: boxes on the output side
+        CraneSkin boxer = new CraneSkin(craneIcons("crane_boxer"), "crane_in", "crane_side_in", "crane_box", "crane_side_box", CRANE_TOP_BASE);
+        // CraneUnboxer.java:34-84: the extractor's field order and top rotation
+        CraneSkin unboxer = new CraneSkin(craneIconsReversed("crane_unboxer"), "crane_in", "crane_side_in", "crane_box", "crane_side_box", CRANE_TOP_REVERSED);
+
+        this.crane(NtmBlocks.CRANE_INSERTER.get(), inserter);
+        this.crane(NtmBlocks.CRANE_EXTRACTOR.get(), extractor);
+        this.crane(NtmBlocks.CRANE_GRABBER.get(), grabber);
+        this.crane(NtmBlocks.CRANE_BOXER.get(), boxer);
+        this.crane(NtmBlocks.CRANE_UNBOXER.get(), unboxer);
+    }
+
+    private void crane(Block block, CraneSkin skin) {
+        String name = this.key(block).getPath();
+        Map<String, BlockModelBuilder> models = new LinkedHashMap<>();
+
+        for(Direction input : Direction.values()) {
+            for(Direction output : Direction.values()) {
+                if(input == output) continue;
+                Map<Direction, String> faces = new LinkedHashMap<>();
+                for(Direction side : Direction.values()) faces.put(side, craneFace(skin, input, output, side));
+                int top = input.getAxis() != Direction.Axis.Y ? skin.topRotation().apply(input, craneLeftHand(input, output)) : 0;
+                models.put(input.getSerializedName() + "_" + output.getSerializedName(), this.craneModel(name + "_" + input.getSerializedName() + "_" + output.getSerializedName(), faces, top));
+            }
+        }
+
+        BlockModelBuilder fallback = models.get("down_up");
+        this.getVariantBuilder(block).forAllStates(state -> {
+            BlockModelBuilder model = models.get(state.getValue(CraneBaseBlock.INPUT).getSerializedName() + "_" + state.getValue(CraneBaseBlock.OUTPUT).getSerializedName());
+            return ConfiguredModel.builder().modelFile(model != null ? model : fallback).build();
+        });
+
+        // The inventory icon reads the item metadata (0) as the output side (BlockCraneBase.java:218-247): out at the bottom, in on
+        // top and the "directional up" icon on all four sides, unlike any placed state.
+        Map<Direction, String> item = new LinkedHashMap<>();
+        for(Direction side : Direction.values()) {
+            item.put(side, side == Direction.DOWN ? skin.out() : side == Direction.UP ? skin.in() : skin.icon(CraneIcon.DIRECTIONAL_UP));
+        }
+        this.simpleBlockItem(block, this.craneModel(name + "_item", item, 0));
+    }
+
+    private static Direction craneLeftHand(Direction input, Direction output) {
+        return Direction.from3DDataValue(CRANE_ROTATION[input.get3DDataValue()][output.get3DDataValue()]);
+    }
+
+    /** BlockCraneBase.getIcon (:118-215) for one side. */
+    private static String craneFace(CraneSkin skin, Direction input, Direction output, Direction side) {
+        boolean overridden = output != input.getOpposite();
+        Direction left = craneLeftHand(input, output);
+
+        if(side.getAxis() == Direction.Axis.Y) {
+            if(side == output) return skin.out();
+            if(side == input) return skin.in();
+
+            if(side == Direction.UP) {
+                if(!overridden) return skin.icon(CraneIcon.DIRECTIONAL);
+                if(left == Direction.UP) return skin.icon(CraneIcon.TURN_LEFT);
+                if(left == Direction.DOWN) return skin.icon(CraneIcon.TURN_RIGHT);
+            }
+
+            return "crane_top";
+        }
+
+        if(side == output) return skin.sideOut();
+        if(side == input) return skin.sideIn();
+
+        if(overridden) {
+            if(side == left) {
+                if(output == Direction.UP) return skin.icon(CraneIcon.SIDE_LEFT_TURN_UP);
+                if(output == Direction.DOWN) return skin.icon(CraneIcon.SIDE_RIGHT_TURN_DOWN);
+                if(input == Direction.UP) return skin.icon(CraneIcon.SIDE_UP_TURN_RIGHT);
+                if(input == Direction.DOWN) return skin.icon(CraneIcon.SIDE_DOWN_TURN_LEFT);
+            }
+            if(side == left.getOpposite()) {
+                if(output == Direction.UP) return skin.icon(CraneIcon.SIDE_RIGHT_TURN_UP);
+                if(output == Direction.DOWN) return skin.icon(CraneIcon.SIDE_LEFT_TURN_DOWN);
+                if(input == Direction.UP) return skin.icon(CraneIcon.SIDE_UP_TURN_LEFT);
+                if(input == Direction.DOWN) return skin.icon(CraneIcon.SIDE_DOWN_TURN_RIGHT);
+            }
+        } else {
+            if(output == Direction.UP) return skin.icon(CraneIcon.DIRECTIONAL_UP);
+            if(output == Direction.DOWN) return skin.icon(CraneIcon.DIRECTIONAL_DOWN);
+        }
+
+        return "crane_side";
+    }
+
+    /** A full cube with one texture per face, the top turned by the original's uvRotateTop value. */
+    private BlockModelBuilder craneModel(String name, Map<Direction, String> faces, int uvRotateTop) {
+        BlockModelBuilder model = this.models().withExistingParent(name, mcLoc("block/block")).texture("particle", modLoc("block/crane_side"));
+        for(Entry<Direction, String> face : faces.entrySet()) model.texture(face.getKey().getSerializedName(), modLoc("block/" + face.getValue()));
+
+        ModelBuilder.FaceRotation top = switch(uvRotateTop) {
+            case 1 -> ModelBuilder.FaceRotation.CLOCKWISE_90;
+            case 2 -> ModelBuilder.FaceRotation.COUNTERCLOCKWISE_90;
+            case 3 -> ModelBuilder.FaceRotation.UPSIDE_DOWN;
+            default -> ModelBuilder.FaceRotation.ZERO;
+        };
+
+        model.element().from(0, 0, 0).to(16, 16, 16).allFaces((dir, face) -> {
+            face.texture("#" + dir.getSerializedName()).cullface(dir);
+            if(dir == Direction.UP) face.rotation(top);
+        }).end();
+        return model;
+    }
+
+    /*
+     * Goal 31A conveyors. The original drew them with hand-written block faces (RenderConveyor.java:67-111,
+     * RenderConveyorChute.java:115-219, RenderConveyorLift.java:24-170). Every model here is the north-facing piece (input on
+     * the north side, original metadata 2) and the block states turn it by 90 degrees per facing. The original's UV rotations
+     * map as uvRotate 1 = 90 degrees clockwise, 2 = 90 counter-clockwise, 3 = 180.
+     */
+    private void conveyorBlocks() {
+        this.conveyorBelt(NtmBlocks.CONVEYOR, "conveyor");
+        this.conveyorBelt(NtmBlocks.CONVEYOR_EXPRESS, "conveyor_express");
+        this.conveyorBelt(NtmBlocks.CONVEYOR_DOUBLE, "conveyor_double");
+        this.conveyorBelt(NtmBlocks.CONVEYOR_TRIPLE, "conveyor_triple");
+        this.conveyorLift();
+        this.conveyorChute();
+    }
+
+    private static int conveyorRotation(Direction facing) {
+        return switch(facing) {
+            case EAST -> 90;
+            case SOUTH -> 180;
+            case WEST -> 270;
+            default -> 0;
+        };
+    }
+
+    private BlockModelBuilder conveyorModel(String name) {
+        return this.models().getBuilder(name).parent(new ModelFile.UncheckedModelFile(mcLoc("block/block")))
+                .texture("particle", modLoc("block/conveyor")).texture("belt", modLoc("block/conveyor"))
+                .texture("side", modLoc("block/conveyor_side")).texture("concrete", modLoc("block/concrete_smooth"));
+    }
+
+    /** One box with the same texture on every face, the up face (and optionally the down face) rotated. */
+    private void conveyorBox(BlockModelBuilder model, float x1, float y1, float z1, float x2, float y2, float z2, String texture,
+                             ModelBuilder.FaceRotation up, ModelBuilder.FaceRotation down) {
+        var element = model.element().from(x1, y1, z1).to(x2, y2, z2);
+        for(Direction face : Direction.values()) {
+            var builder = element.face(face).texture(texture);
+            if(face == Direction.UP) builder.rotation(up);
+            if(face == Direction.DOWN) builder.rotation(down);
+        }
+    }
+
+    /**
+     * A belt box with the block icons of a north-facing belt (BlockConveyorBase.java:44-54): the belt texture on top and
+     * bottom and on the end faces, the side texture along the travel direction, the top turned by 180 degrees and, for
+     * straight belts, the west side too.
+     */
+    private void conveyorBeltBox(BlockModelBuilder model, float x1, float y1, float z1, float x2, float y2, float z2, String top, boolean straight) {
+        var element = model.element().from(x1, y1, z1).to(x2, y2, z2);
+        element.face(Direction.UP).texture(top).rotation(ModelBuilder.FaceRotation.UPSIDE_DOWN).end();
+        element.face(Direction.DOWN).texture(top).end();
+        element.face(Direction.NORTH).texture(straight ? "#belt" : "#side").end();
+        element.face(Direction.SOUTH).texture(straight ? "#belt" : "#side").end();
+        element.face(Direction.EAST).texture("#side").end();
+        if(straight) {
+            // uvRotateWest = 3 reads the face from the top of the texture, turned by 180 degrees
+            element.face(Direction.WEST).texture("#side").uvs(z1, 0, z2, y2 - y1).rotation(ModelBuilder.FaceRotation.UPSIDE_DOWN).end();
+        } else {
+            element.face(Direction.WEST).texture("#side").end();
+        }
+    }
+
+    /** Bendable belts (BlockConveyorBendable.java:33-50): straight, left and right models with their own top textures. */
+    private void conveyorBelt(DeferredBlock<Block> block, String texture) {
+        Map<ConveyorBlock.Shape, ModelFile> models = new LinkedHashMap<>();
+        for(ConveyorBlock.Shape shape : ConveyorBlock.Shape.values()) {
+            boolean straight = shape == ConveyorBlock.Shape.STRAIGHT;
+            String top = straight ? texture : texture + "_curve_" + shape.getSerializedName();
+            BlockModelBuilder model = this.conveyorModel(texture + "_" + shape.getSerializedName())
+                    .texture("particle", modLoc("block/" + texture)).texture("belt", modLoc("block/" + texture)).texture("top", modLoc("block/" + top));
+            this.conveyorBeltBox(model, 0, 0, 0, 16, 4, 16, "#top", straight);
+            models.put(shape, model);
+        }
+
+        this.getVariantBuilder(block.get()).forAllStates(state -> ConfiguredModel.builder()
+                .modelFile(models.get(state.getValue(ConveyorBlock.SHAPE)))
+                .rotationY(conveyorRotation(state.getValue(ConveyorBaseBlock.HORIZONTAL_FACING)))
+                .build());
+    }
+
+    /**
+     * RenderConveyorLift.java:24-166 for metadata 2: concrete posts and a back wall with the chain belt, the bottom piece adds
+     * belt stubs on the three open sides and an iron floor, the top piece is a half-high frame sending items south.
+     */
+    private void conveyorLift() {
+        BlockModelBuilder middle = this.conveyorModel("conveyor_lift_middle");
+        BlockModelBuilder bottom = this.conveyorModel("conveyor_lift_bottom").texture("iron", mcLoc("block/iron_block"));
+        for(BlockModelBuilder model : new BlockModelBuilder[] {middle, bottom}) {
+            ModelBuilder.FaceRotation none = ModelBuilder.FaceRotation.ZERO;
+            this.conveyorBox(model, 0, 0, 0, 4, 16, 4, "#concrete", none, none);
+            this.conveyorBox(model, 12, 0, 0, 16, 16, 4, "#concrete", none, none);
+            this.conveyorBox(model, 0, 0, 12, 16, 16, 16, "#concrete", none, none);
+            this.conveyorBox(model, 4, 0, 10, 12, 16, 12, "#belt", ModelBuilder.FaceRotation.UPSIDE_DOWN, none);
+        }
+        this.conveyorBox(bottom, 0, 0, 4, 4, 4, 12, "#belt", ModelBuilder.FaceRotation.CLOCKWISE_90, ModelBuilder.FaceRotation.CLOCKWISE_90);
+        this.conveyorBox(bottom, 12, 0, 4, 16, 4, 12, "#belt", ModelBuilder.FaceRotation.COUNTERCLOCKWISE_90, ModelBuilder.FaceRotation.COUNTERCLOCKWISE_90);
+        this.conveyorBox(bottom, 4, 0, 0, 12, 4, 4, "#belt", ModelBuilder.FaceRotation.UPSIDE_DOWN, ModelBuilder.FaceRotation.ZERO);
+        this.conveyorBox(bottom, 4, 0, 4, 12, 4, 10, "#iron", ModelBuilder.FaceRotation.ZERO, ModelBuilder.FaceRotation.ZERO);
+
+        BlockModelBuilder top = this.conveyorModel("conveyor_lift_top");
+        this.conveyorBox(top, 0, 0, 0, 4, 8, 16, "#concrete", ModelBuilder.FaceRotation.ZERO, ModelBuilder.FaceRotation.ZERO);
+        this.conveyorBox(top, 12, 0, 0, 16, 8, 16, "#concrete", ModelBuilder.FaceRotation.ZERO, ModelBuilder.FaceRotation.ZERO);
+        this.conveyorBeltBox(top, 4, 0, 10, 12, 4, 16, "#belt", true);
+
+        this.getVariantBuilder(NtmBlocks.CONVEYOR_LIFT.get()).forAllStates(state -> ConfiguredModel.builder()
+                .modelFile(switch(state.getValue(ConveyorLiftBlock.PART)) {
+                    case BOTTOM -> bottom;
+                    case MIDDLE -> middle;
+                    case TOP -> top;
+                })
+                .rotationY(conveyorRotation(state.getValue(ConveyorBaseBlock.HORIZONTAL_FACING)))
+                .build());
+    }
+
+    /**
+     * RenderConveyorChute.java:115-219: four concrete corner posts; a cross-shaped belt at the bottom of the lowest chute,
+     * otherwise a short belt stub towards each neighbouring belt; grate panes on the sides without a belt, starting above the
+     * belt in the lowest chute and left out on its output side.
+     */
+    private void conveyorChute() {
+        ModelBuilder.FaceRotation none = ModelBuilder.FaceRotation.ZERO;
+
+        BlockModelBuilder posts = this.conveyorModel("conveyor_chute_posts").renderType("cutout");
+        this.conveyorBox(posts, 0, 0, 0, 4, 16, 4, "#concrete", none, none);
+        this.conveyorBox(posts, 12, 0, 0, 16, 16, 4, "#concrete", none, none);
+        this.conveyorBox(posts, 0, 0, 12, 4, 16, 16, "#concrete", none, none);
+        this.conveyorBox(posts, 12, 0, 12, 16, 16, 16, "#concrete", none, none);
+
+        BlockModelBuilder belt = this.conveyorModel("conveyor_chute_belt").renderType("cutout");
+        this.conveyorBeltBox(belt, 4, 0, 0, 12, 4, 16, "#belt", true);
+        this.conveyorBeltBox(belt, 0, 0, 4, 4, 4, 12, "#belt", true);
+        this.conveyorBeltBox(belt, 12, 0, 4, 16, 4, 12, "#belt", true);
+
+        BlockModelBuilder stub = this.conveyorModel("conveyor_chute_stub").renderType("cutout");
+        var stubElement = stub.element().from(4, 0, 0).to(12, 4, 2);
+        for(Direction face : Direction.values()) {
+            if(face == Direction.UP) stubElement.face(face).texture("#belt").rotation(ModelBuilder.FaceRotation.UPSIDE_DOWN).end();
+            else stubElement.face(face).texture("#side").end();
+        }
+
+        BlockModelBuilder paneLow = this.conveyorModel("conveyor_chute_pane").renderType("cutout").texture("grate", modLoc("block/grate_top"));
+        BlockModelBuilder paneHigh = this.conveyorModel("conveyor_chute_pane_high").renderType("cutout").texture("grate", modLoc("block/grate_top"));
+        paneLow.element().from(4, 0, 2).to(12, 16, 2).face(Direction.NORTH).texture("#grate").end().face(Direction.SOUTH).texture("#grate").end();
+        paneHigh.element().from(4, 4, 2).to(12, 16, 2).face(Direction.NORTH).texture("#grate").end().face(Direction.SOUTH).texture("#grate").end();
+
+        MultiPartBlockStateBuilder builder = this.getMultipartBuilder(NtmBlocks.CONVEYOR_CHUTE.get());
+        builder.part().modelFile(posts).addModel().end();
+
+        for(Direction dir : Direction.Plane.HORIZONTAL) {
+            int y = conveyorRotation(dir);
+            BooleanProperty side = ConveyorChuteBlock.sideProperty(dir);
+
+            builder.part().modelFile(belt).rotationY(y).addModel()
+                    .condition(ConveyorChuteBlock.BOTTOM, true).condition(ConveyorBaseBlock.HORIZONTAL_FACING, dir).end();
+            builder.part().modelFile(stub).rotationY(y).addModel()
+                    .condition(ConveyorChuteBlock.BOTTOM, false).condition(side, true).end();
+            builder.part().modelFile(paneLow).rotationY(y).addModel()
+                    .condition(ConveyorChuteBlock.BOTTOM, false).condition(side, false).end();
+
+            // the lowest chute sends items out on the side opposite its input, so that side has no pane
+            Direction[] facings = Direction.Plane.HORIZONTAL.stream().filter(f -> f != dir.getOpposite()).toArray(Direction[]::new);
+            builder.part().modelFile(paneHigh).rotationY(y).addModel()
+                    .condition(ConveyorChuteBlock.BOTTOM, true).condition(side, false).condition(ConveyorBaseBlock.HORIZONTAL_FACING, facings).end();
+        }
+    }
+
     private void steelBeamBlock() {
         // beam.obj is an unrotated 1/8-wide column. Its sides use the first 1/8 of the texture width.
         BlockModelBuilder model = this.models().getBuilder("steel_beam")
@@ -1307,6 +1673,16 @@ public class NtmBlockStateProvider extends BlockStateProvider {
         }
         @Override public BakedModelType getType() { return BakedModelType.RBMK_DEBRIS; }
     }
+    protected static class CraneSplitterLoaderBuilder extends BlockModelBuilderBase {
+        public CraneSplitterLoaderBuilder(BlockModelBuilder parent, ExistingFileHelper helper) { super(parent, helper); }
+        @Override public BakedModelType getType() { return BakedModelType.CRANE_SPLITTER; }
+    }
+
+    protected static class CranePartitionerLoaderBuilder extends BlockModelBuilderBase {
+        public CranePartitionerLoaderBuilder(BlockModelBuilder parent, ExistingFileHelper helper) { super(parent, helper); }
+        @Override public BakedModelType getType() { return BakedModelType.CRANE_PARTITIONER; }
+    }
+
     protected static class RBMKElementLoaderBuilder extends BlockModelBuilderBase {
         public RBMKElementLoaderBuilder(BlockModelBuilder parent, ExistingFileHelper helper) {
             super(parent, helper);

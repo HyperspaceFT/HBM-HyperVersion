@@ -1,0 +1,112 @@
+{
+  "variants": {
+    "input=down,output=down": {
+      "model": "hbmsntm:block/crane_inserter_down_up"
+    },
+    "input=down,output=east": {
+      "model": "hbmsntm:block/crane_inserter_down_east"
+    },
+    "input=down,output=north": {
+      "model": "hbmsntm:block/crane_inserter_down_north"
+    },
+    "input=down,output=south": {
+      "model": "hbmsntm:block/crane_inserter_down_south"
+    },
+    "input=down,output=up": {
+      "model": "hbmsntm:block/crane_inserter_down_up"
+    },
+    "input=down,output=west": {
+      "model": "hbmsntm:block/crane_inserter_down_west"
+    },
+    "input=east,output=down": {
+      "model": "hbmsntm:block/crane_inserter_east_down"
+    },
+    "input=east,output=east": {
+      "model": "hbmsntm:block/crane_inserter_down_up"
+    },
+    "input=east,output=north": {
+      "model": "hbmsntm:block/crane_inserter_east_north"
+    },
+    "input=east,output=south": {
+      "model": "hbmsntm:block/crane_inserter_east_south"
+    },
+    "input=east,output=up": {
+      "model": "hbmsntm:block/crane_inserter_east_up"
+    },
+    "input=east,output=west": {
+      "model": "hbmsntm:block/crane_inserter_east_west"
+    },
+    "input=north,output=down": {
+      "model": "hbmsntm:block/crane_inserter_north_down"
+    },
+    "input=north,output=east": {
+      "model": "hbmsntm:block/crane_inserter_north_east"
+    },
+    "input=north,output=north": {
+      "model": "hbmsntm:block/crane_inserter_down_up"
+    },
+    "input=north,output=south": {
+      "model": "hbmsntm:block/crane_inserter_north_south"
+    },
+    "input=north,output=up": {
+      "model": "hbmsntm:block/crane_inserter_north_up"
+    },
+    "input=north,output=west": {
+      "model": "hbmsntm:block/crane_inserter_north_west"
+    },
+    "input=south,output=down": {
+      "model": "hbmsntm:block/crane_inserter_south_down"
+    },
+    "input=south,output=east": {
+      "model": "hbmsntm:block/crane_inserter_south_east"
+    },
+    "input=south,output=north": {
+      "model": "hbmsntm:block/crane_inserter_south_north"
+    },
+    "input=south,output=south": {
+      "model": "hbmsntm:block/crane_inserter_down_up"
+    },
+    "input=south,output=up": {
+      "model": "hbmsntm:block/crane_inserter_south_up"
+    },
+    "input=south,output=west": {
+      "model": "hbmsntm:block/crane_inserter_south_west"
+    },
+    "input=up,output=down": {
+      "model": "hbmsntm:block/crane_inserter_up_down"
+    },
+    "input=up,output=east": {
+      "model": "hbmsntm:block/crane_inserter_up_east"
+    },
+    "input=up,output=north": {
+      "model": "hbmsntm:block/crane_inserter_up_north"
+    },
+    "input=up,output=south": {
+      "model": "hbmsntm:block/crane_inserter_up_south"
+    },
+    "input=up,output=up": {
+      "model": "hbmsntm:block/crane_inserter_down_up"
+    },
+    "input=up,output=west": {
+      "model": "hbmsntm:block/crane_inserter_up_west"
+    },
+    "input=west,output=down": {
+      "model": "hbmsntm:block/crane_inserter_west_down"
+    },
+    "input=west,output=east": {
+      "model": "hbmsntm:block/crane_inserter_west_east"
+    },
+    "input=west,output=north": {
+      "model": "hbmsntm:block/crane_inserter_west_north"
+    },
+    "input=west,output=south": {
+      "model": "hbmsntm:block/crane_inserter_west_south"
+    },
+    "input=west,output=up": {
+      "model": "hbmsntm:block/crane_inserter_west_up"
+    },
+    "input=west,output=west": {
+      "model": "hbmsntm:block/crane_inserter_down_up"
+    }
+  }
+}

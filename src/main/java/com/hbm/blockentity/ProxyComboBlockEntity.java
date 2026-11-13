@@ -40,6 +40,10 @@ public class ProxyComboBlockEntity extends ProxyBaseBlockEntity implements IEner
         this.inventory = true;
         return this;
     }
+
+    public boolean hasInventory() {
+        return this.inventory;
+    }
     public ProxyComboBlockEntity power() {
         this.power = true;
         return this;
@@ -230,6 +234,18 @@ public class ProxyComboBlockEntity extends ProxyBaseBlockEntity implements IEner
 
         if (getCoreObject() instanceof Container container) {
             return container.getContainerSize();
+        }
+
+        return 0;
+    }
+
+    /** Original TileEntityProxyCombo.getInventoryStackLimit (:242-249): the core's limit, so automation does not overfill its slots. */
+    @Override
+    public int getMaxStackSize() {
+        if (!inventory) return 0;
+
+        if (getCoreObject() instanceof Container container) {
+            return container.getMaxStackSize();
         }
 
         return 0;

@@ -1,5 +1,9 @@
 package com.hbm.blocks;
 
+import com.hbm.blocks.network.ConveyorBlock;
+import com.hbm.blocks.network.ConveyorChuteBlock;
+import com.hbm.blocks.network.ConveyorLiftBlock;
+import com.hbm.items.tools.ConveyorWandItem.ConveyorType;
 import com.hbm.blockentity.NtmBlockEntityTypes;
 import com.hbm.blocks.bomb.*;
 import com.hbm.blocks.fluids.RadLiquidBlock;
@@ -496,6 +500,26 @@ public class NtmBlocks {
     // pipe anchor, flow control pump and network separator, original ModBlocks.java:1881,1887,1896 (Material.iron, hardness 5, resistance 10; the anchor has the pipe step sound)
     public static final DeferredBlock<Block> PIPE_ANCHOR = register("pipe_anchor", () -> new FluidPipeAnchorBlock(BlockBehaviour.Properties.of().noOcclusion().strength(5.0F, 10.0F).sound(ModSoundTypes.PIPE).mapColor(MapColor.METAL)));
     public static final DeferredBlock<Block> FLOW_CONTROL_PUMP = register("flow_control_pump", () -> new FlowControlPumpBlock(BlockBehaviour.Properties.of().noOcclusion().strength(5.0F, 10.0F).sound(SoundType.METAL).mapColor(MapColor.METAL)));
+
+    // Conveyor belts (original ModBlocks.java:1908-1913: hardness 2, resistance 2, iron material, no creative tab). No block
+    // items: they are placed with the conveyor wand, drop the wand of their type, and pick-block returns it.
+    public static final DeferredBlock<Block> CONVEYOR =         BLOCKS.register("conveyor",         () -> new ConveyorBlock(conveyorProperties(), ConveyorType.REGULAR));
+    public static final DeferredBlock<Block> CONVEYOR_EXPRESS = BLOCKS.register("conveyor_express", () -> new ConveyorBlock(conveyorProperties(), ConveyorType.EXPRESS));
+    public static final DeferredBlock<Block> CONVEYOR_DOUBLE =  BLOCKS.register("conveyor_double",  () -> new ConveyorBlock(conveyorProperties(), ConveyorType.DOUBLE));
+    public static final DeferredBlock<Block> CONVEYOR_TRIPLE =  BLOCKS.register("conveyor_triple",  () -> new ConveyorBlock(conveyorProperties(), ConveyorType.TRIPLE));
+    public static final DeferredBlock<Block> CONVEYOR_CHUTE =   BLOCKS.register("conveyor_chute",   () -> new ConveyorChuteBlock(conveyorProperties()));
+    public static final DeferredBlock<Block> CONVEYOR_LIFT =    BLOCKS.register("conveyor_lift",    () -> new ConveyorLiftBlock(conveyorProperties()));
+    // Conveyor cranes, original ModBlocks.java:1914-1916,1918-1919 (Material.iron, hardness 5, resistance 10, machine tab). Pickaxe mining tag
+    // without requiring the right tool for drops, as the conveyor belts.
+    public static final DeferredBlock<Block> CRANE_EXTRACTOR = register("crane_extractor", () -> new CraneExtractorBlock(BlockBehaviour.Properties.of().strength(5.0F, 10.0F).sound(SoundType.METAL).mapColor(MapColor.METAL)));
+    public static final DeferredBlock<Block> CRANE_INSERTER = register("crane_inserter", () -> new CraneInserterBlock(BlockBehaviour.Properties.of().strength(5.0F, 10.0F).sound(SoundType.METAL).mapColor(MapColor.METAL)));
+    public static final DeferredBlock<Block> CRANE_GRABBER = register("crane_grabber", () -> new CraneGrabberBlock(BlockBehaviour.Properties.of().strength(5.0F, 10.0F).sound(SoundType.METAL).mapColor(MapColor.METAL)));
+    public static final DeferredBlock<Block> CRANE_BOXER = register("crane_boxer", () -> new CraneBoxerBlock(BlockBehaviour.Properties.of().strength(5.0F, 10.0F).sound(SoundType.METAL).mapColor(MapColor.METAL)));
+    public static final DeferredBlock<Block> CRANE_UNBOXER = register("crane_unboxer", () -> new CraneUnboxerBlock(BlockBehaviour.Properties.of().strength(5.0F, 10.0F).sound(SoundType.METAL).mapColor(MapColor.METAL)));
+    // Sorter, splitter and acidizer input partitioner, original ModBlocks.java:1917,1920-1921 (Material.iron, hardness 5, resistance 10, machine tab)
+    public static final DeferredBlock<Block> CRANE_ROUTER = register("crane_router", () -> new CraneRouterBlock(BlockBehaviour.Properties.of().strength(5.0F, 10.0F).sound(SoundType.METAL).mapColor(MapColor.METAL)));
+    public static final DeferredBlock<Block> CRANE_SPLITTER = register("crane_splitter", () -> new CraneSplitterBlock(BlockBehaviour.Properties.of().noOcclusion().strength(5.0F, 10.0F).sound(SoundType.METAL).mapColor(MapColor.METAL)));
+    public static final DeferredBlock<Block> CRANE_PARTITIONER = register("crane_partitioner", () -> new CranePartitionerBlock(BlockBehaviour.Properties.of().noOcclusion().strength(5.0F, 10.0F).sound(SoundType.METAL).mapColor(MapColor.METAL)));
     public static final DeferredBlock<Block> NETWORK_SEPARATOR = register("network_separator", () -> new NetworkSeparatorBlock(BlockBehaviour.Properties.of().noOcclusion().strength(5.0F, 10.0F).sound(SoundType.METAL).mapColor(MapColor.METAL)));
     public static final DeferredBlock<Block> RADIO_TORCH_SENDER = register("radio_torch_sender", () -> new RadioTorchSenderBlock(BlockBehaviour.Properties.of().noOcclusion().strength(0.1F, 10.0F).sound(ModSoundTypes.PIPE).mapColor(MapColor.METAL)));
     public static final DeferredBlock<Block> RADIO_TORCH_RECEIVER  = register("radio_torch_receiver", () -> new RadioTorchReceiverBlock(BlockBehaviour.Properties.of().noOcclusion().strength(0.1F, 10.0F).sound(ModSoundTypes.PIPE).mapColor(MapColor.METAL)));
@@ -553,6 +577,11 @@ public class NtmBlocks {
 
     // ???
     public static final DeferredBlock<Block> TAINT = register("taint", () -> new TaintBlock(BlockBehaviour.Properties.of().randomTicks().strength(15.0F, 10.0F).noLootTable().mapColor(DyeColor.GRAY)));
+
+    // The original sets no step sound, so the 1.7.10 default (stone) applies.
+    private static BlockBehaviour.Properties conveyorProperties() {
+        return BlockBehaviour.Properties.of().strength(2.0F, 2.0F).sound(SoundType.STONE).mapColor(MapColor.METAL).noOcclusion();
+    }
 
     public static boolean always(BlockState state, BlockGetter blockGetter, BlockPos pos) { return true; }
     public static boolean never(BlockState state, BlockGetter blockGetter, BlockPos pos) { return false; }

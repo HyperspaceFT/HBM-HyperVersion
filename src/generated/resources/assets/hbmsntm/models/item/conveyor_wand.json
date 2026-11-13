@@ -1,0 +1,29 @@
+{
+  "parent": "hbmsntm:block/conveyor_straight",
+  "overrides": [
+    {
+      "model": "hbmsntm:block/conveyor_straight",
+      "predicate": {
+        "hbmsntm:item_meta": 0.0
+      }
+    },
+    {
+      "model": "hbmsntm:block/conveyor_express_straight",
+      "predicate": {
+        "hbmsntm:item_meta": 1.0
+      }
+    },
+    {
+      "model": "hbmsntm:block/conveyor_double_straight",
+      "predicate": {
+        "hbmsntm:item_meta": 2.0
+      }
+    },
+    {
+      "model": "hbmsntm:block/conveyor_triple_straight",
+      "predicate": {
+        "hbmsntm:item_meta": 3.0
+      }
+    }
+  ]
+}

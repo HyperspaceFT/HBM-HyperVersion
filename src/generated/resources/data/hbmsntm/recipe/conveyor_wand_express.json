@@ -1,0 +1,35 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "equipment",
+  "key": {
+    "C": {
+      "type": "neoforge:components",
+      "components": {
+        "hbmsntm:meta": 0
+      },
+      "items": "hbmsntm:conveyor_wand"
+    },
+    "L": {
+      "type": "neoforge:components",
+      "components": {
+        "hbmsntm:meta": 18
+      },
+      "items": [
+        "hbmsntm:fluid_tank_full",
+        "hbmsntm:fluid_tank_lead_full"
+      ]
+    }
+  },
+  "pattern": [
+    "CCC",
+    "CLC",
+    "CCC"
+  ],
+  "result": {
+    "components": {
+      "hbmsntm:meta": 1
+    },
+    "count": 8,
+    "id": "hbmsntm:conveyor_wand"
+  }
+}

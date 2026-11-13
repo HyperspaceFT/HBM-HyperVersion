@@ -11,6 +11,7 @@ import net.minecraft.sounds.SoundEvent;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.phys.Vec3;
 import net.neoforged.neoforge.client.extensions.common.RegisterClientExtensionsEvent;
 
@@ -64,6 +65,11 @@ public class ServerProxy {
     public Player me() {
         return null;
     }
+
+    /** Rebuilds the conveyor wand's route preview from the held stack; client only. */
+    public void updateConveyorWandPreview(ItemStack stack, Player player) { }
+
+    public void clearConveyorWandPreview() { }
 
     /** Original proxy getIsKeyPressed: the local player's key state, never pressed outside a client. */
     public boolean getIsKeyPressed(HbmKeybinds.EnumKeybind key) {

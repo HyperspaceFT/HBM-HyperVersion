@@ -1,5 +1,8 @@
 package com.hbm.main;
 
+import com.hbm.render.entity.item.RenderMovingItem;
+import com.hbm.render.entity.item.RenderMovingPackage;
+import com.hbm.render.util.ConveyorWandPreview;
 import com.hbm.blockentity.IScreenProvider;
 import com.hbm.blockentity.NtmBlockEntityTypes;
 import com.hbm.blocks.NtmBlocks;
@@ -333,6 +336,8 @@ public class ClientProxy extends ServerProxy {
         EntityRenderers.register(NtmEntityTypes.ORBITAL_LASER.get(), RenderOrbitalLaser::new);
         //items
         EntityRenderers.register(NtmEntityTypes.TNT_PRIMED_BASE.get(), RenderTNTPrimedBase::new);
+        EntityRenderers.register(NtmEntityTypes.MOVING_ITEM.get(), RenderMovingItem::new);
+        EntityRenderers.register(NtmEntityTypes.MOVING_PACKAGE.get(), RenderMovingPackage::new);
         EntityRenderers.register(NtmEntityTypes.FALLING_BLOCK.get(), RenderFallingBlockEntityNT::new);
         //mobs
         EntityRenderers.register(NtmEntityTypes.CREEPER_NUCLEAR.get(), CreeperNuclearRenderer::new);
@@ -402,6 +407,16 @@ public class ClientProxy extends ServerProxy {
     @Override
     public Player me() {
         return Minecraft.getInstance().player;
+    }
+
+    @Override
+    public void updateConveyorWandPreview(ItemStack stack, Player player) {
+        ConveyorWandPreview.update(stack, player);
+    }
+
+    @Override
+    public void clearConveyorWandPreview() {
+        ConveyorWandPreview.clear();
     }
 
     // Original ClientProxy.getIsKeyPressed (:1973-1987); NEO keeps the mapping in HbmKeybinds.getIsKeyPressed.

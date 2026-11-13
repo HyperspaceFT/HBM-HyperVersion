@@ -1,0 +1,13 @@
+{
+  "type": "crane_partitioner",
+  "parent": "minecraft:block/block",
+  "loader": "hbmsntm:ntm_geometry_loader",
+  "textures": {
+    "back": "hbmsntm:block/crane_partitioner_back",
+    "belt": "hbmsntm:block/crane_splitter_belt",
+    "inner": "hbmsntm:block/crane_splitter_inner",
+    "inner_side": "hbmsntm:block/crane_splitter_inner_side",
+    "side": "hbmsntm:block/crane_partitioner_side",
+    "top": "hbmsntm:block/crane_top"
+  }
+}

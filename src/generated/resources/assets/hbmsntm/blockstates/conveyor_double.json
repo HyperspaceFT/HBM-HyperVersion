@@ -1,0 +1,49 @@
+{
+  "variants": {
+    "facing=east,shape=left": {
+      "model": "hbmsntm:block/conveyor_double_left",
+      "y": 90
+    },
+    "facing=east,shape=right": {
+      "model": "hbmsntm:block/conveyor_double_right",
+      "y": 90
+    },
+    "facing=east,shape=straight": {
+      "model": "hbmsntm:block/conveyor_double_straight",
+      "y": 90
+    },
+    "facing=north,shape=left": {
+      "model": "hbmsntm:block/conveyor_double_left"
+    },
+    "facing=north,shape=right": {
+      "model": "hbmsntm:block/conveyor_double_right"
+    },
+    "facing=north,shape=straight": {
+      "model": "hbmsntm:block/conveyor_double_straight"
+    },
+    "facing=south,shape=left": {
+      "model": "hbmsntm:block/conveyor_double_left",
+      "y": 180
+    },
+    "facing=south,shape=right": {
+      "model": "hbmsntm:block/conveyor_double_right",
+      "y": 180
+    },
+    "facing=south,shape=straight": {
+      "model": "hbmsntm:block/conveyor_double_straight",
+      "y": 180
+    },
+    "facing=west,shape=left": {
+      "model": "hbmsntm:block/conveyor_double_left",
+      "y": 270
+    },
+    "facing=west,shape=right": {
+      "model": "hbmsntm:block/conveyor_double_right",
+      "y": 270
+    },
+    "facing=west,shape=straight": {
+      "model": "hbmsntm:block/conveyor_double_straight",
+      "y": 270
+    }
+  }
+}

@@ -202,13 +202,17 @@ public abstract class BatteryBaseBlockEntity extends MachineBaseBlockEntity impl
         tag.putShort("redLow", redLow);
         tag.putShort("redHigh", redHigh);
         tag.putByte("priority", (byte) this.priority.ordinal());
-        return null;
+        return tag;
     }
 
     @Override
     public void pasteSettings(CompoundTag tag, int index, Level level, Player player, BlockPos pos) {
+        // the settings tool's data is player-writable (Goal 31D): the two redstone modes must be 0-3, as receiveControl keeps them
+        if(tag.contains("redLow") && (tag.getShort("redLow") < 0 || tag.getShort("redLow") > 3)) return;
+        if(tag.contains("redHigh") && (tag.getShort("redHigh") < 0 || tag.getShort("redHigh") > 3)) return;
         if(tag.contains("redLow")) this.redLow = tag.getShort("redLow");
         if(tag.contains("redHigh")) this.redHigh = tag.getShort("redHigh");
         if(tag.contains("priority")) this.priority = EnumUtil.grabEnumSafely(ConnectionPriority.class, tag.getByte("priority"));
+        this.setChanged();
     }
 }

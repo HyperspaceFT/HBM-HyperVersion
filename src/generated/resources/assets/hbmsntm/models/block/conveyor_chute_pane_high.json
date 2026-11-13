@@ -1,0 +1,33 @@
+{
+  "parent": "minecraft:block/block",
+  "elements": [
+    {
+      "faces": {
+        "north": {
+          "texture": "#grate"
+        },
+        "south": {
+          "texture": "#grate"
+        }
+      },
+      "from": [
+        4,
+        4,
+        2
+      ],
+      "to": [
+        12,
+        16,
+        2
+      ]
+    }
+  ],
+  "render_type": "minecraft:cutout",
+  "textures": {
+    "belt": "hbmsntm:block/conveyor",
+    "concrete": "hbmsntm:block/concrete_smooth",
+    "grate": "hbmsntm:block/grate_top",
+    "particle": "hbmsntm:block/conveyor",
+    "side": "hbmsntm:block/conveyor_side"
+  }
+}

@@ -15,6 +15,9 @@ public class ServerConfig {
     public final ModConfigSpec.BooleanValue CRATE_OPEN_HELD;
     public final ModConfigSpec.BooleanValue CRATE_KEEP_CONTENTS;
 
+    public final ModConfigSpec.IntValue CONVEYOR_CRAM_MAX;
+    public final ModConfigSpec.BooleanValue CONVEYOR_CRAM_EXPLODE;
+
     ServerConfig(ModConfigSpec.Builder builder) {
 
         MINE_AP_DAMAGE = builder
@@ -52,5 +55,16 @@ public class ServerConfig {
                 .comment("When turned on, crate will not drop their contents on break.")
                 .translation("hbmsntm.configuration.crate_keep_contents")
                 .define("crate_keep_contents", true);
+
+        // Original ServerConfig.java:29-30
+        CONVEYOR_CRAM_MAX = builder
+                .comment("How many items or packages crammed together on a conveyor belt make them pop.")
+                .translation("hbmsntm.configuration.conveyor_cram_max")
+                .defineInRange("conveyor_cram_max", 25, 1, Integer.MAX_VALUE);
+
+        CONVEYOR_CRAM_EXPLODE = builder
+                .comment("When turned on, a crammed conveyor belt is destroyed along with the items.")
+                .translation("hbmsntm.configuration.conveyor_cram_explode")
+                .define("conveyor_cram_explode", true);
     }
 }

@@ -44,6 +44,10 @@ public class HbmKeybinds {
     public static final KeyMapping CRANE_RIGHT = new KeyMapping(category + ".craneMoveRight", InputConstants.Type.KEYSYM, InputConstants.KEY_RIGHT, category);
     public static final KeyMapping CRANE_LOAD = new KeyMapping(category + ".craneLoad", InputConstants.Type.KEYSYM, InputConstants.KEY_RETURN, category);
 
+    // Settings tool and fluid duct keys: original copyToolAlt and copyToolCtrl (:45-46), left Alt and left Ctrl.
+    public static final KeyMapping TOOL_ALT = new KeyMapping(category + ".copyToolAlt", InputConstants.Type.KEYSYM, InputConstants.KEY_LALT, category);
+    public static final KeyMapping TOOL_CTRL = new KeyMapping(category + ".copyToolCtrl", InputConstants.Type.KEYSYM, InputConstants.KEY_LCONTROL, category);
+
     @SubscribeEvent
     public static void onRegisterKeyMappings(RegisterKeyMappingsEvent event) {
         event.register(CALCULATOR);
@@ -64,6 +68,8 @@ public class HbmKeybinds {
         event.register(CRANE_LEFT);
         event.register(CRANE_RIGHT);
         event.register(CRANE_LOAD);
+        event.register(TOOL_ALT);
+        event.register(TOOL_CTRL);
     }
 
     @SubscribeEvent
@@ -185,6 +191,8 @@ public class HbmKeybinds {
             case CRANE_LEFT -> CRANE_LEFT.isDown();
             case CRANE_RIGHT -> CRANE_RIGHT.isDown();
             case CRANE_LOAD -> CRANE_LOAD.isDown();
+            case TOOL_ALT -> TOOL_ALT.isDown();
+            case TOOL_CTRL -> TOOL_CTRL.isDown();
             default -> false;
         };
     }

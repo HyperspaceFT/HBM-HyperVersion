@@ -6,13 +6,13 @@ import com.hbm.blockentity.IFluidCopiable;
 import com.hbm.blockentity.ITickable;
 import com.hbm.blockentity.LoadedBaseBlockEntity;
 import com.hbm.blockentity.NtmBlockEntityTypes;
+import com.hbm.blocks.network.FluidDuctBaseBlock;
+import com.hbm.blocks.network.FluidDuctConnectingBlock;
 import com.hbm.blocks.network.IBlockFluidDuct;
-import com.hbm.extprop.HbmPlayerAttachments;
 import com.hbm.handler.HbmKeybinds.EnumKeybind;
 import com.hbm.inventory.fluid.FluidType;
 import com.hbm.inventory.fluid.Fluids;
 import com.hbm.inventory.fluid.tank.FluidTank;
-import com.hbm.lib.ModAttachments;
 import com.hbm.uninos.UniNodespace;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
@@ -141,13 +141,21 @@ public class PipeBaseBlockEntity extends LoadedBaseBlockEntity implements IFluid
         return null;
     }
 
+    /**
+     * Original TileEntityPipeBaseNT.pasteSettings (:149-162): the copied fluid of the chosen entry, with TOOL_CTRL for the whole run of
+     * pipes of this pipe's type. NEO pastes on the server only, treats a negative entry as an entry past the end (fluid 0, as the
+     * original does for a too large one, where a negative one threw) and updates the pipe's connections after a single paste as the
+     * identifier's right-click does.
+     */
     @Override
     public void pasteSettings(CompoundTag tag, int index, Level level, Player player, BlockPos pos) {
+        if(level.isClientSide) return;
+
         int[] ids = tag.getIntArray("FluidID");
 
         if (ids.length > 0) {
             int id;
-            if (index < ids.length) {
+            if (index >= 0 && index < ids.length) {
                 id = ids[index];
             } else {
                 id = 0;
@@ -155,14 +163,13 @@ public class PipeBaseBlockEntity extends LoadedBaseBlockEntity implements IFluid
 
             FluidType fluid = Fluids.fromID(id);
 
-            HbmPlayerAttachments data = player.getData(ModAttachments.PLAYER_ATTACHMENT.get());
-
-            if (data.getKeyPressed(EnumKeybind.TOOL_CTRL)) {
+            if (FluidDuctBaseBlock.isKeyPressed(player, EnumKeybind.TOOL_CTRL)) {
                 if (level.getBlockState(this.worldPosition).getBlock() instanceof IBlockFluidDuct ibfd) {
                     ibfd.changeTypeRecursively(level, pos, this.type, fluid, 64);
                 }
             } else {
                 this.setFluidType(fluid);
+                if (level.getBlockState(this.worldPosition).getBlock() instanceof FluidDuctConnectingBlock connectingDuct) connectingDuct.updateConnections(level, this.worldPosition, fluid);
             }
         }
     }

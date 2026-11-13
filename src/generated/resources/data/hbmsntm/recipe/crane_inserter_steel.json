@@ -1,0 +1,25 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "key": {
+    "B": {
+      "type": "neoforge:components",
+      "components": {
+        "hbmsntm:meta": 0
+      },
+      "items": "hbmsntm:conveyor_wand"
+    },
+    "C": {
+      "item": "hbmsntm:ingot_steel"
+    }
+  },
+  "pattern": [
+    "CCC",
+    "C C",
+    "CBC"
+  ],
+  "result": {
+    "count": 4,
+    "id": "hbmsntm:crane_inserter"
+  }
+}

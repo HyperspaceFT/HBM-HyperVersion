@@ -766,6 +766,12 @@ public class NtmCreativeTabs {
                         output.accept(NtmItems.UPGRADE_OVERDRIVE_2);
                         output.accept(NtmItems.UPGRADE_OVERDRIVE_3);
                         output.accept(NtmItems.UPGRADE_GC_SPEED);
+                        output.accept(NtmItems.UPGRADE_STACK_1);
+                        output.accept(NtmItems.UPGRADE_STACK_2);
+                        output.accept(NtmItems.UPGRADE_STACK_3);
+                        output.accept(NtmItems.UPGRADE_EJECTOR_1);
+                        output.accept(NtmItems.UPGRADE_EJECTOR_2);
+                        output.accept(NtmItems.UPGRADE_EJECTOR_3);
                         addMaterialControlItems(output);
 
                     }).build());
@@ -1018,6 +1024,15 @@ public class NtmCreativeTabs {
                         output.accept(NtmBlocks.PIPE_ANCHOR);
                         output.accept(NtmBlocks.FLOW_CONTROL_PUMP);
                         output.accept(NtmBlocks.NETWORK_SEPARATOR);
+                        addMetaItems(output, NtmItems.CONVEYOR_WAND.get());
+                        output.accept(NtmBlocks.CRANE_EXTRACTOR);
+                        output.accept(NtmBlocks.CRANE_INSERTER);
+                        output.accept(NtmBlocks.CRANE_GRABBER);
+                        output.accept(NtmBlocks.CRANE_ROUTER);
+                        output.accept(NtmBlocks.CRANE_BOXER);
+                        output.accept(NtmBlocks.CRANE_UNBOXER);
+                        output.accept(NtmBlocks.CRANE_SPLITTER);
+                        output.accept(NtmBlocks.CRANE_PARTITIONER);
                         output.accept(NtmBlocks.CABLE_SWITCH);
                         output.accept(NtmBlocks.CABLE_DETECTOR);
                         output.accept(NtmBlocks.MACHINE_DETECTOR);
@@ -1313,6 +1328,7 @@ public class NtmCreativeTabs {
                         // Original registration order (ModItems.java:5505-5512): oil_detector, rbmk_tool, coltan_tool.
                         output.accept(NtmItems.RBMK_TOOL);
                         output.accept(NtmItems.COLTAN_TOOL);
+                        output.accept(NtmItems.SETTINGS_TOOL);
                         output.accept(NtmItems.DIGAMMA_DIAGNOSTIC);
                         output.accept(NtmItems.METEOR_REMOTE);
                         output.accept(NtmItems.METEOR_CHARM);

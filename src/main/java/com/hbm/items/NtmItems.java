@@ -655,6 +655,14 @@ public class NtmItems {
     public static final DeferredItem<Item> UPGRADE_SPEED_1 = ITEMS.register("upgrade_speed_1", () -> new MachineUpgradeItem(new Item.Properties(), MachineUpgradeItem.UpgradeType.SPEED, 1));
     public static final DeferredItem<Item> UPGRADE_SPEED_2 = ITEMS.register("upgrade_speed_2", () -> new MachineUpgradeItem(new Item.Properties(), MachineUpgradeItem.UpgradeType.SPEED, 2));
     public static final DeferredItem<Item> UPGRADE_SPEED_3 = ITEMS.register("upgrade_speed_3", () -> new MachineUpgradeItem(new Item.Properties(), MachineUpgradeItem.UpgradeType.SPEED, 3));
+    // Conveyor crane upgrades: one item per tier instead of the original's three metadata values (ModItems.java:3767-3768,
+    // ItemMetaUpgrade with the default SPECIAL type); the cranes read the item directly.
+    public static final DeferredItem<Item> UPGRADE_STACK_1 = ITEMS.register("upgrade_stack_1", () -> new MachineUpgradeItem(new Item.Properties()));
+    public static final DeferredItem<Item> UPGRADE_STACK_2 = ITEMS.register("upgrade_stack_2", () -> new MachineUpgradeItem(new Item.Properties()));
+    public static final DeferredItem<Item> UPGRADE_STACK_3 = ITEMS.register("upgrade_stack_3", () -> new MachineUpgradeItem(new Item.Properties()));
+    public static final DeferredItem<Item> UPGRADE_EJECTOR_1 = ITEMS.register("upgrade_ejector_1", () -> new MachineUpgradeItem(new Item.Properties()));
+    public static final DeferredItem<Item> UPGRADE_EJECTOR_2 = ITEMS.register("upgrade_ejector_2", () -> new MachineUpgradeItem(new Item.Properties()));
+    public static final DeferredItem<Item> UPGRADE_EJECTOR_3 = ITEMS.register("upgrade_ejector_3", () -> new MachineUpgradeItem(new Item.Properties()));
     public static final DeferredItem<Item> UPGRADE_EFFECT_1 = ITEMS.register("upgrade_effect_1", () -> new MachineUpgradeItem(new Item.Properties(), MachineUpgradeItem.UpgradeType.EFFECT, 1));
     public static final DeferredItem<Item> UPGRADE_EFFECT_2 = ITEMS.register("upgrade_effect_2", () -> new MachineUpgradeItem(new Item.Properties(), MachineUpgradeItem.UpgradeType.EFFECT, 2));
     public static final DeferredItem<Item> UPGRADE_EFFECT_3 = ITEMS.register("upgrade_effect_3", () -> new MachineUpgradeItem(new Item.Properties(), MachineUpgradeItem.UpgradeType.EFFECT, 3));
@@ -1268,8 +1276,12 @@ public class NtmItems {
     // Pipe wrench (original ModItems.java:2646): an ItemSword of tMatSteel (MainRegistry.java:114: 750 uses, efficiency 8, damage 2),
     // whose weapon modifier is 4 + 2 = 6; TOOL_STEEL has the uses and efficiency and no damage bonus, so the modifier is passed whole
     public static final DeferredItem<Item> WRENCH = ITEMS.register("wrench", () -> new WrenchItem(NtmTiers.TOOL_STEEL, new Item.Properties().attributes(SwordItem.createAttributes(NtmTiers.TOOL_STEEL, 6, -2.4F))));
+    // Original ModItems.java:4394 (ItemConveyorWand, four types); places the six conveyor belts.
+    public static final DeferredItem<Item> CONVEYOR_WAND = ITEMS.register("conveyor_wand", () -> new ConveyorWandItem(new Item.Properties()));
     // Original ModItems.java:3838; the +2 attack damage modifier is added by RBMKToolItem.
     public static final DeferredItem<Item> RBMK_TOOL = ITEMS.register("rbmk_tool", () -> new RBMKToolItem(new Item.Properties().stacksTo(1)));
+    // Original ModItems.java:3848 (ItemSettingsTool, consumable tab): copies and pastes machine settings.
+    public static final DeferredItem<Item> SETTINGS_TOOL = ITEMS.register("settings_tool", () -> new SettingsToolItem(new Item.Properties().stacksTo(1)));
     public static final DeferredItem<Item> DRILL_TITANIUM = ITEMS.register("drill_titanium", () -> new Item(new Item.Properties()));
 
     // Wands, Tools, Other Crap

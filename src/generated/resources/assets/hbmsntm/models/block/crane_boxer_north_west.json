@@ -1,0 +1,53 @@
+{
+  "parent": "minecraft:block/block",
+  "elements": [
+    {
+      "faces": {
+        "down": {
+          "cullface": "down",
+          "texture": "#down"
+        },
+        "east": {
+          "cullface": "east",
+          "texture": "#east"
+        },
+        "north": {
+          "cullface": "north",
+          "texture": "#north"
+        },
+        "south": {
+          "cullface": "south",
+          "texture": "#south"
+        },
+        "up": {
+          "cullface": "up",
+          "rotation": 180,
+          "texture": "#up"
+        },
+        "west": {
+          "cullface": "west",
+          "texture": "#west"
+        }
+      },
+      "from": [
+        0,
+        0,
+        0
+      ],
+      "to": [
+        16,
+        16,
+        16
+      ]
+    }
+  ],
+  "textures": {
+    "down": "hbmsntm:block/crane_top",
+    "east": "hbmsntm:block/crane_side",
+    "north": "hbmsntm:block/crane_side_in",
+    "particle": "hbmsntm:block/crane_side",
+    "south": "hbmsntm:block/crane_side",
+    "up": "hbmsntm:block/crane_boxer_top_right",
+    "west": "hbmsntm:block/crane_side_box"
+  }
+}

@@ -1,5 +1,6 @@
 package com.hbm.main;
 
+import com.hbm.render.util.ConveyorWandPreview;
 import com.hbm.blockentity.network.PipeBaseBlockEntity;
 import com.hbm.blockentity.network.IPaintableBlockEntity;
 import com.hbm.render.model.PaintableBakedModel;
@@ -37,6 +38,13 @@ import com.hbm.inventory.screens.RBMKStorageScreen;
 import com.hbm.inventory.screens.RBMKOutgasserScreen;
 import com.hbm.inventory.screens.RBMKConsoleScreen;
 import com.hbm.inventory.screens.RBMKAutoloaderScreen;
+import com.hbm.inventory.screens.CraneBoxerScreen;
+import com.hbm.inventory.screens.CraneExtractorScreen;
+import com.hbm.inventory.screens.CraneGrabberScreen;
+import com.hbm.inventory.screens.CraneRouterScreen;
+import com.hbm.blocks.network.CraneRouterBlock;
+import com.hbm.inventory.screens.CraneUnboxerScreen;
+import com.hbm.inventory.screens.CraneInserterScreen;
 import com.hbm.inventory.MetaHelper;
 import com.hbm.inventory.fluid.FluidType;
 import com.hbm.inventory.fluid.Fluids;
@@ -187,6 +195,12 @@ public class NuclearTechModClient {
         event.register(NtmMenuTypes.RBMK_OUTGASSER.get(), RBMKOutgasserScreen::new);
         event.register(NtmMenuTypes.RBMK_CONSOLE.get(), RBMKConsoleScreen::new);
         event.register(NtmMenuTypes.RBMK_AUTOLOADER.get(), RBMKAutoloaderScreen::new);
+        event.register(NtmMenuTypes.CRANE_INSERTER.get(), CraneInserterScreen::new);
+        event.register(NtmMenuTypes.CRANE_EXTRACTOR.get(), CraneExtractorScreen::new);
+        event.register(NtmMenuTypes.CRANE_GRABBER.get(), CraneGrabberScreen::new);
+        event.register(NtmMenuTypes.CRANE_ROUTER.get(), CraneRouterScreen::new);
+        event.register(NtmMenuTypes.CRANE_BOXER.get(), CraneBoxerScreen::new);
+        event.register(NtmMenuTypes.CRANE_UNBOXER.get(), CraneUnboxerScreen::new);
     }
 
     @SubscribeEvent
@@ -579,6 +593,8 @@ public class NuclearTechModClient {
 
     @SubscribeEvent
     public static void registerBlockColors(RegisterColorHandlersEvent.Block event) {
+        // conveyor sorter: the overlay's face d carries tint index d, coloured by side (CraneRouter.colorMultiplier)
+        event.register((state, level, pos, tintIndex) -> tintIndex >= 0 && tintIndex < 6 ? 0xFF000000 | CraneRouterBlock.SIDE_COLORS[tintIndex] : 0xFFFFFFFF, NtmBlocks.CRANE_ROUTER.get());
         event.register(
                 (state, world, pos, tintIndex) -> {
                     int variant = state.getValue(SellafieldSlakedBlock.COLOR_LEVEL);
@@ -730,7 +746,10 @@ public class NuclearTechModClient {
 
     @SubscribeEvent
     public static void onRenderWorldLast(RenderLevelStageEvent event) {
-        if(event.getStage() == Stage.AFTER_TRANSLUCENT_BLOCKS) { Clock.update(); }
+        if(event.getStage() == Stage.AFTER_TRANSLUCENT_BLOCKS) {
+            Clock.update();
+            ConveyorWandPreview.render(event.getPoseStack(), event.getCamera());
+        }
     }
 
     @SubscribeEvent
@@ -1143,6 +1162,24 @@ public class NuclearTechModClient {
                     particle = new SmokeParticle(level, x, y, z, mX, mY, mZ, 100, false);
                     particle.setLifetime(200 + rand.nextInt(50));
                     particle.setParticleSpeed(rand.nextGaussian() * 0.2, 2.5 + rand.nextDouble(), rand.nextGaussian() * 0.2);
+                }
+
+                // Original ClientProxy.java:1242-1256: a tinted large explosion and `count` growing grey puffs, both added by createParticle
+                if("largeexplode".equals(data.getString("mode"))) {
+                    Particle large = innerMc.particleEngine.createParticle(ParticleTypes.EXPLOSION, x, y, z, data.getFloat("size"), 0.0D, 0.0D);
+                    if(large != null) {
+                        float r = 1.0F - rand.nextFloat() * 0.2F;
+                        large.setColor(1F * r, 0.9F * r, 0.5F * r);
+                    }
+
+                    for(int i = 0; i < data.getByte("count"); i++) {
+                        Particle sec = innerMc.particleEngine.createParticle(ParticleTypes.POOF, x, y, z, 0.0D, 0.0D, 0.0D);
+                        if(sec != null) {
+                            float r2 = 1.0F - rand.nextFloat() * 0.5F;
+                            sec.setColor(0.5F * r2, 0.5F * r2, 0.5F * r2);
+                            sec.scale(i + 1);
+                        }
+                    }
                 }
 
                 if(particle != null) {

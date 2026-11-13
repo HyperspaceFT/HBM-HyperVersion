@@ -555,6 +555,9 @@ public class NtmJeiPlugin implements IModPlugin {
         registration.addRecipeClickArea(MachineCrucibleScreen.class, MachineCrucibleScreen.ARROW_X, MachineCrucibleScreen.ARROW_Y,
                 MachineCrucibleScreen.ARROW_WIDTH, MachineCrucibleScreen.ARROW_HEIGHT,
                 CrucibleSmeltingRecipeHandler.RECIPE_TYPE, CrucibleAlloyingRecipeHandler.RECIPE_TYPE);
+        registration.addGhostIngredientHandler(com.hbm.inventory.screens.CraneExtractorScreen.class, new FilterGhostIngredientHandler<>(screen -> screen.getMenu().be));
+        registration.addGhostIngredientHandler(com.hbm.inventory.screens.CraneGrabberScreen.class, new FilterGhostIngredientHandler<>(screen -> screen.getMenu().be));
+        registration.addGhostIngredientHandler(com.hbm.inventory.screens.CraneRouterScreen.class, new FilterGhostIngredientHandler<>(screen -> screen.getMenu().be));
     }
 
     @Override
@@ -593,6 +596,7 @@ public class NtmJeiPlugin implements IModPlugin {
                 NtmItems.WIRE_DENSE.get(),
                 NtmItems.BOLT.get(),
                 NtmItems.PART_GENERIC.get(),
+                NtmItems.CONVEYOR_WAND.get(),
                 NtmItems.CAST_PLATE.get(),
                 NtmItems.CAST_PLATE_WELDED.get(),
 

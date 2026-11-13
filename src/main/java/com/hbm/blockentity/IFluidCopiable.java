@@ -3,6 +3,7 @@ package com.hbm.blockentity;
 import api.hbm.fluidmk2.IFluidStandardTransceiverMK2;
 import api.hbm.fluidmk2.IFluidUserMK2;
 import com.hbm.interfaces.ICopiable;
+import com.hbm.inventory.fluid.FluidType;
 import com.hbm.inventory.fluid.Fluids;
 import com.hbm.inventory.fluid.tank.FluidTank;
 import com.hbm.util.BobMathUtil;
@@ -46,13 +47,26 @@ public interface IFluidCopiable extends ICopiable {
         return tag;
     }
 
+    /**
+     * Original IFluidCopiable.pasteSettings: the copied fluid of the chosen entry becomes the paste tank's type. The settings tool's
+     * data is player-writable, so NEO pastes on the server only, ignores a negative entry (the original only bounds it from above)
+     * and an id no fluid has (which the original turns into "none", emptying the tank), and marks the change for saving.
+     */
     @Override
     default void pasteSettings(CompoundTag tag, int index, Level level, Player player, BlockPos pos) {
-        if (getTankToPaste() != null) {
+        if (level.isClientSide) return;
+
+        FluidTank tank = getTankToPaste();
+        if (tank != null) {
             int[] ids = tag.getIntArray("FluidID");
-            if (ids.length > 0 && index < ids.length) {
+            if (index >= 0 && index < ids.length) {
                 int id = ids[index];
-                getTankToPaste().setTankType(Fluids.fromID(id));
+                FluidType type = Fluids.fromID(id);
+                if (type == Fluids.NONE && id != Fluids.NONE.getID()) return;
+                if (type != tank.getTankType()) {
+                    tank.setTankType(type);
+                    ((BlockEntity) this).setChanged();
+                }
             }
         }
     }

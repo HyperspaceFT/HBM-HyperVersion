@@ -3,6 +3,8 @@ package com.hbm.datagen;
 import com.hbm.blocks.NtmBlocks;
 import com.hbm.blocks.generic.OreBasaltBlock;
 import com.hbm.items.NtmItems;
+import com.hbm.items.component.NtmDataComponents;
+import com.hbm.items.tools.ConveyorWandItem.ConveyorType;
 import com.hbm.items.machine.BlueprintFolderItem;
 import net.minecraft.advancements.critereon.StatePropertiesPredicate;
 import net.minecraft.core.Holder;
@@ -23,6 +25,7 @@ import net.minecraft.world.level.storage.loot.entries.AlternativesEntry;
 import net.minecraft.world.level.storage.loot.entries.LootItem;
 import net.minecraft.world.level.storage.loot.functions.ApplyBonusCount;
 import net.minecraft.world.level.storage.loot.functions.LimitCount;
+import net.minecraft.world.level.storage.loot.functions.SetComponentsFunction;
 import net.minecraft.world.level.storage.loot.functions.SetItemCountFunction;
 import net.minecraft.world.level.storage.loot.predicates.LootItemBlockStatePropertyCondition;
 import net.minecraft.world.level.storage.loot.predicates.LootItemCondition;
@@ -377,6 +380,24 @@ public class NtmBlockLootTableProvider extends BlockLootSubProvider {
         this.dropSelf(NtmBlocks.RED_PYLON_LARGE.get());
         this.dropSelf(NtmBlocks.SUBSTATION.get());
         this.dropSelf(NtmBlocks.PIPE_ANCHOR.get());
+        // Belts drop the conveyor wand of their type (BlockConveyor.java:19-22 and the damageDropped overrides; chute and lift: regular)
+        this.dropConveyorWand(NtmBlocks.CONVEYOR.get(), ConveyorType.REGULAR);
+        this.dropConveyorWand(NtmBlocks.CONVEYOR_EXPRESS.get(), ConveyorType.EXPRESS);
+        this.dropConveyorWand(NtmBlocks.CONVEYOR_DOUBLE.get(), ConveyorType.DOUBLE);
+        this.dropConveyorWand(NtmBlocks.CONVEYOR_TRIPLE.get(), ConveyorType.TRIPLE);
+        this.dropConveyorWand(NtmBlocks.CONVEYOR_CHUTE.get(), ConveyorType.REGULAR);
+        this.dropConveyorWand(NtmBlocks.CONVEYOR_LIFT.get(), ConveyorType.REGULAR);
+        // Cranes drop themselves; their slots are dropped by CraneBaseBlock.onRemove
+        this.dropSelf(NtmBlocks.CRANE_EXTRACTOR.get());
+        this.dropSelf(NtmBlocks.CRANE_INSERTER.get());
+        this.dropSelf(NtmBlocks.CRANE_GRABBER.get());
+        this.dropSelf(NtmBlocks.CRANE_BOXER.get());
+        this.dropSelf(NtmBlocks.CRANE_UNBOXER.get());
+        // the sorter's slots are phantom filters and drop nothing; the partitioner drops its slots in onRemove
+        this.dropSelf(NtmBlocks.CRANE_ROUTER.get());
+        this.dropSelf(NtmBlocks.CRANE_PARTITIONER.get());
+        // the splitter's second block drops nothing, as every DummyableBlock's (the soldering station's precedent)
+        this.dropSelf(NtmBlocks.CRANE_SPLITTER.get());
         this.dropSelf(NtmBlocks.FLOW_CONTROL_PUMP.get());
         this.dropSelf(NtmBlocks.NETWORK_SEPARATOR.get());
         this.dropSelf(NtmBlocks.RADIO_TORCH_SENDER.get());
@@ -619,5 +640,12 @@ public class NtmBlockLootTableProvider extends BlockLootSubProvider {
                 .hasBlockStateProperties(block)
                 .setProperties(StatePropertiesPredicate.Builder.properties()
                         .hasProperty(property, equals));
+    }
+
+    private void dropConveyorWand(Block block, ConveyorType type) {
+        this.add(block, LootTable.lootTable().withPool(this.applyExplosionCondition(block, LootPool.lootPool()
+                .setRolls(ConstantValue.exactly(1.0F))
+                .add(LootItem.lootTableItem(NtmItems.CONVEYOR_WAND.get())
+                        .apply(SetComponentsFunction.setComponent(NtmDataComponents.META.get(), type.ordinal()))))));
     }
 }

@@ -1,0 +1,132 @@
+{
+  "parent": "minecraft:block/block",
+  "elements": [
+    {
+      "faces": {
+        "down": {
+          "texture": "#belt"
+        },
+        "east": {
+          "texture": "#side"
+        },
+        "north": {
+          "texture": "#belt"
+        },
+        "south": {
+          "texture": "#belt"
+        },
+        "up": {
+          "rotation": 180,
+          "texture": "#belt"
+        },
+        "west": {
+          "rotation": 180,
+          "texture": "#side",
+          "uv": [
+            0.0,
+            0.0,
+            16.0,
+            4.0
+          ]
+        }
+      },
+      "from": [
+        4,
+        0,
+        0
+      ],
+      "to": [
+        12,
+        4,
+        16
+      ]
+    },
+    {
+      "faces": {
+        "down": {
+          "texture": "#belt"
+        },
+        "east": {
+          "texture": "#side"
+        },
+        "north": {
+          "texture": "#belt"
+        },
+        "south": {
+          "texture": "#belt"
+        },
+        "up": {
+          "rotation": 180,
+          "texture": "#belt"
+        },
+        "west": {
+          "rotation": 180,
+          "texture": "#side",
+          "uv": [
+            4.0,
+            0.0,
+            12.0,
+            4.0
+          ]
+        }
+      },
+      "from": [
+        0,
+        0,
+        4
+      ],
+      "to": [
+        4,
+        4,
+        12
+      ]
+    },
+    {
+      "faces": {
+        "down": {
+          "texture": "#belt"
+        },
+        "east": {
+          "texture": "#side"
+        },
+        "north": {
+          "texture": "#belt"
+        },
+        "south": {
+          "texture": "#belt"
+        },
+        "up": {
+          "rotation": 180,
+          "texture": "#belt"
+        },
+        "west": {
+          "rotation": 180,
+          "texture": "#side",
+          "uv": [
+            4.0,
+            0.0,
+            12.0,
+            4.0
+          ]
+        }
+      },
+      "from": [
+        12,
+        0,
+        4
+      ],
+      "to": [
+        16,
+        4,
+        12
+      ]
+    }
+  ],
+  "render_type": "minecraft:cutout",
+  "textures": {
+    "belt": "hbmsntm:block/conveyor",
+    "concrete": "hbmsntm:block/concrete_smooth",
+    "particle": "hbmsntm:block/conveyor",
+    "side": "hbmsntm:block/conveyor_side"
+  }
+}

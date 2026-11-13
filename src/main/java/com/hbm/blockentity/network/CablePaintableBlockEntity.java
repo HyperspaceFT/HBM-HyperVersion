@@ -79,6 +79,11 @@ public class CablePaintableBlockEntity extends CableBaseBlockEntity implements I
 
     @Override
     public void pasteSettings(CompoundTag tag, int index, Level level, Player player, BlockPos pos) {
-        if(tag.contains("paintblock")) this.setPaint(IPaintableBlockEntity.readPaint(level.holderLookup(Registries.BLOCK), tag.getCompound("paintblock")));
+        // NEO (Goal 31D): server only, and a paint the item path would refuse (IPaintableBlockEntity.allowedPaint) is not pasted; the
+        // original pastes any block. An unknown block still pastes as no paint.
+        if(level.isClientSide || !tag.contains("paintblock")) return;
+        BlockState paint = IPaintableBlockEntity.readPaint(level.holderLookup(Registries.BLOCK), tag.getCompound("paintblock"));
+        if(paint != null && !IPaintableBlockEntity.allowedPaint(paint, this.getBlockState().getBlock())) return;
+        this.setPaint(paint);
     }
 }

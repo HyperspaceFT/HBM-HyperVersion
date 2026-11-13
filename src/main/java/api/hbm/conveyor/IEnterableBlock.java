@@ -8,6 +8,8 @@ public interface IEnterableBlock {
 
     /**
      * Returns true of the moving item can enter from the given side. When this happens, the IConveyorItem will call onEnter and despawn
+     * <p>
+     * In all four methods {@code dir} is the side the object enters from, or null when it reached the block diagonally.
      */
     boolean canItemEnter(Level level, BlockPos pos, Direction dir, IConveyorItem entity);
     void onItemEnter(Level level, BlockPos pos, Direction dir, IConveyorItem entity);

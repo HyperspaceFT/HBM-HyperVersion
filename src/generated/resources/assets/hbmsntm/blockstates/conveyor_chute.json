@@ -1,0 +1,169 @@
+{
+  "multipart": [
+    {
+      "apply": {
+        "model": "hbmsntm:block/conveyor_chute_posts"
+      }
+    },
+    {
+      "apply": {
+        "model": "hbmsntm:block/conveyor_chute_belt"
+      },
+      "when": {
+        "bottom": "true",
+        "facing": "north"
+      }
+    },
+    {
+      "apply": {
+        "model": "hbmsntm:block/conveyor_chute_stub"
+      },
+      "when": {
+        "bottom": "false",
+        "north": "true"
+      }
+    },
+    {
+      "apply": {
+        "model": "hbmsntm:block/conveyor_chute_pane"
+      },
+      "when": {
+        "bottom": "false",
+        "north": "false"
+      }
+    },
+    {
+      "apply": {
+        "model": "hbmsntm:block/conveyor_chute_pane_high"
+      },
+      "when": {
+        "bottom": "true",
+        "facing": "north|east|west",
+        "north": "false"
+      }
+    },
+    {
+      "apply": {
+        "model": "hbmsntm:block/conveyor_chute_belt",
+        "y": 90
+      },
+      "when": {
+        "bottom": "true",
+        "facing": "east"
+      }
+    },
+    {
+      "apply": {
+        "model": "hbmsntm:block/conveyor_chute_stub",
+        "y": 90
+      },
+      "when": {
+        "bottom": "false",
+        "east": "true"
+      }
+    },
+    {
+      "apply": {
+        "model": "hbmsntm:block/conveyor_chute_pane",
+        "y": 90
+      },
+      "when": {
+        "bottom": "false",
+        "east": "false"
+      }
+    },
+    {
+      "apply": {
+        "model": "hbmsntm:block/conveyor_chute_pane_high",
+        "y": 90
+      },
+      "when": {
+        "bottom": "true",
+        "east": "false",
+        "facing": "north|east|south"
+      }
+    },
+    {
+      "apply": {
+        "model": "hbmsntm:block/conveyor_chute_belt",
+        "y": 180
+      },
+      "when": {
+        "bottom": "true",
+        "facing": "south"
+      }
+    },
+    {
+      "apply": {
+        "model": "hbmsntm:block/conveyor_chute_stub",
+        "y": 180
+      },
+      "when": {
+        "bottom": "false",
+        "south": "true"
+      }
+    },
+    {
+      "apply": {
+        "model": "hbmsntm:block/conveyor_chute_pane",
+        "y": 180
+      },
+      "when": {
+        "bottom": "false",
+        "south": "false"
+      }
+    },
+    {
+      "apply": {
+        "model": "hbmsntm:block/conveyor_chute_pane_high",
+        "y": 180
+      },
+      "when": {
+        "bottom": "true",
+        "facing": "east|south|west",
+        "south": "false"
+      }
+    },
+    {
+      "apply": {
+        "model": "hbmsntm:block/conveyor_chute_belt",
+        "y": 270
+      },
+      "when": {
+        "bottom": "true",
+        "facing": "west"
+      }
+    },
+    {
+      "apply": {
+        "model": "hbmsntm:block/conveyor_chute_stub",
+        "y": 270
+      },
+      "when": {
+        "bottom": "false",
+        "west": "true"
+      }
+    },
+    {
+      "apply": {
+        "model": "hbmsntm:block/conveyor_chute_pane",
+        "y": 270
+      },
+      "when": {
+        "bottom": "false",
+        "west": "false"
+      }
+    },
+    {
+      "apply": {
+        "model": "hbmsntm:block/conveyor_chute_pane_high",
+        "y": 270
+      },
+      "when": {
+        "bottom": "true",
+        "facing": "north|south|west",
+        "west": "false"
+      }
+    }
+  ]
+}

@@ -1,0 +1,53 @@
+{
+  "parent": "minecraft:block/block",
+  "elements": [
+    {
+      "faces": {
+        "down": {
+          "cullface": "down",
+          "texture": "#down"
+        },
+        "east": {
+          "cullface": "east",
+          "texture": "#east"
+        },
+        "north": {
+          "cullface": "north",
+          "texture": "#north"
+        },
+        "south": {
+          "cullface": "south",
+          "texture": "#south"
+        },
+        "up": {
+          "cullface": "up",
+          "rotation": 270,
+          "texture": "#up"
+        },
+        "west": {
+          "cullface": "west",
+          "texture": "#west"
+        }
+      },
+      "from": [
+        0,
+        0,
+        0
+      ],
+      "to": [
+        16,
+        16,
+        16
+      ]
+    }
+  ],
+  "textures": {
+    "down": "hbmsntm:block/crane_top",
+    "east": "hbmsntm:block/crane_side_pull",
+    "north": "hbmsntm:block/crane_grabber_side_left_turn_up",
+    "particle": "hbmsntm:block/crane_side",
+    "south": "hbmsntm:block/crane_grabber_side_right_turn_up",
+    "up": "hbmsntm:block/crane_out",
+    "west": "hbmsntm:block/crane_side"
+  }
+}

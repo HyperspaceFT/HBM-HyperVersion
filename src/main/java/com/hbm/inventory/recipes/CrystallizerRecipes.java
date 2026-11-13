@@ -144,6 +144,19 @@ public class CrystallizerRecipes extends SerializableRecipe {
         for(CrystallizerRecipe recipe : source) if(recipe.matches(stack, type)) return recipe;
         return null;
     }
+    public static int getInputAmount(ItemStack stack) { return getInputAmount(RECIPES, stack); }
+    /**
+     * The amount one cycle consumes of the item, whatever the acid, for the acidizer partitioner (original getAmount, :268-286). The
+     * original keeps one amount per input key, a later registration of the same key overwriting the earlier, and looks it up by exact
+     * item, then ore dictionary names, then wildcard metadata; NEO takes the last row in table order whose input accepts the stack.
+     * 0 when no row does.
+     */
+    public static int getInputAmount(List<CrystallizerRecipe> source, ItemStack stack) {
+        if(stack == null || stack.isEmpty()) return 0;
+        int amount = 0;
+        for(CrystallizerRecipe recipe : source) if(recipe.input.matchesRecipe(stack, true)) amount = recipe.input.stacksize;
+        return amount;
+    }
     /** Whether any row in the table accepts the item with any acid. Table query for tools and the isolation checks; the machine itself filters by the current acid type through {@link #hasRecipe}. */
     public static boolean hasRecipeForAnyAcid(List<CrystallizerRecipe> source, ItemStack stack) {
         if(stack == null || stack.isEmpty()) return false;
