@@ -1,6 +1,7 @@
 package com.hbm.main;
 
 import com.hbm.items.tools.ConveyorWandItem;
+import com.hbm.items.tools.SettingsToolItem;
 import com.hbm.blockentity.bomb.LaunchPadBaseBlockEntity;
 import com.hbm.blockentity.machine.MachineRadarBlockEntity;
 import com.hbm.blocks.NtmBlocks;
@@ -32,14 +33,19 @@ import com.hbm.util.ArmorUtil;
 import com.hbm.util.DamageResistanceHandler;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
+import net.minecraft.core.component.DataComponents;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.InteractionHand;
+import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.item.ItemEntity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.AdventureModePredicate;
+import net.minecraft.world.item.context.UseOnContext;
+import net.minecraft.world.level.block.state.pattern.BlockInWorld;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.Blocks;
@@ -104,6 +110,28 @@ public class CommonEvents {
     public static void onLeftClickBlock(PlayerInteractEvent.LeftClickBlock event) {
         ItemStack itemInHand = event.getEntity().getItemInHand(InteractionHand.MAIN_HAND);
         if(itemInHand.getItem() instanceof GunBaseNTItem) event.setCanceled(true);
+    }
+
+    /**
+     * NeoForge skips Item.onItemUseFirst for a player who may not build (IItemStackExtension.onItemUseFirst), so in adventure mode the
+     * settings tool would fall through to the machine's own right-click and open its screen. The original tool always acts before the
+     * block (ItemSettingsTool.onItemUseFirst:81-122): it gets the click here in exactly that case; copying needs no build permission,
+     * pasting keeps its own check.
+     */
+    @SubscribeEvent
+    public static void onRightClickBlock(PlayerInteractEvent.RightClickBlock event) {
+        Player player = event.getEntity();
+        ItemStack stack = event.getItemStack();
+        if(!(stack.getItem() instanceof SettingsToolItem tool) || player.isSpectator() || player.getAbilities().mayBuild || event.getUseItem().isFalse()) return;
+
+        AdventureModePredicate canPlaceOn = stack.get(DataComponents.CAN_PLACE_ON);
+        if(canPlaceOn != null && canPlaceOn.test(new BlockInWorld(event.getLevel(), event.getPos(), false))) return;
+
+        InteractionResult result = tool.onItemUseFirst(stack, new UseOnContext(player, event.getHand(), event.getHitVec()));
+        if(result != InteractionResult.PASS) {
+            event.setCanceled(true);
+            event.setCancellationResult(result);
+        }
     }
 
     @SubscribeEvent

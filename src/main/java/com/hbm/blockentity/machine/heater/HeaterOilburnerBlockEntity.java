@@ -201,7 +201,7 @@ public class HeaterOilburnerBlockEntity extends AbstractHeaterMachineBlockEntity
         return false;
     }
 
-    // Slots 0-2 keep the heater base's automation access; the overdrive upgrade stays out of it, as the original exposes no slot to automation
+    // Slots 0-2 take items from automation, which cannot take any back out; the overdrive upgrade stays out of it, as the original exposes no slot to automation
     @Override
     public int[] getSlotsForFace(Direction direction) {
         return new int[] {0, 1, 2};

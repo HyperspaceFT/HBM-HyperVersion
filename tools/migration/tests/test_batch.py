@@ -218,6 +218,38 @@ class BatchTests(unittest.TestCase):
         _, output = self.run_step(batch.cmd_verify_delivery, item)
         self.assertEqual([JAVA + 'B.java'], json.loads(output.split('\nPaths changed')[0])['changed_after_the_package'])
 
+    def test_jar_equal_to_the_start_build_only_without_jar_input_changes(self):
+        self.write(self.root / JAVA / 'A.java', 'class A { int fixed; }\n')
+        self.build()
+        item = self.manifest(carried=f'"small fix" = ["{JAVA}A.java", "{batch.STAMP}"]')
+        self.assertEqual(0, self.run_step(batch.cmd_freeze, item, False)[0])
+        start_jar = item.jar.read_bytes()
+        message = 'is still the build of the start'
+
+        # A tooling-only batch: the rebuilt JAR is byte for byte the start's.
+        self.write(self.root / 'tools/acceptance/tool.py', 'print(1)\n')
+        self.build()
+        item.jar.write_bytes(start_jar)
+        self.evidence(item, 1)
+        _, output = self.run_step(batch.cmd_package, item, True, None)
+        self.assertNotIn(message, output)
+        self.assertNotIn('is still the p0 package', output)
+
+        # A Java source changed since the start: the start's JAR cannot be this batch's build.
+        self.write(self.root / JAVA / 'B.java', 'class B {}\n')
+        self.build()
+        item.jar.write_bytes(start_jar)
+        self.evidence(item, 1)
+        _, output = self.run_step(batch.cmd_package, item, True, None)
+        self.assertIn(message, output)
+        self.assertIn(JAVA + 'B.java', output)
+
+        # The previous package's JAR is refused whatever changed.
+        item.jar.write_bytes((self.root / 'build/migration/releases/p0/mod-1-p0.jar').read_bytes())
+        self.evidence(item, 1)
+        _, output = self.run_step(batch.cmd_package, item, True, None)
+        self.assertIn('is still the p0 package', output)
+
     def test_changed_existing_gametest_needs_a_reason_in_the_manifest(self):
         item = self.manifest()
         self.assertEqual(0, self.run_step(batch.cmd_freeze, item, False)[0])

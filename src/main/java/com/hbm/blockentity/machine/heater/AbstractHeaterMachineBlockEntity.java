@@ -54,11 +54,6 @@ public abstract class AbstractHeaterMachineBlockEntity extends MachineBaseBlockE
     }
 
     @Override
-    public boolean canTakeItemThroughFace(int index, net.minecraft.world.item.ItemStack stack, Direction direction) {
-        return true;
-    }
-
-    @Override
     protected void loadAdditional(CompoundTag tag, HolderLookup.Provider registries) {
         super.loadAdditional(tag, registries);
         this.heatEnergy = tag.getInt("heatEnergy");

@@ -47,14 +47,12 @@ public class PipeNeoBakedModel extends LevelAwareWavefrontBakedModel {
 
         boolean pX = false, nX = false, pY = false, nY = false, pZ = false, nZ = false;
         if(state != null) {
-            try {
-                pX = state.getValue(FluidDuctConnectingBlock.EAST);
-                nX = state.getValue(FluidDuctConnectingBlock.WEST);
-                pY = state.getValue(FluidDuctConnectingBlock.UP);
-                nY = state.getValue(FluidDuctConnectingBlock.DOWN);
-                pZ = state.getValue(FluidDuctConnectingBlock.SOUTH);
-                nZ = state.getValue(FluidDuctConnectingBlock.NORTH);
-            } catch (Exception ignored) {}
+            pX = state.getValue(FluidDuctConnectingBlock.EAST);
+            nX = state.getValue(FluidDuctConnectingBlock.WEST);
+            pY = state.getValue(FluidDuctConnectingBlock.UP);
+            nY = state.getValue(FluidDuctConnectingBlock.DOWN);
+            pZ = state.getValue(FluidDuctConnectingBlock.SOUTH);
+            nZ = state.getValue(FluidDuctConnectingBlock.NORTH);
         }
         int mask = 0 + (pX ? 32 : 0) + (nX ? 16 : 0) + (pY ? 8 : 0) + (nY ? 4 : 0) + (pZ ? 2 : 0) + (nZ ? 1 : 0);
         List<BakedQuad> quads = cache[mask];

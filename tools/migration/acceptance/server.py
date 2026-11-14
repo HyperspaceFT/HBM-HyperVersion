@@ -374,7 +374,10 @@ def stop_server(session, force, timeout):
     else:
         how = 'not running'
     gone = lambda: not common.pid_alive(session.get('pid')) and not server_jvms(session['root'])
-    if how is None or (not wait_for(gone, timeout) and force):
+    stopped = how is not None and wait_for(gone, timeout)
+    if how is not None and not stopped:
+        heap_dumps(server_jvms(session['root']))
+    if how is None or (not stopped and force):
         for pid in server_jvms(session['root']):
             os.kill(pid, signal.SIGTERM)
         how = (how + ', then ' if how else '') + 'TERM (forced)'
@@ -387,6 +390,20 @@ def stop_server(session, force, timeout):
         log_text = Path(session['log']).read_text(encoding='utf-8', errors='replace')
         outcome = 'BUILD SUCCESSFUL' if 'BUILD SUCCESSFUL' in log_text else ('BUILD FAILED' if 'BUILD FAILED' in log_text else None)
     return how, code, outcome
+
+
+def heap_dumps(pids):
+    """A stop that does not finish: the heap of each server JVM goes to build/migration/ (jcmd next to the JVM's own java)
+    before anything ends the process, so the hang can be examined afterwards."""
+    for pid in pids:
+        java = subprocess.run(['ps', '-o', 'comm=', '-p', str(pid)], capture_output=True, text=True).stdout.strip()
+        jcmd = Path(java).with_name('jcmd') if java else None
+        target = common.REPO / 'build' / 'migration' / ('server-heap-%s-%d.hprof' % (common.now_tag(), pid))
+        if not jcmd or not jcmd.is_file():
+            print('no jcmd beside %s; heap of %d not dumped' % (java or '?', pid))
+            continue
+        r = subprocess.run([str(jcmd), str(pid), 'GC.heap_dump', str(target)], capture_output=True, text=True, timeout=600)
+        print('heap dump of %d: %s (%s)' % (pid, common.rel(target), (r.stdout or r.stderr).strip()[-200:]))
 
 
 def stop_and_restore(session, force, timeout):

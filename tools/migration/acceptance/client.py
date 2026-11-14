@@ -1,5 +1,7 @@
 #!/usr/bin/env python3
-"""Dev clients for Goal 29 acceptance, each with its own game directory and offline name. Never drives the window.
+"""Dev clients for acceptance, each with its own game directory and offline name. The tools never drive the window
+through the operating system; with --jvm-prop hbm.accept.dir=DIR the client loads the acceptance executor (src/acceptance),
+which runs scripted steps inside the game (drive.py).
 
 Run from the NEO root:
   python3 -B -X utf8 tools/migration/acceptance/client.py capture
@@ -7,6 +9,8 @@ Run from the NEO root:
   python3 -B -X utf8 tools/migration/acceptance/client.py start solo --world MyWorld --lang zh_cn
   python3 -B -X utf8 tools/migration/acceptance/client.py stop alice
   python3 -B -X utf8 tools/migration/acceptance/client.py status | clean alice
+  python3 -B -X utf8 tools/migration/acceptance/client.py start g31e_solo --argv build/migration/accept-goal29/client-argv-g31e.json \
+      --jvm-prop hbm.accept.dir=/abs/dir --size 854x480
 
 capture  starts `tools/migration/build.sh --offline runClient` once, reads the client JVM's full command line with
          `ps -ww -o args=` (java, -Dfml.modFolders, @build/moddev/clientRunVmArgs.txt, -cp <classpath>,
@@ -18,11 +22,15 @@ start    launches java with the captured argv directly, the program-argument fil
          clients/<name>/program-args.txt: a copy with --gameDir build/migration/accept-goal29/clients/<name> (own
          logs/latest.log, options.txt, saves; also the working directory), --username <name>, and
          --quickPlayMultiplayer host:port or --quickPlaySingleplayer <world> (client Main.java:66-69); without
-         either it stops at the title screen. Quick-play singleplayer only opens an existing world of that client
+         either it stops at the title screen. --jvm-prop KEY=VALUE adds -DKEY=VALUE (repeatable), --size WxH the
+         window size (--width/--height program arguments). Quick-play singleplayer only opens an existing world of that client
          (QuickPlay.joinSingleplayerWorld shows an error otherwise): create the world in the game first. options.txt is
          preset with pauseOnLostFocus:false and onboardAccessibility:false (without the latter the first start sits on
          the accessibility screen) plus --lang/--option values. --xmx caps the heap (default 2G, two clients and a server
          share 16 GB).
+--argv   (capture and start) the captured-command-line file, default build/migration/accept-goal29/client-argv.json; a
+         second capture under another name leaves the first one (and edits made to it) untouched. The plain-text copy
+         is written next to it with the extension .txt.
 stop     kicks the player over RCON when a server session exists (the client drops back to a menu), then TERMs the JVM
          and records its exit code in clients/<name>/client.json.
 """
@@ -101,6 +109,14 @@ def write_options(path, values):
     path.write_text(''.join('%s:%s\n' % (k, current[k]) for k in order), encoding='utf-8')
 
 
+def argv_file(args):
+    return common.resolve(args.argv) if args.argv else ARGV
+
+
+def cmdline_file(args):
+    return argv_file(args).with_suffix('.txt') if args.argv else CMDLINE
+
+
 def cmd_capture(args):
     session = common.read_json(common.SESSION)
     if not args.without_session and (not session or Path(session['run']).resolve() != (common.REPO / 'run').resolve()):
@@ -136,10 +152,10 @@ def cmd_capture(args):
         if args.wait_title:
             title = wait_log(common.REPO / 'run' / 'logs' / 'latest.log', re.compile(r'Sound engine started|Loaded \d+ advancements'), args.timeout)
             print('client reached: %s' % (title or 'timeout'))
-        CMDLINE.write_text(raw + '\n', encoding='utf-8')
-        common.write_json(ARGV, dict(argv=argv, captured=stamp, pid=pid, cwd=cwd[0] if cwd else None,
+        cmdline_file(args).write_text(raw + '\n', encoding='utf-8')
+        common.write_json(argv_file(args), dict(argv=argv, captured=stamp, pid=pid, cwd=cwd[0] if cwd else None,
                                      note='ps -ww -o args= of the runClient JVM; split on single spaces (no argument has one)'))
-        print('captured %d arguments to %s' % (len(argv), common.rel(CMDLINE)))
+        print('captured %d arguments to %s' % (len(argv), common.rel(argv_file(args))))
     finally:
         # Whatever happened, end this runClient: its client JVM, then Gradle itself if it is still waiting.
         for pid, _ in client_jvms():
@@ -185,9 +201,9 @@ def wait_listed(name, timeout):
 
 def cmd_start(args):
     name = name_ok(args.name)
-    captured = common.read_json(ARGV)
+    captured = common.read_json(argv_file(args))
     if not captured:
-        raise SystemExit('Run `client.py capture` first.')
+        raise SystemExit('Run `client.py capture` first (no %s).' % common.rel(argv_file(args)))
     if args.server and args.world:
         raise SystemExit('give at most one of --server HOST:PORT or --world NAME')
     if args.server and not args.server.startswith(common.LOOPBACK + ':'):
@@ -213,10 +229,21 @@ def cmd_start(args):
     quick = (['--quickPlayMultiplayer', args.server] if args.server else
              ['--quickPlaySingleplayer', args.world] if args.world else [])
     own = home / 'program-args.txt'
-    own.write_text(program_args(PROGRAM_ARGS[1:], home, name, quick), encoding='utf-8')
+    size = []
+    if args.size:
+        match = re.fullmatch(r'(\d{2,5})x(\d{2,5})', args.size)
+        if not match:
+            raise SystemExit('--size WIDTHxHEIGHT')
+        size = ['--width', match.group(1), '--height', match.group(2)]
+    own.write_text(program_args(PROGRAM_ARGS[1:], home, name, quick + size), encoding='utf-8')
     argv[argv.index(PROGRAM_ARGS)] = '@' + str(own)
     if not any(a.startswith('-Xmx') for a in argv):
         argv.insert(1, '-Xmx' + args.xmx)
+    for prop in args.jvm_prop:
+        key, sep, value = prop.partition('=')
+        if not sep or not re.fullmatch(r'[A-Za-z0-9_.]+', key):
+            raise SystemExit('--jvm-prop KEY=VALUE')
+        argv.insert(1, '-D%s=%s' % (key, value))
     exit_file = home / 'exit-code.txt'
     if exit_file.exists():
         exit_file.unlink()
@@ -224,7 +251,8 @@ def cmd_start(args):
         proc = subprocess.Popen(['/bin/sh', '-c', '"$@"; echo "$?" > exit-code.txt', 'sh', *argv], cwd=home, stdout=out,
                                 stderr=subprocess.STDOUT, stdin=subprocess.DEVNULL, start_new_session=True)
     record = dict(name=name, pid=proc.pid, started=common.now_tag(), lang=args.lang, server=args.server, world=args.world,
-                  home=str(home), log=str(home / 'logs' / 'latest.log'))
+                  home=str(home), log=str(home / 'logs' / 'latest.log'), argv_file=common.rel(argv_file(args)),
+                  jvm_props=list(args.jvm_prop), size=args.size)
     common.write_json(home / 'client.json', record)
     print('started %s pid=%d dir=%s' % (name, proc.pid, common.rel(home)))
     if args.wait_join:
@@ -310,6 +338,7 @@ def main(argv=None):
     p.add_argument('--timeout', type=int, default=900)
     p.add_argument('--wait-title', action='store_true', help='wait for the client to finish loading before TERM')
     p.add_argument('--without-session', action='store_true', help='allow capture without a server session (run/ is not restored)')
+    p.add_argument('--argv', help='captured-command-line file (default build/migration/accept-goal29/client-argv.json)')
     p.set_defaults(func=cmd_capture)
     p = sub.add_parser('start')
     p.add_argument('name')
@@ -322,6 +351,9 @@ def main(argv=None):
     p.add_argument('--xmx', default='2G')
     p.add_argument('--wait-join', action='store_true')
     p.add_argument('--timeout', type=int, default=600)
+    p.add_argument('--argv', help='captured-command-line file (default build/migration/accept-goal29/client-argv.json)')
+    p.add_argument('--jvm-prop', action='append', default=[], help='KEY=VALUE passed as -DKEY=VALUE; repeatable')
+    p.add_argument('--size', help='window size WIDTHxHEIGHT')
     p.set_defaults(func=cmd_start)
     p = sub.add_parser('stop')
     p.add_argument('name')

@@ -1,0 +1,21 @@
+# Acceptance executor: loaded by the dev client run only (build.gradle loadedMods), never packaged.
+modLoader="javafml"
+loaderVersion="${loader_version_range}"
+license="${mod_license}"
+
+[[mods]]
+    modId="hbmaccept"
+    version="${mod_version}"
+    displayName="HBM acceptance executor (dev only)"
+    authors="${mod_authors}"
+    description='''Runs scripted acceptance steps in a dev client when started with -Dhbm.accept.dir.'''
+
+[[mixins]]
+    config="hbmaccept.mixins.json"
+
+[[dependencies.hbmaccept]]
+    modId="${mod_id}"
+    type="required"
+    versionRange="[${mod_version},)"
+    ordering="AFTER"
+    side="CLIENT"

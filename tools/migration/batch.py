@@ -816,7 +816,13 @@ def cmd_package(batch: Batch, check: bool, gametest_log: str | None) -> int:
     # 9. The JAR: build/libs equals the build outputs and their sources; every entry that differs from the previous package has an owner.
     jar_delta, dir_delta, entry_owners, classes = None, None, {}, []
     if need(batch.jar.is_file(), "build/libs holds no JAR yet"):
-        need(sha(batch.jar) not in (previous_sha, base.get("build_libs_jar_sha256_at_freeze")), f"{batch.rel(batch.jar)} is still the {manifest['previous']} package or the build of the start (run the final chain)")
+        jar_sha = sha(batch.jar)
+        need(jar_sha != previous_sha, f"{batch.rel(batch.jar)} is still the {manifest['previous']} package (run the final chain)")
+        # A batch that changes no JAR input (src/main, generated resources other than the stamp) rebuilds the start's JAR
+        # byte for byte; only then may build/libs equal the build of the start.
+        jar_inputs = sorted(path for path in changes if path.startswith(("src/main/", GENERATED)) and path != STAMP)
+        need(jar_sha != base.get("build_libs_jar_sha256_at_freeze") or not jar_inputs,
+             f"{batch.rel(batch.jar)} is still the build of the start although JAR inputs changed since then (first {jar_inputs[:4]}); run the final chain")
         classes_root, resources_root = root / "build/classes/java/main", root / "build/resources/main"
         classes = sorted(classes_root.rglob("*.class"))
         with zipfile.ZipFile(batch.jar) as jar, zipfile.ZipFile(batch.previous_jar) as prior:

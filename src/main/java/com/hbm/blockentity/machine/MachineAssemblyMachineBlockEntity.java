@@ -291,6 +291,12 @@ public class MachineAssemblyMachineBlockEntity extends MachineBaseBlockEntity im
     }
 
     @Override
+    public boolean canTakeItemThroughFace(int index, ItemStack stack, Direction direction) {
+        // Original: inputs that no longer fit the selected recipe can be pulled out as well
+        return index == 16 || this.assemblerModule.isSlotClogged(index);
+    }
+
+    @Override
     public int[] getSlotsForFace(Direction direction) {
         return new int[] { 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16 };
     }

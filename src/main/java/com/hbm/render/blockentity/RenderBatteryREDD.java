@@ -207,7 +207,7 @@ public class RenderBatteryREDD extends BlockEntityRendererNT<BatteryREDDBlockEnt
         int y = be.getBlockPos().getY();
         int z = be.getBlockPos().getZ();
 
-        return new AABB(x - 2, y, z - 2, x + 2, y + 10, z + 2);
+        return new AABB(x - 4, y, z - 4, x + 5, y + 10, z + 5);
     }
 
     @Override

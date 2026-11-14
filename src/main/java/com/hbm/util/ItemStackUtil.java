@@ -1,5 +1,6 @@
 package com.hbm.util;
 
+import com.mojang.brigadier.exceptions.CommandSyntaxException;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.core.RegistryAccess;
@@ -160,6 +161,6 @@ public class ItemStackUtil {
             if (tag instanceof CompoundTag compound) {
                 TagsUtil.putCustomData(stack, compound);
             }
-        } catch (Exception ignored) { }
+        } catch (CommandSyntaxException ignored) { }
     }
 }
