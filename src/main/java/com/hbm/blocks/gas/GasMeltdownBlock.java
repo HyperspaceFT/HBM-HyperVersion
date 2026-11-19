@@ -72,7 +72,7 @@ public class GasMeltdownBlock extends GasBaseBlock {
             BlockPos relative = pos.relative(dir);
 
             if (random.nextInt(7) == 0 && level.isEmptyBlock(relative)) {
-                level.setBlock(pos, NtmBlocks.GAS_RADON_DENSE.get().defaultBlockState(), 3);
+                level.setBlock(relative, NtmBlocks.GAS_RADON_DENSE.get().defaultBlockState(), 3);
             }
 
             if (level.canSeeSky(pos)) {

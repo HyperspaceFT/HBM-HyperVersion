@@ -151,7 +151,7 @@ public final class MaterialEntries {
             add(Mats.MAT_SCHRABIDIUM, MaterialShapes.INGOT, NtmItems.INGOT_SCHRABIDIUM); // OreDictManager.java:369 ingot_schrabidium
             add(Mats.MAT_SCHRABIDIUM, MaterialShapes.DUST, NtmItems.POWDER_SCHRABIDIUM); // OreDictManager.java:369 powder_schrabidium
             add(Mats.MAT_SCHRABIDIUM, MaterialShapes.PLATE, NtmItems.PLATE_SCHRABIDIUM); // OreDictManager.java:369 plate_schrabidium
-            add(Mats.MAT_SCHRABIDIUM, MaterialShapes.CASTPLATE, NtmItems.CAST_PLATE, CastPlateItem.Type.SCHRABIDIUM.ordinal()); // OreDictManager.java:369 Mats.MAT_SCHRABIDIUM.make(plate_cast); also OreDictManager.java autogen loop (plate_cast meta)
+            add(Mats.MAT_SCHRABIDIUM, MaterialShapes.CASTPLATE, NtmItems.PLATE_CAST, CastPlateItem.Type.SCHRABIDIUM.ordinal()); // OreDictManager.java:369 Mats.MAT_SCHRABIDIUM.make(plate_cast); also OreDictManager.java autogen loop (plate_cast meta)
             add(Mats.MAT_SCHRABIDIUM, MaterialShapes.BLOCK, NtmBlocks.BLOCK_SCHRABIDIUM); // OreDictManager.java:369 block_schrabidium
             add(Mats.MAT_SOLINIUM, MaterialShapes.NUGGET, NtmItems.NUGGET_SOLINIUM); // OreDictManager.java:370 nugget_solinium
             add(Mats.MAT_SOLINIUM, MaterialShapes.BILLET, NtmItems.BILLET_SOLINIUM); // OreDictManager.java:370 billet_solinium
@@ -338,38 +338,38 @@ public final class MaterialEntries {
             add(Mats.MAT_REDSTONE, MaterialShapes.BLOCK, Items.REDSTONE_BLOCK); // Forge 1.7.10 vanilla ore dictionary
             add(Mats.MAT_COAL, MaterialShapes.BLOCK, Items.COAL_BLOCK); // Forge 1.7.10 vanilla ore dictionary
             add(Mats.MAT_CARBON, MaterialShapes.WIRE, NtmItems.WIRE_CARBON); // OreDictManager.java autogen loop (wire_fine meta -> wire_carbon) wire_fine meta -> wire_carbon
-            add(Mats.MAT_IRON, MaterialShapes.CASTPLATE, NtmItems.CAST_PLATE, CastPlateItem.Type.IRON.ordinal()); // OreDictManager.java autogen loop (plate_cast meta) plate_cast meta
-            add(Mats.MAT_IRON, MaterialShapes.WELDEDPLATE, NtmItems.CAST_PLATE_WELDED, CastPlateItem.Type.IRON.ordinal()); // OreDictManager.java autogen loop (plate_welded meta) plate_welded meta
+            add(Mats.MAT_IRON, MaterialShapes.CASTPLATE, NtmItems.PLATE_CAST, CastPlateItem.Type.IRON.ordinal()); // OreDictManager.java autogen loop (plate_cast meta) plate_cast meta
+            add(Mats.MAT_IRON, MaterialShapes.WELDEDPLATE, NtmItems.PLATE_WELDED, CastPlateItem.Type.IRON.ordinal()); // OreDictManager.java autogen loop (plate_welded meta) plate_welded meta
             add(Mats.MAT_IRON, MaterialShapes.PIPE, NtmItems.PIPE_IRON); // OreDictManager.java autogen loop (pipe meta -> pipe_iron) pipe meta -> pipe_iron
-            add(Mats.MAT_GOLD, MaterialShapes.CASTPLATE, NtmItems.CAST_PLATE, CastPlateItem.Type.GOLD.ordinal()); // OreDictManager.java autogen loop (plate_cast meta) plate_cast meta
+            add(Mats.MAT_GOLD, MaterialShapes.CASTPLATE, NtmItems.PLATE_CAST, CastPlateItem.Type.GOLD.ordinal()); // OreDictManager.java autogen loop (plate_cast meta) plate_cast meta
             add(Mats.MAT_GOLD, MaterialShapes.DENSEWIRE, NtmItems.WIRE_DENSE, WireDenseItem.Type.GOLD.meta); // OreDictManager.java autogen loop (wire_dense meta) wire_dense meta
             add(Mats.MAT_GOLD, MaterialShapes.WIRE, NtmItems.WIRE_GOLD); // OreDictManager.java autogen loop (wire_fine meta -> wire_gold) wire_fine meta -> wire_gold
             add(Mats.MAT_REDSTONE, MaterialShapes.INGOT, NtmItems.INGOT_RAW, RawIngotItem.Type.REDSTONE.meta); // OreDictManager.java autogen loop (ingot_raw meta) ingot_raw meta
             add(Mats.MAT_SCHRABIDIUM, MaterialShapes.DENSEWIRE, NtmItems.WIRE_DENSE, WireDenseItem.Type.SCHRABIDIUM.meta); // OreDictManager.java autogen loop (wire_dense meta) wire_dense meta
             add(Mats.MAT_SCHRABIDIUM, MaterialShapes.WIRE, NtmItems.WIRE_SCHRABIDIUM); // OreDictManager.java autogen loop (wire_fine meta -> wire_schrabidium) wire_fine meta -> wire_schrabidium
-            add(Mats.MAT_SCHRABIDATE, MaterialShapes.CASTPLATE, NtmItems.CAST_PLATE, CastPlateItem.Type.SCHRABIDATE.ordinal()); // OreDictManager.java autogen loop (plate_cast meta) plate_cast meta
+            add(Mats.MAT_SCHRABIDATE, MaterialShapes.CASTPLATE, NtmItems.PLATE_CAST, CastPlateItem.Type.SCHRABIDATE.ordinal()); // OreDictManager.java autogen loop (plate_cast meta) plate_cast meta
             add(Mats.MAT_SCHRABIDATE, MaterialShapes.DENSEWIRE, NtmItems.WIRE_DENSE, WireDenseItem.Type.SCHRABIDATE.meta); // OreDictManager.java autogen loop (wire_dense meta) wire_dense meta
-            add(Mats.MAT_TITANIUM, MaterialShapes.CASTPLATE, NtmItems.CAST_PLATE, CastPlateItem.Type.TITANIUM.ordinal()); // OreDictManager.java autogen loop (plate_cast meta) plate_cast meta
-            add(Mats.MAT_TITANIUM, MaterialShapes.WELDEDPLATE, NtmItems.CAST_PLATE_WELDED, CastPlateItem.Type.TITANIUM.ordinal()); // OreDictManager.java autogen loop (plate_welded meta) plate_welded meta
+            add(Mats.MAT_TITANIUM, MaterialShapes.CASTPLATE, NtmItems.PLATE_CAST, CastPlateItem.Type.TITANIUM.ordinal()); // OreDictManager.java autogen loop (plate_cast meta) plate_cast meta
+            add(Mats.MAT_TITANIUM, MaterialShapes.WELDEDPLATE, NtmItems.PLATE_WELDED, CastPlateItem.Type.TITANIUM.ordinal()); // OreDictManager.java autogen loop (plate_welded meta) plate_welded meta
             add(Mats.MAT_TITANIUM, MaterialShapes.DENSEWIRE, NtmItems.WIRE_DENSE, WireDenseItem.Type.TITANIUM.meta); // OreDictManager.java autogen loop (wire_dense meta) wire_dense meta
             add(Mats.MAT_TITANIUM, MaterialShapes.SHELL, NtmItems.SHELL_TITANIUM); // OreDictManager.java autogen loop (shell meta -> shell_titanium) shell meta -> shell_titanium
-            add(Mats.MAT_COPPER, MaterialShapes.CASTPLATE, NtmItems.CAST_PLATE, CastPlateItem.Type.COPPER.ordinal()); // OreDictManager.java autogen loop (plate_cast meta) plate_cast meta
-            add(Mats.MAT_COPPER, MaterialShapes.WELDEDPLATE, NtmItems.CAST_PLATE_WELDED, CastPlateItem.Type.COPPER.ordinal()); // OreDictManager.java autogen loop (plate_welded meta) plate_welded meta
+            add(Mats.MAT_COPPER, MaterialShapes.CASTPLATE, NtmItems.PLATE_CAST, CastPlateItem.Type.COPPER.ordinal()); // OreDictManager.java autogen loop (plate_cast meta) plate_cast meta
+            add(Mats.MAT_COPPER, MaterialShapes.WELDEDPLATE, NtmItems.PLATE_WELDED, CastPlateItem.Type.COPPER.ordinal()); // OreDictManager.java autogen loop (plate_welded meta) plate_welded meta
             add(Mats.MAT_COPPER, MaterialShapes.DENSEWIRE, NtmItems.WIRE_DENSE, WireDenseItem.Type.COPPER.meta); // OreDictManager.java autogen loop (wire_dense meta) wire_dense meta
             add(Mats.MAT_COPPER, MaterialShapes.WIRE, NtmItems.WIRE_COPPER); // OreDictManager.java autogen loop (wire_fine meta -> wire_copper) wire_fine meta -> wire_copper
             add(Mats.MAT_COPPER, MaterialShapes.SHELL, NtmItems.SHELL_COPPER); // OreDictManager.java autogen loop (shell meta -> shell_copper) shell meta -> shell_copper
             add(Mats.MAT_COPPER, MaterialShapes.PIPE, NtmItems.PIPE_COPPER); // OreDictManager.java autogen loop (pipe meta -> pipe_copper) pipe meta -> pipe_copper
-            add(Mats.MAT_TUNGSTEN, MaterialShapes.CASTPLATE, NtmItems.CAST_PLATE, CastPlateItem.Type.TUNGSTEN.ordinal()); // OreDictManager.java autogen loop (plate_cast meta) plate_cast meta
-            add(Mats.MAT_TUNGSTEN, MaterialShapes.WELDEDPLATE, NtmItems.CAST_PLATE_WELDED, CastPlateItem.Type.TUNGSTEN.ordinal()); // OreDictManager.java autogen loop (plate_welded meta) plate_welded meta
+            add(Mats.MAT_TUNGSTEN, MaterialShapes.CASTPLATE, NtmItems.PLATE_CAST, CastPlateItem.Type.TUNGSTEN.ordinal()); // OreDictManager.java autogen loop (plate_cast meta) plate_cast meta
+            add(Mats.MAT_TUNGSTEN, MaterialShapes.WELDEDPLATE, NtmItems.PLATE_WELDED, CastPlateItem.Type.TUNGSTEN.ordinal()); // OreDictManager.java autogen loop (plate_welded meta) plate_welded meta
             add(Mats.MAT_TUNGSTEN, MaterialShapes.DENSEWIRE, NtmItems.WIRE_DENSE, WireDenseItem.Type.TUNGSTEN.meta); // OreDictManager.java autogen loop (wire_dense meta) wire_dense meta
             add(Mats.MAT_TUNGSTEN, MaterialShapes.BOLT, NtmItems.BOLT, BoltItem.Type.TUNGSTEN.meta); // OreDictManager.java autogen loop (bolt meta) bolt meta
             add(Mats.MAT_TUNGSTEN, MaterialShapes.WIRE, NtmItems.WIRE_TUNGSTEN); // OreDictManager.java autogen loop (wire_fine meta -> wire_tungsten) wire_fine meta -> wire_tungsten
-            add(Mats.MAT_ALUMINIUM, MaterialShapes.CASTPLATE, NtmItems.CAST_PLATE, CastPlateItem.Type.ALUMINIUM.ordinal()); // OreDictManager.java autogen loop (plate_cast meta) plate_cast meta
-            add(Mats.MAT_ALUMINIUM, MaterialShapes.WELDEDPLATE, NtmItems.CAST_PLATE_WELDED, CastPlateItem.Type.ALUMINIUM.ordinal()); // OreDictManager.java autogen loop (plate_welded meta) plate_welded meta
+            add(Mats.MAT_ALUMINIUM, MaterialShapes.CASTPLATE, NtmItems.PLATE_CAST, CastPlateItem.Type.ALUMINIUM.ordinal()); // OreDictManager.java autogen loop (plate_cast meta) plate_cast meta
+            add(Mats.MAT_ALUMINIUM, MaterialShapes.WELDEDPLATE, NtmItems.PLATE_WELDED, CastPlateItem.Type.ALUMINIUM.ordinal()); // OreDictManager.java autogen loop (plate_welded meta) plate_welded meta
             add(Mats.MAT_ALUMINIUM, MaterialShapes.WIRE, NtmItems.WIRE_ALUMINIUM); // OreDictManager.java autogen loop (wire_fine meta -> wire_aluminium) wire_fine meta -> wire_aluminium
             add(Mats.MAT_ALUMINIUM, MaterialShapes.SHELL, NtmItems.SHELL_ALUMINIUM); // OreDictManager.java autogen loop (shell meta -> shell_aluminium) shell meta -> shell_aluminium
             add(Mats.MAT_ALUMINIUM, MaterialShapes.PIPE, NtmItems.PIPE_ALUMINIUM); // OreDictManager.java autogen loop (pipe meta -> pipe_aluminium) pipe meta -> pipe_aluminium
-            add(Mats.MAT_LEAD, MaterialShapes.CASTPLATE, NtmItems.CAST_PLATE, CastPlateItem.Type.LEAD.ordinal()); // OreDictManager.java autogen loop (plate_cast meta) plate_cast meta
+            add(Mats.MAT_LEAD, MaterialShapes.CASTPLATE, NtmItems.PLATE_CAST, CastPlateItem.Type.LEAD.ordinal()); // OreDictManager.java autogen loop (plate_cast meta) plate_cast meta
             add(Mats.MAT_LEAD, MaterialShapes.BOLT, NtmItems.BOLT, BoltItem.Type.LEAD.meta); // OreDictManager.java autogen loop (bolt meta) bolt meta
             add(Mats.MAT_LEAD, MaterialShapes.WIRE, NtmItems.WIRE_LEAD); // OreDictManager.java autogen loop (wire_fine meta -> wire_lead) wire_fine meta -> wire_lead
             add(Mats.MAT_LEAD, MaterialShapes.PIPE, NtmItems.PIPE_LEAD); // OreDictManager.java autogen loop (pipe meta -> pipe_lead) pipe meta -> pipe_lead
@@ -377,51 +377,51 @@ public final class MaterialEntries {
             add(Mats.MAT_NEODYMIUM, MaterialShapes.INGOT, NtmItems.INGOT_RAW, RawIngotItem.Type.NEODYMIUM.meta); // OreDictManager.java autogen loop (ingot_raw meta) ingot_raw meta
             add(Mats.MAT_NIOBIUM, MaterialShapes.DENSEWIRE, NtmItems.WIRE_DENSE, WireDenseItem.Type.NIOBIUM.meta); // OreDictManager.java autogen loop (wire_dense meta) wire_dense meta
             add(Mats.MAT_BORAX, MaterialShapes.INGOT, NtmItems.INGOT_RAW, RawIngotItem.Type.BORAX.meta); // OreDictManager.java autogen loop (ingot_raw meta) ingot_raw meta
-            add(Mats.MAT_ZIRCONIUM, MaterialShapes.CASTPLATE, NtmItems.CAST_PLATE, CastPlateItem.Type.ZIRCONIUM.ordinal()); // OreDictManager.java autogen loop (plate_cast meta) plate_cast meta
-            add(Mats.MAT_ZIRCONIUM, MaterialShapes.WELDEDPLATE, NtmItems.CAST_PLATE_WELDED, CastPlateItem.Type.ZIRCONIUM.ordinal()); // OreDictManager.java autogen loop (plate_welded meta) plate_welded meta
+            add(Mats.MAT_ZIRCONIUM, MaterialShapes.CASTPLATE, NtmItems.PLATE_CAST, CastPlateItem.Type.ZIRCONIUM.ordinal()); // OreDictManager.java autogen loop (plate_cast meta) plate_cast meta
+            add(Mats.MAT_ZIRCONIUM, MaterialShapes.WELDEDPLATE, NtmItems.PLATE_WELDED, CastPlateItem.Type.ZIRCONIUM.ordinal()); // OreDictManager.java autogen loop (plate_welded meta) plate_welded meta
             add(Mats.MAT_ZIRCONIUM, MaterialShapes.WIRE, NtmItems.WIRE_ZIRCONIUM); // OreDictManager.java autogen loop (wire_fine meta -> wire_zirconium) wire_fine meta -> wire_zirconium
             add(Mats.MAT_SODIUM, MaterialShapes.INGOT, NtmItems.INGOT_RAW, RawIngotItem.Type.SODIUM.meta); // OreDictManager.java autogen loop (ingot_raw meta) ingot_raw meta
             add(Mats.MAT_STRONTIUM, MaterialShapes.INGOT, NtmItems.INGOT_RAW, RawIngotItem.Type.STRONTIUM.meta); // OreDictManager.java autogen loop (ingot_raw meta) ingot_raw meta
-            add(Mats.MAT_OSMIRIDIUM, MaterialShapes.CASTPLATE, NtmItems.CAST_PLATE, CastPlateItem.Type.OSMIRIDIUM.ordinal()); // OreDictManager.java autogen loop (plate_cast meta) plate_cast meta
-            add(Mats.MAT_OSMIRIDIUM, MaterialShapes.WELDEDPLATE, NtmItems.CAST_PLATE_WELDED, CastPlateItem.Type.OSMIRIDIUM.ordinal()); // OreDictManager.java autogen loop (plate_welded meta) plate_welded meta
-            add(Mats.MAT_STEEL, MaterialShapes.CASTPLATE, NtmItems.CAST_PLATE, CastPlateItem.Type.STEEL.ordinal()); // OreDictManager.java autogen loop (plate_cast meta) plate_cast meta
-            add(Mats.MAT_STEEL, MaterialShapes.WELDEDPLATE, NtmItems.CAST_PLATE_WELDED, CastPlateItem.Type.STEEL.ordinal()); // OreDictManager.java autogen loop (plate_welded meta) plate_welded meta
+            add(Mats.MAT_OSMIRIDIUM, MaterialShapes.CASTPLATE, NtmItems.PLATE_CAST, CastPlateItem.Type.OSMIRIDIUM.ordinal()); // OreDictManager.java autogen loop (plate_cast meta) plate_cast meta
+            add(Mats.MAT_OSMIRIDIUM, MaterialShapes.WELDEDPLATE, NtmItems.PLATE_WELDED, CastPlateItem.Type.OSMIRIDIUM.ordinal()); // OreDictManager.java autogen loop (plate_welded meta) plate_welded meta
+            add(Mats.MAT_STEEL, MaterialShapes.CASTPLATE, NtmItems.PLATE_CAST, CastPlateItem.Type.STEEL.ordinal()); // OreDictManager.java autogen loop (plate_cast meta) plate_cast meta
+            add(Mats.MAT_STEEL, MaterialShapes.WELDEDPLATE, NtmItems.PLATE_WELDED, CastPlateItem.Type.STEEL.ordinal()); // OreDictManager.java autogen loop (plate_welded meta) plate_welded meta
             add(Mats.MAT_STEEL, MaterialShapes.BOLT, NtmItems.BOLT, BoltItem.Type.STEEL.meta); // OreDictManager.java autogen loop (bolt meta) bolt meta
             add(Mats.MAT_STEEL, MaterialShapes.WIRE, NtmItems.WIRE_STEEL); // OreDictManager.java autogen loop (wire_fine meta -> wire_steel) wire_fine meta -> wire_steel
             add(Mats.MAT_STEEL, MaterialShapes.SHELL, NtmItems.SHELL_STEEL); // OreDictManager.java autogen loop (shell meta -> shell_steel) shell meta -> shell_steel
             add(Mats.MAT_STEEL, MaterialShapes.PIPE, NtmItems.PIPE_STEEL); // OreDictManager.java autogen loop (pipe meta -> pipe_steel) pipe meta -> pipe_steel
             add(Mats.MAT_MINGRADE, MaterialShapes.DENSEWIRE, NtmItems.WIRE_DENSE, WireDenseItem.Type.RED_COPPER.meta); // OreDictManager.java autogen loop (wire_dense meta) wire_dense meta
             add(Mats.MAT_MINGRADE, MaterialShapes.WIRE, NtmItems.WIRE_RED_COPPER); // OreDictManager.java autogen loop (wire_fine meta -> wire_red_copper) wire_fine meta -> wire_red_copper
-            add(Mats.MAT_DURA, MaterialShapes.CASTPLATE, NtmItems.CAST_PLATE, CastPlateItem.Type.DURA_STEEL.ordinal()); // OreDictManager.java autogen loop (plate_cast meta) plate_cast meta
+            add(Mats.MAT_DURA, MaterialShapes.CASTPLATE, NtmItems.PLATE_CAST, CastPlateItem.Type.DURA_STEEL.ordinal()); // OreDictManager.java autogen loop (plate_cast meta) plate_cast meta
             add(Mats.MAT_DURA, MaterialShapes.BOLT, NtmItems.BOLT, BoltItem.Type.DURA_STEEL.meta); // OreDictManager.java autogen loop (bolt meta) bolt meta
             add(Mats.MAT_DURA, MaterialShapes.PIPE, NtmItems.PIPE_DURA_STEEL); // OreDictManager.java autogen loop (pipe meta -> pipe_dura_steel) pipe meta -> pipe_dura_steel
-            add(Mats.MAT_DESH, MaterialShapes.CASTPLATE, NtmItems.CAST_PLATE, CastPlateItem.Type.DESH.ordinal()); // OreDictManager.java autogen loop (plate_cast meta) plate_cast meta
-            add(Mats.MAT_STAR, MaterialShapes.CASTPLATE, NtmItems.CAST_PLATE, CastPlateItem.Type.STARMETAL.ordinal()); // OreDictManager.java autogen loop (plate_cast meta) plate_cast meta
+            add(Mats.MAT_DESH, MaterialShapes.CASTPLATE, NtmItems.PLATE_CAST, CastPlateItem.Type.DESH.ordinal()); // OreDictManager.java autogen loop (plate_cast meta) plate_cast meta
+            add(Mats.MAT_STAR, MaterialShapes.CASTPLATE, NtmItems.PLATE_CAST, CastPlateItem.Type.STARMETAL.ordinal()); // OreDictManager.java autogen loop (plate_cast meta) plate_cast meta
             add(Mats.MAT_STAR, MaterialShapes.DENSEWIRE, NtmItems.WIRE_DENSE, WireDenseItem.Type.STARMETAL.meta); // OreDictManager.java autogen loop (wire_dense meta) wire_dense meta
-            add(Mats.MAT_FERRO, MaterialShapes.CASTPLATE, NtmItems.CAST_PLATE, CastPlateItem.Type.FERROURANIUM.ordinal()); // OreDictManager.java autogen loop (plate_cast meta) plate_cast meta
-            add(Mats.MAT_TCALLOY, MaterialShapes.CASTPLATE, NtmItems.CAST_PLATE, CastPlateItem.Type.TCALLOY.ordinal()); // OreDictManager.java autogen loop (plate_cast meta) plate_cast meta
-            add(Mats.MAT_TCALLOY, MaterialShapes.WELDEDPLATE, NtmItems.CAST_PLATE_WELDED, CastPlateItem.Type.TCALLOY.ordinal()); // OreDictManager.java autogen loop (plate_welded meta) plate_welded meta
-            add(Mats.MAT_CDALLOY, MaterialShapes.CASTPLATE, NtmItems.CAST_PLATE, CastPlateItem.Type.CDALLOY.ordinal()); // OreDictManager.java autogen loop (plate_cast meta) plate_cast meta
-            add(Mats.MAT_CDALLOY, MaterialShapes.WELDEDPLATE, NtmItems.CAST_PLATE_WELDED, CastPlateItem.Type.CDALLOY.ordinal()); // OreDictManager.java autogen loop (plate_welded meta) plate_welded meta
-            add(Mats.MAT_BBRONZE, MaterialShapes.CASTPLATE, NtmItems.CAST_PLATE, CastPlateItem.Type.BISMUTH_BRONZE.ordinal()); // OreDictManager.java autogen loop (plate_cast meta) plate_cast meta
-            add(Mats.MAT_ABRONZE, MaterialShapes.CASTPLATE, NtmItems.CAST_PLATE, CastPlateItem.Type.ARSENIC_BRONZE.ordinal()); // OreDictManager.java autogen loop (plate_cast meta) plate_cast meta
+            add(Mats.MAT_FERRO, MaterialShapes.CASTPLATE, NtmItems.PLATE_CAST, CastPlateItem.Type.FERROURANIUM.ordinal()); // OreDictManager.java autogen loop (plate_cast meta) plate_cast meta
+            add(Mats.MAT_TCALLOY, MaterialShapes.CASTPLATE, NtmItems.PLATE_CAST, CastPlateItem.Type.TCALLOY.ordinal()); // OreDictManager.java autogen loop (plate_cast meta) plate_cast meta
+            add(Mats.MAT_TCALLOY, MaterialShapes.WELDEDPLATE, NtmItems.PLATE_WELDED, CastPlateItem.Type.TCALLOY.ordinal()); // OreDictManager.java autogen loop (plate_welded meta) plate_welded meta
+            add(Mats.MAT_CDALLOY, MaterialShapes.CASTPLATE, NtmItems.PLATE_CAST, CastPlateItem.Type.CDALLOY.ordinal()); // OreDictManager.java autogen loop (plate_cast meta) plate_cast meta
+            add(Mats.MAT_CDALLOY, MaterialShapes.WELDEDPLATE, NtmItems.PLATE_WELDED, CastPlateItem.Type.CDALLOY.ordinal()); // OreDictManager.java autogen loop (plate_welded meta) plate_welded meta
+            add(Mats.MAT_BBRONZE, MaterialShapes.CASTPLATE, NtmItems.PLATE_CAST, CastPlateItem.Type.BISMUTH_BRONZE.ordinal()); // OreDictManager.java autogen loop (plate_cast meta) plate_cast meta
+            add(Mats.MAT_ABRONZE, MaterialShapes.CASTPLATE, NtmItems.PLATE_CAST, CastPlateItem.Type.ARSENIC_BRONZE.ordinal()); // OreDictManager.java autogen loop (plate_cast meta) plate_cast meta
             add(Mats.MAT_BSCCO, MaterialShapes.DENSEWIRE, NtmItems.WIRE_DENSE, WireDenseItem.Type.BSCCO.meta); // OreDictManager.java autogen loop (wire_dense meta) wire_dense meta
             add(Mats.MAT_MAGTUNG, MaterialShapes.DENSEWIRE, NtmItems.WIRE_DENSE, WireDenseItem.Type.MAGNETIZED_TUNGSTEN.meta); // OreDictManager.java autogen loop (wire_dense meta) wire_dense meta
             add(Mats.MAT_MAGTUNG, MaterialShapes.WIRE, NtmItems.WIRE_MAGNETIZED_TUNGSTEN); // OreDictManager.java autogen loop (wire_fine meta -> wire_magnetized_tungsten) wire_fine meta -> wire_magnetized_tungsten
-            add(Mats.MAT_CMB, MaterialShapes.CASTPLATE, NtmItems.CAST_PLATE, CastPlateItem.Type.COMBINE_STEEL.ordinal()); // OreDictManager.java autogen loop (plate_cast meta) plate_cast meta
-            add(Mats.MAT_CMB, MaterialShapes.WELDEDPLATE, NtmItems.CAST_PLATE_WELDED, CastPlateItem.Type.COMBINE_STEEL.ordinal()); // OreDictManager.java autogen loop (plate_welded meta) plate_welded meta
+            add(Mats.MAT_CMB, MaterialShapes.CASTPLATE, NtmItems.PLATE_CAST, CastPlateItem.Type.COMBINE_STEEL.ordinal()); // OreDictManager.java autogen loop (plate_cast meta) plate_cast meta
+            add(Mats.MAT_CMB, MaterialShapes.WELDEDPLATE, NtmItems.PLATE_WELDED, CastPlateItem.Type.COMBINE_STEEL.ordinal()); // OreDictManager.java autogen loop (plate_welded meta) plate_welded meta
             add(Mats.MAT_DNT, MaterialShapes.DENSEWIRE, NtmItems.WIRE_DENSE, WireDenseItem.Type.DINEUTRONIUM.meta); // OreDictManager.java autogen loop (wire_dense meta) wire_dense meta
             add(Mats.MAT_SLAG, MaterialShapes.INGOT, NtmItems.INGOT_RAW, RawIngotItem.Type.SLAG.meta); // OreDictManager.java autogen loop (ingot_raw meta) ingot_raw meta
-            add(Mats.MAT_WEAPONSTEEL, MaterialShapes.CASTPLATE, NtmItems.CAST_PLATE, CastPlateItem.Type.WEAPON_STEEL.ordinal()); // OreDictManager.java autogen loop (plate_cast meta) plate_cast meta
+            add(Mats.MAT_WEAPONSTEEL, MaterialShapes.CASTPLATE, NtmItems.PLATE_CAST, CastPlateItem.Type.WEAPON_STEEL.ordinal()); // OreDictManager.java autogen loop (plate_cast meta) plate_cast meta
             add(Mats.MAT_WEAPONSTEEL, MaterialShapes.SHELL, NtmItems.SHELL_WEAPON_STEEL); // OreDictManager.java autogen loop (shell meta -> shell_weapon_steel) shell meta -> shell_weapon_steel
-            add(Mats.MAT_SATURN, MaterialShapes.CASTPLATE, NtmItems.CAST_PLATE, CastPlateItem.Type.SATURNITE.ordinal()); // OreDictManager.java autogen loop (plate_cast meta) plate_cast meta
+            add(Mats.MAT_SATURN, MaterialShapes.CASTPLATE, NtmItems.PLATE_CAST, CastPlateItem.Type.SATURNITE.ordinal()); // OreDictManager.java autogen loop (plate_cast meta) plate_cast meta
             add(Mats.MAT_SATURN, MaterialShapes.SHELL, NtmItems.SHELL_SATURNITE); // OreDictManager.java autogen loop (shell meta -> shell_saturnite) shell meta -> shell_saturnite
             add(Mats.MAT_RUBBER, MaterialShapes.PIPE, NtmItems.PIPE_RUBBER); // OreDictManager.java autogen loop (pipe meta -> pipe_rubber) pipe meta -> pipe_rubber
             add(Mats.MAT_COPPER, MaterialShapes.INGOT, Items.COPPER_INGOT); // NEO-only since Goal 5A: vanilla 1.21 copper ingot stands in for ingotCopper
             add(Mats.MAT_COPPER, MaterialShapes.BLOCK, Items.COPPER_BLOCK); // NEO-only since Goal 5A: vanilla 1.21 copper block stands in for blockCopper
             add(Mats.MAT_IRON, MaterialShapes.NUGGET, Items.IRON_NUGGET); // NEO-only: vanilla 1.21 iron nugget (1.7.10 has none; upstream melts any nuggetIron through the prefix rule)
-            add(Mats.MAT_LEAD, MaterialShapes.WELDEDPLATE, NtmItems.CAST_PLATE_WELDED, CastPlateItem.Type.LEAD.ordinal()); // NEO-only: CastPlateItem.Type.LEAD is welded-allowed; upstream MAT_LEAD has no WELDEDPLATE autogen
-            add(Mats.MAT_DURA, MaterialShapes.WELDEDPLATE, NtmItems.CAST_PLATE_WELDED, CastPlateItem.Type.DURA_STEEL.ordinal()); // NEO-only: CastPlateItem.Type.DURA_STEEL is welded-allowed; upstream MAT_DURA has no WELDEDPLATE autogen
+            add(Mats.MAT_LEAD, MaterialShapes.WELDEDPLATE, NtmItems.PLATE_WELDED, CastPlateItem.Type.LEAD.ordinal()); // NEO-only: CastPlateItem.Type.LEAD is welded-allowed; upstream MAT_LEAD has no WELDEDPLATE autogen
+            add(Mats.MAT_DURA, MaterialShapes.WELDEDPLATE, NtmItems.PLATE_WELDED, CastPlateItem.Type.DURA_STEEL.ordinal()); // NEO-only: CastPlateItem.Type.DURA_STEEL is welded-allowed; upstream MAT_DURA has no WELDEDPLATE autogen
         }
 
         private static void add(NTMMaterial material, MaterialShapes shape, ItemLike item) {

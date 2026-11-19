@@ -2,6 +2,7 @@ package com.hbm.blockentity.machine;
 
 import api.hbm.energymk2.IEnergyProviderMK2;
 import api.hbm.fluidmk2.IFluidStandardTransceiverMK2;
+import com.hbm.blockentity.IFluidCopiable;
 import com.hbm.blockentity.ITickable;
 import com.hbm.blockentity.LoadedBaseBlockEntity;
 import com.hbm.blockentity.NtmBlockEntityTypes;
@@ -24,7 +25,7 @@ import net.minecraft.util.Mth;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.AABB;
 
-public class MachineSteamEngineBlockEntity extends LoadedBaseBlockEntity implements ITickable, IEnergyProviderMK2, IFluidStandardTransceiverMK2 {
+public class MachineSteamEngineBlockEntity extends LoadedBaseBlockEntity implements ITickable, IEnergyProviderMK2, IFluidStandardTransceiverMK2, IFluidCopiable {
 
     // The original's machine config "steamengine" (steamCap, ldsCap, efficiency); NEO has no such config.
     public static final int STEAM_CAPACITY = 2_000;
@@ -221,6 +222,12 @@ public class MachineSteamEngineBlockEntity extends LoadedBaseBlockEntity impleme
     @Override
     public FluidTank[] getAllTanks() {
         return this.tanks;
+    }
+
+    // ORIG TileEntitySteamEngine.java:246-249: copies the fluid types but pastes nothing.
+    @Override
+    public FluidTank getTankToPaste() {
+        return null;
     }
 
     /** The original renders without bounds; this box covers the 3x7x2 footprint in every facing with room above. */

@@ -13,7 +13,9 @@ with what to do, what to expect and an empty result column (pass / fail with wha
 without a reported result counts as not run. Then the world is opened again in the dev client and every station's
 sign and reset command block are read back on the server side (reload check); a station's optional probe(ctx, x, z)
 checks that it works after the reload, and the station is cleared and its reset button pressed like a player, the
-rebuilt blocks compared with the template. Sign lines must be ASCII. The zip is what goes to the user; the
+rebuilt blocks compared with the template. A sign S0 in front of the spawn carries a check that is no station of its own
+(START_SIGN: the Chinese user interface, looked at while walking the stations); it is the first row of STATIONS.md and is read
+back with the others. Sign lines must be ASCII. The zip is what goes to the user; the
 world in the client's saves/ is disposable (client.py clean removes it with the client). Nothing else is written outside
 the run directory and the client's own directory.
 """
@@ -33,6 +35,13 @@ import drive  # noqa: E402
 SPACING = 16
 TEMPLATE_DY = 150
 G = -60
+# The sign in front of the spawn (0, G, -6): a check done along the way at every station, not a station (no content, no reset).
+START_SIGN = dict(id='localization-zh-cn.station-zh-ui-look', pos=(0, -3), short=['ZH UI CHECK', 'all screens', 'in Chinese'],
+                  todo='走各站时顺带看（游戏语言为简体中文）：每个打开的界面、物品与方块的提示、聊天里的消息、JEI 的配方页。'
+                       '只记看到的问题和在哪一站：英文的翻译键名（像 item.hbmsntm.xxx、hbmsntm.xxx 这样带点的字符串）、乱码或方框字、'
+                       '文字超出按钮或界面被截断、整句没有翻译的英文。',
+                  expect='各站的界面、提示与消息都显示为中文，没有翻译键名、乱码或方框字，没有超出边框或被截断的文字；'
+                         '个别专有名词或单位保留英文可以接受，记下位置即可。')
 
 
 def sign_command(x, z, number, short):
@@ -156,6 +165,7 @@ def cmd_build(args):
     if saves.exists():
         raise SystemExit('world %s already exists in client %s' % (args.world, args.client))
     records, failure, channel = [], None, None
+    start_sign_ok = False
     t0 = time.time()
     try:
         channel = drive.start_client(run, args.client, capture)
@@ -165,6 +175,7 @@ def cmd_build(args):
         for command in ('gamerule doDaylightCycle false', 'gamerule doWeatherCycle false', 'gamerule doMobSpawning false', 'time set 6000',
                         'weather clear', 'setworldspawn 0 -60 -6'):
             ctx.step('cmd', command=command)
+        ctx.step('cmd', command=sign_command(START_SIGN['pos'][0], START_SIGN['pos'][1], 0, START_SIGN['short']))
         for number, station in enumerate(stations, 1):
             records.append(build_station(ctx, number, station))
         ctx.step('view', pos=[0.5, G, -6.5], yaw=0.0, pitch=0.0, fly=False, hide_gui=False)
@@ -177,6 +188,8 @@ def cmd_build(args):
                     z.write(path, Path(args.world) / path.relative_to(saves))
         # reload check
         ctx.step('openworld', world=args.world)
+        start = ctx.step('cmd', command='data get block %d %d %d front_text' % (START_SIGN['pos'][0], G, START_SIGN['pos'][1]), allow_fail=True)
+        start_sign_ok = reply_has(start, '"S0"')
         for r in records:
             # read back on the server side: the client is never sent a command block's command
             sign = ctx.step('cmd', command='data get block %d %d %d front_text' % tuple(r['sign']), allow_fail=True)
@@ -199,9 +212,10 @@ def cmd_build(args):
         traceback.print_exc()
     finally:
         drive.stop_client(args.client, channel)
-    ok = not failure and all(r.get('reload_check', {}).get('sign_text_ok') and r['reload_check'].get('reset_command_ok')
+    ok = not failure and start_sign_ok and all(r.get('reload_check', {}).get('sign_text_ok') and r['reload_check'].get('reset_command_ok')
                              and r.get('reset_check', {}).get('same_as_template') and r.get('probe', {}).get('ok', True) for r in records)
     data = dict(world=args.world, client=args.client, archive=common.rel(run.dir / ('%s.zip' % args.world)), stations=records,
+                start_sign=dict(id=START_SIGN['id'], sign=[START_SIGN['pos'][0], G, START_SIGN['pos'][1]], sign_text_ok=start_sign_ok),
                 failure=failure, reload_ok=ok, seconds=round(time.time() - t0, 1),
                 needs='NeoForge 21.1.228 or later with the release jar of this mod (and JEI where a station uses it)')
     common.write_json(run.dir / 'stations.json', data)
@@ -211,7 +225,8 @@ def cmd_build(args):
              '沿走廊往东走，每个站点有一块写着编号的牌子，旁边命令方块上的石头按钮会把这个站点复原。'
              '每个站点回报一项：通过、不通过（写看到了什么）或跳过。没有回报的站点算未执行；到场时已经坏了的站点也算未执行（先按复位按钮再做）。'
              % (Path(data['archive']).name, args.world), '',
-             '| 站点 | 怎么做 | 应该看到或听到 | 结果 |', '| --- | --- | --- | --- |']
+             '| 站点 | 怎么做 | 应该看到或听到 | 结果 |', '| --- | --- | --- | --- |',
+             '| S0 `%s`（出生点前的牌子，不是单独的站） | %s | %s |  |' % (START_SIGN['id'], START_SIGN['todo'], START_SIGN['expect'])]
     for r in records:
         lines.append('| S%d `%s` | %s | %s |  |' % (r['number'], r['id'], r['todo'], r['expect']))
     (run.dir / 'STATIONS.md').write_text('\n'.join(lines) + '\n', encoding='utf-8')
@@ -226,9 +241,9 @@ def main(argv=None):
     p.add_argument('scenarios', nargs='+')
     p.add_argument('--run', required=True)
     p.add_argument('--out')
-    p.add_argument('--client', default='g31e_solo')
-    p.add_argument('--world', default=common.WORLD_PREFIX + 'g31e-stations')
-    p.add_argument('--argv', default='build/migration/accept-goal29/client-argv-g31e.json')
+    p.add_argument('--client', default='solo')
+    p.add_argument('--world', default=common.WORLD_PREFIX + 'stations')
+    p.add_argument('--argv', default='build/migration/accept/client-argv.json')
     p.add_argument('--lang', default='zh_cn')
     p.add_argument('--timeout', type=int, default=600)
     p.set_defaults(func=cmd_build)

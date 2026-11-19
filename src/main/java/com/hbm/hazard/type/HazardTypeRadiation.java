@@ -69,7 +69,7 @@ public class HazardTypeRadiation extends HazardTypeBase {
 
         if (stack.getCount() > 1) {
             double total = Math.floor(lvl * 1000 * stack.getCount()) / 1000;
-            components.add(Component.literal("Stack: " + total + "RAD/s").withStyle(ChatFormatting.YELLOW));
+            components.add(Component.translatable("trait.stack", total + "RAD/s").withStyle(ChatFormatting.YELLOW));
         }
     }
 }

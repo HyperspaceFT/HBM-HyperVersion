@@ -244,8 +244,28 @@ class BatchTests(unittest.TestCase):
         self.assertIn(message, output)
         self.assertIn(JAVA + 'B.java', output)
 
-        # The previous package's JAR is refused whatever changed.
+        # The previous package's JAR is refused when the start was not that package (here a carried small fix).
         item.jar.write_bytes((self.root / 'build/migration/releases/p0/mod-1-p0.jar').read_bytes())
+        self.evidence(item, 1)
+        _, output = self.run_step(batch.cmd_package, item, True, None)
+        self.assertIn('is still the p0 package', output)
+
+    def test_jar_equal_to_the_previous_package_only_when_the_start_was_that_package(self):
+        item = self.manifest()
+        self.assertEqual(0, self.run_step(batch.cmd_freeze, item, False)[0])
+        previous = (self.root / 'build/migration/releases/p0/mod-1-p0.jar').read_bytes()
+        self.assertEqual(previous, item.jar.read_bytes())
+        # A tooling-only batch with nothing carried rebuilds the previous package byte for byte.
+        self.write(self.root / 'tools/acceptance/tool.py', 'print(1)\n')
+        self.build()
+        item.jar.write_bytes(previous)
+        self.evidence(item, 1)
+        _, output = self.run_step(batch.cmd_package, item, True, None)
+        self.assertNotIn('is still the p0 package', output)
+        # With a JAR input changed, the same bytes cannot be this batch's build.
+        self.write(self.root / JAVA / 'B.java', 'class B {}\n')
+        self.build()
+        item.jar.write_bytes(previous)
         self.evidence(item, 1)
         _, output = self.run_step(batch.cmd_package, item, True, None)
         self.assertIn('is still the p0 package', output)
@@ -299,15 +319,17 @@ class BatchTests(unittest.TestCase):
         with patch.object(batch, 'run_logged', runner):
             self.assertEqual(0, self.run_step(batch.cmd_chain, item, 'runData')[0])
         suites = [f'suite-{name}.log' for name, _ in batch.EVERGREEN_SUITES]
-        self.assertEqual(['rundata.log', 'gametest.log', 'build.log', 'localization.log', 'resources-audit.log', 'packaged-resources.log', 'validate.log'] + suites, calls)
+        self.assertEqual(['rundata.log', 'gametest.log', 'build.log', 'acceptance-classes.log', 'localization.log', 'resources-audit.log', 'packaged-resources.log', 'validate.log', 'frozen-check.log'] + suites, calls)
         self.assertEqual(batch.required_chain(item, False), list(batch.read_exits(item.final / 'chain-exits.txt')))
         self.assertTrue((item.final / 'chain-done.txt').is_file())
+        acceptance = [step for step in batch.chain_steps(item, False) if step[0] == 'acceptance']
+        self.assertEqual([('gradle', 'acceptanceClasses')], [(kind, command[-1]) for _, _, command, kind in acceptance])
         self.assertEqual(sha(item.jar), (item.final / 'jar.sha256').read_text(encoding='utf-8').split()[0])
 
         calls.clear()
         with patch.object(batch, 'run_logged', runner):
             self.assertEqual(0, self.run_step(batch.cmd_chain, item, 'records')[0])
-        self.assertEqual(['localization.log', 'resources-audit.log', 'packaged-resources.log', 'validate.log'], calls)
+        self.assertEqual(['localization.log', 'resources-audit.log', 'packaged-resources.log', 'validate.log', 'frozen-check.log'], calls)
         self.assertEqual(batch.required_chain(item, False), list(batch.read_exits(item.final / 'chain-exits.txt')))
 
         calls.clear()
@@ -327,6 +349,25 @@ class BatchTests(unittest.TestCase):
                     self.run_step(step[0], outside, *step[1:])
         self.assertEqual([], calls)
         self.assertFalse(outside.out.exists())
+
+    def test_deleted_earlier_needs_a_path_an_earlier_manifest_removed_before_the_start(self):
+        gone = 'src/generated/resources/data/hbmsntm/recipe/old_from_smelting.json'
+        self.write(self.root / 'migration/p0-batch.toml', f'batch = "p0"\n[carried]\n"old fix" = ["{gone}"]\n')
+        item = self.manifest(extra=f'deleted_earlier = ["{gone}"]\n')
+        self.assertEqual(0, self.run_step(batch.cmd_freeze, item, False)[0])
+        self.deliver(item)
+        self.build()
+        self.evidence(item, 2)
+        code, output = self.run_step(batch.cmd_package, item, True, None)
+        self.assertEqual((0, True), (code, 'Failures: none' in output), output)
+
+        item = self.manifest(extra=f'deleted_earlier = ["{gone}", "src/main/java/com/hbm/A.java", "src/generated/resources/never.json"]\n')
+        code, output = self.run_step(batch.cmd_package, item, True, None)
+        self.assertEqual(1, code, output)
+        self.assertIn('deleted_earlier lists a path that exists now, existed at the start or no other batch manifest deletes or carries: '
+                      'src/main/java/com/hbm/A.java', output)
+        self.assertIn('carries: src/generated/resources/never.json', output)
+        self.assertNotIn('carries: ' + gone, output)
 
     def test_example_manifest_is_valid(self):
         manifest = batch.load_manifest(Path(batch.TOOLS) / 'batch.example.toml', 'goal31a')

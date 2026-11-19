@@ -252,9 +252,15 @@ public class Goal29DGameTests {
                     if(text(zh, key) == null || text(zh, key).isBlank()) missing.add("zh_cn.json:" + key);
                 }
             }
-            // sednaPlasma is a NEO-only type from plasma.json with no original line, exempt; any other type without keys fails
-            List<String> expectedMissing = List.of("en_us.json:death.attack.sednaPlasma", "zh_cn.json:death.attack.sednaPlasma", "en_us.json:death.attack.sednaPlasma.player", "zh_cn.json:death.attack.sednaPlasma.player");
-            check(missing.size() == expectedMissing.size() && missing.containsAll(expectedMissing), "damage types of the server registry without death message keys: " + missing + ", expected only sednaPlasma's four");
+            // every type has both keys, the NEO-only sednaPlasma too (local English since Goal32D); the sedna types also have the ".item" form
+            // 1.21 asks for when the attacker holds a renamed item
+            for(String msgId : msgIds) {
+                if(!msgId.startsWith("sedna")) continue;
+                String key = "death.attack." + msgId + ".item";
+                if(text(en, key) == null || text(en, key).isBlank()) missing.add("en_us.json:" + key);
+                if(text(zh, key) == null || text(zh, key).isBlank()) missing.add("zh_cn.json:" + key);
+            }
+            check(missing.isEmpty(), "damage types of the server registry without death message keys: " + missing);
             LOGGER.info("{} death_message_lang_keys: {} damage types, {} fallback pairs", TAG, msgIds.size(), PLAIN_FALLBACK.size());
         }).run();
         passed("death_message_lang_keys").run();

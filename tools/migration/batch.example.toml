@@ -46,6 +46,7 @@ datagen = ["src/main/java/com/hbm/datagen/NtmRecipeProvider.java", "src/generate
 # Less common keys, with their defaults:
 # optional = []                 paths or patterns of [groups] that may stay unchanged
 # deleted = []                  paths the batch deletes
+# deleted_earlier = []          paths an earlier package deleted (its manifest deletes or carries them) that this batch's compare reports removed
 # row_diff = []                 row-diff scripts for tables ported from the original, run at the end of the chain
 # status_changes = []           features.json groups whose status this batch changes
 # language_keys_removed = false

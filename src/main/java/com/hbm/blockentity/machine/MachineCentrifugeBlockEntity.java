@@ -335,7 +335,7 @@ public class MachineCentrifugeBlockEntity extends MachineBaseBlockEntity impleme
     }
 
     public AudioWrapper createAudioLoop() {
-        return AudioWrapper.getLoopedSound(NtmSoundEvents.CENTRIFUGE_OPERATE.get(), SoundSource.BLOCKS, this, 1.0F, 15F, 1.0F, 20);
+        return AudioWrapper.getLoopedSound(NtmSoundEvents.CENTRIFUGE_OPERATE.get(), SoundSource.BLOCKS, this, 1.0F, 10F, 1.0F, 20);
     }
 
     private void removeNetworkSubscriptions() {

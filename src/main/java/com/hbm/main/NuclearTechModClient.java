@@ -321,6 +321,7 @@ public class NuclearTechModClient {
         RenderInfoSystem.clear();
     }
 
+    // Common classes read these IDs; they must stay static final compile-time constants so javac inlines them and the dedicated server never loads this client class.
     public static final int ID_DUCK = 0;
     public static final int ID_FILTER = 1;
     public static final int ID_COMPASS = 2;
@@ -675,8 +676,8 @@ public class NuclearTechModClient {
         );
         event.register(
                 (stack, tintIndex) -> tintIndex == 0 ? 0xFF000000 | ((CastPlateItem) stack.getItem()).getColor(stack) : 0xFFFFFFFF,
-                NtmItems.CAST_PLATE.get(),
-                NtmItems.CAST_PLATE_WELDED.get()
+                NtmItems.PLATE_CAST.get(),
+                NtmItems.PLATE_WELDED.get()
         );
         event.register(
                 (stack, tintIndex) -> tintIndex == 0 ? 0xFF000000 | CopperScrapsItem.getColor(stack) : 0xFFFFFFFF,
@@ -805,7 +806,7 @@ public class NuclearTechModClient {
 
             if (hasTags) {
                 list.add(Component.empty());
-                list.add(Component.literal("Item tags:").withStyle(ChatFormatting.BLUE));
+                list.add(Component.translatable("desc.misc.itemTags").withStyle(ChatFormatting.BLUE));
                 stack.getTags().map(TagKey::location).sorted(ResourceLocation::compareTo).forEach(location ->
                         list.add(Component.literal(" -" + location).withStyle(ChatFormatting.AQUA)
                 ));
@@ -817,7 +818,7 @@ public class NuclearTechModClient {
 
                 if (hasBlockTags) {
                     list.add(Component.empty());
-                    list.add(Component.literal("Block tags:").withStyle(ChatFormatting.GREEN));
+                    list.add(Component.translatable("desc.misc.blockTags").withStyle(ChatFormatting.GREEN));
                     block.builtInRegistryHolder().tags().map(TagKey::location).sorted(ResourceLocation::compareTo).forEach(location ->
                             list.add(Component.literal(" -" + location).withStyle(ChatFormatting.DARK_GREEN))
                     );
@@ -1131,6 +1132,13 @@ public class NuclearTechModClient {
                     flash.setParticleSpeed(rand.nextGaussian(), rand.nextGaussian(), rand.nextGaussian());
                     innerMc.particleEngine.add(flash);
                 }
+            }
+
+            // Original ClientProxy.java:1699-1704, sent by the SCHRAB display effect of HazardBlock
+            if("schrabfog".equals(type)) {
+                ParticleAura flash = new ParticleAura(level, x, y, z, 0, 0, 0);
+                flash.setColor(0F, 1F, 1F);
+                innerMc.particleEngine.add(flash);
             }
 
             if("vanillaExt".equals(type)) {

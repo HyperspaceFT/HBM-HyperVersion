@@ -122,18 +122,24 @@ public class ShredderRecipes extends SerializableRecipe {
             case "titanium" -> output(new ItemStack(NtmItems.POWDER_TITANIUM.get()));
             case "tungsten" -> output(new ItemStack(NtmItems.POWDER_TUNGSTEN.get()));
             case "lead" -> output(new ItemStack(NtmItems.POWDER_LEAD.get()));
-            case "aluminium" -> output(new ItemStack(NtmItems.POWDER_ALUMINIUM.get()));
+            // Original ShredderRecipes.java:211: aluminium ore shreds to two cryolite chunks
+            case "aluminium" -> output(new ItemStack(NtmItems.CHUNK_CRYOLITE.get()));
             case "beryllium" -> output(new ItemStack(NtmItems.POWDER_BERYLLIUM.get()));
             case "asbestos" -> output(new ItemStack(NtmItems.POWDER_ASBESTOS.get()));
             case "cobalt" -> output(new ItemStack(NtmItems.POWDER_COBALT.get()));
             case "coltan" -> output(new ItemStack(NtmItems.POWDER_COLTAN_ORE.get()));
             case "sulfur" -> output(new ItemStack(NtmItems.SULFUR.get()));
-            case "cinnabar" -> output(new ItemStack(NtmItems.CINNABAR.get()));
             case "fluorite" -> output(new ItemStack(NtmItems.FLUORITE.get()));
             case "niter" -> output(new ItemStack(NtmItems.NITER.get()));
             case "lignite" -> output(new ItemStack(NtmItems.POWDER_LIGNITE.get()));
             case "schrabidium" -> output(new ItemStack(NtmItems.POWDER_SCHRABIDIUM.get()));
             case "lithium" -> output(new ItemStack(NtmItems.POWDER_LITHIUM.get()));
+            // Original OreDictManager.java:342,351-352 with the ore rule (ShredderRecipes.java:66); ShredderRecipes.java:162,195
+            case "thorium" -> output(new ItemStack(NtmItems.POWDER_THORIUM.get()));
+            case "plutonium" -> output(new ItemStack(NtmItems.POWDER_PLUTONIUM.get()));
+            case "sellafield_diamond" -> output(new ItemStack(NtmBlocks.GRAVEL_DIAMOND.get().asItem()));
+            case "sellafield_emerald" -> output(new ItemStack(NtmItems.POWDER_EMERALD.get()));
+            case "oil_empty" -> new ItemStack(Blocks.GRAVEL);
             default -> ItemStack.EMPTY;
         };
     }
@@ -176,9 +182,11 @@ public class ShredderRecipes extends SerializableRecipe {
             registerRawOreRecipe(block, output);
         }
 
-        registerBasaltRecipe(OreBasaltBlock.BasaltOreType.SULFUR, new ItemStack(NtmItems.SULFUR.get()));
-        registerBasaltRecipe(OreBasaltBlock.BasaltOreType.FLUORITE, new ItemStack(NtmItems.FLUORITE.get()));
-        registerBasaltRecipe(OreBasaltBlock.BasaltOreType.ASBESTOS, new ItemStack(NtmItems.POWDER_ASBESTOS.get()));
+        // Original OreDictManager.java:424,430,432,440 with the ore rule (ShredderRecipes.java:66): two of each
+        registerBasaltRecipe(OreBasaltBlock.BasaltOreType.SULFUR, new ItemStack(NtmItems.SULFUR.get(), 2));
+        registerBasaltRecipe(OreBasaltBlock.BasaltOreType.FLUORITE, new ItemStack(NtmItems.FLUORITE.get(), 2));
+        registerBasaltRecipe(OreBasaltBlock.BasaltOreType.ASBESTOS, new ItemStack(NtmItems.POWDER_ASBESTOS.get(), 2));
+        registerBasaltRecipe(OreBasaltBlock.BasaltOreType.MOLYSITE, new ItemStack(NtmItems.POWDER_MOLYSITE.get(), 2));
     }
 
     private static void registerMaterialRecipes() {
@@ -282,7 +290,6 @@ public class ShredderRecipes extends SerializableRecipe {
         registerIfAbsent(new ItemStack(NtmItems.INGOT_COMBINE_STEEL.get()), new ItemStack(NtmItems.POWDER_COMBINE_STEEL.get(), 1));
         registerIfAbsent(new ItemStack(NtmItems.INGOT_COPPER.get()), new ItemStack(NtmItems.POWDER_COPPER.get(), 1));
         registerIfAbsent(new ItemStack(Items.COPPER_INGOT), new ItemStack(NtmItems.POWDER_COPPER.get(), 1));
-        registerIfAbsent(new ItemStack(NtmItems.INGOT_DAFFERGON.get()), new ItemStack(NtmItems.POWDER_DAFFERGON.get(), 1));
         registerIfAbsent(new ItemStack(NtmItems.INGOT_DESH.get()), new ItemStack(NtmItems.POWDER_DESH.get(), 1));
         registerIfAbsent(new ItemStack(NtmItems.INGOT_DINEUTRONIUM.get()), new ItemStack(NtmItems.POWDER_DINEUTRONIUM.get(), 1));
         registerIfAbsent(new ItemStack(NtmItems.INGOT_DURA_STEEL.get()), new ItemStack(NtmItems.POWDER_DURA_STEEL.get(), 1));
@@ -301,7 +308,6 @@ public class ShredderRecipes extends SerializableRecipe {
         registerIfAbsent(new ItemStack(NtmItems.INGOT_POLYMER.get()), new ItemStack(NtmItems.POWDER_POLYMER.get(), 1));
         registerIfAbsent(new ItemStack(NtmItems.INGOT_RA226.get()), new ItemStack(NtmItems.POWDER_RA226.get(), 1));
         registerIfAbsent(new ItemStack(NtmItems.INGOT_RED_COPPER.get()), new ItemStack(NtmItems.POWDER_RED_COPPER.get(), 1));
-        registerIfAbsent(new ItemStack(NtmItems.INGOT_REIIUM.get()), new ItemStack(NtmItems.POWDER_REIIUM.get(), 1));
         registerIfAbsent(new ItemStack(NtmItems.INGOT_SCHRABIDATE.get()), new ItemStack(NtmItems.POWDER_SCHRABIDATE.get(), 1));
         registerIfAbsent(new ItemStack(NtmItems.INGOT_SCHRABIDIUM.get()), new ItemStack(NtmItems.POWDER_SCHRABIDIUM.get(), 1));
         registerIfAbsent(new ItemStack(NtmItems.INGOT_SR90.get()), new ItemStack(NtmItems.POWDER_SR90.get(), 1));
@@ -312,10 +318,7 @@ public class ShredderRecipes extends SerializableRecipe {
         registerIfAbsent(new ItemStack(NtmItems.INGOT_TENNESSINE.get()), new ItemStack(NtmItems.POWDER_TENNESSINE.get(), 1));
         registerIfAbsent(new ItemStack(NtmItems.INGOT_TITANIUM.get()), new ItemStack(NtmItems.POWDER_TITANIUM.get(), 1));
         registerIfAbsent(new ItemStack(NtmItems.INGOT_TUNGSTEN.get()), new ItemStack(NtmItems.POWDER_TUNGSTEN.get(), 1));
-        registerIfAbsent(new ItemStack(NtmItems.INGOT_UNOBTAINIUM.get()), new ItemStack(NtmItems.POWDER_UNOBTAINIUM.get(), 1));
         registerIfAbsent(new ItemStack(NtmItems.INGOT_URANIUM.get()), new ItemStack(NtmItems.POWDER_URANIUM.get(), 1));
-        registerIfAbsent(new ItemStack(NtmItems.INGOT_VERTICIUM.get()), new ItemStack(NtmItems.POWDER_VERTICIUM.get(), 1));
-        registerIfAbsent(new ItemStack(NtmItems.INGOT_WEIDANIUM.get()), new ItemStack(NtmItems.POWDER_WEIDANIUM.get(), 1));
         registerIfAbsent(new ItemStack(NtmItems.INGOT_ZIRCONIUM.get()), new ItemStack(NtmItems.POWDER_ZIRCONIUM.get(), 1));
         registerIfAbsent(new ItemStack(NtmItems.PLATE_ALUMINIUM.get()), new ItemStack(NtmItems.POWDER_ALUMINIUM.get(), 1));
         registerIfAbsent(new ItemStack(NtmItems.PLATE_COMBINE_STEEL.get()), new ItemStack(NtmItems.POWDER_COMBINE_STEEL.get(), 1));
@@ -332,6 +335,9 @@ public class ShredderRecipes extends SerializableRecipe {
         registerIfAbsent(new ItemStack(NtmBlocks.CONCRETE.get()), new ItemStack(Blocks.GRAVEL, 1));
         registerIfAbsent(new ItemStack(NtmBlocks.CONCRETE_SMOOTH.get()), new ItemStack(Blocks.GRAVEL, 1));
         registerIfAbsent(new ItemStack(NtmBlocks.RESOURCE_LIMESTONE.get()), new ItemStack(NtmItems.POWDER_LIMESTONE.get(), 4));
+        // Original OreDictManager.java:424,430 with the ore rule (ShredderRecipes.java:66): chrysotile and sulfurous stone are ores
+        registerIfAbsent(new ItemStack(NtmBlocks.RESOURCE_CHRYSOTILE.get()), new ItemStack(NtmItems.POWDER_ASBESTOS.get(), 2));
+        registerIfAbsent(new ItemStack(NtmBlocks.RESOURCE_SULFUROUS_STONE.get()), new ItemStack(NtmItems.SULFUR.get(), 2));
         // Original ShredderRecipes.java:176
         registerIfAbsent(new ItemStack(NtmBlocks.STONE_GNEISS.get()), new ItemStack(NtmItems.POWDER_LITHIUM_TINY.get(), 1));
         registerIfAbsent(new ItemStack(NtmBlocks.BLOCK_SLAG.get()), new ItemStack(NtmItems.POWDER_CEMENT.get(), 4));

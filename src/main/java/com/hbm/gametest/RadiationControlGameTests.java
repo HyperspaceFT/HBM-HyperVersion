@@ -1156,11 +1156,12 @@ public class RadiationControlGameTests {
         rows.add(new Object[] { deepslate, crystal.asItem(), acid });
     }
 
-    // 11. The eight new blocks (ModBlocks.java:1410 block_graphite hardness 5 / resistance 10 / metal / BlockFlammable 30 and 5, :1641 sand_mix hardness 0.5
-    // / sand, :1642-1643 glass hardness 0.3 / glass, :2307 absorbers hardness 5 / resistance 10). 1.7.10 setHardness raises the resistance to
-    // 5 x hardness and Block.getExplosionResistance divides by 5, so the effective explosion resistance of a block that only sets a hardness equals
-    // that hardness (0.5 and 0.3 here). The absorbers and the graphite block copy the raw setResistance(10.0F), as the rest of NEO does. The original
-    // glass (BlockBreakable) drops nothing without silk touch; NEO follows its glass_quartz precedent and drops the block (main-notes decision 6).
+    // 11. The eight new blocks (ModBlocks.java:1413 block_graphite Material.iron hardness 5 / resistance 10 / metal / BlockFlammable 30 and 5, :1644 sand_mix
+    // Material.sand hardness 0.5 / sand, :1645-1646 glass Material.glass hardness 0.3 / glass, :2313 absorbers Material.iron hardness 5 / resistance 10).
+    // 1.7.10 setHardness raises the stored resistance to 5 x hardness, setResistance stores 3 x its argument and Block.getExplosionResistance divides by 5,
+    // so a block that only sets a hardness resists as much as that hardness (0.5 and 0.3 here) and setHardness(5.0F).setResistance(10.0F) gives
+    // 10 * 3 / 5 = 6 (absorbers and graphite). Material.iron drops only for a pickaxe, sand and glass for any tool. The original glass (BlockBreakable)
+    // drops nothing without silk touch; NEO follows its glass_quartz precedent and drops the block (main-notes decision 6).
     @GameTest(template = TEMPLATE, batch = "radcontrol_blocks", timeoutTicks = 100)
     public static void blocks(GameTestHelper helper) {
         guard(() -> {
@@ -1170,15 +1171,15 @@ public class RadiationControlGameTests {
             ItemStack shovel = new ItemStack(Items.IRON_SHOVEL);
 
             Object[][] rows = {
-                    { "rad_absorber", NtmBlocks.RAD_ABSORBER.get(), 5F, 10F, SoundType.STONE, pickaxe },
-                    { "rad_absorber_red", NtmBlocks.RAD_ABSORBER_RED.get(), 5F, 10F, SoundType.STONE, pickaxe },
-                    { "rad_absorber_green", NtmBlocks.RAD_ABSORBER_GREEN.get(), 5F, 10F, SoundType.STONE, pickaxe },
-                    { "rad_absorber_pink", NtmBlocks.RAD_ABSORBER_PINK.get(), 5F, 10F, SoundType.STONE, pickaxe },
-                    { "block_graphite", NtmBlocks.BLOCK_GRAPHITE.get(), 5F, 10F, SoundType.METAL, pickaxe },
-                    { "sand_lead", NtmBlocks.SAND_LEAD.get(), 0.5F, 0.5F, SoundType.SAND, shovel },
-                    { "sand_boron", NtmBlocks.SAND_BORON.get(), 0.5F, 0.5F, SoundType.SAND, shovel },
-                    { "glass_lead", NtmBlocks.GLASS_LEAD.get(), 0.3F, 0.3F, SoundType.GLASS, pickaxe },
-                    { "glass_boron", NtmBlocks.GLASS_BORON.get(), 0.3F, 0.3F, SoundType.GLASS, pickaxe } };
+                    { "rad_absorber", NtmBlocks.RAD_ABSORBER.get(), 5F, 6F, SoundType.STONE, pickaxe, true },
+                    { "rad_absorber_red", NtmBlocks.RAD_ABSORBER_RED.get(), 5F, 6F, SoundType.STONE, pickaxe, true },
+                    { "rad_absorber_green", NtmBlocks.RAD_ABSORBER_GREEN.get(), 5F, 6F, SoundType.STONE, pickaxe, true },
+                    { "rad_absorber_pink", NtmBlocks.RAD_ABSORBER_PINK.get(), 5F, 6F, SoundType.STONE, pickaxe, true },
+                    { "block_graphite", NtmBlocks.BLOCK_GRAPHITE.get(), 5F, 6F, SoundType.METAL, pickaxe, true },
+                    { "sand_lead", NtmBlocks.SAND_LEAD.get(), 0.5F, 0.5F, SoundType.SAND, shovel, false },
+                    { "sand_boron", NtmBlocks.SAND_BORON.get(), 0.5F, 0.5F, SoundType.SAND, shovel, false },
+                    { "glass_lead", NtmBlocks.GLASS_LEAD.get(), 0.3F, 0.3F, SoundType.GLASS, pickaxe, false },
+                    { "glass_boron", NtmBlocks.GLASS_BORON.get(), 0.3F, 0.3F, SoundType.GLASS, pickaxe, false } };
             for(Object[] row : rows) {
                 String name = (String) row[0];
                 Block block = (Block) row[1];
@@ -1188,7 +1189,7 @@ public class RadiationControlGameTests {
                 check(state.getDestroySpeed(level, pos) == (Float) row[2], name + " hardness " + state.getDestroySpeed(level, pos) + ", expected " + row[2]);
                 check(block.getExplosionResistance() == (Float) row[3], name + " resistance " + block.getExplosionResistance() + ", expected " + row[3]);
                 check(state.getSoundType() == row[4], name + " sound type is not the expected one");
-                check(!state.requiresCorrectToolForDrops(), name + " requires the correct tool (the original blocks do not)");
+                check(state.requiresCorrectToolForDrops() == (Boolean) row[6], name + " requires the correct tool " + state.requiresCorrectToolForDrops() + ", original " + row[6]);
 
                 List<ItemStack> drops = Block.getDrops(state, level, pos, null, null, (ItemStack) row[5]);
                 check(drops.size() == 1 && drops.get(0).is(block.asItem()) && drops.get(0).getCount() == 1, name + " drops " + drops);

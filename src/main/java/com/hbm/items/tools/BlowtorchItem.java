@@ -13,6 +13,7 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
+import net.minecraft.network.chat.MutableComponent;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.util.Mth;
 import net.minecraft.world.InteractionResult;
@@ -196,17 +197,18 @@ public class BlowtorchItem extends Item implements IFillableItem {
     public void appendHoverText(ItemStack stack, TooltipContext context, List<Component> components, TooltipFlag flag) {
 
         if (this == NtmItems.BLOWTORCH.get()) {
-            components.add(Component.literal(this.getFillGauge(stack, Fluids.GAS)).withStyle(ChatFormatting.YELLOW));
+            components.add(this.getFillGauge(stack, Fluids.GAS).withStyle(ChatFormatting.YELLOW));
         }
 
         if (this == NtmItems.ACETYLENE_TORCH.get()) {
-            components.add(Component.literal(this.getFillGauge(stack, Fluids.UNSATURATEDS)).withStyle(ChatFormatting.YELLOW));
-            components.add(Component.literal(this.getFillGauge(stack, Fluids.OXYGEN)).withStyle(ChatFormatting.AQUA));
+            components.add(this.getFillGauge(stack, Fluids.UNSATURATEDS).withStyle(ChatFormatting.YELLOW));
+            components.add(this.getFillGauge(stack, Fluids.OXYGEN).withStyle(ChatFormatting.AQUA));
         }
     }
 
-    private String getFillGauge(ItemStack stack, FluidType type) {
-        return type.getName() + ": " + String.format(Locale.US, "%,d", this.getFill(stack, type)) + " / " + String.format(Locale.US, "%,d", this.getMaxFill(type));
+    /** Original :212, the fluid's localized name; FluidType.getName() is a Component, appended rather than concatenated into a String. */
+    private MutableComponent getFillGauge(ItemStack stack, FluidType type) {
+        return Component.empty().append(type.getName()).append(": " + String.format(Locale.US, "%,d", this.getFill(stack, type)) + " / " + String.format(Locale.US, "%,d", this.getMaxFill(type)));
     }
 
     @Override public boolean providesFluid(FluidType type, ItemStack stack) { return false; }

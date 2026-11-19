@@ -17,10 +17,11 @@ public class WasteTrinititeBlock extends Block {
         super(properties);
     }
 
+    // Original BlockOre.java:161-162: radiation for 5 seconds at amplifier 2
     @Override
     public void stepOn(Level level, BlockPos pos, BlockState state, Entity entity) {
         if (entity instanceof LivingEntity living) {
-            living.addEffect(new MobEffectInstance(ModEffect.RADIATION, 600, 0));
+            living.addEffect(new MobEffectInstance(ModEffect.RADIATION, 5 * 20, 2));
         }
     }
 

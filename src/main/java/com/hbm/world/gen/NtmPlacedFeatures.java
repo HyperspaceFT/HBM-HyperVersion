@@ -17,6 +17,8 @@ public class NtmPlacedFeatures {
 
     public static final ResourceKey<PlacedFeature> OIL_BUBBLE_PLACED = registerKey("oil_bubble_placed");
 
+    public static final ResourceKey<PlacedFeature> SAND_OIL_BUBBLE_PLACED = registerKey("sand_oil_bubble_placed");
+
     public static final ResourceKey<PlacedFeature> COLTAN_DEPOSIT_PLACED = registerKey("coltan_deposit_placed");
 
     public static final ResourceKey<PlacedFeature> BEDROCK_OIL_PLACED = registerKey("bedrock_oil_placed");
@@ -100,9 +102,12 @@ public class NtmPlacedFeatures {
 
         // Original MapGenBubble: centre Y 15-39, i.e. 15-39 blocks above the bedrock floor
         register(context, OIL_BUBBLE_PLACED, configuredFeatures.getOrThrow(NtmConfiguredFeatures.OIL_BUBBLE), List.of(InSquarePlacement.spread(), HeightRangePlacement.uniform(VerticalAnchor.aboveBottom(15), VerticalAnchor.aboveBottom(39))));
+        // Original sand oil bubble (MapGenBubble): once per chunk; the feature rolls every source chunk in range itself
+        register(context, SAND_OIL_BUBBLE_PLACED, configuredFeatures.getOrThrow(NtmConfiguredFeatures.SAND_OIL_BUBBLE), List.of());
         // Original coltan deposit: once per chunk at the chunk corner; the feature picks its ten tries itself
         register(context, COLTAN_DEPOSIT_PLACED, configuredFeatures.getOrThrow(NtmConfiguredFeatures.COLTAN_DEPOSIT), List.of());
-        register(context, BEDROCK_OIL_PLACED, configuredFeatures.getOrThrow(NtmConfiguredFeatures.BEDROCK_OIL), List.of(RarityFilter.onAverageOnceEvery(64), InSquarePlacement.spread(), HeightmapPlacement.onHeightmap(Heightmap.Types.WORLD_SURFACE_WG)));
+        // Original WorldConfig.java:32,149: bedrock oil once in 200 chunks
+        register(context, BEDROCK_OIL_PLACED, configuredFeatures.getOrThrow(NtmConfiguredFeatures.BEDROCK_OIL), List.of(RarityFilter.onAverageOnceEvery(200), InSquarePlacement.spread(), HeightmapPlacement.onHeightmap(Heightmap.Types.WORLD_SURFACE_WG)));
         register(context, LANDMINE_PLACED, configuredFeatures.getOrThrow(NtmConfiguredFeatures.LANDMINE), List.of(RarityFilter.onAverageOnceEvery(64), InSquarePlacement.spread(), HeightmapPlacement.onHeightmap(Heightmap.Types.WORLD_SURFACE_WG)));
         register(context, CRASHED_BOMB_PLACED, configuredFeatures.getOrThrow(NtmConfiguredFeatures.CRASHED_BOMB), List.of(RarityFilter.onAverageOnceEvery(500), InSquarePlacement.spread(), HeightmapPlacement.onHeightmap(Heightmap.Types.WORLD_SURFACE_WG)));
         // Original blueprint chest: once per chunk at the chunk corner; the feature does the grid and 50% tests itself

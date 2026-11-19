@@ -6,6 +6,7 @@ import com.hbm.inventory.menus.MachineSatLinkerMenu;
 import com.hbm.items.ISatChip;
 import com.hbm.saveddata.SatelliteSavedData;
 import net.minecraft.core.BlockPos;
+import net.minecraft.core.Direction;
 import net.minecraft.network.chat.Component;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.entity.player.Inventory;
@@ -15,6 +16,8 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.block.state.BlockState;
 
 public class MachineSatLinkerBlockEntity extends MachineBaseBlockEntity {
+
+    public static final int SAT_ID_RANGE = 10_000_000;
 
     public MachineSatLinkerBlockEntity(BlockPos pos, BlockState state) {
         super(NtmBlockEntityTypes.MACHINE_SATLINKER.get(), pos, state, 3);
@@ -31,11 +34,13 @@ public class MachineSatLinkerBlockEntity extends MachineBaseBlockEntity {
 
         if(!this.level.isClientSide) {
             // copy id
-            ISatChip.setFreqS(this.slots.get(1), ISatChip.getFreqS(this.slots.get(0)));
+            if(this.slots.get(0).getItem() instanceof ISatChip && this.slots.get(1).getItem() instanceof ISatChip) {
+                ISatChip.setFreqS(this.slots.get(1), ISatChip.getFreqS(this.slots.get(0)));
+            }
             // generate random id
-            if(this.level instanceof ServerLevel serverLevel) {
+            if(this.slots.get(2).getItem() instanceof ISatChip && this.level instanceof ServerLevel serverLevel) {
                 SatelliteSavedData data = SatelliteSavedData.getData(serverLevel);
-                int id = this.level.random.nextInt(100000);
+                int id = this.level.random.nextInt(SAT_ID_RANGE);
                 if(!data.isFreqTaken(id)) ISatChip.setFreqS(this.slots.get(2), id);
             }
         }
@@ -44,6 +49,16 @@ public class MachineSatLinkerBlockEntity extends MachineBaseBlockEntity {
     @Override
     public boolean canPlaceItem(int slot, ItemStack stack) {
         return stack.getItem() instanceof ISatChip;
+    }
+
+    @Override
+    public boolean canTakeItemThroughFace(int slot, ItemStack stack, Direction direction) {
+        return ISatChip.getFreqS(this.slots.get(0)) == ISatChip.getFreqS(this.slots.get(1));
+    }
+
+    @Override
+    public int[] getSlotsForFace(Direction direction) {
+        return new int[] { 1 };
     }
 
     @Override

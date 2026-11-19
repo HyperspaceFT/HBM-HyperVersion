@@ -6,11 +6,8 @@ import net.minecraft.server.level.ServerLevel;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.util.RandomSource;
-import net.minecraft.world.entity.player.Player;
-import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.level.Level;
+import net.minecraft.world.level.LevelAccessor;
 import net.minecraft.world.level.block.state.BlockState;
-import org.jetbrains.annotations.Nullable;
 
 public class MoltenMeteorBlock extends HazardBlock {
 
@@ -26,10 +23,12 @@ public class MoltenMeteorBlock extends HazardBlock {
         }
     }
 
+    // Original BlockOre.onBlockDestroyedByPlayer (BlockOre.java:228-234): lava replaces the block for any player break, whatever the tool.
+    // Block#destroy runs after the player's removal in both survival and creative (ServerPlayerGameMode.removeBlock), unlike playerDestroy.
     @Override
-    public void playerDestroy(Level level, Player player, BlockPos pos, BlockState state, @Nullable net.minecraft.world.level.block.entity.BlockEntity be, ItemStack tool) {
-        super.playerDestroy(level, player, pos, state, be, tool);
-        if (!level.isClientSide) {
+    public void destroy(LevelAccessor level, BlockPos pos, BlockState state) {
+        super.destroy(level, pos, state);
+        if (!level.isClientSide()) {
             level.setBlock(pos, net.minecraft.world.level.block.Blocks.LAVA.defaultBlockState(), 3);
         }
     }

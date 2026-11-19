@@ -684,7 +684,8 @@ public class RBMKAutoloaderGameTests {
     // 7 recipe and block properties
 
     // Covers AssemblyMachineRecipes.java:532-533 (ass.rbmkautoloader, setup(100, 100), 1 rbmk_autoloader, welded steel plate x4, cast lead
-    // plate x4, boron ingot x4, motor x3; the expensive branch is not migrated) and ModBlocks.java:2142 (hardness 50, resistance 60).
+    // plate x4, boron ingot x4, motor x3; the expensive branch is not migrated) and ModBlocks.java:2148 (setHardness(50.0F) then
+    // setResistance(60.0F): 1.7.10 stores 3 x 60 = 180, effective 180 / 5 = 36).
     @GameTest(template = TEMPLATE, batch = "rbmk_autoloader_recipe", timeoutTicks = 100)
     public static void autoloader_recipe(GameTestHelper helper) {
         guard(() -> {
@@ -697,7 +698,7 @@ public class RBMKAutoloaderGameTests {
             check(out.is(NtmBlocks.RBMK_AUTOLOADER.get().asItem()) && out.getCount() == 1, "the output is " + out);
             check(r.inputItem != null && r.inputItem.length == 4, "inputs " + Arrays.toString(r.inputItem));
             ItemStack[] want = {
-                    new ItemStack(NtmItems.CAST_PLATE_WELDED.get(), 4), new ItemStack(NtmItems.CAST_PLATE.get(), 4),
+                    new ItemStack(NtmItems.PLATE_WELDED.get(), 4), new ItemStack(NtmItems.PLATE_CAST.get(), 4),
                     new ItemStack(NtmItems.INGOT_BORON.get(), 4), new ItemStack(NtmItems.MOTOR.get(), 3) };
             com.hbm.inventory.MetaHelper.setMeta(want[0], CastPlateItem.Type.STEEL.ordinal());
             com.hbm.inventory.MetaHelper.setMeta(want[1], CastPlateItem.Type.LEAD.ordinal());
@@ -706,15 +707,15 @@ public class RBMKAutoloaderGameTests {
                 check(in.stacksize == want[i].getCount(), "input " + i + " count " + in.stacksize + ", expected " + want[i].getCount());
                 check(in.matchesRecipe(want[i], true), "input " + i + " " + in + " does not match " + want[i]);
             }
-            ItemStack steelCast = new ItemStack(NtmItems.CAST_PLATE.get(), 4);
+            ItemStack steelCast = new ItemStack(NtmItems.PLATE_CAST.get(), 4);
             com.hbm.inventory.MetaHelper.setMeta(steelCast, CastPlateItem.Type.STEEL.ordinal());
             check(!r.inputItem[1].matchesRecipe(steelCast, true), "input 1 accepts a steel cast plate, expected lead only");
-            check(r.inputItem[0] instanceof ComparableStack c0 && c0.item == NtmItems.CAST_PLATE_WELDED.get(), "input 0 is " + r.inputItem[0]);
+            check(r.inputItem[0] instanceof ComparableStack c0 && c0.item == NtmItems.PLATE_WELDED.get(), "input 0 is " + r.inputItem[0]);
 
             Block block = NtmBlocks.RBMK_AUTOLOADER.get();
-            check(block.defaultDestroyTime() == 50F, "hardness " + block.defaultDestroyTime() + ", the original sets 50 (ModBlocks.java:2142)");
-            check(block.getExplosionResistance() == 60F, "explosion resistance " + block.getExplosionResistance() + ", the original sets 60");
-            LOGGER.info("{} recipe: ass.rbmkautoloader 100 ticks / 100 HE, 4 welded steel, 4 cast lead, 4 boron, 3 motors -> 1 rbmk_autoloader; hardness 50, resistance 60", TAG);
+            check(block.defaultDestroyTime() == 50F, "hardness " + block.defaultDestroyTime() + ", the original sets 50 (ModBlocks.java:2148)");
+            check(block.getExplosionResistance() == 36F, "explosion resistance " + block.getExplosionResistance() + ", original setResistance(60.0F) = 60 * 3 / 5 = 36");
+            LOGGER.info("{} recipe: ass.rbmkautoloader 100 ticks / 100 HE, 4 welded steel, 4 cast lead, 4 boron, 3 motors -> 1 rbmk_autoloader; hardness 50, resistance 36", TAG);
         }).run();
         done(helper, "autoloader_recipe");
     }

@@ -259,6 +259,14 @@ public class RBMKConsoleBlockEntity extends MachineBaseBlockEntity implements IC
         return ordinal >= 0 && ordinal < ScreenType.values().length ? ScreenType.values()[ordinal] : ScreenType.NONE;
     }
 
+    // The original console screen has no container and its actions are accepted within hasPermission's 20 blocks (:251-254),
+    // so the menu stays valid by that range instead of the vanilla reach in MachineBaseBlockEntity.
+    @Override
+    public boolean stillValid(Player player) {
+        if(this.level == null || this.level.getBlockEntity(this.worldPosition) != this) return false;
+        return this.hasPermission(player);
+    }
+
     // Measured from the block corner, as the original (:251-254).
     @Override
     public boolean hasPermission(Player player) {

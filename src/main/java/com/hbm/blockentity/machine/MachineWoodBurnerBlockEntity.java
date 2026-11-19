@@ -293,12 +293,13 @@ public class MachineWoodBurnerBlockEntity extends MachineBaseBlockEntity impleme
 
     @Override
     public boolean canTakeItemThroughFace(int index, ItemStack stack, Direction direction) {
-        return index == SLOT_ASH || index == SLOT_FLUID_OUT || index == SLOT_BATTERY;
+        return index == SLOT_ASH;
     }
 
     @Override
     public int[] getSlotsForFace(Direction direction) {
-        return new int[] { SLOT_FUEL, SLOT_ASH, SLOT_IDENTIFIER, SLOT_FLUID_IN, SLOT_FLUID_OUT, SLOT_BATTERY };
+        // ORIG TileEntityMachineWoodBurner.java:247-260: automation sees the fuel and ash slots only, from every side.
+        return new int[] { SLOT_FUEL, SLOT_ASH };
     }
 
     @Override

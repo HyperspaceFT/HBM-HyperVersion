@@ -10,6 +10,16 @@
     "hbmsntm:moon_turf",
     "hbmsntm:sand_quartz",
     "hbmsntm:sand_boron",
-    "hbmsntm:sand_lead"
+    "hbmsntm:sand_lead",
+    "hbmsntm:ore_oil_sand",
+    "hbmsntm:dirt_oily",
+    "hbmsntm:sand_oily",
+    "hbmsntm:sand_oily_red",
+    "hbmsntm:dirt_dead",
+    "hbmsntm:oil_spill",
+    "hbmsntm:block_scrap",
+    "hbmsntm:block_foam",
+    "hbmsntm:block_yellowcake",
+    "hbmsntm:gravel_diamond"
   ]
 }

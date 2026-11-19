@@ -77,6 +77,8 @@ public class RecipeSelectorScreen extends Screen {
         this.search.setBordered(false);
         this.search.setMaxLength(32);
         this.addRenderableWidget(this.search);
+        // ORIG GUIScreenRecipeSelector.java:85: the search box is focused when the screen opens
+        this.setFocused(this.search);
     }
 
     private void regenerateRecipes() {

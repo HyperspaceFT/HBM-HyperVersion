@@ -7,7 +7,7 @@ import net.minecraft.nbt.CompoundTag;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.level.saveddata.SavedData;
 
-import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.Map.Entry;
 
@@ -19,7 +19,7 @@ public class SatelliteSavedData extends SavedData {
         );
     }
 
-    public final Map<Integer, SatelliteBase> sats = new HashMap<>();
+    public final Map<Integer, SatelliteBase> sats = new LinkedHashMap<>();
     
     public SatelliteSavedData() {
         this.setDirty();

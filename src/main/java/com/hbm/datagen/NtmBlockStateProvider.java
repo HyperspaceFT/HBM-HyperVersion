@@ -99,7 +99,7 @@ public class NtmBlockStateProvider extends BlockStateProvider {
         this.simpleCubeAllBlock(NtmBlocks.ORE_SULFUR);
         this.simpleCubeAllBlock(NtmBlocks.ORE_SULFUR_DEEPSLATE);
         this.simpleCubeAllBlock(NtmBlocks.ORE_LIGNITE);
-        this.simpleCubeAllBlock(NtmBlocks.ORE_DEEPSLATE_LIGNITE);
+        this.simpleCubeAllBlock(NtmBlocks.ORE_LIGNITE_DEEPSLATE);
         this.simpleCubeAllBlock(NtmBlocks.ORE_SCHRABIDIUM);
         this.simpleCubeAllBlock(NtmBlocks.ORE_NETHER_URANIUM);
         this.simpleCubeAllBlock(NtmBlocks.ORE_NETHER_URANIUM_SCORCHED);
@@ -198,8 +198,8 @@ public class NtmBlockStateProvider extends BlockStateProvider {
         this.simpleCubeAllBlock(NtmBlocks.CONCRETE_ASBESTOS);
         this.simpleCubeAllBlock(NtmBlocks.DUCRETE);
         this.simpleCubeAllBlock(NtmBlocks.DUCRETE_SMOOTH);
-        this.simpleCubeAllBlock(NtmBlocks.DUCRETE_REINFORCED);
-        this.simpleCubeAllBlock(NtmBlocks.DUCRETE_BRICK);
+        this.simpleCubeAllBlock(NtmBlocks.REINFORCED_DUCRETE);
+        this.simpleCubeAllBlock(NtmBlocks.BRICK_DUCRETE);
         this.simpleCubeAllBlock(NtmBlocks.REINFORCED_LAMINATE);
         this.simpleCubeAllBlock(NtmBlocks.STEEL_SCAFFOLD);
         this.steelBeamBlock();
@@ -336,7 +336,6 @@ public class NtmBlockStateProvider extends BlockStateProvider {
         this.crateBlock(NtmBlocks.CRATE_TUNGSTEN.get(), "crate_tungsten_side", "crate_tungsten_top");
         this.crateBlock(NtmBlocks.CRATE_STEEL.get(), "crate_steel_side", "crate_steel_top");
         this.crateBlock(NtmBlocks.CRATE_DESH.get(), "crate_desh_side", "crate_desh_top");
-        this.crateBlock(NtmBlocks.CRATE_TEMPLATE.get(), "crate_template", "crate_template");
 
         this.particleOnlyBlock(NtmBlocks.GEIGER, blockTexture(NtmBlocks.GEIGER));
 

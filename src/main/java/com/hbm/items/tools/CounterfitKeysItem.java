@@ -50,6 +50,6 @@ public class CounterfitKeysItem extends KeyItem {
 
     @Override
     public void appendHoverText(ItemStack stack, TooltipContext context, List<Component> tooltipComponents, TooltipFlag tooltipFlag) {
-        tooltipComponents.add(Component.literal("Use on a locked container to create two counterfeit keys!"));
+        tooltipComponents.add(Component.translatable("item.hbmsntm.key_kit.desc"));
     }
 }

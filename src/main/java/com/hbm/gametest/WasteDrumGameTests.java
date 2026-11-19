@@ -738,21 +738,43 @@ public class WasteDrumGameTests {
 
     // Chunk radiation
 
+    // The chunk radiation table is shared by the whole test world: radiation that earlier batches wrote keeps spreading outward every
+    // 20 ticks (ChunkRadiationManager.onServerTick, ChunkRadiationHandlerSimple.updateSystem gives a new neighbour its share undecayed),
+    // so an unrelated value could pass through this chunk in the 200 ticks (seen twice, GOAL25A.md:85, GOAL31B.md:234). The spreading
+    // step is held for the window by keeping ChunkRadiationManager.eggTimer at 0, as RadiationControlGameTests.absorber_tiers does, and
+    // restored afterwards; a drum that wrote chunk radiation would still change the value directly.
     @GameTest(template = TEMPLATE, timeoutTicks = 300)
     public static void drum_no_chunk_radiation(GameTestHelper helper) {
         MachineWasteDrumBlockEntity drum = placeShelledDrum(helper, CENTER, 6);
         for(int slot = 0; slot < 12; slot++) drum.setItem(slot, WASTES.get(slot % WASTES.size()).hot());
         ServerLevel level = helper.getLevel();
         BlockPos abs = drum.getBlockPos();
+        int oldEggTimer = eggTimer(null);
+        eggTimer(0);
         float before = ChunkRadiationManager.proxy.getRadiation(level, abs);
 
         helper.startSequence()
-                .thenExecuteAfter(200, guard(() -> {
+                .thenExecuteFor(200, () -> eggTimer(0))
+                .thenExecute(guard(() -> {
                     float after = ChunkRadiationManager.proxy.getRadiation(level, abs);
+                    eggTimer(oldEggTimer);
                     LOGGER.info("[hbm-wastedrum] chunk radiation at the drum: {} before, {} after 200 ticks", before, after);
                     check(after == before, "chunk radiation at the drum changed from " + before + " to " + after);
                 }))
                 .thenSucceed();
+    }
+
+    /** Sets ChunkRadiationManager's private tick counter when {@code value} is given; returns the value before. */
+    private static int eggTimer(@javax.annotation.Nullable Integer value) {
+        try {
+            java.lang.reflect.Field field = ChunkRadiationManager.class.getDeclaredField("eggTimer");
+            field.setAccessible(true);
+            int old = field.getInt(null);
+            if(value != null) field.setInt(null, value);
+            return old;
+        } catch(ReflectiveOperationException e) {
+            throw new IllegalStateException("cannot reach ChunkRadiationManager.eggTimer: " + e);
+        }
     }
 
     // Shared helpers

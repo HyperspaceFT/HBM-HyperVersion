@@ -1117,7 +1117,8 @@ public class RBMKCraneGameTests {
     // 9 recipe, block properties, creative tab
 
     // Covers CraftingManager.java:990 (rbmk_crane_console "BCD", "DDD": B boron ingot, C analog circuit, D deco_rbmk, 1 output),
-    // RBMKCraneConsole :18-22 (hardness 3, resistance 30) and ModBlocks.java:2132 (machine tab; NEO places it after rbmk_console).
+    // RBMKCraneConsole :18-22 (setHardness(3F), setResistance(30F): 1.7.10 stores 3 x 30 = 90, effective 90 / 5 = 18) and ModBlocks.java:2138
+    // (machine tab; NEO places it after rbmk_console).
     @GameTest(template = TEMPLATE, batch = "rbmk_crane_recipe", timeoutTicks = 100)
     public static void crane_recipe(GameTestHelper helper) {
         guard(() -> {
@@ -1129,7 +1130,7 @@ public class RBMKCraneGameTests {
             shaped(helper, "rbmk_crane_console", NtmBlocks.RBMK_CRANE_CONSOLE.get().asItem(), new String[] { "BCD", "DDD" }, key);
             Block block = NtmBlocks.RBMK_CRANE_CONSOLE.get();
             check(block.defaultDestroyTime() == 3F, "hardness " + block.defaultDestroyTime() + ", the original sets 3 (:20)");
-            check(block.getExplosionResistance() == 30F, "explosion resistance " + block.getExplosionResistance() + ", the original sets 30 (:21)");
+            check(block.getExplosionResistance() == 18F, "explosion resistance " + block.getExplosionResistance() + ", original setResistance(30F) (:21) = 30 * 3 / 5 = 18");
 
             CreativeModeTab tab = NtmCreativeTabs.MACHINE.get();
             tab.buildContents(new CreativeModeTab.ItemDisplayParameters(level.enabledFeatures(), false, level.registryAccess()));

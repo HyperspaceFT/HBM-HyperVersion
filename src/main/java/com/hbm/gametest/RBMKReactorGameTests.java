@@ -898,7 +898,8 @@ public class RBMKReactorGameTests {
     // 13 corium_block
 
     // Covers CoriumFinite.onEntityCollidedWithBlock (:235-243: setFire(3), radiation damage 2, contaminate RADIATION CREATIVE 1) as the static
-    // NEO corium_block (GOAL24 decision 15: no fluid, no flow, the 1/10 solidification into block_corium is not ported) with resistance 500.
+    // NEO corium_block (GOAL24 decision 15: no fluid, no flow, the 1/10 solidification into block_corium is not ported) with resistance 300
+    // (ModBlocks.java:2343 setResistance(500F): 1.7.10 stores 3 x 500, effective 1500 / 5 = 300).
     @GameTest(template = TEMPLATE, batch = "rbmk_reactor_corium", timeoutTicks = 100)
     public static void rbmk_reactor_corium(GameTestHelper helper) {
         try {
@@ -925,7 +926,7 @@ public class RBMKReactorGameTests {
                 pig.discard();
 
                 check(state.getFluidState().isEmpty(), "corium_block has a fluid state " + state.getFluidState());
-                check(corium.getExplosionResistance() == 500F, "corium_block resistance is " + corium.getExplosionResistance() + ", expected 500");
+                check(corium.getExplosionResistance() == 300F, "corium_block resistance is " + corium.getExplosionResistance() + ", expected 500 * 3 / 5 = 300");
                 check(!state.isRandomlyTicking(), "corium_block ticks randomly");
                 check(!level.getBlockTicks().hasScheduledTick(pos, corium), "corium_block scheduled a tick");
                 for(int i = 0; i < 5; i++) {
@@ -936,7 +937,7 @@ public class RBMKReactorGameTests {
                 for(Direction d : Direction.values()) check(level.getBlockState(pos.relative(d)).isAir(), "corium_block spread to " + pos.relative(d) + ": " + level.getBlockState(pos.relative(d)));
                 List<ItemStack> drops = Block.getDrops(state, level, pos, null, null, new ItemStack(Items.DIAMOND_PICKAXE));
                 check(drops.isEmpty(), "corium_block drops " + drops);
-                LOGGER.info("[hbm-rbmk-reactor] corium_block: no fluid, resistance 500, no ticks, no drops (block_corium solidification not ported)");
+                LOGGER.info("[hbm-rbmk-reactor] corium_block: no fluid, resistance 300, no ticks, no drops (block_corium solidification not ported)");
             }).run();
         } finally {
             finish(helper, null);

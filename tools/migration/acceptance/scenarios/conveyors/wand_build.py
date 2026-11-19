@@ -200,10 +200,11 @@ def run(ctx):
     # empty hand on a belt: no look overlay
     ctx.step('view', pos=[5.5, Y + 1.5, 22.5], look_at=[5.5, Y + 0.1, 20.5], fly=True, hide_gui=False)
     ctx.step('wait', ticks=3)
-    hud = ctx.step('hud', frames=6)
+    hud, problems = _lib.hud_on(ctx, (5, Y, 20))
     control = _lib.look_control(ctx, 5, Y, 26)
-    ctx.check('conveyors.aim-overlay', not crosshair(ctx, hud) and bool(control),
-              'texts at the crosshair: %s; control (standard fluid duct, same view and read): %s' % (crosshair(ctx, hud), control))
+    ctx.check('conveyors.aim-overlay', not crosshair(ctx, hud) and bool(control) and not problems,
+              'texts at the crosshair: %s; same read: %s; control (standard fluid duct, same view and read): %s'
+              % (crosshair(ctx, hud), '; '.join(problems) or 'action-bar probe read, crosshair on the belt', control))
     # creative line break: 70 belts along +x at z 40 (input west, items travel east), break the 36th from the west
     ctx.step('cmd', command='kill @e[type=!minecraft:player,x=34,y=%d,z=40,distance=..45]' % Y, allow_error=True)
     ctx.step('wait', ticks=2)

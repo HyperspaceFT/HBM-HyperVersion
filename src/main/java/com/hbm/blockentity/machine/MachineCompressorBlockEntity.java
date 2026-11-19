@@ -299,13 +299,21 @@ public class MachineCompressorBlockEntity extends MachineBaseBlockEntity impleme
     @Override public void pasteSettings(CompoundTag tag, int index, Level level, Player player, BlockPos pos) {
         // the settings tool pastes without the screen open: server only, the same level and a player within reach (Goal 31D)
         if(tag == null || player == null || level != this.level || level.isClientSide || !this.worldPosition.equals(pos)
-                || player.level() != level || !this.stillValid(player)
-                || !tag.contains("compression", Tag.TAG_INT) || !tag.contains("FluidID", Tag.TAG_INT_ARRAY)) return;
-        int pressure = tag.getInt("compression");
-        int[] ids = tag.getIntArray("FluidID");
-        if(pressure < 0 || pressure > 4 || index < 0 || index >= ids.length) return;
-        FluidType type = Fluids.fromID(ids[index]);
-        if(type == Fluids.NONE && ids[index] != Fluids.NONE.getID()) return;
+                || player.level() != level || !this.stillValid(player)) return;
+        // ORIG TileEntityMachineCompressorBase.java:282-302: the pressure and the fluid are each applied when present, independently of the other
+        int pressure = this.tanks[0].getPressure();
+        if(tag.contains("compression", Tag.TAG_INT)) {
+            int copied = tag.getInt("compression");
+            if(copied >= 0 && copied <= 4) pressure = copied;
+        }
+        FluidType type = this.tanks[0].getTankType();
+        if(tag.contains("FluidID", Tag.TAG_INT_ARRAY)) {
+            int[] ids = tag.getIntArray("FluidID");
+            if(index >= 0 && index < ids.length) {
+                FluidType copied = Fluids.fromID(ids[index]);
+                if(copied != Fluids.NONE || ids[index] == Fluids.NONE.getID()) type = copied;
+            }
+        }
         if(type != this.tanks[0].getTankType() || pressure != this.tanks[0].getPressure()) {
             this.removeFluidSubscriptions();
             this.subscribedType = null;

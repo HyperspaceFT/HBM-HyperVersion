@@ -1918,7 +1918,9 @@ public class Goal31DGameTests {
             TestPlayer spectator = player(helper, GameType.SPECTATOR, 0F);
             check(!SettingsToolItem.paste(t, adventure, level, abs, spectator) && adventure.calls == 0, "a spectator pasted");
             Recorder far = new Recorder();
-            BlockPos unloaded = new BlockPos(30_000_000, 64, 30_000_000);
+            // inside the world border and allowed by mayInteract, so only the chunk check can refuse it
+            BlockPos unloaded = abs.offset(1_000_000, 0, 1_000_000);
+            check(!level.hasChunkAt(unloaded) && level.getWorldBorder().isWithinBounds(unloaded) && level.mayInteract(p, unloaded), "the far position is loaded, outside the border or refused by mayInteract");
             check(!SettingsToolItem.paste(t, far, level, unloaded, p) && far.calls == 0, "a position in an unloaded chunk was pasted to");
             TestPlayer creative = player(helper, GameType.CREATIVE, 0F);
             check(SettingsToolItem.paste(t, adventure, level, abs, creative) && adventure.calls == 1, "a creative player was refused");
@@ -2140,17 +2142,23 @@ public class Goal31DGameTests {
                 else check(after == Fluids.WATER, n + ": an unknown fluid id gave " + after.getUnlocalizedName() + ", expected the tank untouched");
                 // the extra values of the families that carry them
                 if(dst instanceof MachineCompressorBlockEntity c) {
+                    // TileEntityMachineCompressorBase.java:282-302: the compression and the fluid entry are applied each on its own, so a bad
+                    // compression (rejected: NEO's local bound 0-4) still lets the fluid entry through and leaves the pressure as it was
                     for(int pressure : new int[] { 5, -1, 99, Integer.MIN_VALUE }) {
                         c.tanks[0].setTankType(Fluids.WATER);
+                        int was = c.tanks[0].getPressure();
                         CompoundTag tag = good.copy();
                         tag.putInt("compression", pressure);
                         noThrow(n + " pressure " + pressure, () -> c.pasteSettings(tag, 0, level, p, dstAbs));
-                        check(c.tanks[0].getTankType() == Fluids.WATER, n + ": compression " + pressure + " was pasted");
+                        check(c.tanks[0].getPressure() == was, n + ": compression " + pressure + " was pasted (pressure " + c.tanks[0].getPressure() + ")");
+                        check(c.tanks[0].getTankType() == Fluids.OIL, n + ": with compression " + pressure + " the fluid entry gave " + c.tanks[0].getTankType().getUnlocalizedName() + ", expected oil (:300 applies it on its own)");
                     }
+                    c.tanks[0].setTankType(Fluids.WATER);
+                    int was = c.tanks[0].getPressure();
                     CompoundTag wrong = good.copy();
                     wrong.putString("compression", "2");
                     noThrow(n + " text compression", () -> c.pasteSettings(wrong, 0, level, p, dstAbs));
-                    check(c.tanks[0].getTankType() == Fluids.WATER, n + ": a text compression was pasted");
+                    check(c.tanks[0].getPressure() == was && c.tanks[0].getTankType() == Fluids.OIL, n + ": a text compression gave " + c.tanks[0].getTankType().getUnlocalizedName() + " at " + c.tanks[0].getPressure() + ", expected oil at " + was);
                     CompoundTag edge = good.copy();
                     edge.putInt("compression", 4);
                     c.pasteSettings(edge, 0, level, p, dstAbs);

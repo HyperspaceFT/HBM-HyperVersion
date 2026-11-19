@@ -432,12 +432,22 @@ public class MachineFluidTankBlockEntity extends MachineBaseBlockEntity implemen
         }
     }
 
-    // Slot rules as the barrel (same layout: 0/1 identifier, 2/3 containers into the tank, 4/5 containers out of it).
+    // Slot rules as the barrel (same layout: 0/1 identifier, 2/3 containers into the tank, 4/5 containers out of it):
+    // automation needs both canPlaceItem (the barrel's isItemValidForSlot) and the stricter canPlaceItemThroughFace (ORIG TileEntityBarrel.java:140-164).
+    // The tank menu uses plain slots like the original ContainerMachineFluidTank, so canPlaceItem does not limit placing by hand here.
     // The extra blocks carry no inventory, so automation only reaches the core.
     @Override
     public boolean canPlaceItem(int slot, ItemStack stack) {
         return switch(slot) {
-            case 0, 1 -> stack.getItem() instanceof IItemFluidIdentifier;
+            case 0 -> stack.getItem() instanceof IItemFluidIdentifier;
+            case 2, 4 -> true;
+            default -> false;
+        };
+    }
+
+    @Override
+    public boolean canPlaceItemThroughFace(int slot, ItemStack stack, Direction direction) {
+        return switch(slot) {
             case 2 -> {
                 int content = FluidContainerRegistry.getFluidContent(stack, this.tank.getTankType());
                 yield content > 0 && content <= this.tank.getMaxFill();
@@ -446,25 +456,18 @@ public class MachineFluidTankBlockEntity extends MachineBaseBlockEntity implemen
                 ItemStack full = FluidContainerRegistry.getFullContainer(stack, this.tank.getTankType());
                 yield !full.isEmpty() && FluidContainerRegistry.getFluidContent(full, this.tank.getTankType()) <= this.tank.getMaxFill();
             }
-            default -> true;
+            default -> false;
         };
     }
 
     @Override
     public boolean canTakeItemThroughFace(int slot, ItemStack stack, Direction direction) {
-        return switch(slot) {
-            case 1, 3, 5 -> true;
-            default -> !this.canPlaceItem(slot, stack);
-        };
+        return slot == 3 || slot == 5;
     }
 
     @Override
     public int[] getSlotsForFace(Direction direction) {
-        return switch(direction.get3DDataValue()) {
-            case 0 -> new int[] {3, 5};
-            case 1 -> new int[] {2};
-            default -> new int[] {4};
-        };
+        return new int[] {2, 3, 4, 5};
     }
 
     @Override public boolean hasPermission(Player player) { return this.stillValid(player); }

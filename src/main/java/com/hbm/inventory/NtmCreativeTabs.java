@@ -225,7 +225,6 @@ public class NtmCreativeTabs {
                         output.accept(NtmItems.BILLET_AUSTRALIUM.get());
                         output.accept(NtmItems.BILLET_AUSTRALIUM_LESSER.get());
                         output.accept(NtmItems.BILLET_AUSTRALIUM_GREATER.get());
-                        output.accept(NtmItems.BILLET_UNOBTAINIUM.get());
                         output.accept(NtmItems.BILLET_YHARONITE.get());
                         output.accept(NtmItems.BILLET_BALEFIRE_GOLD.get());
                         output.accept(NtmItems.BILLET_FLASHLEAD.get());
@@ -302,8 +301,8 @@ public class NtmCreativeTabs {
                         output.accept(NtmItems.CENTRIFUGE_ELEMENT.get());
                         output.accept(NtmItems.RTG_UNIT.get());
                         output.accept(NtmItems.GEAR_LARGE.get());
-                        addMetaItems(output, NtmItems.CAST_PLATE_WELDED.get());
-                        addMetaItems(output, NtmItems.CAST_PLATE.get());
+                        addMetaItems(output, NtmItems.PLATE_WELDED.get());
+                        addMetaItems(output, NtmItems.PLATE_CAST.get());
                         output.accept(NtmItems.MOLD_BASE.get());
                         output.accept(NtmItems.MOLD_PLATE_CAST.get());
                         output.accept(NtmItems.MOLD_INGOT.get());
@@ -351,7 +350,6 @@ public class NtmCreativeTabs {
                         output.accept(NtmItems.TURBINE_TITANIUM.get());
                         output.accept(NtmItems.TURBINE_TUNGSTEN.get());
                         output.accept(NtmItems.FLYWHEEL_BERYLLIUM.get());
-                        output.accept(NtmItems.TOOTHPICKS.get());
                         output.accept(NtmItems.DUCTTAPE.get());
                         output.accept(NtmItems.PLANT_ITEM.get());
                         output.accept(NtmBlocks.PLANT_FLOWER.get());
@@ -812,8 +810,8 @@ public class NtmCreativeTabs {
                         output.accept(NtmBlocks.CONCRETE_ASBESTOS);
                         output.accept(NtmBlocks.DUCRETE);
                         output.accept(NtmBlocks.DUCRETE_SMOOTH);
-                        output.accept(NtmBlocks.DUCRETE_REINFORCED);
-                        output.accept(NtmBlocks.DUCRETE_BRICK);
+                        output.accept(NtmBlocks.REINFORCED_DUCRETE);
+                        output.accept(NtmBlocks.BRICK_DUCRETE);
                         output.accept(NtmBlocks.BRICK_CONCRETE_MOSSY);
                         output.accept(NtmBlocks.BRICK_CONCRETE_CRACKED);
                         output.accept(NtmBlocks.BRICK_CONCRETE_BROKEN);
@@ -1111,7 +1109,6 @@ public class NtmCreativeTabs {
                         output.accept(NtmBlocks.CRATE_TUNGSTEN);
                         output.accept(NtmBlocks.CRATE_STEEL);
                         output.accept(NtmBlocks.CRATE_DESH);
-                        output.accept(NtmBlocks.CRATE_TEMPLATE);
                         output.accept(NtmBlocks.MACHINE_SATLINKER);
                         // original machineTab (ModBlocks.java:1898-1904, registration order :3187-3191)
                         output.accept(NtmBlocks.RADIO_TORCH_SENDER);
@@ -1446,7 +1443,6 @@ public class NtmCreativeTabs {
         output.accept(NtmItems.INGOT_CAESIUM);
         output.accept(NtmItems.INGOT_CERIUM);
         output.accept(NtmItems.INGOT_CHAINSTEEL);
-        output.accept(NtmItems.INGOT_DAFFERGON);
         output.accept(NtmItems.INGOT_FIBERGLASS);
         output.accept(NtmItems.INGOT_I131);
         output.accept(NtmItems.INGOT_IODINE);
@@ -1455,28 +1451,17 @@ public class NtmCreativeTabs {
         output.accept(NtmItems.INGOT_PHOSPHORUS);
         addMetaItems(output, NtmItems.INGOT_RAW.get());
         output.accept(NtmItems.INGOT_RED_COPPER);
-        output.accept(NtmItems.INGOT_REIIUM);
         output.accept(NtmItems.INGOT_SEMTEX);
         output.accept(NtmItems.INGOT_STEEL_DUSTED);
         output.accept(NtmItems.INGOT_TENNESSINE);
         output.accept(NtmItems.INGOT_TH232);
         output.accept(NtmItems.INGOT_TUNGSTEN_CARBIDE);
-        output.accept(NtmItems.INGOT_UNOBTAINIUM);
-        output.accept(NtmItems.INGOT_VERTICIUM);
-        output.accept(NtmItems.INGOT_WEIDANIUM);
         output.accept(NtmItems.NUGGET_AUSTRALIUM);
         output.accept(NtmItems.NUGGET_AUSTRALIUM_GREATER);
         output.accept(NtmItems.NUGGET_AUSTRALIUM_LESSER);
-        output.accept(NtmItems.NUGGET_DAFFERGON);
         output.accept(NtmItems.NUGGET_MERCURY);
-        output.accept(NtmItems.NUGGET_REIIUM);
         output.accept(NtmItems.NUGGET_STRONTIUM);
         output.accept(NtmItems.NUGGET_TH232);
-        output.accept(NtmItems.NUGGET_UNOBTAINIUM);
-        output.accept(NtmItems.NUGGET_UNOBTAINIUM_GREATER);
-        output.accept(NtmItems.NUGGET_UNOBTAINIUM_LESSER);
-        output.accept(NtmItems.NUGGET_VERTICIUM);
-        output.accept(NtmItems.NUGGET_WEIDANIUM);
         output.accept(NtmItems.PLATE_ARMOR_AJR);
         output.accept(NtmItems.PLATE_ARMOR_DNT);
         output.accept(NtmItems.PLATE_ARMOR_FAU);
@@ -1512,7 +1497,6 @@ public class NtmCreativeTabs {
         output.accept(NtmItems.POWDER_CERIUM_TINY);
         output.accept(NtmItems.POWDER_CHLOROCALCITE);
         output.accept(NtmItems.POWDER_CHLOROPHYTE);
-        output.accept(NtmItems.POWDER_CLOUD);
         output.accept(NtmItems.POWDER_CO60);
         output.accept(NtmItems.POWDER_CO60_TINY);
         output.accept(NtmItems.POWDER_COAL_TINY);
@@ -1521,7 +1505,6 @@ public class NtmCreativeTabs {
         output.accept(NtmItems.POWDER_COLTAN_ORE);
         output.accept(NtmItems.POWDER_CS137);
         output.accept(NtmItems.POWDER_CS137_TINY);
-        output.accept(NtmItems.POWDER_DAFFERGON);
         output.accept(NtmItems.POWDER_DESH_MIX);
         output.accept(NtmItems.POWDER_DESH_READY);
         output.accept(NtmItems.POWDER_EUPHEMIUM);
@@ -1557,7 +1540,6 @@ public class NtmCreativeTabs {
         output.accept(NtmItems.POWDER_POWER);
         output.accept(NtmItems.POWDER_RA226);
         output.accept(NtmItems.POWDER_RED_COPPER);
-        output.accept(NtmItems.POWDER_REIIUM);
         output.accept(NtmItems.POWDER_SAWDUST);
         output.accept(NtmItems.POWDER_SCHRABIDATE);
         output.accept(NtmItems.POWDER_SEMTEX_MIX);
@@ -1573,9 +1555,6 @@ public class NtmCreativeTabs {
         output.accept(NtmItems.POWDER_TENNESSINE);
         output.accept(NtmItems.POWDER_THERMITE);
         output.accept(NtmItems.POWDER_THORIUM);
-        output.accept(NtmItems.POWDER_UNOBTAINIUM);
-        output.accept(NtmItems.POWDER_VERTICIUM);
-        output.accept(NtmItems.POWDER_WEIDANIUM);
         output.accept(NtmItems.POWDER_XE135);
         output.accept(NtmItems.POWDER_XE135_TINY);
         output.accept(NtmItems.POWDER_YELLOWCAKE);
@@ -1597,7 +1576,6 @@ public class NtmCreativeTabs {
         output.accept(NtmItems.PLATE_FUEL_SA326);
         output.accept(NtmItems.PLATE_FUEL_U233);
         output.accept(NtmItems.PLATE_FUEL_U235);
-        output.accept(NtmItems.CRYSTAL_ENERGY);
         output.accept(NtmItems.CRYSTAL_XEN);
     }
 

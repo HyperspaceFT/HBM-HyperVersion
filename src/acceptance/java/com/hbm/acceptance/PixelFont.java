@@ -28,6 +28,24 @@ final class PixelFont {
     private PixelFont() {
     }
 
+    /**
+     * A contact-sheet label in a bar of 14 pixels: at scale 2 when it fits {@code maxWidth}, otherwise at scale 1 on up to
+     * two lines (broken at the last space that fits); what still does not fit is clipped.
+     */
+    static void drawLabel(NativeImage image, int x, int y, String text, int abgr, int maxWidth) {
+        if (text.length() * 8 - 2 <= maxWidth) {
+            draw(image, x, y, text, abgr, 2, maxWidth);
+            return;
+        }
+        int perLine = Math.max(1, (maxWidth + 1) / 4);
+        int cut = Math.min(perLine, text.length());
+        int space = text.lastIndexOf(' ', cut);
+        if (cut < text.length() && space > 0) cut = space;
+        draw(image, x, y, text.substring(0, cut), abgr, 1, maxWidth);
+        String rest = text.substring(cut).strip();
+        if (!rest.isEmpty()) draw(image, x, y + 6, rest, abgr, 1, maxWidth);
+    }
+
     /** Draws {@code text} (upper-cased; unknown characters as '.') on a black bar, clipped at {@code maxWidth} pixels. */
     static void draw(NativeImage image, int x, int y, String text, int abgr, int scale, int maxWidth) {
         String t = text.toUpperCase(Locale.ROOT);

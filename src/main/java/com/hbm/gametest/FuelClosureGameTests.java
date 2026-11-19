@@ -130,17 +130,15 @@ public class FuelClosureGameTests {
                 assertFreshRod(crafted, row.type(), row.id() + " (crafted)");
             }
 
-            // The deferred LES rod (RodRecipes.java:35, no billet_les source) and lithium rod (:36, no lithium ingot) have no recipe.
+            // Each type below has a crafting recipe, the LES rod (RodRecipes.java:35) and the lithium rod (:36) included.
             TreeSet<Integer> metas = new TreeSet<>();
             for(RecipeHolder<CraftingRecipe> holder : helper.getLevel().getRecipeManager().getAllRecipesFor(RecipeType.CRAFTING)) {
                 ItemStack result = holder.value().getResultItem(helper.getLevel().registryAccess());
                 if(result.is(NtmItems.ROD_ZIRNOX.get())) metas.add(MetaHelper.getMeta(result));
             }
             LOGGER.info("[hbm-fuel] crafting recipes yield ROD_ZIRNOX metas {}", metas);
-            check(!metas.contains(ZirnoxType.LES_FUEL.ordinal()), "a crafting recipe yields the LES rod");
-            check(!metas.contains(ZirnoxType.LITHIUM.ordinal()), "a crafting recipe yields the lithium rod");
             for(ZirnoxType type : List.of(ZirnoxType.NATURAL_URANIUM_FUEL, ZirnoxType.URANIUM_FUEL, ZirnoxType.TH232, ZirnoxType.THORIUM_FUEL,
-                    ZirnoxType.U235_FUEL, ZirnoxType.MOX_FUEL, ZirnoxType.PLUTONIUM_FUEL, ZirnoxType.U233_FUEL, ZirnoxType.ZFB_MOX)) {
+                    ZirnoxType.U235_FUEL, ZirnoxType.MOX_FUEL, ZirnoxType.PLUTONIUM_FUEL, ZirnoxType.U233_FUEL, ZirnoxType.ZFB_MOX, ZirnoxType.LITHIUM, ZirnoxType.LES_FUEL)) {
                 check(metas.contains(type.ordinal()), "no crafting recipe yields " + type);
             }
         }).run();
@@ -248,6 +246,10 @@ public class FuelClosureGameTests {
      */
     @GameTest(template = TEMPLATE, timeoutTicks = 200)
     public static void zirnox_new_rods_deplete(GameTestHelper helper) {
+        SmokeTestSupport.whenTicking(helper, "zirnox_new_rods_deplete", () -> zirnoxNewRodsDeplete(helper));
+    }
+
+    private static void zirnoxNewRodsDeplete(GameTestHelper helper) {
         List<Depletion> cases = depletions();
         BlockPos[] cores = { new BlockPos(3, 1, 5), new BlockPos(8, 1, 5), new BlockPos(13, 1, 5), new BlockPos(3, 1, 11) };
         ReactorZirnoxBlockEntity[] reactors = new ReactorZirnoxBlockEntity[cases.size()];

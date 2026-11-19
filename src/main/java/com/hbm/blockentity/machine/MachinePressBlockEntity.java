@@ -84,7 +84,7 @@ public class MachinePressBlockEntity extends MachineBaseBlockEntity {
                 int stampSpeed = speed * progressAtMax / maxSpeed;
 
                 if(this.isRetracting) {
-                    this.press = Math.max(0, this.press - stampSpeed);
+                    this.press -= stampSpeed;
 
                     if(this.press <= 0) {
                         this.isRetracting = false;

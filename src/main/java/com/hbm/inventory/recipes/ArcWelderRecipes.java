@@ -82,8 +82,8 @@ public class ArcWelderRecipes extends SerializableRecipe {
                 new ComparableStack(NtmItems.INGOT_FIBERGLASS.get(), 4),
                 new ComparableStack(NtmItems.INGOT_PC.get(), 1));
         addRecipe(MetaHelper.newStack(NtmItems.PART_GENERIC.get(), 1, PartGenericItem.Type.HDE), 600, 25_000_000, new FluidStack(Fluids.STELLAR_FLUX, 4_000),
-                new ComparableStack(NtmItems.CAST_PLATE.get(), 2, CastPlateItem.Type.BISMUTH_BRONZE.ordinal()),
-                new ComparableStack(NtmItems.CAST_PLATE_WELDED.get(), 1, CastPlateItem.Type.COMBINE_STEEL.ordinal()),
+                new ComparableStack(NtmItems.PLATE_CAST.get(), 2, CastPlateItem.Type.BISMUTH_BRONZE.ordinal()),
+                new ComparableStack(NtmItems.PLATE_WELDED.get(), 1, CastPlateItem.Type.COMBINE_STEEL.ordinal()),
                 new ComparableStack(NtmItems.INGOT_CTF.get(), 1));
 
         addRecipe(MetaHelper.newStack(NtmItems.WIRE_DENSE.get(), 1, WireDenseItem.Type.COPPER.meta), 100, 10_000, null,
@@ -93,17 +93,17 @@ public class ArcWelderRecipes extends SerializableRecipe {
         addRecipe(MetaHelper.newStack(NtmItems.WIRE_DENSE.get(), 1, WireDenseItem.Type.GOLD.meta), 100, 10_000, null,
                 new ComparableStack(NtmItems.WIRE_GOLD.get(), 8));
 
-        addRecipe(MetaHelper.newStack(NtmItems.CAST_PLATE_WELDED.get(), 1, CastPlateItem.Type.IRON), 100, 100, null, NtmItems.castPlateIngredient(CastPlateItem.Type.IRON, 2));
-        addRecipe(MetaHelper.newStack(NtmItems.CAST_PLATE_WELDED.get(), 1, CastPlateItem.Type.STEEL), 100, 500, null, NtmItems.castPlateIngredient(CastPlateItem.Type.STEEL, 2));
-        addRecipe(MetaHelper.newStack(NtmItems.CAST_PLATE_WELDED.get(), 1, CastPlateItem.Type.COPPER), 200, 1_000, null, NtmItems.castPlateIngredient(CastPlateItem.Type.COPPER, 2));
-        addRecipe(MetaHelper.newStack(NtmItems.CAST_PLATE_WELDED.get(), 1, CastPlateItem.Type.TITANIUM), 600, 50_000, null, NtmItems.castPlateIngredient(CastPlateItem.Type.TITANIUM, 2));
-        addRecipe(MetaHelper.newStack(NtmItems.CAST_PLATE_WELDED.get(), 1, CastPlateItem.Type.ZIRCONIUM), 600, 10_000, null, NtmItems.castPlateIngredient(CastPlateItem.Type.ZIRCONIUM, 2));
-        addRecipe(MetaHelper.newStack(NtmItems.CAST_PLATE_WELDED.get(), 1, CastPlateItem.Type.ALUMINIUM), 300, 10_000, null, NtmItems.castPlateIngredient(CastPlateItem.Type.ALUMINIUM, 2));
-        addRecipe(MetaHelper.newStack(NtmItems.CAST_PLATE_WELDED.get(), 1, CastPlateItem.Type.TCALLOY), 1_200, 1_000_000, new FluidStack(Fluids.OXYGEN, 1_000), NtmItems.castPlateIngredient(CastPlateItem.Type.TCALLOY, 2));
-        addRecipe(MetaHelper.newStack(NtmItems.CAST_PLATE_WELDED.get(), 1, CastPlateItem.Type.CDALLOY), 1_200, 1_000_000, new FluidStack(Fluids.OXYGEN, 1_000), NtmItems.castPlateIngredient(CastPlateItem.Type.CDALLOY, 2));
-        addRecipe(MetaHelper.newStack(NtmItems.CAST_PLATE_WELDED.get(), 1, CastPlateItem.Type.TUNGSTEN), 1_200, 250_000, new FluidStack(Fluids.OXYGEN, 1_000), NtmItems.castPlateIngredient(CastPlateItem.Type.TUNGSTEN, 2));
-        addRecipe(MetaHelper.newStack(NtmItems.CAST_PLATE_WELDED.get(), 1, CastPlateItem.Type.COMBINE_STEEL), 1_200, 10_000_000, new FluidStack(Fluids.REFORMGAS, 1_000), NtmItems.castPlateIngredient(CastPlateItem.Type.COMBINE_STEEL, 2));
-        addRecipe(MetaHelper.newStack(NtmItems.CAST_PLATE_WELDED.get(), 1, CastPlateItem.Type.OSMIRIDIUM), 6_000, 20_000_000, new FluidStack(Fluids.REFORMGAS, 16_000), NtmItems.castPlateIngredient(CastPlateItem.Type.OSMIRIDIUM, 2));
+        addRecipe(MetaHelper.newStack(NtmItems.PLATE_WELDED.get(), 1, CastPlateItem.Type.IRON), 100, 100, null, NtmItems.castPlateIngredient(CastPlateItem.Type.IRON, 2));
+        addRecipe(MetaHelper.newStack(NtmItems.PLATE_WELDED.get(), 1, CastPlateItem.Type.STEEL), 100, 500, null, NtmItems.castPlateIngredient(CastPlateItem.Type.STEEL, 2));
+        addRecipe(MetaHelper.newStack(NtmItems.PLATE_WELDED.get(), 1, CastPlateItem.Type.COPPER), 200, 1_000, null, NtmItems.castPlateIngredient(CastPlateItem.Type.COPPER, 2));
+        addRecipe(MetaHelper.newStack(NtmItems.PLATE_WELDED.get(), 1, CastPlateItem.Type.TITANIUM), 600, 50_000, null, NtmItems.castPlateIngredient(CastPlateItem.Type.TITANIUM, 2));
+        addRecipe(MetaHelper.newStack(NtmItems.PLATE_WELDED.get(), 1, CastPlateItem.Type.ZIRCONIUM), 600, 10_000, null, NtmItems.castPlateIngredient(CastPlateItem.Type.ZIRCONIUM, 2));
+        addRecipe(MetaHelper.newStack(NtmItems.PLATE_WELDED.get(), 1, CastPlateItem.Type.ALUMINIUM), 300, 10_000, null, NtmItems.castPlateIngredient(CastPlateItem.Type.ALUMINIUM, 2));
+        addRecipe(MetaHelper.newStack(NtmItems.PLATE_WELDED.get(), 1, CastPlateItem.Type.TCALLOY), 1_200, 1_000_000, new FluidStack(Fluids.OXYGEN, 1_000), NtmItems.castPlateIngredient(CastPlateItem.Type.TCALLOY, 2));
+        addRecipe(MetaHelper.newStack(NtmItems.PLATE_WELDED.get(), 1, CastPlateItem.Type.CDALLOY), 1_200, 1_000_000, new FluidStack(Fluids.OXYGEN, 1_000), NtmItems.castPlateIngredient(CastPlateItem.Type.CDALLOY, 2));
+        addRecipe(MetaHelper.newStack(NtmItems.PLATE_WELDED.get(), 1, CastPlateItem.Type.TUNGSTEN), 1_200, 250_000, new FluidStack(Fluids.OXYGEN, 1_000), NtmItems.castPlateIngredient(CastPlateItem.Type.TUNGSTEN, 2));
+        addRecipe(MetaHelper.newStack(NtmItems.PLATE_WELDED.get(), 1, CastPlateItem.Type.COMBINE_STEEL), 1_200, 10_000_000, new FluidStack(Fluids.REFORMGAS, 1_000), NtmItems.castPlateIngredient(CastPlateItem.Type.COMBINE_STEEL, 2));
+        addRecipe(MetaHelper.newStack(NtmItems.PLATE_WELDED.get(), 1, CastPlateItem.Type.OSMIRIDIUM), 6_000, 20_000_000, new FluidStack(Fluids.REFORMGAS, 16_000), NtmItems.castPlateIngredient(CastPlateItem.Type.OSMIRIDIUM, 2));
 
         addRecipe(new ItemStack(NtmItems.THRUSTER_SMALL.get()), 60, 1_000, null,
                 new ComparableStack(NtmItems.PLATE_STEEL.get(), 4),

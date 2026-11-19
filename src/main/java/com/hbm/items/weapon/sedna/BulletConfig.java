@@ -20,6 +20,9 @@ import com.hbm.util.EntityDamageUtil;
 import com.hbm.util.SoundUtils;
 import net.minecraft.core.Direction;
 import net.minecraft.core.Holder;
+import net.minecraft.core.component.DataComponents;
+import net.minecraft.core.registries.Registries;
+import net.minecraft.network.chat.Component;
 import net.minecraft.network.protocol.game.ClientboundTeleportEntityPacket;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.server.level.ServerLevel;
@@ -166,7 +169,7 @@ public class BulletConfig implements Cloneable {
         BEAM
     }
 
-    public static DamageSource getDamage(Level level, @Nullable Entity entity, @Nullable Entity shooter, DamageClass dmgClass) {
+    public static DamageSource getDamage(Level level, @Nullable Entity projectile, @Nullable Entity shooter, DamageClass dmgClass) {
 
         ResourceKey<DamageType> damageType = switch(dmgClass) {
             case PHYSICAL ->    NtmDamageTypes.PHYSICAL;
@@ -179,7 +182,22 @@ public class BulletConfig implements Cloneable {
             case OTHER ->       NtmDamageTypes.OTHER;
         };
 
-        return level.damageSources().source(damageType, shooter, entity);
+        return new SednaDamageSource(level.registryAccess().registryOrThrow(Registries.DAMAGE_TYPE).getHolderOrThrow(damageType), projectile, shooter);
+    }
+
+    /** Death messages follow the original DamageSourceSednaWithAttacker/NoAttacker: the shooter's name when there is one; a shooter holding a renamed weapon keeps vanilla's .item form */
+    private static class SednaDamageSource extends DamageSource {
+
+        public SednaDamageSource(Holder<DamageType> type, @Nullable Entity projectile, @Nullable Entity shooter) { super(type, projectile, shooter); }
+
+        @Override
+        public Component getLocalizedDeathMessage(LivingEntity died) {
+            String key = "death.attack." + this.getMsgId();
+            Entity shooter = this.getEntity();
+            if(shooter == null) return Component.translatable(key, died.getDisplayName());
+            if(shooter instanceof LivingEntity living && living.getMainHandItem().has(DataComponents.CUSTOM_NAME)) return super.getLocalizedDeathMessage(died);
+            return Component.translatable(key + ".player", died.getDisplayName(), shooter.getDisplayName());
+        }
     }
 
     public static BiConsumer<BulletBaseMK4, BlockHitResult> LAMBDA_STANDARD_RICOCHET = (bullet, bhr) -> {
@@ -220,7 +238,7 @@ public class BulletConfig implements Cloneable {
 
         if(entity instanceof LivingEntity living && living.isDeadOrDying()) return;
 
-        DamageSource source = getDamage(bullet.level, entity, bullet.getOwner(), bullet.config.dmgClass);
+        DamageSource source = getDamage(bullet.level, bullet, bullet.getOwner(), bullet.config.dmgClass);
         float intendedDamage = bullet.damage;
         Vec3 hitLocation = ehr.getLocation();
 

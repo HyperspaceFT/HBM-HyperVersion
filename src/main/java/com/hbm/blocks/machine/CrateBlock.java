@@ -5,7 +5,6 @@ import com.hbm.blockentity.machine.storage.CrateBaseBlockEntity;
 import com.hbm.blockentity.machine.storage.CrateDeshBlockEntity;
 import com.hbm.blockentity.machine.storage.CrateIronBlockEntity;
 import com.hbm.blockentity.machine.storage.CrateSteelBlockEntity;
-import com.hbm.blockentity.machine.storage.CrateTemplateBlockEntity;
 import com.hbm.blockentity.machine.storage.CrateTungstenBlockEntity;
 import com.hbm.config.NtmConfig;
 import com.hbm.blocks.IPersistentInfoProvider;
@@ -82,7 +81,6 @@ public class CrateBlock extends BaseEntityBlock implements IPersistentInfoProvid
             case TUNGSTEN -> new CrateTungstenBlockEntity(pos, state);
             case STEEL -> new CrateSteelBlockEntity(pos, state);
             case DESH -> new CrateDeshBlockEntity(pos, state);
-            case TEMPLATE -> new CrateTemplateBlockEntity(pos, state);
         };
     }
 
@@ -205,8 +203,7 @@ public class CrateBlock extends BaseEntityBlock implements IPersistentInfoProvid
         IRON(36),
         TUNGSTEN(27),
         STEEL(54),
-        DESH(104),
-        TEMPLATE(27);
+        DESH(104);
 
         private final int slots;
 

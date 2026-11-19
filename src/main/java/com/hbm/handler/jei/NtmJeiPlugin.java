@@ -597,8 +597,8 @@ public class NtmJeiPlugin implements IModPlugin {
                 NtmItems.BOLT.get(),
                 NtmItems.PART_GENERIC.get(),
                 NtmItems.CONVEYOR_WAND.get(),
-                NtmItems.CAST_PLATE.get(),
-                NtmItems.CAST_PLATE_WELDED.get(),
+                NtmItems.PLATE_CAST.get(),
+                NtmItems.PLATE_WELDED.get(),
 
                 NtmItems.FLUID_TANK_FULL.get(),
                 NtmItems.FLUID_TANK_LEAD_FULL.get(),

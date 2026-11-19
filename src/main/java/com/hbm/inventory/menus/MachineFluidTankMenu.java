@@ -62,7 +62,8 @@ public class MachineFluidTankMenu extends AbstractContainerMenu {
                     return ItemStack.EMPTY;
                 }
             } else {
-                if (!this.moveItemStackTo(stack, 0, be.getContainerSize(), false)) {
+                // ORIG ContainerMachineFluidTank.java:56-63: plain slots, shift-click merges into slots 0-4 (not the last output slot)
+                if (!this.moveItemStackTo(stack, 0, 5, false)) {
                     return ItemStack.EMPTY;
                 }
             }

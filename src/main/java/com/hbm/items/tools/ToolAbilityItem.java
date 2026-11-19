@@ -234,7 +234,7 @@ public class ToolAbilityItem extends TieredItem implements IDepthRockTool, IItem
 
         if (rockBreaker) {
             tooltipComponents.add(Component.empty());
-            tooltipComponents.add(Component.literal("Can break depth rock!").withStyle(ChatFormatting.RED));
+            tooltipComponents.add(Component.translatable("tool.ability.depth_rock").withStyle(ChatFormatting.RED));
         }
     }
 
@@ -255,7 +255,8 @@ public class ToolAbilityItem extends TieredItem implements IDepthRockTool, IItem
         float refStrength = refState.getDestroyProgress(player, level, refPos);
         float strength = state.getDestroyProgress(player, level, pos);
 
-        if (!player.hasCorrectToolForDrops(state) || refStrength / strength > 2f) return;
+        // Original ItemToolAbility.java:316-323: an extra block more than ten times slower to mine than the reference block is skipped
+        if (!player.hasCorrectToolForDrops(state) || refStrength / strength > 10f) return;
 
         // As the original posts ForgeHooks.onBlockBreakEvent for every extra block, protection and claim mods can keep this one.
         if (CommonHooks.fireBlockBreak(level, serverPlayer.gameMode.getGameModeForPlayer(), serverPlayer, pos, state).isCanceled()) return;

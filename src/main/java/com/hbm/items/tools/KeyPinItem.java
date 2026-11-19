@@ -19,14 +19,14 @@ public class KeyPinItem extends Item {
     public void appendHoverText(ItemStack stack, TooltipContext context, List<Component> tooltipComponents, TooltipFlag tooltipFlag) {
         int pins = getPins(stack);
         if(pins != 0) {
-            tooltipComponents.add(Component.literal("Pin configuration: " + pins));
+            tooltipComponents.add(Component.translatable("item.hbmsntm.obj_key_pin.configuration", pins));
         } else {
-            tooltipComponents.add(Component.literal("Pins not set!"));
+            tooltipComponents.add(Component.translatable("item.hbmsntm.obj_key_pin.not_set"));
         }
 
         if(this == NtmItems.KEY_FAKE.get()) {
             tooltipComponents.add(Component.empty());
-            tooltipComponents.add(Component.literal("Pins can neither be changed, nor copied."));
+            tooltipComponents.add(Component.translatable("item.hbmsntm.obj_key_pin.fixed"));
         }
     }
 

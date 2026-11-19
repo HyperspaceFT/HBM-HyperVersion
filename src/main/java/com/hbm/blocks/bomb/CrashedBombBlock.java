@@ -13,6 +13,7 @@ import com.hbm.explosion.vanillant.standard.EntityProcessorCross;
 import com.hbm.handler.compat.SableCompat;
 import com.hbm.interfaces.IBomb;
 import com.hbm.inventory.MetaHelper;
+import com.hbm.items.NtmItems;
 import com.hbm.items.special.PolaroidItem;
 import com.hbm.network.toclient.AuxParticle;
 import com.hbm.particle.helper.ExplosionCreator;
@@ -23,6 +24,11 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.sounds.SoundSource;
+import net.minecraft.world.InteractionHand;
+import net.minecraft.world.ItemInteractionResult;
+import net.minecraft.world.entity.item.ItemEntity;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.context.BlockPlaceContext;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Block;
@@ -35,6 +41,7 @@ import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.StateDefinition;
 import net.minecraft.world.level.block.state.properties.IntegerProperty;
+import net.minecraft.world.phys.BlockHitResult;
 import net.neoforged.fml.ModList;
 import net.neoforged.neoforge.network.PacketDistributor;
 
@@ -126,6 +133,30 @@ public class CrashedBombBlock extends MultiBlock implements EntityBlock, IBomb {
     @Override
     public RenderShape getRenderShape(BlockState state) {
         return RenderShape.ENTITYBLOCK_ANIMATED;
+    }
+
+    // ORIG BlockCrashedBomb.java:50-81: the defuser removes the bomb without an explosion or its own drops and hands out its parts
+    @Override
+    protected ItemInteractionResult useItemOn(ItemStack stack, BlockState state, Level level, BlockPos pos, Player player, InteractionHand hand, BlockHitResult hit) {
+        if(!stack.is(NtmItems.DEFUSER.get())) return super.useItemOn(stack, state, level, pos, player, hand, hit);
+
+        if(!level.isClientSide) {
+            DudType type = EnumUtil.grabEnumSafely(DudType.class, this.getMeta(state));
+
+            switch(type) {
+            case BALEFIRE -> dropItems(level, pos, new ItemStack(NtmItems.EGG_BALEFIRE_SHARD.get()));
+            case CONVENTIONAL -> dropItems(level, pos, new ItemStack(NtmItems.BALL_TNT.get(), 16));
+            case NUKE -> dropItems(level, pos, new ItemStack(NtmItems.BALL_TNT.get(), 8), new ItemStack(NtmItems.BILLET_PLUTONIUM.get(), 4));
+            case SALTED -> dropItems(level, pos, new ItemStack(NtmItems.BALL_TNT.get(), 8), new ItemStack(NtmItems.BILLET_PLUTONIUM.get(), 2), new ItemStack(NtmItems.INGOT_COBALT.get(), 12));
+            }
+
+            level.destroyBlock(pos, false);
+        }
+        return ItemInteractionResult.sidedSuccess(level.isClientSide);
+    }
+
+    private static void dropItems(Level level, BlockPos pos, ItemStack... drops) {
+        for(ItemStack drop : drops) level.addFreshEntity(new ItemEntity(level, pos.getX() + 0.5, pos.getY() + 0.5, pos.getZ() + 0.5, drop));
     }
 
     @Override

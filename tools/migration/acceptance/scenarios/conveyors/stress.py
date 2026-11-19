@@ -34,7 +34,8 @@ CONFIG = common.REPO / 'run' / 'config' / 'hbmsntm-server.toml'
 def expectations():
     return [dict(id='conveyors.stress-2000', text='record: tick time and client frame rates with about 2,000 moving items', source='record, no pass line'),
             dict(id='conveyors.stress-10000', text='record: tick time and client frame rates with about 10,000 moving items', source='record, no pass line'),
-            dict(id='conveyors.stress-profile', text='record: a 30-second server profile (debug start/stop) at the higher load', source='record, no pass line')]
+            dict(id='conveyors.stress-profile', text='record: at the higher load, a 30-second tick summary (debug start/stop) and a 10-second '
+                 'server profile (perf start, its report zip)', source='record, no pass line')]
 
 
 def ring_blocks(x, z):
@@ -97,11 +98,16 @@ def run(ctx):
         results[target] = m
         ctx.review(eid, 'moving items %d (%s); %s; server, two clients and driver on one Mac; network traffic not read' % (n, reply, m), shots)
     run_dir = common.REPO / 'run'
+    debug = run_dir / 'debug'
+    debug_existed, profiling_existed = debug.exists(), (debug / 'profiling').exists()
     since = time.time()
     ctx.rcon('debug start')
     ctx.step('wait', client=a, ticks=600)
     stop = ctx.rcon('debug stop')
-    ctx.step('wait', client=a, ticks=60)   # the report is written after the reply
+    # debug stop only replies with its summary; the report file comes from perf, which stops itself after 10 seconds
+    # of wall time and writes debug/profiling/<time>-<world>-<version>.zip below the server's directory
+    perf = ctx.rcon('perf start')
+    ctx.step('wait', client=a, ticks=300)
     found = [p for p in run_dir.rglob('*') if p.is_file() and 'profil' in str(p.relative_to(run_dir)).lower() and p.stat().st_mtime >= since]
     copied = []
     dest = ctx.run.dir / 'server-debug'
@@ -110,9 +116,10 @@ def run(ctx):
         shutil.copy2(p, dest / p.name)
         copied.append('%s (from run/%s)' % (p.name, p.relative_to(run_dir)))
         p.unlink()
-    debug = run_dir / 'debug'
-    if debug.exists() and not any(debug.rglob('*')):
-        shutil.rmtree(debug)
-    ctx.review('conveyors.stress-profile', 'debug stop: %s; report files copied into the run directory: %s' % (stop, copied or 'none found under run/'))
+    for path, existed in ((debug / 'profiling', profiling_existed), (debug, debug_existed)):
+        if not existed and path.is_dir() and not any(path.iterdir()):
+            path.rmdir()
+    ctx.review('conveyors.stress-profile', 'debug stop: %s; perf start: %s; report files copied into the run directory: %s'
+               % (stop, perf, copied or 'none found under run/'))
     ctx.rcon('kill @e[type=hbmsntm:moving_item]')
     _lib.server_idle(ctx, a)  # the closing stop of the group comes next

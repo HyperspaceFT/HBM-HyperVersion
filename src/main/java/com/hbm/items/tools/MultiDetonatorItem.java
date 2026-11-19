@@ -45,7 +45,7 @@ public class MultiDetonatorItem extends Item {
                 addLocation(stack, context.getClickedPos().getX(), context.getClickedPos().getY(), context.getClickedPos().getZ());
 
                 level.playSound(null, player.blockPosition(), NtmSoundEvents.TECH_BOOP.get(), SoundSource.PLAYERS, 1.0F, 1.0F);
-                player.sendSystemMessage(Component.literal("[" + this.getName(stack).getString() + "] ").withStyle(ChatFormatting.DARK_AQUA)
+                player.sendSystemMessage(Component.literal("[").append(this.getName(stack)).append("] ").withStyle(ChatFormatting.DARK_AQUA)
                         .append(Component.translatable("item.hbmsntm.obj_detonator.pos_added").withStyle(ChatFormatting.GREEN)));
             }
 
@@ -61,7 +61,7 @@ public class MultiDetonatorItem extends Item {
 
         if(!level.isClientSide) {
             if(!TagsUtil.hasCustomData(stack) || getLocations(stack) == null) {
-                player.sendSystemMessage(Component.literal("[" + this.getName(stack).getString() + "] ").withStyle(ChatFormatting.DARK_AQUA)
+                player.sendSystemMessage(Component.literal("[").append(this.getName(stack)).append("] ").withStyle(ChatFormatting.DARK_AQUA)
                         .append(Component.translatable("item.hbmsntm.obj_detonator.pos_none").withStyle(ChatFormatting.RED)));
             } else {
                 if(!player.isCrouching()) {
@@ -90,7 +90,7 @@ public class MultiDetonatorItem extends Item {
 
                     level.playSound(null, player.blockPosition(), NtmSoundEvents.TECH_BLEEP.get(), SoundSource.PLAYERS, 2.0F, 1.0F);
 
-                    player.sendSystemMessage(Component.literal("[" + this.getName(stack).getString() + "] ").withStyle(ChatFormatting.DARK_AQUA).append(Component.literal("Triggered " + success + "/" + locs[0].length + "!").withStyle(ChatFormatting.YELLOW)));
+                    player.sendSystemMessage(Component.literal("[").append(this.getName(stack)).append("] ").withStyle(ChatFormatting.DARK_AQUA).append(Component.translatable("item.hbmsntm.obj_detonator.triggered", success, locs[0].length).withStyle(ChatFormatting.YELLOW)));
                 } else {
                     CompoundTag tag = TagsUtil.getCustomData(stack);
                     tag.putIntArray("xValues", new int[0]);
@@ -100,7 +100,7 @@ public class MultiDetonatorItem extends Item {
 
                     level.playSound(null, player.blockPosition(), NtmSoundEvents.TECH_BOOP.get(), SoundSource.PLAYERS, 1.0F, 1.0F);
 
-                    player.sendSystemMessage(Component.literal("[" + this.getName(stack).getString() + "] ").withStyle(ChatFormatting.DARK_AQUA).append(Component.literal("Positions cleared!").withStyle(ChatFormatting.RED)));
+                    player.sendSystemMessage(Component.literal("[").append(this.getName(stack)).append("] ").withStyle(ChatFormatting.DARK_AQUA).append(Component.translatable("item.hbmsntm.obj_detonator.pos_cleared").withStyle(ChatFormatting.RED)));
                 }
             }
         }

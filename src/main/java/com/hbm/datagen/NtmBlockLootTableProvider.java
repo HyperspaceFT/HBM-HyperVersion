@@ -23,6 +23,7 @@ import net.minecraft.world.level.storage.loot.LootPool;
 import net.minecraft.world.level.storage.loot.LootTable;
 import net.minecraft.world.level.storage.loot.entries.AlternativesEntry;
 import net.minecraft.world.level.storage.loot.entries.LootItem;
+import net.minecraft.world.level.storage.loot.entries.LootPoolEntryContainer;
 import net.minecraft.world.level.storage.loot.functions.ApplyBonusCount;
 import net.minecraft.world.level.storage.loot.functions.LimitCount;
 import net.minecraft.world.level.storage.loot.functions.SetComponentsFunction;
@@ -34,6 +35,7 @@ import net.minecraft.world.level.storage.loot.providers.number.ConstantValue;
 import net.minecraft.world.level.storage.loot.providers.number.UniformGenerator;
 
 import java.util.ArrayList;
+import java.util.List;
 import java.util.Set;
 
 public class NtmBlockLootTableProvider extends BlockLootSubProvider {
@@ -69,14 +71,16 @@ public class NtmBlockLootTableProvider extends BlockLootSubProvider {
         this.dropSelf(NtmBlocks.ORE_LEAD_DEEPSLATE.get());
         this.dropSelf(NtmBlocks.ORE_ALUMINIUM.get());
         this.dropSelf(NtmBlocks.ORE_ALUMINIUM_DEEPSLATE.get());
-        this.dropSelf(NtmBlocks.ORE_ASBESTOS.get());
-        this.dropSelf(NtmBlocks.ORE_ASBESTOS_DEEPSLATE.get());
+        // Original BlockOre.java:87-88,121,132-140: the asbestos ore drops one asbestos ingot with the ore fortune bonus
+        this.add(NtmBlocks.ORE_ASBESTOS.get(), block -> this.oreDrop(block, NtmItems.INGOT_ASBESTOS.get()));
+        this.add(NtmBlocks.ORE_ASBESTOS_DEEPSLATE.get(), block -> this.oreDrop(block, NtmItems.INGOT_ASBESTOS.get()));
         this.dropSelf(NtmBlocks.ORE_THORIUM.get());
         this.dropSelf(NtmBlocks.ORE_THORIUM_DEEPSLATE.get());
-        this.add(NtmBlocks.ORE_NITER.get(), block -> this.oreDrop(block, NtmItems.NITER.get()));
-        this.add(NtmBlocks.ORE_NITER_DEEPSLATE.get(), block -> this.oreDrop(block, NtmItems.NITER.get()));
-        this.add(NtmBlocks.ORE_COBALT.get(), block -> this.oreDrop(block, NtmItems.FRAGMENT_COBALT.get(), 5, 8));
-        this.add(NtmBlocks.ORE_COBALT_DEEPSLATE.get(), block -> this.oreDrop(block, NtmItems.FRAGMENT_COBALT.get(), 5, 8));
+        // Original BlockOre.java:113,118,132-140: niter 2-4 and cobalt fragments 4-9, both with the ore fortune bonus
+        this.add(NtmBlocks.ORE_NITER.get(), block -> this.oreDrop(block, NtmItems.NITER.get(), 2, 4));
+        this.add(NtmBlocks.ORE_NITER_DEEPSLATE.get(), block -> this.oreDrop(block, NtmItems.NITER.get(), 2, 4));
+        this.add(NtmBlocks.ORE_COBALT.get(), block -> this.oreDrop(block, NtmItems.FRAGMENT_COBALT.get(), 4, 9));
+        this.add(NtmBlocks.ORE_COBALT_DEEPSLATE.get(), block -> this.oreDrop(block, NtmItems.FRAGMENT_COBALT.get(), 4, 9));
         this.add(NtmBlocks.ORE_CINNABAR.get(), block -> this.oreDrop(block, NtmItems.CINNABAR.get()));
         this.add(NtmBlocks.ORE_CINNABAR_DEEPSLATE.get(), block -> this.oreDrop(block, NtmItems.CINNABAR.get()));
         this.add(NtmBlocks.ORE_FLUORITE.get(), block -> this.oreDrop(block, NtmItems.FLUORITE.get(), 2, 4));
@@ -86,8 +90,9 @@ public class NtmBlockLootTableProvider extends BlockLootSubProvider {
         this.dropSelf(NtmBlocks.ORE_METEOR_ALUMINIUM.get());
         this.dropSelf(NtmBlocks.ORE_METEOR_COPPER.get());
         this.dropSelf(NtmBlocks.ORE_METEOR_RARE.get());
-        this.add(NtmBlocks.ORE_LIGNITE.get(), block -> this.oreDropNoFortune(block, NtmItems.LIGNITE.get()));
-        this.add(NtmBlocks.ORE_DEEPSLATE_LIGNITE.get(), block -> this.oreDropNoFortune(block, NtmItems.LIGNITE.get()));
+        // Original BlockOre.java:90-92,121,132-140: one lignite with the ore fortune bonus
+        this.add(NtmBlocks.ORE_LIGNITE.get(), block -> this.oreDrop(block, NtmItems.LIGNITE.get()));
+        this.add(NtmBlocks.ORE_LIGNITE_DEEPSLATE.get(), block -> this.oreDrop(block, NtmItems.LIGNITE.get()));
         this.add(NtmBlocks.ORE_RARE.get(), block -> this.oreDrop(block, NtmItems.RARE_EARTH_ORE_CHUNK.get()));
         this.add(NtmBlocks.ORE_RARE_DEEPSLATE.get(), block -> this.oreDrop(block, NtmItems.RARE_EARTH_ORE_CHUNK.get()));
         this.add(NtmBlocks.ORE_SULFUR.get(), block -> this.oreDrop(block, NtmItems.SULFUR.get(), 2, 4));
@@ -168,18 +173,27 @@ public class NtmBlockLootTableProvider extends BlockLootSubProvider {
         this.dropSelf(NtmBlocks.DECO_ASBESTOS.get());
 
 
-        this.add(NtmBlocks.ORE_BASALT.get(), block -> LootTable.lootTable()
-                .withPool(LootPool.lootPool()
-                        .setRolls(ConstantValue.exactly(1F))
-                        .add(AlternativesEntry.alternatives(
-                                LootItem.lootTableItem(NtmItems.NOTHING).when(this.propertyEquals(block, OreBasaltBlock.SUBTYPE, 0)),
-                                LootItem.lootTableItem(NtmItems.DETONATOR).when(this.propertyEquals(block, OreBasaltBlock.SUBTYPE, 1)),
-                                LootItem.lootTableItem(NtmItems.CAN_KEY).when(this.propertyEquals(block, OreBasaltBlock.SUBTYPE, 2)),
-                                LootItem.lootTableItem(NtmItems.CRACKPIPE).when(this.propertyEquals(block, OreBasaltBlock.SUBTYPE, 3)),
-                                LootItem.lootTableItem(NtmItems.CIGARETTE).when(this.propertyEquals(block, OreBasaltBlock.SUBTYPE, 4))
-                        ))
-                )
-        );
+        // Original BlockOreBasalt.java:32-82: each subtype drops one fixed item (EnumBasaltOreType.drop) with no fortune bonus.
+        // It overrides neither renderAsNormalBlock nor harvestBlock, so the 1.7.10 Block.harvestBlock silk touch path drops the
+        // ore itself with its subtype (ItemBlockBase has subtypes). An explosion drops the item with the usual survival chance.
+        this.add(NtmBlocks.ORE_BASALT.get(), block -> {
+            List<LootPoolEntryContainer.Builder<?>> entries = new ArrayList<>();
+            for(OreBasaltBlock.BasaltOreType type : OreBasaltBlock.BasaltOreType.values()) {
+                entries.add(LootItem.lootTableItem(block)
+                        .when(this.hasSilkTouch())
+                        .when(this.propertyEquals(block, OreBasaltBlock.SUBTYPE, type.ordinal()))
+                        .apply(SetComponentsFunction.setComponent(NtmDataComponents.META.get(), type.ordinal())));
+            }
+            entries.add(LootItem.lootTableItem(NtmItems.SULFUR).when(this.propertyEquals(block, OreBasaltBlock.SUBTYPE, OreBasaltBlock.BasaltOreType.SULFUR.ordinal())));
+            entries.add(LootItem.lootTableItem(NtmItems.FLUORITE).when(this.propertyEquals(block, OreBasaltBlock.SUBTYPE, OreBasaltBlock.BasaltOreType.FLUORITE.ordinal())));
+            entries.add(LootItem.lootTableItem(NtmItems.INGOT_ASBESTOS).when(this.propertyEquals(block, OreBasaltBlock.SUBTYPE, OreBasaltBlock.BasaltOreType.ASBESTOS.ordinal())));
+            entries.add(LootItem.lootTableItem(NtmItems.GEM_VOLCANIC).when(this.propertyEquals(block, OreBasaltBlock.SUBTYPE, OreBasaltBlock.BasaltOreType.GEM.ordinal())));
+            entries.add(LootItem.lootTableItem(NtmItems.POWDER_MOLYSITE).when(this.propertyEquals(block, OreBasaltBlock.SUBTYPE, OreBasaltBlock.BasaltOreType.MOLYSITE.ordinal())));
+            return LootTable.lootTable()
+                    .withPool(this.applyExplosionCondition(block, LootPool.lootPool()
+                            .setRolls(ConstantValue.exactly(1F))
+                            .add(AlternativesEntry.alternatives(entries.toArray(LootPoolEntryContainer.Builder[]::new)))));
+        });
 
         this.dropSelf(NtmBlocks.BASALT.get());
         this.dropSelf(NtmBlocks.BASALT_SMOOTH.get());
@@ -215,8 +229,8 @@ public class NtmBlockLootTableProvider extends BlockLootSubProvider {
         this.dropSelf(NtmBlocks.CONCRETE_ASBESTOS.get());
         this.dropSelf(NtmBlocks.DUCRETE.get());
         this.dropSelf(NtmBlocks.DUCRETE_SMOOTH.get());
-        this.dropSelf(NtmBlocks.DUCRETE_REINFORCED.get());
-        this.dropSelf(NtmBlocks.DUCRETE_BRICK.get());
+        this.dropSelf(NtmBlocks.REINFORCED_DUCRETE.get());
+        this.dropSelf(NtmBlocks.BRICK_DUCRETE.get());
         this.dropSelf(NtmBlocks.REINFORCED_LAMINATE.get());
         this.dropSelf(NtmBlocks.STEEL_SCAFFOLD.get());
         this.dropSelf(NtmBlocks.STEEL_BEAM.get());
@@ -244,26 +258,25 @@ public class NtmBlockLootTableProvider extends BlockLootSubProvider {
         this.dropSelf(NtmBlocks.BARBED_WIRE.get());
         this.dropSelf(NtmBlocks.SPIKES.get());
 
-        this.add(NtmBlocks.WASTE_EARTH.get(), block -> createSingleItemTable(Blocks.DIRT));
-        this.dropSelf(NtmBlocks.WASTE_MYCELIUM.get());
+        // Original WasteEarth.java:64-66: waste earth and waste mycelium drop dirt; silk touch gives the block
+        this.add(NtmBlocks.WASTE_EARTH.get(), block -> this.createSingleItemTableWithSilkTouch(block, Blocks.DIRT));
+        this.add(NtmBlocks.WASTE_MYCELIUM.get(), block -> this.createSingleItemTableWithSilkTouch(block, Blocks.DIRT));
         this.dropSelf(NtmBlocks.WASTE_TRINITITE.get());
         this.dropSelf(NtmBlocks.WASTE_TRINITITE_RED.get());
-        this.add(NtmBlocks.WASTE_LOG.get(), block ->
-                LootTable.lootTable().withPool(
-                        LootPool.lootPool()
-                                .setRolls(ConstantValue.exactly(1))
-                                .add(AlternativesEntry.alternatives(
-                                        LootItem.lootTableItem(NtmItems.BURNT_BARK.get()).when(LootItemRandomChanceCondition.randomChance(0.001f)).apply(SetItemCountFunction.setCount(UniformGenerator.between(2, 4))),
-                                        LootItem.lootTableItem(Items.COAL).apply(SetItemCountFunction.setCount(UniformGenerator.between(2, 4)))
-                                ))
-                )
-        );
+        // Original WasteLog.java:46-79: one burnt bark in 1,000 breaks and nothing else, otherwise 2-4 charcoal; no fortune; silk
+        // touch gives the log
+        this.add(NtmBlocks.WASTE_LOG.get(), block -> this.createSilkTouchDispatchTable(block, AlternativesEntry.alternatives(
+                LootItem.lootTableItem(NtmItems.BURNT_BARK.get()).when(LootItemRandomChanceCondition.randomChance(0.001f)),
+                LootItem.lootTableItem(Items.CHARCOAL).apply(SetItemCountFunction.setCount(UniformGenerator.between(2, 4))))));
         this.add(NtmBlocks.WASTE_LEAVES.get(), BlockLootSubProvider::createShearsOnlyDrop);
-        this.dropSelf(NtmBlocks.WASTE_PLANKS.get());
-        this.add(NtmBlocks.FROZEN_DIRT.get(), block -> createSingleItemTable(Items.SNOWBALL));
-        this.add(NtmBlocks.FROZEN_GRASS.get(), block -> createSingleItemTable(Items.SNOWBALL));
-        this.add(NtmBlocks.FROZEN_LOG.get(), block -> createSingleItemTable(Items.SNOWBALL));
-        this.add(NtmBlocks.FROZEN_PLANKS.get(), block -> createSingleItemTable(Items.SNOWBALL));
+        // Original BlockOre.java:66-74,121,132-140,145: waste planks drop charcoal, frozen dirt and planks a snowball, with the ore
+        // fortune bonus; WasteEarth.java:68-70,76-78 and WasteLog.java:50-53,70-73: frozen grass one snowball, frozen log 2-4, no
+        // fortune; silk touch gives the block
+        this.add(NtmBlocks.WASTE_PLANKS.get(), block -> this.oreDrop(block, Items.CHARCOAL));
+        this.add(NtmBlocks.FROZEN_DIRT.get(), block -> this.oreDrop(block, Items.SNOWBALL));
+        this.add(NtmBlocks.FROZEN_GRASS.get(), block -> this.oreDropNoFortune(block, Items.SNOWBALL));
+        this.add(NtmBlocks.FROZEN_LOG.get(), block -> this.oreDropNoFortune(block, Items.SNOWBALL, 2, 4));
+        this.add(NtmBlocks.FROZEN_PLANKS.get(), block -> this.oreDrop(block, Items.SNOWBALL));
         this.add(NtmBlocks.LEAVES_LAYER.get(), BlockLootSubProvider::createShearsOnlyDrop);
         this.dropSelf(NtmBlocks.FALLOUT.get()); // todo make item drop
         this.dropSelf(NtmBlocks.SELLAFIELD_SLAKED.get());
@@ -311,7 +324,6 @@ public class NtmBlockLootTableProvider extends BlockLootSubProvider {
         this.dropSelf(NtmBlocks.CRATE_TUNGSTEN.get());
         this.dropSelf(NtmBlocks.CRATE_STEEL.get());
         this.dropSelf(NtmBlocks.CRATE_DESH.get());
-        this.dropSelf(NtmBlocks.CRATE_TEMPLATE.get());
 
         this.dropSelf(NtmBlocks.GEIGER.get());
 
@@ -519,9 +531,11 @@ public class NtmBlockLootTableProvider extends BlockLootSubProvider {
         this.dropSelf(NtmBlocks.BLOCK_LITHIUM.get());
         this.dropSelf(NtmBlocks.BLOCK_MAGNETIZED_TUNGSTEN.get());
         this.dropSelf(NtmBlocks.BLOCK_METEOR.get());
-        this.add(NtmBlocks.BLOCK_METEOR_COBBLE.get(), block -> this.oreDrop(block, NtmItems.FRAGMENT_METEORITE.get(), 1, 3));
-        this.add(NtmBlocks.BLOCK_METEOR_BROKEN.get(), block -> this.oreDrop(block, NtmItems.FRAGMENT_METEORITE.get(), 1, 3));
-        this.dropSelf(NtmBlocks.BLOCK_METEOR_MOLTEN.get());
+        // Original BlockOre.java:78-80,102-104,116,121 with noFortune (ModBlocks.java:1568-1570): the cobble drops one fragment, the
+        // broken meteorite 1-3, the molten meteorite nothing; silk touch gives the block
+        this.add(NtmBlocks.BLOCK_METEOR_COBBLE.get(), block -> this.oreDropNoFortune(block, NtmItems.FRAGMENT_METEORITE.get()));
+        this.add(NtmBlocks.BLOCK_METEOR_BROKEN.get(), block -> this.oreDropNoFortune(block, NtmItems.FRAGMENT_METEORITE.get(), 1, 3));
+        this.add(NtmBlocks.BLOCK_METEOR_MOLTEN.get(), block -> this.createSilkTouchOnlyTable(block));
         this.add(NtmBlocks.BLOCK_METEOR_TREASURE.get(), this::meteorTreasureDrop);
         this.dropSelf(NtmBlocks.BLOCK_MOX_FUEL.get());
         this.dropSelf(NtmBlocks.BLOCK_NEPTUNIUM.get());
@@ -614,11 +628,18 @@ public class NtmBlockLootTableProvider extends BlockLootSubProvider {
         return this.createSilkTouchDispatchTable(block, LootItem.lootTableItem(item));
     }
 
+    private LootTable.Builder oreDropNoFortune(Block block, Item item, int min, int max) {
+        return this.createSilkTouchDispatchTable(block, LootItem.lootTableItem(item).apply(SetItemCountFunction.setCount(UniformGenerator.between(min, max))));
+    }
+
     private LootTable.Builder meteorTreasureDrop(Block block) {
         return LootTable.lootTable()
+                // Original BlockMeteoriteTreasure.java:14-32 keeps Block's silk touch: the block itself
+                .withPool(LootPool.lootPool().setRolls(ConstantValue.exactly(1)).add(LootItem.lootTableItem(block)).when(this.hasSilkTouch()))
                 .withPool(LootPool.lootPool()
                         // Original BlockMeteoriteTreasure.getDrops: 1 + rand.nextInt(3) draws
                         .setRolls(UniformGenerator.between(1, 3))
+                        .when(this.doesNotHaveSilkTouch())
                         .add(LootItem.lootTableItem(NtmItems.COBALT_PICKAXE.get()).setWeight(10))
                         .add(LootItem.lootTableItem(NtmItems.INGOT_ZIRCONIUM.get()).setWeight(10).apply(SetItemCountFunction.setCount(UniformGenerator.between(1, 16))))
                         .add(LootItem.lootTableItem(NtmItems.INGOT_NIOBIUM.get()).setWeight(10).apply(SetItemCountFunction.setCount(UniformGenerator.between(1, 16))))

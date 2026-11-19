@@ -1,6 +1,6 @@
-"""Shared paths and helpers for the Goal 29 acceptance tools (Mac, loopback only).
+"""Shared paths and helpers for the acceptance tools (Mac, loopback only).
 
-Every tool keeps its state under build/migration/accept-goal29/ of the NEO checkout that holds this file; nothing here
+Every tool keeps its state under build/migration/accept/ of the NEO checkout that holds this file; nothing here
 writes into the repository's tracked tree. Python standard library only.
 """
 import datetime
@@ -12,12 +12,12 @@ import uuid
 from pathlib import Path
 
 REPO = Path(__file__).resolve().parents[3]
-STATE = REPO / 'build' / 'migration' / 'accept-goal29'
+STATE = REPO / 'build' / 'migration' / 'accept'
 SESSION = STATE / 'server-session.json'
 PASSWORD = STATE / 'rcon.password'
 WORLDS = STATE / 'worlds.json'
 CLIENTS = STATE / 'clients'
-WORLD_PREFIX = 'accept-goal29-'
+WORLD_PREFIX = 'accept-'
 LOOPBACK = '127.0.0.1'
 BUILD_SH = REPO / 'tools' / 'migration' / 'build.sh'
 GRADLE_USER_HOME = REPO / '.gradle' / 'user-home'

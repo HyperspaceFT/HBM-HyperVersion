@@ -826,9 +826,9 @@ public class RBMKCoreGameTests {
             check(ass.duration == 100 && ass.power == 100L, "ass.rbmk takes " + ass.duration + " ticks at " + ass.power + ", expected 100 / 100");
             check(ass.inputItem.length == 4, "ass.rbmk has " + ass.inputItem.length + " inputs, expected 4");
             check(ass.inputItem[0] instanceof ComparableStack c0 && c0.item == NtmBlocks.CONCRETE_ASBESTOS.get().asItem() && c0.stacksize == 4, "ass.rbmk input 0 is " + describe(ass.inputItem[0]) + ", expected 4 concrete_asbestos");
-            check(ass.inputItem[1].stacksize == 2 && ass.inputItem[1].matchesRecipe(MetaHelper.newStack(NtmItems.CAST_PLATE.get(), 2, CastPlateItem.Type.STEEL.ordinal()), false), "ass.rbmk input 1 is " + describe(ass.inputItem[1]) + ", expected 2 steel cast plates");
+            check(ass.inputItem[1].stacksize == 2 && ass.inputItem[1].matchesRecipe(MetaHelper.newStack(NtmItems.PLATE_CAST.get(), 2, CastPlateItem.Type.STEEL.ordinal()), false), "ass.rbmk input 1 is " + describe(ass.inputItem[1]) + ", expected 2 steel cast plates");
             for(CastPlateItem.Type type : CastPlateItem.Type.values()) {
-                if(type != CastPlateItem.Type.STEEL) check(!ass.inputItem[1].matchesRecipe(MetaHelper.newStack(NtmItems.CAST_PLATE.get(), 2, type.ordinal()), false), "ass.rbmk input 1 accepts the " + type + " cast plate");
+                if(type != CastPlateItem.Type.STEEL) check(!ass.inputItem[1].matchesRecipe(MetaHelper.newStack(NtmItems.PLATE_CAST.get(), 2, type.ordinal()), false), "ass.rbmk input 1 accepts the " + type + " cast plate");
             }
             check(ass.inputItem[2].stacksize == 4 && ass.inputItem[2].matchesRecipe(new ItemStack(NtmItems.PLATE_COPPER.get(), 4), false), "ass.rbmk input 2 is " + describe(ass.inputItem[2]) + ", expected 4 copper plates");
             check(ass.inputItem[3].stacksize == 2 && ass.inputItem[3].matchesRecipe(new ItemStack(NtmItems.INGOT_RUBBER.get(), 2), false), "ass.rbmk input 3 is " + describe(ass.inputItem[3]) + ", expected 2 rubber ingots");
@@ -1100,7 +1100,7 @@ public class RBMKCoreGameTests {
         done(helper, "rbmk_closeout_hold_shift_hint");
     }
 
-    // Covers the CommonConfig meteor keys: shower chance 18000 under its own key, strike chance 40000 (original GeneralConfig meteor values).
+    // Covers the CommonConfig meteor keys: shower chance 18000 under its own key, strike chance 360000 (original WorldConfig.java:224-225 meteor values).
     @GameTest(template = TEMPLATE, batch = BATCH, timeoutTicks = 100)
     public static void rbmk_closeout_meteor_config(GameTestHelper helper) {
         guard(() -> {
@@ -1111,7 +1111,7 @@ public class RBMKCoreGameTests {
             check(shower.get(shower.size() - 1).equals("meteorShowerChance"), "the shower chance path is " + shower);
             check(strike.get(strike.size() - 1).equals("meteorStrikeChance"), "the strike chance path is " + strike);
             check(!shower.equals(strike), "both meteor chances share the path " + shower);
-            check(NtmConfig.COMMON.METEOR_SHOWER_CHACE.getDefault() == 18000 && NtmConfig.COMMON.METEOR_STRIKE_CHACE.getDefault() == 40000,
+            check(NtmConfig.COMMON.METEOR_SHOWER_CHACE.getDefault() == 18000 && NtmConfig.COMMON.METEOR_STRIKE_CHACE.getDefault() == 360000,
                     "defaults are " + NtmConfig.COMMON.METEOR_SHOWER_CHACE.getDefault() + " / " + NtmConfig.COMMON.METEOR_STRIKE_CHACE.getDefault());
         }).run();
         done(helper, "rbmk_closeout_meteor_config");

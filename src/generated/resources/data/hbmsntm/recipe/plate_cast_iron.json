@@ -1,0 +1,25 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "key": {
+    "B": {
+      "type": "neoforge:components",
+      "components": {
+        "hbmsntm:meta": 30
+      },
+      "items": "hbmsntm:bolt"
+    },
+    "P": {
+      "item": "hbmsntm:plate_iron"
+    }
+  },
+  "pattern": [
+    "BPB",
+    "BPB",
+    "BPB"
+  ],
+  "result": {
+    "count": 1,
+    "id": "hbmsntm:plate_cast"
+  }
+}

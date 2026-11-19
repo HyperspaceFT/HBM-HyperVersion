@@ -1,0 +1,1176 @@
+# Hand-placed rows of the Goal 32 master list: the "主清单候选" sections of GOAL32A-D, GOAL32S
+# section 八 and GOAL32T section 八, the rows GOAL32G 起点核对 asks to add, the stability and
+# old-save rows, the radio torch row and the release-form check. Scenario rows are NOT here:
+# they come from results.json through mapping.toml.
+#
+# [[row]]       one master-list row (one expectation)
+#   id          unique expectation id (provisional ids start with "pending." until the lane names them)
+#   source      出处
+#   lane        one of: 只留 GameTest（规则 2）/ 脚本（单人）/ 脚本（专服）/ 用户站点 / 游戏外脚本
+#   target      场景、测试或站点 text
+#   gametests   ["Class.method", ...] checked by the generator: method exists under
+#               src/main/java/com/hbm/gametest/ and ran and passed in the final-chain GameTest log
+#   result      批次结果 text (ignored when gametests are given; the check result is written)
+#   group       统一验收的运行组
+#   timing      用时来源
+#   pending     lane of this batch that still has to produce the row
+#   covers      scenario expectation ids that carry this candidate's client side (cross-check only)
+#   note        appended to the result (reason a row is still pending, defect or ordering notes)
+#   filled_by   lane of this batch that produced the row; run: its run name; verdict: for the counts only
+#
+# [[replaced]]  where a placeholder went: old id, new ids (rows of the table), lane, why; `kept = true` (or no
+#               new ids) when the old row stays in the table and `why` says why
+#
+# [[annotate]]  adds a source label to a scenario row (the candidate's client side is that row)
+# [[override]]  changes lane/group/pending/note of a scenario row by expectation id
+
+# ============================== 32A 主清单候选（GOAL32A.md:201-214） ==============================
+[[row]]
+id = "gametest.32a-centrifuge-gravel"
+source = "32A 候选 1"
+lane = "只留 GameTest（规则 2）"
+target = "离心第四产物是砂砾（下界石英矿、下界金矿仍出下界岩）"
+gametests = ["Goal32AGameTests.centrifuge_gravel"]
+
+[[row]]
+id = "gametest.32a-rare-earth-centrifuge"
+source = "32A 候选 2"
+lane = "只留 GameTest（规则 2）"
+target = "三种稀土矿离心出 desh 混合粉、两个锆粒、砂砾（建议的“放一块进离心机看产物”与测试走同一服务端配方，没有另外的客户端一面）"
+gametests = ["OverworldWorldgenGameTests.processing"]
+
+[[row]]
+id = "gametest.32a-rope-crafting"
+source = "32A 候选 3"
+lane = "只留 GameTest（规则 2）"
+target = "绳子三根线任意摆放都能合成（工作台换摆法与测试是同一配方匹配）"
+gametests = ["Goal32AGameTests.crafting"]
+
+[[row]]
+id = "gametest.32a-fuel-recipes"
+source = "32A 候选 4"
+lane = "只留 GameTest（规则 2）"
+target = "ZIRNOX 锂棒、LES 棒、镎与施拉比燃料坯、施拉比燃料／HES／LES 锭、四种平锻模的下界砖配方"
+gametests = ["Goal32AGameTests.crafting", "FuelClosureGameTests.zirnox_rod_recipes"]
+
+[[row]]
+id = "gametest.32a-basalt-drops"
+source = "32A 候选 5"
+lane = "只留 GameTest（规则 2）"
+target = "玄武岩矿五个子类型各掉一件对应物品、不受时运；精准采集掉带子类型的矿石"
+gametests = ["Goal32AGameTests.basalt_drops"]
+
+[[row]]
+id = "gametest.32a-laminate"
+source = "32A 候选 6"
+lane = "只留 GameTest（规则 2）"
+target = "强化夹层玻璃的化工厂配方收普通、硼、铅玻璃"
+gametests = ["Goal32AGameTests.laminate"]
+
+[[row]]
+id = "gametest.32a-item-tags"
+source = "32A 候选 7"
+lane = "只留 GameTest（规则 2）"
+target = "铁粉、钢锭、铜锭的过滤槽自动标签；钢锭可作锭模样板；燃烧分档不变"
+gametests = ["Goal32AGameTests.item_tags"]
+
+[[row]]
+id = "offgame.frozen-c-tags"
+source = "32A 候选 8"
+lane = "游戏外脚本"
+target = "最终链的 frozen 步（batch.py chain，冻结名单 4 份）"
+result = "0 个问题（build/migration/goal32u/final/frozen-check.log：4 lists (block-entity-types.txt, config-keys.txt, item-tags.txt, registry-ids.txt), 0 problems）"
+group = "最终链（打包时核对，不计入 2.5 小时）"
+filled_by = "统一验收开场"
+verdict = "pass"
+note = "补充文件 S0.1：改引 goal32u 最终链的日志（此前引 goal32t）"
+timing = "最终链"
+
+[[row]]
+id = "gametest.32a-outgasser-potato"
+source = "32A 候选 9"
+lane = "只留 GameTest（规则 2）"
+target = "辐照通道收土豆出毒土豆（RBMKOutgasserGameTests.java:457 一行）"
+gametests = ["RBMKOutgasserGameTests.outgasser_can_process"]
+
+[[row]]
+id = "offgame.closure-mainline"
+source = "32A 候选 10"
+lane = "游戏外脚本"
+target = "closure.py 主线闭包报告"
+result = "可得 451、缺口 0（migration/goal32s-closure.json，32S 第四节）"
+group = "只在批次里跑（闭包，游戏外）"
+timing = "游戏外（不计入）"
+
+# ============================== 32B 主清单候选（GOAL32B.md:193-216） ==============================
+[[row]]
+id = "gametest.32b-barrel-tank-automation"
+source = "32B 候选 1"
+lane = "只留 GameTest（规则 2）"
+target = "桶与储罐只让自动化往 2、4 号放、从 3、5 号取（客户端一面见专服行 mp-barrel、mp-fluid-tank）"
+gametests = ["Goal32BAutomationGameTests.barrel_automation", "Goal32BAutomationGameTests.fluid_tank_automation"]
+covers = ["machine-item-capability.mp-barrel", "machine-item-capability.mp-fluid-tank"]
+
+[[row]]
+id = "gametest.32b-barrel-tank-menu"
+source = "32B 候选 2"
+lane = "只留 GameTest（规则 2）"
+target = "桶与储罐界面的槽规则与 Shift 点击（测试经 menu.clicked；手放与 Shift 点击是同一服务端菜单逻辑）"
+gametests = ["Goal32BAutomationGameTests.barrel_menu", "Goal32BAutomationGameTests.fluid_tank_menu"]
+
+[[row]]
+id = "gametest.32b-sat-linker"
+source = "32B 候选 3"
+lane = "只留 GameTest（规则 2）"
+target = "卫星链接器两槽都是芯片才复制，机械臂只放 1 号（客户端一面见 mp-sat-linker）"
+gametests = ["Goal32BAutomationGameTests.sat_linker"]
+covers = ["machine-item-capability.mp-sat-linker"]
+
+[[row]]
+id = "gametest.32b-blast-furnace"
+source = "32B 候选 4"
+lane = "只留 GameTest（规则 2）"
+target = "高炉自动化不把同种物品放进两个输入槽（见 mp-blast-furnace）"
+gametests = ["Goal32BAutomationGameTests.blast_furnace"]
+covers = ["machine-item-capability.mp-blast-furnace"]
+
+[[row]]
+id = "gametest.32b-wood-burner"
+source = "32B 候选 5"
+lane = "只留 GameTest（规则 2）"
+target = "烧木发电机只对自动化开放燃料与灰"
+gametests = ["Goal32BAutomationGameTests.wood_burner"]
+
+[[row]]
+id = "gametest.32b-tungsten-crate"
+source = "32B 候选 6"
+lane = "只留 GameTest（规则 2）"
+target = "钨板条箱不让自动化取出钋坯与能熔炼的物品"
+gametests = ["Goal32BAutomationGameTests.tungsten_crate"]
+
+[[row]]
+id = "gametest.32b-launch-pads"
+source = "32B 候选 7"
+lane = "只留 GameTest（规则 2）"
+target = "发射台（小、大）自动化放导弹；联盟号发射台与热交换加热器不开放槽（见 mp-launch-pad、-large、mp-soyuz、mp-heatex）"
+gametests = ["Goal32BAutomationGameTests.launch_pads", "Goal32BAutomationGameTests.soyuz_heatex_no_slots"]
+covers = ["machine-item-capability.mp-launch-pad", "machine-item-capability.mp-heatex"]
+
+[[row]]
+id = "gametest.32b-proxy-is-empty"
+source = "32B 候选 8"
+lane = "只留 GameTest（规则 2）"
+target = "代理方块的 isEmpty 跟随核心"
+gametests = ["Goal32BAutomationGameTests.proxy_is_empty"]
+
+[[row]]
+id = "gametest.32b-radar-map"
+source = "32B 候选 9"
+lane = "只留 GameTest（规则 2）"
+target = "雷达首轮不为不存在的区块新建区域文件（客户端一面见 radar.mp-first-scan-*）"
+gametests = ["Goal32BGameTests.radar_map"]
+covers = ["radar.mp-first-scan-files", "radar.mp-first-scan-drawn"]
+
+[[row]]
+id = "gametest.32b-anvil-batch"
+source = "32B 候选 11"
+lane = "只留 GameTest（规则 2）"
+target = "铁砧批量：多产物 64 次，单产物为最大堆叠除以产量"
+gametests = ["Goal32BGameTests.anvil_batch"]
+
+[[row]]
+id = "gametest.32b-foundry-mold"
+source = "32B 候选 13"
+lane = "只留 GameTest（规则 2）"
+target = "铸模台放模具时服务端发出声音；小铸模选取框；浇注不变"
+gametests = ["Goal32BGameTests.foundry_mold"]
+
+[[row]]
+id = "gametest.32b-compressor-paste"
+source = "32B 候选 14"
+lane = "只留 GameTest（规则 2）"
+target = "压缩机设定只带压缩档或只带流体时也粘贴那一项"
+gametests = ["Goal32BGameTests.compressor_paste"]
+
+[[row]]
+id = "gametest.32b-centrifuge-sellafield"
+source = "32B 候选 15"
+lane = "只留 GameTest（规则 2）"
+target = "离心机收塞拉菲尔德钻石矿与绿宝石矿；钻石砂砾出三个钻石粉加砂砾"
+gametests = ["Goal32BGameTests.centrifuge"]
+
+[[row]]
+id = "gametest.32b-settings-tool"
+source = "32B 候选 16"
+lane = "只留 GameTest（规则 2）"
+target = "炼油厂、两种锅炉能粘贴到输入罐；高炉、蒸汽机、电动泵、组合炉复制不粘贴、不报错（建议的“在这几台之间复制粘贴”与测试同一服务端路径，结果没有另外的客户端显示）"
+gametests = ["Goal32BGameTests.settings_tool"]
+
+[[row]]
+id = "gametest.32b-satellite-order"
+source = "32B 候选 18"
+lane = "只留 GameTest（规则 2）"
+target = "卫星表保序，/satellites 列表按加入顺序"
+gametests = ["Goal32BGameTests.satellite_order"]
+
+[[row]]
+id = "gametest.32b-crashed-bomb"
+source = "32B 候选 19"
+lane = "只留 GameTest（规则 2）"
+target = "拆弹器右键坠毁炸弹按类型掉落、不爆炸（建议的创造模式拆四种与测试同一服务端路径）"
+gametests = ["Goal32BGameTests.crashed_bomb"]
+
+[[row]]
+id = "gametest.32b-burn-times"
+source = "32B 候选 20"
+lane = "只留 GameTest（规则 2）"
+target = "焦炭 3,200，煤砖、褐煤砖、木砖 2,000／1,600／400"
+gametests = ["Goal32BGameTests.burn_times", "Goal29AGameTests.global_fuel_table"]
+
+[[row]]
+id = "release-form.static-jar"
+source = "32B 第七节；32B 候选 21"
+lane = "游戏外脚本"
+target = "发布 JAR 内容清单与共用类扫描（不带 sable-companion，SableCompat 只在 ModList.isLoaded(\"sable\") 之后）"
+result = "静态通过：在被验的 JAR（build/migration/releases/goal32u/hbmsntm-198A-goal32u.jar，SHA-256 a92ac77f…3eb2）上重做。12,133 个条目，没有 hbmaccept 或验收类、没有 META-INF/jarjar，含 Sable 的只有 com/hbm/handler/compat/SableCompat.class，com/hbm/gametest 183 个类，模组清单只依赖 neoforge [21.1.228,) 与 minecraft [1.21.1]；常量池里引用客户端类的类 274 个（32B 的 JAR 273 个），新增的只有 HazardBlock，它唯一的客户端引用是 animateTick 里调 NuclearTechModClient.effectNT，该方法带 @OnlyIn(Dist.CLIENT)，专服加载时剥掉（build/migration/goal32acc/scripts/scan.py、scan.json；opening.md）"
+group = "只在批次里跑（32B，游戏外）"
+timing = "游戏外（不计入）"
+filled_by = "统一验收开场"
+verdict = "pass"
+note = "补充文件 S0.1：此前引 32B 的 JAR（664109ee…，GOAL32B.md:177-179）；实机由 release-form.real-server 印证（真实专服日志没有侧别错误）"
+
+[[row]]
+id = "release-form.real-server"
+source = "GOAL32 决定 8；32B 候选 21；GOAL32G 第三节"
+lane = "脚本（专服）"
+target = "NeoForge 安装器装真实专服，放发布 JAR（不带 Sable）启动到就绪，开发客户端连上走一条短线"
+result = "通过：NeoForge 21.1.228 安装器（SHA-1 1c96a584… 与 Maven 的 .sha1 一致）--installServer 装出真实专服，mods/ 只放被验的 JAR（a92ac77f…，不带 Sable、JEI），5 秒就绪（Done 0.320s）；日志除离线模式提示外有两条 ERROR：“No key layers”，是验收会话写的空超平坦参数；客户端退出时的 “Exception caught in connection”（SocketException: Connection reset，server/logs/latest.log:109-123）；两条都与本模组无关；没有 invalid dist、NoClassDefFound 或异常。开发客户端连入，RCON 放一台电炉（无限电池、4 铁矿），400 刻后服务端 4 铁锭 0 铁矿，客户端同步的方块实体 power 99950、lit=true，右键打开 MachineElectricFurnaceScreen（截图 realserver/client-steps/shots/realserver/furnace-screen.png）；RCON stop，退出码 0（build/migration/goal32acc/realserver/、opening.md）"
+group = "开场·发布形态检查（前置：用户届时单独授权下载安装器与接受 EULA；一次性，不计入 2.5 小时）"
+timing = "开场一次性，开服到就绪 5 s（08:50:45–08:50:50），其余未单独计时；不计入"
+filled_by = "统一验收开场"
+run = "realserver"
+verdict = "pass"
+note = "没有覆盖：真实网络、两人、发布 JAR 的客户端一面（由用户在自己的实例里走站点世界兼任）。验收会话自己的一处步骤错：screen 步没写 expect 而超时，结果里已报出当前界面是 MachineElectricFurnaceScreen，截图也证实"
+
+# ============================== 32C 主清单候选（GOAL32C.md:172-182） ==============================
+[[row]]
+id = "offgame.image-baseline"
+source = "32C 候选 5"
+lane = "游戏外脚本"
+target = "baseline.py 截图比对"
+result = "不可用（G-28，用户 2026-11-15 定为 1.0.0 之后）；截图仍由代理审阅逐张看"
+group = "不进统一验收（G-28）"
+timing = "—"
+
+# ============================== 32D 主清单候选（GOAL32D.md:193-213） ==============================
+[[row]]
+id = "gametest.32d-assembler-side-ports"
+source = "32D 候选 1"
+lane = "只留 GameTest（规则 2）"
+target = "装配机侧面端口只取出产物与配方不收的输入（客户端一面见 automation 的 assembler-side）"
+gametests = ["Goal32DGameTests.assembler_side_ports"]
+covers = ["machine-item-capability.assembler-side"]
+
+[[row]]
+id = "gametest.32d-tool-adventure"
+source = "32D 候选 2"
+lane = "只留 GameTest（规则 2）"
+target = "冒险模式设定工具能复制、不能粘贴，只作用一次、不开界面（经右键事件）"
+gametests = ["Goal32DGameTests.tool_adventure_right_click"]
+
+[[row]]
+id = "gametest.32d-router-bad-data"
+source = "32D 候选 3"
+lane = "只留 GameTest（规则 2）"
+target = "分拣机对坏的工具数据与存档数据不出错"
+gametests = ["Goal32DGameTests.router_bad_data"]
+
+[[row]]
+id = "gametest.31d-tool-paste-unloaded"
+source = "32D 候选 4"
+lane = "只留 GameTest（规则 2）"
+target = "对未加载的区块粘贴不生效（玩家够不到未加载的位置）"
+gametests = ["Goal31DGameTests.tool_paste_checks"]
+
+[[row]]
+id = "gametest.32d-screwdriver-wear"
+source = "32D 候选 5"
+lane = "只留 GameTest（规则 2）"
+target = "螺丝刀每调一次分流器比例耗 1 点耐久，Desh 与创造模式不耗"
+gametests = ["Goal32DGameTests.splitter_screwdriver_wear"]
+
+[[row]]
+id = "gametest.32d-control-codec"
+source = "32D 候选 6"
+lane = "只留 GameTest（规则 2）"
+target = "控制包的编解码与空标签丢弃"
+gametests = ["Goal32DGameTests.compound_tag_control_codec"]
+
+[[row]]
+id = "gametest.32d-block-entity-round-trip"
+source = "32D 候选 7"
+lane = "只留 GameTest（规则 2）"
+target = "每种方块实体存档往返一致（真实状态的读回由各阶段场景的 reload 行覆盖）"
+gametests = ["Goal32DGameTests.block_entity_round_trip"]
+
+[[row]]
+id = "gametest.32d-drum-no-chunk-radiation"
+source = "32D 候选 8"
+lane = "只留 GameTest（规则 2）"
+target = "废料桶不往区块里加辐射"
+gametests = ["WasteDrumGameTests.drum_no_chunk_radiation"]
+
+[[row]]
+id = "gametest.32d-flaky-tests-start"
+source = "32D 候选 9"
+lane = "只留 GameTest（规则 2）"
+target = "气体离心机、PUREX、ZIRNOX 的测试在方块实体开始更新后才推进"
+gametests = ["GasCentrifugeGameTests.gas_centrifuge_feed_and_power", "PUREXGameTests.purex_persistence", "PUREXGameTests.purex_row_*", "PUREXGameTests.purex_blocked_outputs", "FuelClosureGameTests.zirnox_new_rods_deplete"]
+
+[[row]]
+id = "gametest.32d-frozen-names"
+source = "32D 候选 10"
+lane = "只留 GameTest（规则 2）"
+target = "冻结的注册 ID、方块实体类型 ID 与配置键不消失、不改名（另有最终链的 frozen 步）"
+gametests = ["Goal32DGameTests.frozen_name_export"]
+
+[[row]]
+id = "gametest.29d-death-message-keys"
+source = "32D 候选 11"
+lane = "只留 GameTest（规则 2）"
+target = "死亡消息键都有翻译（物品名与提示的客户端一面见语言第一层）"
+gametests = ["Goal29DGameTests.death_message_lang_keys"]
+
+# ============================== 32S 第八节 ==============================
+[[row]]
+id = "gametest.32s-press-return-stroke"
+source = "32S 候选 1"
+lane = "只留 GameTest（规则 2）"
+target = "压制机回程不截零，负值存档读回"
+gametests = ["Goal32SGameTests.press_return_stroke", "Goal32SGameTests.press_negative_nbt"]
+
+[[row]]
+id = "gametest.32s-ore-hardness"
+source = "32S 候选 2"
+lane = "只留 GameTest（规则 2）"
+target = "基础矿硬度 5.0、要工具（客户端一面见阶段 1 的 hand-mining、pickaxe-time）"
+gametests = ["Goal32SGameTests.ore_hardness_and_tool"]
+covers = ["world-generation.hand-mining", "world-generation.pickaxe-time"]
+
+[[row]]
+id = "gametest.32s-oil-sand"
+source = "32S 候选 3"
+lane = "只留 GameTest（规则 2）"
+target = "油砂矿会下落；沙地油泡的群系条件；跨区块没有切痕（世界里数得到见冒烟 block-ore_oil_sand）"
+gametests = ["Goal32SGameTests.oil_sand_falls", "Goal32SGameTests.sand_bubble_biomes", "Goal32SGameTests.sand_bubble_across_chunks"]
+covers = ["oil-extraction.block-ore_oil_sand"]
+
+[[row]]
+id = "gametest.32s-outgas-ores"
+source = "32S 候选 4"
+lane = "只留 GameTest（规则 2）"
+target = "挖铀矿放氡、挖石棉矿放石棉粉尘"
+gametests = ["Goal32SGameTests.outgas_ores", "NetherEndWorldgenGameTests.outgas"]
+
+# ============================== 32T 第八节 ==============================
+[[row]]
+id = "gametest.32t-steel-block-drop"
+source = "32T 候选 1"
+lane = "只留 GameTest（规则 2）"
+target = "空手挖钢块不掉落、木镐掉落（全表与 destroyBlock 抽样）"
+gametests = ["Goal32TBlockPropertiesGameTests.tool_drop_samples", "Goal32TBlockPropertiesGameTests.block_property_table"]
+
+[[row]]
+id = "gametest.32t-belt-cable-drop"
+source = "32T 候选 2"
+lane = "只留 GameTest（规则 2）"
+target = "空手拆皮带与电缆不掉落、用镐掉落（皮带的真实挖掘见 conveyor-cranes.bare-hand-belt）"
+gametests = ["Goal32TBlockPropertiesGameTests.tool_drop_samples"]
+covers = ["conveyor-cranes.bare-hand-belt"]
+
+[[row]]
+id = "gametest.32t-console-still-valid"
+source = "32T 候选 3"
+lane = "只留 GameTest（规则 2）"
+target = "控制台 stillValid：12 格为真、20 格外为假（客户端一面见 mp-console-reach-12、-21）"
+gametests = ["Goal32TGameTests.rbmk_console_still_valid"]
+covers = ["rbmk-console.mp-console-reach-12", "rbmk-console.mp-console-reach-21"]
+
+[[row]]
+id = "gametest.32t-radar-marks"
+source = "32T 候选 4"
+lane = "只留 GameTest（规则 2）"
+target = "雷达扫描与开关标记存盘（客户端一面见 radar.mp-first-scan-restart）"
+gametests = ["Goal32TGameTests.radar_marks_small", "Goal32TGameTests.radar_marks_large"]
+covers = ["radar.mp-first-scan-restart"]
+
+[[row]]
+id = "gametest.32t-coal-powder"
+source = "32T 候选 5"
+lane = "只留 GameTest（规则 2）"
+target = "煤粉登记 COAL 危害（真实生存一对见 hazard-system.coal-dust-pair）"
+gametests = ["Goal32TGameTests.coal_powder_black_lung"]
+covers = ["hazard-system.coal-dust-pair"]
+
+[[row]]
+id = "gametest.32t-hazmat-sum"
+source = "32T 候选 6"
+lane = "只留 GameTest（规则 2）"
+target = "黄色整套抗性 0.59999996，盖革显示 (0.59)（界面读数见 radiation-detection.geiger-suits）"
+gametests = ["Goal32TGameTests.hazmat_resistance_sum_bits", "Goal32TGameTests.hazmat_geiger_display"]
+covers = ["radiation-detection.geiger-suits"]
+
+[[row]]
+id = "gametest.32t-block-resistance"
+source = "32T 候选 7"
+lane = "只留 GameTest（规则 2）"
+target = "429 行方块的硬度与抗性是原版实际值"
+gametests = ["Goal32TBlockPropertiesGameTests.block_property_table"]
+
+# ============================== 32F 专服组补行（GOAL32G 起点核对第 23 行） ==============================
+[[row]]
+id = "station.az5-alarm-heard"
+source = "32F 专服组补行（AZ-5 只有 A 听到警报声，人听的一半；数据包一半是 mp-console-az5）；两人清单第 4 行"
+lane = "用户站点"
+target = "两人清单第 4 行（migration/goal32u-two-person.md）：执行器按 AZ-5 时用户（离控制台 3 格内、不开界面）听不到盖子声与警报；用户按时听到盖子声与警报，执行器没有关机声事件"
+result = "通过（用户，两人清单 2026-11-19；经过见下）。走之前：两人清单已备（世界 build/migration/acceptance-runs/g32u-two-person/accept-g32u2p.zip），执行器一侧在世界副本上试过（act az5：rbmk_az5_cover、shutdown，两根棒目标 0.0；g32u-two-person-trial）"
+group = "专服人工站点（两人清单，用户约 10 分钟，未实测）"
+timing = "两人清单整张用户约 10 分钟（这一行约 2 分钟），未实测；执行器一侧 act az5 3 s"
+note = "操作者自己听到警报的一半在站 S11 rbmk-console.station-az5-console；两人清单 2026-11-19（回环开发专服 g32u2p-user，用户客户端 hbm_user 加执行器 acc_a，同一台 Mac；类路径是 goal32u 的代码加小修之十二至十五，不是被验的 JAR；证据 build/migration/acceptance-runs/g32u-two-person/acts.json、act-*.out、user-reports.md）：执行器按、用户听：第一次 act az5 时用户原话“我也听到了，但是那可能是因为acc 账号的声音没关？”——两个客户端同机，acc_a 客户端自己放的界面声也从同一副耳机出来，这一次不算数；用户把 acc_a 主音量拉到 0 后重发（act-az5-muted.out：执行器自己仍录到 rbmk_az5_cover 0.5、shutdown 1.0，两根棒目标 0），用户原话“啥也没有，正常的”。用户按、执行器听：act sounds 400 --near console 没有任何声音事件，用户原话“听到了，正常的”（先咔嗒、再关机警报）"
+verdict = "pass"
+
+# ============================== 稳定性（GOAL32G 第一节） ==============================
+[[row]]
+id = "old-world.v0.29.1"
+source = "32G 第二节 旧存档；32U 第四节 第 4 条重跑"
+lane = "脚本（专服）"
+target = "v0.29.1（92a557ca，第二节路 B：git archive 取树、离线构建、跑它的开发专服）存下的一次性超平坦世界，在本批构建上打开比对（口径 migration/goal32g-oldworld-criteria.md）"
+result = "L1 通过、B1 通过（1,572,864 格，0 处）、E1 通过（65 个方块实体）、N1 通过（1 个实体）、R1 通过（16027.3→15093.1，窗口 1.2 s）、P1 未执行（没有玩家进过旧版本的服，路 B 没有旧客户端）、S1 未执行（旧、新两边的模组存档文件都是空的，什么也没比）、G1 信息（not_kept 0）、F1 通过、F2 通过、F3／F4 未执行（这一版的布置没有皮带与标签过滤器）（g32u-oldworld-v0.29.1；build/migration/goal32u/oldworld/compare-v0.29.1.json）"
+group = "只在批次里跑（G-25）"
+filled_by = "32U-oldworld"
+run = "g32u-oldworld-v0.29.1"
+verdict = "pass"
+note = "比对口径里 R1 的理由写的是每秒约 1%，实际约 5%（ChunkRadiationHandlerSimple.java:88-100）；这次窗口只有 1.2 s，判定不受影响，口径文件待另行更正（goal32u oldworld-report.md）"
+timing = "g32u 对照载入 24.7 s（对照 L1 15.7 s）；不计入预算"
+
+[[row]]
+id = "old-world.v0.30.0"
+source = "32G 第二节 旧存档；32U 第四节 第 4 条重跑"
+lane = "脚本（专服）"
+target = "v0.30.0 的发布 JAR 在开发环境里（第二节路 A）存下的一次性超平坦世界，在本批构建上打开比对（口径 migration/goal32g-oldworld-criteria.md）"
+result = "L1 通过、B1 通过（1,572,864 格，0 处）、E1 通过（65 个方块实体）、N1 通过（1 个实体）、R1 通过（10207.2→9544.8，窗口 1.2 s）、P1 通过、S1 未执行（旧、新两边的模组存档文件都是空的，什么也没比）、G1 信息（not_kept 0）、F1 通过、F2 通过、F3／F4 未执行（这一版的布置没有皮带与标签过滤器）（g32u-oldworld-v0.30.0；build/migration/goal32u/oldworld/compare-v0.30.0.json）"
+group = "只在批次里跑（G-25）"
+filled_by = "32U-oldworld"
+run = "g32u-oldworld-v0.30.0"
+verdict = "pass"
+note = "比对口径里 R1 的理由写的是每秒约 1%，实际约 5%（ChunkRadiationHandlerSimple.java:88-100）；这次窗口只有 1.2 s，判定不受影响，口径文件待另行更正（goal32u oldworld-report.md）"
+timing = "g32u 对照载入 43.1 s（对照 L1 15.7 s）；不计入预算"
+
+[[row]]
+id = "old-world.v0.31.0"
+source = "32G 第二节 旧存档；32U 第四节 第 4 条重跑"
+lane = "脚本（专服）"
+target = "v0.31.0 的发布 JAR 在开发环境里（第二节路 A）存下的一次性超平坦世界，在本批构建上打开比对（口径 migration/goal32g-oldworld-criteria.md）"
+result = "L1 通过、B1 通过（1,572,864 格，0 处）、E1 通过（67 个方块实体）、N1 通过（2 个实体）、R1 通过（12909.0→12139.3，窗口 1.2 s）、P1 通过、S1 未执行（旧、新两边的模组存档文件都是空的，什么也没比）、G1 信息（not_kept 0）、F1、F2、F3、F4 通过（g32u-oldworld-v0.31.0；build/migration/goal32u/oldworld/compare-v0.31.0.json）"
+group = "只在批次里跑（G-25）"
+filled_by = "32U-oldworld"
+run = "g32u-oldworld-v0.31.0"
+verdict = "pass"
+note = "比对口径里 R1 的理由写的是每秒约 1%，实际约 5%（ChunkRadiationHandlerSimple.java:88-100）；这次窗口只有 1.2 s，判定不受影响，口径文件待另行更正（goal32u oldworld-report.md）"
+timing = "g32u 对照载入 43.1 s（对照 L1 15.7 s）；不计入预算"
+
+[[row]]
+id = "old-world.removed-ids"
+source = "缺口账 G-52（用户 2026-11-19 同意再跑一次 v0.31.0）"
+lane = "脚本（专服）"
+target = "v0.31.0 的发布 JAR 存下的一次性超平坦世界里放着 crate_template（里面 5 钻石、7 钢锭）、箱子里有 3 个 cast_plate（与 9 铁锭、4 钢锭）、地上有 ore_deepslate_lignite，对照一块 ore_uranium；在被验的构建上打开，核对这些位置与载入日志（发布说明候选 Goal32N 升级须知）"
+result = "与升级须知一致：crate_template 的位置是空气、不是方块实体，里面的物品一起消失；ore_deepslate_lignite 的位置是空气；箱子还在，剩 9 铁锭、4 钢锭，cast_plate 那一格消失；铀矿对照还在。日志：ChunkSerializer “Recoverable errors … Unknown registry key … ore_deepslate_lignite -> using default”（ERROR 级，可恢复）、BlockEntity “Skipping BlockEntity with id hbmsntm:crate_template”（WARN）、ItemStack “Tried to load invalid item … cast_plate”（ERROR 级）；没有异常栈、没有崩溃，正常停服。载入是在与 goal32u 的 JAR 同一份代码的开发专服上做的（类路径上的 build/classes/java/main，载入日志 “Found valid mod file main”），不是发布 JAR（build/migration/goal32acc/oldworld/g52.json；日志 build/migration/goal32acc/g52-gen.log、g52-load.log 与 build/migration/accept/logs/server-g32acg52*.log）"
+group = "开场·一次性（用户 2026-11-19 同意，不计入 2.5 小时）"
+timing = "开场一次性，未单独计时；不计入"
+filled_by = "统一验收开场"
+verdict = "pass"
+note = "只测了 27 个改名或删除的 ID 里的 3 个（crate_template、cast_plate、ore_deepslate_lignite），另外 24 个没有逐个测"
+
+# ============================== 无线电火把（GOAL32G 第三节） ==============================
+# ============================== 32U stations 道：站点世界的 13 站与 S0 牌子（g32u-stations） ==============================
+[[row]]
+id = "basic-assembly.station-assembler-loop"
+source = "32G 第三节 stations 道新定（机器循环音：装配机）"
+lane = "用户站点"
+target = "站 S1 装配机循环音：放入铌粉开工后持续的电机嗡鸣、机械臂每落一次一声敲击、圆环启动声，15 格外听不到，缺料或做完即停、不拖尾（原版 TileEntityMachineAssemblyMachine.java:137-194；NEO MachineAssemblyMachineBlockEntity.java:134-178,197-198）"
+result = "站点试跑：建成、探针通过（120 刻后产出磁控管；听到 assembler_start、assembler_strike、motor）、复位与模板一致、重开后牌子与复位命令都在（g32u-stations，stations.json）；人的判定在统一验收"
+group = "用户站点·站 S1（g32u 站点世界，单人）"
+timing = "站点世界一次搭建、存档、重开与探针 144.4 s（13 站，g32u-stations）；人约 2.5 分钟（solo-report 估计，未实测）"
+filled_by = "32U-stations"
+run = "g32u-stations"
+note = "新期望：机器循环音在 Goal 32 各批没有期望行，stations 道新定了这一站（README 第 1 条：道是用户站点）；统一验收 2026-11-19 已把站点世界（g32u-stations/accept-stations.zip）、STATIONS.md 与补充文件 S0.2 的更正交给用户，已回报。用户 2026-11-19 第一次回报，走的是统一验收会话起的开发客户端（solo，载入 accept-stations，简体中文），类路径是当时的工作树：goal32u 的代码加小修之十二至十四（用户截图里离心机已有白色标题，即小修之十四），不是被验的 JAR。用户原话“S1声音在第十四格就消失了，传播范围是一个半径15的圆（以机器中央为圆心，如果算上机器本身的话）”。规划会话判定通过：站点说明的“50 格”写错，原版循环声范围是 15（TileEntityMachineAssemblyMachine.java:194；ClientProxy.java:1947-1961，音量按 AudioDynamic.java:101 线性降到 15 格处为零），NEO MachineAssemblyMachineBlockEntity.java:198 相同，用户听到的与原版一致；说明已改成 15 格"
+verdict = "pass"
+
+[[row]]
+id = "basic-assembly.station-recipe-search"
+source = "32B 候选 17；32G 第三节 stations 道"
+lane = "用户站点"
+target = "站 S2 配方选择界面：一打开搜索框就有焦点，英文、中文输入法选好的字（拼音阶段不显示可以接受）、字母 e 都进搜索框，Esc 才关（执行器不能打字，G-31）"
+result = "站点试跑：建成、探针通过（右键打开装配机界面（配方选择界面本身由人看））、复位与模板一致、重开后牌子与复位命令都在（g32u-stations，stations.json）；人的判定在统一验收"
+group = "用户站点·站 S2（g32u 站点世界，单人）"
+timing = "站点世界一次搭建、存档、重开与探针 144.4 s（13 站，g32u-stations）；人约 1.5 分钟（solo-report 估计，未实测）"
+filled_by = "32U-stations"
+run = "g32u-stations"
+verdict = "pass"
+note = "统一验收 2026-11-19 已把站点世界（g32u-stations/accept-stations.zip）、STATIONS.md 与补充文件 S0.2 的更正交给用户，已回报。用户 2026-11-19 第一次回报，走的是统一验收会话起的开发客户端（solo，载入 accept-stations，简体中文），类路径是当时的工作树：goal32u 的代码加小修之十二至十四（用户截图里离心机已有白色标题，即小修之十四），不是被验的 JAR。用户原话“S2中文输入法不会进输入框，在选字阶段（就是打拼音的阶段）啥也不会显示，得选好字才会进去，但是我觉得这不是问题”。规划会话判定通过：搜索框是原版的 EditBox（RecipeSelectorScreen.java:74），说明里“拼音与选字都进了搜索框”写得过头，已改成“选好的字进了搜索框，拼音阶段不显示可以接受”"
+
+[[row]]
+id = "shredder.station-loops"
+source = "32G 第三节 stations 道新定（机器循环音：粉碎机、离心机）"
+lane = "用户站点"
+target = "站 S3 粉碎机与离心机循环音：粉碎机的推车滚动声（原版每 50 刻一段、音高 0.75，TileEntityMachineShredder.java:261-267；NEO 是持续循环、音高 0.65，MachineShredderBlockEntity.java:64-80,384-385，听着不像原版就记下）、离心机持续嗡鸣，停工即停（原版 TileEntityMachineCentrifuge.java:244-262,291）"
+result = "站点试跑：建成、探针通过（260 刻后两台都出铅粉；听到 centrifuge_operate、minecart.riding）、复位与模板一致、重开后牌子与复位命令都在（g32u-stations，stations.json）；人的判定在统一验收"
+group = "用户站点·站 S3（g32u 站点世界，单人）"
+timing = "站点世界一次搭建、存档、重开与探针 144.4 s（13 站，g32u-stations）；人约 2 分钟（solo-report 估计，未实测）"
+filled_by = "32U-stations"
+run = "g32u-stations"
+note = "stations 道的观察（未定为缺陷）：粉碎机声音的节奏与音高同原版不同、离心机循环音的距离原版 10、NEO 15（收口 2026-11-19：小修之二十已把 NEO 改成 10，改后没有实机看过）；统一验收 2026-11-19 已把站点世界（g32u-stations/accept-stations.zip）、STATIONS.md 与补充文件 S0.2 的更正交给用户，已回报。用户 2026-11-19 第一次回报，走的是统一验收会话起的开发客户端（solo，载入 accept-stations，简体中文），类路径是当时的工作树：goal32u 的代码加小修之十二至十四（用户截图里离心机已有白色标题，即小修之十四），不是被验的 JAR。用户没有报声音的问题（用户原话“没提到的全都没问题”）。用户原话“S3的离心机 UI 内部错位，如图一图二所示，不知道是否是因为 UI 我调的是2”：规划会话判定这是缺陷，记缺口账 G-56（早于本 Goal，与界面缩放无关，交小修之十五）；本行查的是循环音，判通过。用户 2026-11-19 第二次回报，走的是统一验收会话 16:35 起的开发客户端（solo，载入同一份 accept-stations，简体中文），类路径是当时的工作树：goal32u 的代码加小修之十二至十五，不是被验的 JAR：用户原话“离心机重新测了一遍也正常了”，小修之十五（G-56）的离心机界面由此在游戏里见过"
+verdict = "pass"
+
+[[row]]
+id = "concrete.station-ducrete-look"
+source = "32D 候选 13；32G 第三节 stations 道"
+lane = "用户站点"
+target = "站 S4 Ducrete 名字与外观：四块的英文名对得上原版（Ducrete Tile、Ducrete、Reinforced Ducrete、Ducrete Bricks，原版 en_US.lang:5284,5560,5562,6359；NEO NtmBlocks.java:272-275），中文不是键名，贴图各异，镐挖掉本身"
+result = "站点试跑：建成、探针通过（一排四块 brick_ducrete、ducrete、ducrete_smooth、reinforced_ducrete 都在）、复位与模板一致、重开后牌子与复位命令都在（g32u-stations，stations.json）；人的判定在统一验收"
+group = "用户站点·站 S4（g32u 站点世界，单人）"
+timing = "站点世界一次搭建、存档、重开与探针 144.4 s（13 站，g32u-stations）；人约 2 分钟（solo-report 估计，未实测）"
+filled_by = "32U-stations"
+run = "g32u-stations"
+note = "stations 道的观察（未定为缺陷）：工作树里生成的 en_us.json:166 写 Ducrete Brick，原版是 Ducrete Bricks（收口 2026-11-19：小修之十九已改成 Ducrete Bricks，改后没有实机看过）；站里请人记下；统一验收 2026-11-19 已把站点世界（g32u-stations/accept-stations.zip）、STATIONS.md 与补充文件 S0.2 的更正交给用户，已回报。用户 2026-11-19 第一次回报，走的是统一验收会话起的开发客户端（solo，载入 accept-stations，简体中文），类路径是当时的工作树：goal32u 的代码加小修之十二至十四（用户截图里离心机已有白色标题，即小修之十四），不是被验的 JAR。用户原话“没提到的全都没问题”；按补充文件 S0.2 掉落一项跳过。规划会话判定通过"
+verdict = "pass"
+
+[[row]]
+id = "conveyors.station-cram-sound"
+source = "32F 专服组（G-38）的单人一半；32G 第三节 stations 道"
+lane = "用户站点"
+target = "站 S5 拥堵小爆炸声：拉杆放料，封闭小环挤满时响一声小爆炸、冒一团烟、那堆物品消失，周围不受伤（原版 EntityMovingConveyorObject.java:88-97；NEO MovingConveyorObject.java:173-187）；专服一半见 conveyors.mp-cram-explosion-sound（两人清单第 3 行）"
+result = "站点试跑：建成、探针通过（180 刻后环上物品从 196 降到 75，8 段皮带都在）、复位与模板一致、重开后牌子与复位命令都在（g32u-stations，stations.json）；人的判定在统一验收"
+group = "用户站点·站 S5（g32u 站点世界，单人）"
+timing = "站点世界一次搭建、存档、重开与探针 144.4 s（13 站，g32u-stations）；人约 2.5 分钟（solo-report 估计，未实测）"
+filled_by = "32U-stations"
+run = "g32u-stations"
+verdict = "pass"
+note = "统一验收 2026-11-19 已把站点世界（g32u-stations/accept-stations.zip）、STATIONS.md 与补充文件 S0.2 的更正交给用户，已回报。用户 2026-11-19 第一次回报，走的是统一验收会话起的开发客户端（solo，载入 accept-stations，简体中文），类路径是当时的工作树：goal32u 的代码加小修之十二至十四（用户截图里离心机已有白色标题，即小修之十四），不是被验的 JAR。用户原话“没提到的全都没问题”。规划会话判定通过"
+
+[[row]]
+id = "crane-filter-upgrades.station-tag-filter"
+source = "32A 候选 7（客户端一面）；32G 第三节 stations 道"
+lane = "用户站点"
+target = "站 S6 过滤与标签：分拣机与提取器的过滤格放铁粉、钢锭、HBM 铜锭，模式文字自动选 c:dusts/iron、c:ingots/steel、c:ingots/copper，循环时经过更宽的父标签，两台显示一致、文字不出格（原版 ModulePatternMatcher.java:30-53）"
+result = "站点试跑：建成、探针通过（右键打开 CraneRouterScreen）、复位与模板一致、重开后牌子与复位命令都在（g32u-stations，stations.json）；人的判定在统一验收"
+group = "用户站点·站 S6（g32u 站点世界，单人）"
+timing = "站点世界一次搭建、存档、重开与探针 144.4 s（13 站，g32u-stations）；人约 3 分钟（solo-report 估计，未实测）"
+filled_by = "32U-stations"
+run = "g32u-stations"
+note = "原占位行 station.filter-tag-mode 里的抓斗手动循环、c:ingots/copper 过滤器放行 HBM 铜锭、铁砧锭模用 HBM 钢锭当样板三项本站没有做；逻辑一面由 gametest.32a-item-tags 覆盖；统一验收 2026-11-19 已把站点世界（g32u-stations/accept-stations.zip）、STATIONS.md 与补充文件 S0.2 的更正交给用户，已回报。用户 2026-11-19 第一次回报，走的是统一验收会话起的开发客户端（solo，载入 accept-stations，简体中文），类路径是当时的工作树：goal32u 的代码加小修之十二至十四（用户截图里离心机已有白色标题，即小修之十四），不是被验的 JAR。用户原话“S6在分拣机和过滤机中的铁锭出现了两个我不认识的标识”（截图是“物品标签匹配：minecraft:trim_materials”和“minecraft:beacon_payment_items”）。规划会话判定通过：这两档是铁锭带的 Minecraft 自带标签，NEO 按设计逐个经过物品的全部标签（ModulePatternMatcher.java:80-104,130-134），对应原版逐个经过全部矿物词典名"
+verdict = "pass"
+
+[[row]]
+id = "foundry-casting.station-mold-sound"
+source = "32B 候选 13（客户端一面：放模具的声音、小铸模选取框）；32G 第三节 stations 道"
+lane = "用户站点"
+target = "站 S7 铸模台：尺寸对的模具放进去响一声插头声，尺寸不对放不进、没有声音；铸模台的选取框是实心半格（原版 FoundryCastingBase.java:105、FoundryMold.java:65-66；NEO FoundryCastingBlock.java:60-66、FoundryMoldBlock.java:17-25）"
+result = "站点试跑：建成、探针通过（两声 upgrade_plug，两种模具都放进去了）、复位与模板一致、重开后牌子与复位命令都在（g32u-stations，stations.json）；人的判定在统一验收"
+group = "用户站点·站 S7（g32u 站点世界，单人）"
+timing = "站点世界一次搭建、存档、重开与探针 144.4 s（13 站，g32u-stations）；人约 2 分钟（solo-report 估计，未实测）"
+filled_by = "32U-stations"
+run = "g32u-stations"
+verdict = "pass"
+note = "统一验收 2026-11-19 已把站点世界（g32u-stations/accept-stations.zip）、STATIONS.md 与补充文件 S0.2 的更正交给用户，已回报。用户 2026-11-19 第一次回报，走的是统一验收会话起的开发客户端（solo，载入 accept-stations，简体中文），类路径是当时的工作树：goal32u 的代码加小修之十二至十四（用户截图里离心机已有白色标题，即小修之十四），不是被验的 JAR。用户原话“我就从 S1 走到了 S6，7及以后都没走”，第一次未走到本站。用户 2026-11-19 第二次回报，走的是统一验收会话 16:35 起的开发客户端（solo，载入同一份 accept-stations，简体中文），类路径是当时的工作树：goal32u 的代码加小修之十二至十五，不是被验的 JAR。用户原话“都测完了，文字界面方面没有任何问题，离心机重新测了一遍也正常了，然后测燃料提取机的那个，出现了俩重复的模型，似乎是 bug，其余的都通过了”。规划会话判定通过（其余的都通过了）"
+
+[[row]]
+id = "hazard-system.station-chunk-fog"
+source = "32B 候选 10；32G 第三节 stations 道"
+lane = "用户站点"
+target = "站 S8 区块辐射雾：/ntmchunkrad set 10000 后几秒内雾出现在该区块（F3+G 边界之内）离地几格，相邻区块稀疏，设回 0 后停（原版 ChunkRadiationHandlerSimple.java:95-115；NEO ChunkRadiationHandlerSimple.java:97-115）"
+result = "站点试跑：建成、没有探针（人用命令设辐射）、复位与模板一致、重开后牌子与复位命令都在（g32u-stations，stations.json）；人的判定在统一验收"
+group = "用户站点·站 S8（g32u 站点世界，单人）"
+timing = "站点世界一次搭建、存档、重开与探针 144.4 s（13 站，g32u-stations）；人约 2 分钟（solo-report 估计，未实测）"
+filled_by = "32U-stations"
+run = "g32u-stations"
+verdict = "pass"
+note = "统一验收 2026-11-19 已把站点世界（g32u-stations/accept-stations.zip）、STATIONS.md 与补充文件 S0.2 的更正交给用户，已回报。用户 2026-11-19 第一次回报，走的是统一验收会话起的开发客户端（solo，载入 accept-stations，简体中文），类路径是当时的工作树：goal32u 的代码加小修之十二至十四（用户截图里离心机已有白色标题，即小修之十四），不是被验的 JAR。用户原话“我就从 S1 走到了 S6，7及以后都没走”，第一次未走到本站。用户 2026-11-19 第二次回报，走的是统一验收会话 16:35 起的开发客户端（solo，载入同一份 accept-stations，简体中文），类路径是当时的工作树：goal32u 的代码加小修之十二至十五，不是被验的 JAR。用户原话“都测完了，文字界面方面没有任何问题，离心机重新测了一遍也正常了，然后测燃料提取机的那个，出现了俩重复的模型，似乎是 bug，其余的都通过了”。规划会话判定通过（其余的都通过了）"
+
+[[row]]
+id = "oil-refining.station-refinery-look"
+source = "32B 候选 12；32G 第三节 stations 道"
+lane = "用户站点"
+target = "站 S9 炼油厂渲染：核心块移出视野时塔身不消失、不闪，256 格内一直画着（原版 TileEntityMachineRefinery.java:341-350；NEO RenderRefinery.java:41-44）"
+result = "站点试跑：建成、探针通过（炼油厂核心在 (133, -60, 6)）、复位与模板一致、重开后牌子与复位命令都在（g32u-stations，stations.json）；人的判定在统一验收"
+group = "用户站点·站 S9（g32u 站点世界，单人）"
+timing = "站点世界一次搭建、存档、重开与探针 144.4 s（13 站，g32u-stations）；人约 1.5 分钟（solo-report 估计，未实测）"
+filled_by = "32U-stations"
+run = "g32u-stations"
+verdict = "pass"
+note = "统一验收 2026-11-19 已把站点世界（g32u-stations/accept-stations.zip）、STATIONS.md 与补充文件 S0.2 的更正交给用户，已回报。用户 2026-11-19 第一次回报，走的是统一验收会话起的开发客户端（solo，载入 accept-stations，简体中文），类路径是当时的工作树：goal32u 的代码加小修之十二至十四（用户截图里离心机已有白色标题，即小修之十四），不是被验的 JAR。用户原话“我就从 S1 走到了 S6，7及以后都没走”，第一次未走到本站。用户 2026-11-19 第二次回报，走的是统一验收会话 16:35 起的开发客户端（solo，载入同一份 accept-stations，简体中文），类路径是当时的工作树：goal32u 的代码加小修之十二至十五，不是被验的 JAR。用户原话“都测完了，文字界面方面没有任何问题，离心机重新测了一遍也正常了，然后测燃料提取机的那个，出现了俩重复的模型，似乎是 bug，其余的都通过了”。规划会话判定通过（其余的都通过了）"
+
+[[row]]
+id = "power-control.station-switch-sound"
+source = "32F 专服组（G-38）的单人一半；32G 第三节 stations 道"
+lane = "用户站点"
+target = "站 S10 电力开关声：两个开关各点两次，开是正常音高、关是 0.85 倍，声音从被点的开关方向来，一下一声（原版 CableSwitch.java:52,55；NEO CableSwitchBlock.java:63）；专服上两人都听到的一半见 power-control.mp-switch-sound（两人清单第 2 行）"
+result = "站点试跑：建成、探针通过（两下右键，reactor_start 音高依次 [1.0, 0.85]）、复位与模板一致、重开后牌子与复位命令都在（g32u-stations，stations.json）；人的判定在统一验收"
+group = "用户站点·站 S10（g32u 站点世界，单人）"
+timing = "站点世界一次搭建、存档、重开与探针 144.4 s（13 站，g32u-stations）；人约 1.5 分钟（solo-report 估计，未实测）"
+filled_by = "32U-stations"
+run = "g32u-stations"
+verdict = "pass"
+note = "统一验收 2026-11-19 已把站点世界（g32u-stations/accept-stations.zip）、STATIONS.md 与补充文件 S0.2 的更正交给用户，已回报。用户 2026-11-19 第一次回报，走的是统一验收会话起的开发客户端（solo，载入 accept-stations，简体中文），类路径是当时的工作树：goal32u 的代码加小修之十二至十四（用户截图里离心机已有白色标题，即小修之十四），不是被验的 JAR。用户原话“我就从 S1 走到了 S6，7及以后都没走”，第一次未走到本站。用户 2026-11-19 第二次回报，走的是统一验收会话 16:35 起的开发客户端（solo，载入同一份 accept-stations，简体中文），类路径是当时的工作树：goal32u 的代码加小修之十二至十五，不是被验的 JAR。用户原话“都测完了，文字界面方面没有任何问题，离心机重新测了一遍也正常了，然后测燃料提取机的那个，出现了俩重复的模型，似乎是 bug，其余的都通过了”。规划会话判定通过（其余的都通过了）"
+
+[[row]]
+id = "rbmk-console.station-az5-console"
+source = "32F 专服组（rbmk-console.mp-console-az5 操作者的一半、mp-console-visual 的人看一半）；32G 第三节 stations 道"
+lane = "用户站点"
+target = "站 S11 RBMK 控制台：网格画出三根柱子、悬停有提示；屏幕类型键换样子，控制台模型上的屏幕跟着改画；掀盖子一声轻响、AZ-5 一声关机警报；没有英文键名或乱码（原版 GUIRBMKConsole.java:222-239；NEO RBMKConsoleScreen.java:275-291）；只有 A 听到的一半见 station.az5-alarm-heard（两人清单第 4 行）"
+result = "站点试跑：建成、探针通过（控制台连到 (164, 4)；右键打开 RBMKConsoleScreen）、复位与模板一致、重开后牌子与复位命令都在（g32u-stations，stations.json）；人的判定在统一验收"
+group = "用户站点·站 S11（g32u 站点世界，单人）"
+timing = "站点世界一次搭建、存档、重开与探针 144.4 s（13 站，g32u-stations）；人约 2.5 分钟（solo-report 估计，未实测）"
+filled_by = "32U-stations"
+run = "g32u-stations"
+verdict = "pass"
+note = "统一验收 2026-11-19 已把站点世界（g32u-stations/accept-stations.zip）、STATIONS.md 与补充文件 S0.2 的更正交给用户，已回报。用户 2026-11-19 第一次回报，走的是统一验收会话起的开发客户端（solo，载入 accept-stations，简体中文），类路径是当时的工作树：goal32u 的代码加小修之十二至十四（用户截图里离心机已有白色标题，即小修之十四），不是被验的 JAR。用户原话“我就从 S1 走到了 S6，7及以后都没走”，第一次未走到本站。用户 2026-11-19 第二次回报，走的是统一验收会话 16:35 起的开发客户端（solo，载入同一份 accept-stations，简体中文），类路径是当时的工作树：goal32u 的代码加小修之十二至十五，不是被验的 JAR。用户原话“都测完了，文字界面方面没有任何问题，离心机重新测了一遍也正常了，然后测燃料提取机的那个，出现了俩重复的模型，似乎是 bug，其余的都通过了”。规划会话判定通过（其余的都通过了）"
+
+[[row]]
+id = "rbmk-crane.station-crane"
+source = "32F 专服组（rbmk-crane.mp-crane-visual 的人看一半）；32G 第三节 stations 道"
+lane = "用户站点"
+target = "站 S12 RBMK 吊车：方向键移动吊车、回车装卸，指示灯与吊车位置一致，吊车与吊钩平滑移动、不穿模（原版 TileEntityCraneConsole.java:96-176；NEO RBMKCraneConsoleBlockEntity.java:104-178,306-350）；两人同时在范围内谁控制见 rbmk-crane.mp-crane-two-in-range"
+result = "站点试跑：建成、探针通过（吊车中心 (180, 4)，燃料棒在西边通道）、复位与模板一致、重开后牌子与复位命令都在（g32u-stations，stations.json）；人的判定在统一验收"
+group = "用户站点·站 S12（g32u 站点世界，单人）"
+timing = "站点世界一次搭建、存档、重开与探针 144.4 s（13 站，g32u-stations）；人约 2.5 分钟（solo-report 估计，未实测）"
+filled_by = "32U-stations"
+run = "g32u-stations"
+verdict = "pass"
+note = "统一验收 2026-11-19 已把站点世界（g32u-stations/accept-stations.zip）、STATIONS.md 与补充文件 S0.2 的更正交给用户，已回报。用户 2026-11-19 第一次回报，走的是统一验收会话起的开发客户端（solo，载入 accept-stations，简体中文），类路径是当时的工作树：goal32u 的代码加小修之十二至十四（用户截图里离心机已有白色标题，即小修之十四），不是被验的 JAR。用户原话“我就从 S1 走到了 S6，7及以后都没走”，第一次未走到本站。用户 2026-11-19 第二次回报，走的是统一验收会话 16:35 起的开发客户端（solo，载入同一份 accept-stations，简体中文），类路径是当时的工作树：goal32u 的代码加小修之十二至十五，不是被验的 JAR。用户原话“都测完了，文字界面方面没有任何问题，离心机重新测了一遍也正常了，然后测燃料提取机的那个，出现了俩重复的模型，似乎是 bug，其余的都通过了”，附一张从下往上看的截图：燃料通道上方并排两台吊车，相隔约一格（“燃料提取机”按截图是本站的 RBMK 吊车）。规划会话判定通过，带说明：两台吊车不是游戏的缺陷，是站点世界的模板造成的。模板在站点正上方 150 格，里面那台连好线的控制台按存下的绝对中心在站点的通道上方也画一台吊车；accept-stations.zip 的区域文件里 hbmsntm:rbmk_crane_console 有两个，(180,-60,9) 与 (180,90,9)，crane 都是 1，中心都是 (180,-56,4)；150 格在方块实体 256 格的可视距离之内。两台原本重合，移动吊车后活的那台走开、模板那台留在中心。指示灯、移动与吊钩用户没有报问题。记缺口账 G-57（工具缺口，本 Goal 不改）"
+
+[[row]]
+id = "materials.station-basalt-precise-place"
+source = "32A 候选 5（客户端一面）；32U 第五节（原占位行 station.basalt-precise-place）"
+lane = "用户站点"
+target = "站 S13 玄武岩矿精准采集：时运镐只掉对应的东西（硫粉、氟石粉、火山宝石、氯化铁，原版 BlockOreBasalt.java:32-45,55-59；NEO OreBasaltBlock.java:23-29），精准采集镐得到矿石本身、放下后子类型与外观不变（原版 BlockOreBasalt extends BlockEnumMulti，:24-30；NEO OreBasaltBlock.java:31,46-50），TNT 炸四块每块约四分之一掉东西（原版 Explosion.doExplosionB）"
+result = "站点试跑：建成、探针通过（时运镐与精准采集镐各挖四种矿，掉落都对；精准采集的宝石矿放回去子类型是 3）、复位与模板一致、重开后牌子与复位命令都在（g32u-stations，stations.json）；人的判定在统一验收"
+group = "用户站点·站 S13（g32u 站点世界，单人）"
+timing = "站点世界一次搭建、存档、重开与探针 144.4 s（13 站，g32u-stations）；人约 4 分钟（solo-report 估计，未实测）"
+filled_by = "32U-stations"
+run = "g32u-stations"
+note = "石棉那一块不挖（挖开是石棉气体）；外观与名字由人看；统一验收 2026-11-19 已把站点世界（g32u-stations/accept-stations.zip）、STATIONS.md 与补充文件 S0.2 的更正交给用户，已回报。用户 2026-11-19 第一次回报，走的是统一验收会话起的开发客户端（solo，载入 accept-stations，简体中文），类路径是当时的工作树：goal32u 的代码加小修之十二至十四（用户截图里离心机已有白色标题，即小修之十四），不是被验的 JAR。用户原话“我就从 S1 走到了 S6，7及以后都没走”，第一次未走到本站。用户 2026-11-19 第二次回报，走的是统一验收会话 16:35 起的开发客户端（solo，载入同一份 accept-stations，简体中文），类路径是当时的工作树：goal32u 的代码加小修之十二至十五，不是被验的 JAR。用户原话“都测完了，文字界面方面没有任何问题，离心机重新测了一遍也正常了，然后测燃料提取机的那个，出现了俩重复的模型，似乎是 bug，其余的都通过了”。规划会话判定通过（其余的都通过了）"
+verdict = "pass"
+
+[[row]]
+id = "localization-zh-cn.station-zh-ui-look"
+source = "32D 候选 12（客户端一面）；32U 第五节（原占位行 station.zh-ui-look：不单开站，在站点世界开头的牌子上写一句）"
+lane = "用户站点"
+target = "站 S0（出生点前的牌子，不是单独的站）中文界面观感：走各站时顺带看每个界面、提示、聊天消息与 JEI 页，没有翻译键名、乱码或方框字，没有超出边框或被截断的文字（语言第二层 localization-zh-cn/screens 只查键名泄漏）"
+result = "站点试跑：牌子建在 (0, -60, -3)，文字核对通过（start_sign.sign_text_ok true）、重开后仍在（g32u-stations，stations.json）；人的判定在统一验收"
+group = "用户站点·S0 牌子（g32u 站点世界）"
+timing = "不另占时间（走各站时顺带看）"
+filled_by = "32U-stations"
+run = "g32u-stations"
+verdict = "pass"
+note = "统一验收 2026-11-19 已把站点世界（g32u-stations/accept-stations.zip）、STATIONS.md 与补充文件 S0.2 的更正交给用户，已回报。用户 2026-11-19 第一次回报，走的是统一验收会话起的开发客户端（solo，载入 accept-stations，简体中文），类路径是当时的工作树：goal32u 的代码加小修之十二至十四（用户截图里离心机已有白色标题，即小修之十四），不是被验的 JAR。只覆盖了 S1 至 S6：这几站的界面、提示与消息，用户没有报翻译键名、乱码或截断（用户原话“没提到的全都没问题”）；S7 至 S13 没有看（用户原话“我就从 S1 走到了 S6，7及以后都没走”），第一次回报时整行不判通过。用户 2026-11-19 第二次回报，走的是统一验收会话 16:35 起的开发客户端（solo，载入同一份 accept-stations，简体中文），类路径是当时的工作树：goal32u 的代码加小修之十二至十五，不是被验的 JAR。用户原话“都测完了，文字界面方面没有任何问题，离心机重新测了一遍也正常了，然后测燃料提取机的那个，出现了俩重复的模型，似乎是 bug，其余的都通过了”。规划会话判定通过：两次合起来 S1 至 S13 都走过，文字界面没有问题"
+
+# ============================== annotations ==============================
+[[annotate]]
+id = "world-generation.hand-mining"
+source = "32S 候选 2"
+[[annotate]]
+id = "world-generation.pickaxe-time"
+source = "32S 候选 2"
+[[annotate]]
+id = "oil-extraction.block-ore_oil_sand"
+source = "32S 候选 3"
+[[annotate]]
+id = "hazard-system.coal-dust-pair"
+source = "32T 候选 5"
+[[annotate]]
+id = "radiation-detection.geiger-suits"
+source = "32T 候选 6"
+[[annotate]]
+id = "rbmk-console.mp-console-reach-12"
+source = "32T 候选 3"
+[[annotate]]
+id = "rbmk-console.mp-console-reach-21"
+source = "32T 候选 3"
+[[annotate]]
+id = "radar.mp-first-scan-restart"
+source = "32T 候选 4"
+[[annotate]]
+id = "radar.mp-first-scan-files"
+source = "32B 候选 9"
+[[annotate]]
+id = "radar.mp-first-scan-drawn"
+source = "32B 候选 9"
+[[annotate]]
+id = "radar.mp-first-scan-lag"
+source = "32B 候选 9"
+[[annotate]]
+id = "machine-item-capability.mp-barrel"
+source = "32B 候选 1"
+[[annotate]]
+id = "machine-item-capability.mp-fluid-tank"
+source = "32B 候选 1"
+[[annotate]]
+id = "machine-item-capability.mp-sat-linker"
+source = "32B 候选 3"
+[[annotate]]
+id = "machine-item-capability.mp-blast-furnace"
+source = "32B 候选 4"
+[[annotate]]
+id = "machine-item-capability.mp-wood-burner"
+source = "32B 候选 5"
+[[annotate]]
+id = "machine-item-capability.mp-crate-tungsten"
+source = "32B 候选 6"
+[[annotate]]
+id = "machine-item-capability.mp-launch-pad"
+source = "32B 候选 7"
+[[annotate]]
+id = "machine-item-capability.mp-launch-pad-large"
+source = "32B 候选 7"
+[[annotate]]
+id = "machine-item-capability.mp-soyuz"
+source = "32B 候选 7"
+[[annotate]]
+id = "machine-item-capability.mp-heatex"
+source = "32B 候选 7"
+[[annotate]]
+id = "machine-item-capability.assembler-side"
+source = "32D 候选 1"
+[[annotate]]
+id = "conveyor-cranes.bare-hand-belt"
+source = "32T 候选 2"
+
+[[annotate]]
+id = "rbmk-console.mp-console-both-open"
+source = "32F 专服组补行（Goal 24 第 7 节第 2 项，两人同时打开界面）"
+[[annotate]]
+id = "purex-reprocessing.mp-purex-both-open"
+source = "32F 专服组补行（Goal 22 第 6 节，两人同时打开界面）"
+[[annotate]]
+id = "purex-reprocessing.mp-purex-progress-sync"
+source = "32F 专服组补行（PUREX 进度同步到客户端）"
+[[annotate]]
+id = "rtg-power.mp-rtg-both-open"
+source = "32F 专服组补行（Goal 23 遗留第 5 项，两人同时打开界面）"
+[[annotate]]
+id = "radar.mp-first-scan-chunk-file-deleted"
+source = "32F 专服组补行（32B 审阅照登第二条：运行中删区块文件，从 header-errors 拆出）"
+[[annotate]]
+id = "radar.mp-first-scan-header-read-error"
+source = "32B 候选 9（原 mp-first-scan-header-errors 留下的读文件头出错一半）"
+[[annotate]]
+id = "rbmk-console.mp-console-az5"
+source = "人听的一半：站 S11 rbmk-console.station-az5-console 与 station.az5-alarm-heard（两人清单第 4 行）"
+[[annotate]]
+id = "rbmk-console.mp-console-visual"
+source = "人看的一半：站 S11 rbmk-console.station-az5-console"
+[[annotate]]
+id = "rbmk-crane.mp-crane-visual"
+source = "人看的一半：站 S12 rbmk-crane.station-crane"
+
+# ============================== overrides ==============================
+[[override]]
+id = "rbmk-reactor.mp-overpressure-observe"
+group = "只在批次里跑（观察项；G-39，用户 2026-11-17 同意临时改配置）"
+note = "stability 道已在一次性世界里临时打开 dialEnableMeltdownOverpressure 做成，见 rbmk-reactor/mp_overpressure（g32g-overpressure4）的 6 行；本行是 g32acc-g51-rmelt3 里 mp_meltdown 的未执行记录（与 g32t-mp-rmelt 同形）"
+
+[[override]]
+id = "rbmk-console.mp-console-set-depth"
+lane = "用户站点"
+group = "专服人工站点（两人清单，用户约 10 分钟，未实测）"
+note = "通过（用户，两人清单 2026-11-19；判定见 g32acc-mp-core 的 judgments.json）。G-31：执行器不能打字，g32u-console-crane 与统一验收的 g32acc-mp-core 走之前未执行（RBMKConsoleScreen.java:293-317）；两人清单第 1 行（migration/goal32u-two-person.md）：用户选全部控制棒、输入 50 并保存，执行器 act depth-watch 读服务端目标、B 的棒位与网格提示；世界 build/migration/acceptance-runs/g32u-two-person/accept-g32u2p.zip"
+
+[[override]]
+id = "rbmk-crane.mp-crane-two-in-range"
+note = "为什么要人看（fixes-mp 补写）：两版都取范围内玩家列表的第一个（players.get(0)），代码不定顺序，推不出期望值，由人看记录下的控制者；g32g-mpfix-group2 记录“B 不能操纵，A 操纵”；统一验收 g32acc-mp-core 同样：B 按西 10 刻吊车停在 -1.000（B 不能操纵；吊车在东端、按的是西键，不是被行程卡住，mp_players.py:166-174），A 按西后到 -0.550（A 操纵）；统一验收独立审阅（reviewer，Opus high）记作记录项，与原版取列表第一个一致"
+
+[[override]]
+id = "zirnox-reactor.mp-debris-smooth"
+note = "为什么要人看（fixes-mp 补写）：两版都没有“平滑”的客户端代码或数值（原版 EntityMappings.java:134、NEO NtmEntityTypes.java:108，用的是原版的跟踪与插值），推不出步长或回跳的界限；统一验收 g32acc-mp-zmelt 没有截图，统一验收独立审阅（reviewer，Opus high）判“要人看”；记下的最大步长与回跳次数 acc_a 2.617／1032、acc_b 3.916／150，A 的回跳约是 B 的 7 倍，看碎片的人先看 A 的客户端"
+
+[[override]]
+id = "power-control.mp-switch-sound"
+note = "G-38：人听。单人一半由站 S10 power-control.station-switch-sound 承担；两人都听到的一半是两人清单第 2 行（migration/goal32u-two-person.md）：执行器一侧在世界副本上试过（act switch：reactor_start 音高 1.0、0.85）；用户一侧 2026-11-19 两人清单走过，判定见 g32f-mpm-5 的 judgments.json"
+
+[[override]]
+id = "conveyors.mp-cram-explosion-sound"
+note = "G-38：人听。单人一半由站 S5 conveyors.station-cram-sound 承担；两人都听到的一半是两人清单第 3 行（migration/goal32u-two-person.md）：执行器一侧在世界副本上试过（act cram-reset：8 段皮带）；用户一侧 2026-11-19 两人清单走过，判定见 g32f-mpm-5 的 judgments.json"
+
+[[override]]
+id = "power-transmission.mp-unload-gauge-zero"
+note = "记录项（32B 的“约 6 秒读 0”）：读 0 一次，8 个游戏刻（0.39 s）后非零，另两次运行 9 刻、8 刻；约 6 秒没有复现；统一验收 g32acc-mp-stab：区块重新加载后读 0 一次，0.4 s（8 个服务端刻）后 100HE/t，只读了两次，读间隔以下的零期测不出；统一验收独立审阅（reviewer，Opus high）记作记录项、没有可疑"
+
+# ============================== 占位行的去向（本批各道交付后） ==============================
+[[replaced]]
+old = "pending.rbmk-console.mp-two-open"
+new = ["rbmk-console.mp-console-both-open"]
+lane = "fixes-mp"
+why = "fixes-mp 新增的行（g32g-mpfix-group 通过）"
+
+[[replaced]]
+old = "pending.purex-reprocessing.mp-two-open"
+new = ["purex-reprocessing.mp-purex-both-open"]
+lane = "fixes-mp"
+why = "fixes-mp 新增的行（g32g-mpfix-group2 通过）"
+
+[[replaced]]
+old = "pending.purex-reprocessing.mp-progress-sync"
+new = ["purex-reprocessing.mp-purex-progress-sync"]
+lane = "fixes-mp"
+why = "fixes-mp 新增的行；g32g-mpfix-group 里不通过是检查读错了原版（35 px，应为 36 px），改检查后 g32g-mpfix-group2 通过"
+
+[[replaced]]
+old = "pending.rtg-power.mp-two-open"
+new = ["rtg-power.mp-rtg-both-open"]
+lane = "fixes-mp"
+why = "fixes-mp 新增的行（g32g-mpfix-group 通过）"
+
+[[replaced]]
+old = "pending.radar.mp-first-scan-file-deleted"
+new = ["radar.mp-first-scan-chunk-file-deleted"]
+lane = "fixes-mp"
+why = "fixes-mp 从 header-errors 拆出（g32g-mpfix-radar 通过）"
+
+[[replaced]]
+old = "radar.mp-first-scan-header-errors"
+new = ["radar.mp-first-scan-header-read-error", "radar.mp-first-scan-chunk-file-deleted"]
+lane = "fixes-mp"
+why = "原一行拆成两行，旧编号不再出现在场景里"
+
+[[replaced]]
+old = "rbmk-fuel.reload@mainline_stage10"
+new = ["rbmk-fuel.reload-stage10"]
+lane = "fixes-solo"
+why = "阶段 10 改名，阶段 9 的 rbmk-fuel.reload 不再重名"
+
+[[replaced]]
+old = "rbmk-recycling.reload@mainline_stage10"
+new = ["rbmk-recycling.reload-stage10"]
+lane = "fixes-solo"
+why = "阶段 10 改名，阶段 9 的 rbmk-recycling.reload 不再重名"
+
+[[replaced]]
+old = "pending.stability.power-unload"
+new = ["power-transmission.mp-unload-power"]
+lane = "stability"
+why = "稳定性矩阵（g32g-matrix2 卸载、g32g-restart4 重启）"
+
+[[replaced]]
+old = "pending.stability.power-restart"
+new = ["power-transmission.mp-restart-power"]
+lane = "stability"
+why = "稳定性矩阵（g32g-matrix2 卸载、g32g-restart4 重启）"
+
+[[replaced]]
+old = "pending.stability.fluid-unload"
+new = ["fluid-pipelines.mp-unload-fluid"]
+lane = "stability"
+why = "稳定性矩阵（g32g-matrix2 卸载、g32g-restart4 重启）"
+
+[[replaced]]
+old = "pending.stability.fluid-restart"
+new = ["fluid-pipelines.mp-restart-fluid"]
+lane = "stability"
+why = "稳定性矩阵（g32g-matrix2 卸载、g32g-restart4 重启）"
+
+[[replaced]]
+old = "pending.stability.conveyor-unload"
+new = ["conveyors.mp-unload-belts"]
+lane = "stability"
+why = "稳定性矩阵（g32g-matrix2 卸载、g32g-restart4 重启）"
+
+[[replaced]]
+old = "pending.stability.conveyor-restart"
+new = ["conveyors.mp-restart-belts"]
+lane = "stability"
+why = "稳定性矩阵（g32g-matrix2 卸载、g32g-restart4 重启）"
+
+[[replaced]]
+old = "pending.stability.rbmk-unload"
+new = ["rbmk-reactor.mp-unload-rbmk"]
+lane = "stability"
+why = "稳定性矩阵（g32g-matrix2 卸载、g32g-restart4 重启）"
+
+[[replaced]]
+old = "pending.stability.rbmk-restart"
+new = ["rbmk-reactor.mp-restart-rbmk"]
+lane = "stability"
+why = "稳定性矩阵（g32g-matrix2 卸载、g32g-restart4 重启）"
+
+[[replaced]]
+old = "pending.stability.pole-anchor-unload"
+new = ["power-transmission.mp-unload-line", "network-architecture.mp-unload-line-delivers"]
+lane = "stability"
+why = "稳定性矩阵（g32g-matrix2 卸载、g32g-restart4 重启）；中段未加载时照常送电送液那一半是 mp-unload-line-delivers"
+
+[[replaced]]
+old = "pending.stability.pole-anchor-restart"
+new = ["power-transmission.mp-restart-line", "network-architecture.mp-restart-line-before-load", "network-architecture.mp-restart-line-after-load"]
+lane = "stability"
+why = "稳定性矩阵（g32g-matrix2 卸载、g32g-restart4 重启）；重启后节点不对称那一半是 line-before-load、line-after-load"
+
+[[replaced]]
+old = "pending.stability.chunk-radiation-unload"
+new = ["hazard-system.mp-unload-radiation-saved", "hazard-system.mp-unload-radiation"]
+lane = "stability"
+why = "稳定性矩阵（g32g-matrix2 卸载、g32g-restart4 重启）；saved 一行不通过，缺陷 D1"
+
+[[replaced]]
+old = "pending.stability.chunk-radiation-restart"
+new = ["hazard-system.mp-restart-radiation-saved", "hazard-system.mp-restart-radiation"]
+lane = "stability"
+why = "稳定性矩阵（g32g-matrix2 卸载、g32g-restart4 重启）；两行都不通过，缺陷 D1"
+
+[[replaced]]
+old = "pending.stability.power-meter-zero"
+new = ["power-transmission.mp-unload-gauge-zero"]
+lane = "stability"
+why = "稳定性矩阵（g32g-matrix2 卸载、g32g-restart4 重启）；原排“只在批次里跑（观察项）”，现在是卸载文件里的一行，随文件进稳定性短版会话"
+
+[[replaced]]
+old = "pending.stability.unloaded-pole-break"
+new = ["power-transmission.mp-unload-break-pylon"]
+lane = "stability"
+why = "稳定性矩阵（g32g-matrix2 卸载、g32g-restart4 重启）；原排“只在批次里跑（观察项）”，现在随卸载文件进稳定性短版会话"
+
+[[replaced]]
+old = "pending.stability.unloaded-anchor-break"
+new = ["fluid-pipelines.mp-unload-break-anchor"]
+lane = "stability"
+why = "稳定性矩阵（g32g-matrix2 卸载、g32g-restart4 重启）；原排“只在批次里跑（观察项）”，现在随卸载文件进稳定性短版会话"
+
+[[replaced]]
+old = "stability.long-run"
+new = ["network-architecture.longrun-duration", "network-architecture.longrun-tick", "network-architecture.longrun-heap", "network-architecture.longrun-nodes", "network-architecture.longrun-growth", "network-architecture.longrun-forced", "network-architecture.longrun-errors", "network-architecture.longrun-base", "network-architecture.longrun-profile"]
+lane = "stability"
+why = "longrun.py（g32g-longrun），G-25 只在批次里跑"
+
+[[replaced]]
+old = "pending.radio-torch.sneak-use"
+new = ["radio-torch.sneak-sender", "radio-torch.sneak-receiver", "radio-torch.plain-sender", "radio-torch.plain-receiver", "radio-torch.sneak-place-block"]
+lane = "stations"
+why = "radio-torch/sneak_use（g32g-radio，5 条通过）"
+
+[[replaced]]
+old = "station.filter-tag-mode"
+new = ["crane-filter-upgrades.station-tag-filter"]
+lane = "stations"
+why = "站 S6；抓斗、铜锭过滤放行、铁砧锭模样板三项本站没有做"
+
+[[replaced]]
+old = "station.chunk-radiation-fog"
+new = ["hazard-system.station-chunk-fog"]
+lane = "stations"
+why = "站 S8"
+
+[[replaced]]
+old = "station.refinery-render"
+new = ["oil-refining.station-refinery-look"]
+lane = "stations"
+why = "站 S9"
+
+[[replaced]]
+old = "station.foundry-mold-sound"
+new = ["foundry-casting.station-mold-sound"]
+lane = "stations"
+why = "站 S7"
+
+[[replaced]]
+old = "station.foundry-small-mold-box"
+new = ["foundry-casting.station-mold-sound"]
+lane = "stations"
+why = "站 S7（同一站也看选取框）"
+
+[[replaced]]
+old = "station.recipe-selector-focus"
+new = ["basic-assembly.station-recipe-search"]
+lane = "stations"
+why = "站 S2"
+
+[[replaced]]
+old = "station.ducrete-names"
+new = ["concrete.station-ducrete-look"]
+lane = "stations"
+why = "站 S4"
+
+[[replaced]]
+old = "station.jei-centrifuge-gravel"
+new = ["centrifuge.jei-gravel-lookup", "centrifuge.jei-gravel-page"]
+lane = "32U"
+why = "GOAL32G-ACCEPTANCE.md:603 → 脚本（单人）：recipe-completion/jei_pages（g32u-solo2）；JEI 页内容经 `jei` 步查找与截图，页面截图由代理审阅（判定在 judgments.json）"
+
+[[replaced]]
+old = "station.jei-fuel-recipes"
+new = ["recipe-completion.jei-fuel-recipes", "recipe-completion.jei-fuel-recipes-page"]
+lane = "32U"
+why = "GOAL32G-ACCEPTANCE.md:607 → recipe-completion/jei_pages（g32u-solo2）；页面截图由代理审阅"
+
+[[replaced]]
+old = "station.jei-laminate-cycle"
+new = ["chemical-plant.jei-laminate-lookup", "chemical-plant.jei-laminate-cycle"]
+lane = "32U"
+why = "GOAL32G-ACCEPTANCE.md:611 → recipe-completion/jei_pages（g32u-solo2）；玻璃一格轮换的四张图由代理审阅"
+
+[[replaced]]
+old = "station.jei-outgasser-potato"
+new = ["rbmk-outgasser.jei-potato", "rbmk-outgasser.jei-potato-page"]
+lane = "32U"
+why = "GOAL32G-ACCEPTANCE.md:615 → recipe-completion/jei_pages（g32u-solo2）；页面截图由代理审阅"
+
+[[replaced]]
+old = "station.jei-centrifuge-sellafield"
+new = ["centrifuge.jei-sellafield-lookup", "centrifuge.jei-sellafield-page"]
+lane = "32U"
+why = "GOAL32G-ACCEPTANCE.md:631 → recipe-completion/jei_pages（g32u-solo2）；页面截图由代理审阅"
+
+[[replaced]]
+old = "station.jei-burn-times"
+new = ["basic-carbon-materials.jei-burn-times"]
+lane = "32U"
+why = "GOAL32G-ACCEPTANCE.md:636 → recipe-completion/jei_pages（g32u-solo2）"
+
+[[replaced]]
+old = "station.basalt-precise-place"
+new = ["materials.station-basalt-precise-place"]
+lane = "32U"
+why = "GOAL32G-ACCEPTANCE.md:609 → 用户站点：站 S13（materials/stations_g32，g32u-stations）"
+
+[[replaced]]
+old = "station.ore-outgas-visible"
+new = ["materials.ore-uranium-releases-radon", "materials.ore-asbestos-releases-asbestos-gas", "materials.ore-uranium-gas-look-bare", "materials.ore-uranium-gas-look-helmet", "materials.ore-asbestos-gas-look"]
+lane = "32U"
+why = "GOAL32G-ACCEPTANCE.md:661 → materials/outgas_visible（g32u-outgas2）；三行“look”由代理看图判定；NEO 的气体粒子认金头盔（GasBaseBlock.java:99），原版认灰烬眼镜（BlockGasBase.java:139-155），不戴时氡在两边都看不见"
+
+[[replaced]]
+old = "station.anvil-batch-shift"
+new = ["anvil-stamps.batch-shift"]
+lane = "32U"
+why = "GOAL32G-ACCEPTANCE.md:627 → materials/survival_hand（g32u-solo3）"
+
+[[replaced]]
+old = "station.settings-tool-adventure"
+new = ["settings-tool.adventure-copy-once", "settings-tool.adventure-paste-no-screen", "settings-tool.adventure-empty-hand-opens"]
+lane = "32U"
+why = "GOAL32G-ACCEPTANCE.md:642 → settings-tool/adventure_tool（g32u-solo3）；冒险模式下 NEO 拒绝粘贴（SettingsToolItem.java:172），原版不拒绝（ItemSettingsTool.java:117-119），只记录"
+
+[[replaced]]
+old = "station.screwdriver-durability"
+new = ["conveyor-cranes.screwdriver-wear-splitter", "conveyor-cranes.screwdriver-desh-no-wear"]
+lane = "32U"
+why = "GOAL32G-ACCEPTANCE.md:646 → conveyor-cranes/screwdriver_wear（g32u-solo2）"
+
+[[replaced]]
+old = "station.zh-ui-look"
+new = ["localization-zh-cn.station-zh-ui-look"]
+lane = "32U"
+why = "GOAL32G-ACCEPTANCE.md:653 → 用户站点：站点世界开头的牌子（S0，g32u-stations），走各站时顺带看，不单开站"
+
+[[replaced]]
+old = "station.zh-literal-messages"
+new = ["localization-zh-cn.zh-message-jetpack", "localization-zh-cn.zh-message-magnet", "localization-zh-cn.zh-message-hud", "localization-zh-cn.zh-message-detonator", "localization-zh-cn.zh-tooltip-charm", "localization-zh-cn.zh-tooltip-key", "localization-zh-cn.zh-message-inscription", "localization-zh-cn.zh-damage-categories"]
+lane = "32U"
+why = "GOAL32G-ACCEPTANCE.md:654 → localization-zh-cn/zh_messages（g32u-solo2）；伤害抗性类别那一行只是字串一层的证据（默认配置里没有 hbmArmor.json 条目，触发不了），不证明运行时的抗性提示"
+
+[[replaced]]
+old = "station.weapon-death-message"
+new = ["localization-zh-cn.death-message-weapon"]
+lane = "32U"
+why = "GOAL32G-ACCEPTANCE.md:655 → localization-zh-cn/death_message（g32u-solo3）"
+
+[[replaced]]
+old = "station.press-progress-bar"
+new = ["press.return-stroke-below-zero", "press.bar-never-negative", "press.bar-look"]
+lane = "32U"
+why = "GOAL32G-ACCEPTANCE.md:657 → press/press_bar（g32u-solo2）；press.bar-look 的三张图由代理审阅，客户端上的 -20 值读不到，只比较图片"
+
+[[replaced]]
+old = "station.steel-block-hand"
+new = ["materials.steel-block-hand"]
+lane = "32U"
+why = "GOAL32G-ACCEPTANCE.md:663 → materials/survival_hand（g32u-solo3）"
+
+[[replaced]]
+old = "station.belt-cable-hand"
+new = ["red-cable.cable-hand", "conveyor-cranes.bare-hand-belt"]
+lane = "32U"
+why = "GOAL32G-ACCEPTANCE.md:665 → 电缆一半 materials/survival_hand（g32u-solo3）；皮带一半是已有的 conveyor-cranes.bare-hand-belt"
+
+[[replaced]]
+old = "station.explosion-info-tooltip"
+new = ["materials.explosion-info-tooltip"]
+lane = "32U"
+why = "GOAL32G-ACCEPTANCE.md:671 → materials/survival_hand（g32u-solo3）；原行“钢块 30”的前提不对（钢块的物品两边都没有爆炸抗性一行），场景查四种有 BlastInfo 的方块（reinforced_stone 60、gravel_obsidian 12、brick_concrete 96、ducrete 300）与 block_steel 上没有这一行"
+
+[[replaced]]
+old = "station.az5-alarm-heard"
+new = ["rbmk-console.station-az5-console"]
+lane = "32U"
+why = "行留在表里，指向两人清单第 4 行（migration/goal32u-two-person.md）；站 S11 只承担操作者自己听到的一半"
+kept = true
+
+[[replaced]]
+old = "power-control.mp-switch-sound"
+new = ["power-control.station-switch-sound"]
+lane = "32U"
+why = "站 S10 承担单人一半；两人的一半是两人清单第 2 行"
+kept = true
+
+[[replaced]]
+old = "conveyors.mp-cram-explosion-sound"
+new = ["conveyors.station-cram-sound"]
+lane = "32U"
+why = "站 S5 承担单人一半；两人的一半是两人清单第 3 行"
+kept = true
+
+[[replaced]]
+old = "rbmk-console.mp-console-set-depth"
+new = []
+lane = "32U"
+why = "没有站：要专服与两个客户端；执行器不能打字（G-31）；两人清单第 1 行（migration/goal32u-two-person.md）"
+kept = true
+
+[[override]]
+id = "basic-assembly.overview"
+note = "统一验收独立审阅（reviewer，Opus high）：overview.png 是一条约 10 台机器的完整产线，与说明一致；行本身写明给人看，右边电弧炉被裁掉一半，搅拌机与离心机分不清、离心机可能不在画面里，留给人看"
+
+[[override]]
+id = "power-transmission.start-items"
+note = "统一验收独立审阅（reviewer，Opus high）记作记录项：阶段 6 开局清单 91 行里的 15 种模组物品（共 153 个）、9 种原版材料、钢砧（meta=2，阶段 2 的产物）与 4 桶水，没有可疑"
+
+[[override]]
+id = "machine-item-capability.heater-insert-record"
+note = "统一验收独立审阅（reviewer，Opus high）记作记录项：核心下方的输入器把流体标识放进了燃油加热器（True）。原版不向自动化开放任何槽（TileEntityMachineBase.java:138-140），NEO 的 HeaterOilburnerBlockEntity.getSlotsForFace 返回 0–2（HeaterOilburnerBlockEntity.java:204-208）；28A 静态审阅已记为保留 NEO 既有的访问（migration/goal28a-static-review.md:19），没有找到用户明确同意这处偏离的记录，收口时与 G-53 一起处置。收口 2026-11-19：用户对“燃油加热器现在允许漏斗等自动化往里放物品（不能取出），原版完全不向自动化开放……怎么办？”答“还有别的支持自动化的加热器吗？我倾向于保留一些可以自动化的加热器，假如有电加热器就无所谓按照原版改即可”；NEO 有电加热器，火箱与加热炉原版就收自动化放的固体燃料，这处偏离已由小修之二十一照原版改掉（HeaterOilburnerBlockEntity.getSlotsForFace 返回空数组，原版 TileEntityMachineBase.java:127-140）。改后没有重跑本场景，也没有实机看过；回归由收口包最终链里的 GameTest fluid_burner（NetherEndWorldgenGameTests）承担；本行记录的是改之前的行为"
+
+[[override]]
+id = "localization-zh-cn.items-zh-same-as-en"
+note = "统一验收独立审阅（reviewer，Opus high）记作记录项：中英同名的四个是 C-4、Korl（饮料 meta 19）、FEnSU、F.L.E.I.J.A.，原版 zh_CN.lang 里也一样（4558、1876、6220、5150 行），是专名不是漏译"
+
+[[override]]
+id = "localization-zh-cn.items-coverage"
+note = "统一验收独立审阅（reviewer，Opus high）记作记录项：中文、英文都读了 2,764 个物品，没有泄漏"
+
+[[override]]
+id = "localization-zh-cn.screens-latin"
+note = "统一验收独立审阅（reviewer，Opus high）记作记录项：中文一遍只有 machine_purex 画了拉丁字“PUREX”，原版 zh_CN.lang:5928 也是 PUREX；英文一遍（g32acc-lang-en）照补充文件 S0.4 不判"
+
+[[override]]
+id = "localization-zh-cn.screens-opened"
+note = "统一验收独立审阅（reviewer，Opus high）记作记录项：放下 49/49、界面 38、看向叠加层 13，没打开的 11 台是只有叠加层或没有界面的方块（10 台有叠加层，press_preheater 没有）；英文一遍（g32acc-lang-en）相同。界面标题与原版的出入：离心机原版画机器名、NEO 不画；内燃机 NEO 画（MachineDieselScreen.java:65）、原版不画；气体离心机两边都不画（缺口账 G-55（b）（c）；审阅原记三个界面都没有画标题，有误）"
+
+[[override]]
+id = "rbmk-crane.mp-crane-visual"
+note = "统一验收独立审阅（reviewer，Opus high）：没有截图，B 看到的指示灯与吊车、吊钩动画要人看"
+
+[[override]]
+id = "rbmk-autoloader.mp-autoloader-piston"
+note = "统一验收独立审阅（reviewer，Opus high）：piston-half-acc_a.png、piston-half-acc_b.png 都是推杆伸进左列一半，但两个客户端的机位不同，比不出推杆深度是否相同，要人看；A 的图里右列像盖着、B 的图里是开着的，大概是视角，没有确认"
+
+[[override]]
+id = "rbmk-console.mp-console-visual"
+note = "统一验收独立审阅（reviewer，Opus high）：没有截图，A 切换后 B 的屏幕类型图标与控制台模型的屏幕要人看"

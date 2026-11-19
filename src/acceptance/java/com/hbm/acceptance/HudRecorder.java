@@ -8,6 +8,8 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.util.FormattedCharSequence;
+import net.minecraft.world.phys.BlockHitResult;
+import net.minecraft.world.phys.HitResult;
 import net.minecraft.world.level.block.state.BlockState;
 
 import java.util.LinkedHashMap;
@@ -50,7 +52,10 @@ public final class HudRecorder {
         return b.toString();
     }
 
-    /** {@code frames}: rendered frames to listen to; the result lists every distinct text, position and colour drawn. */
+    /**
+     * {@code frames}: rendered frames to listen to; the result lists every distinct text, position and colour drawn, and
+     * {@code hit} / {@code hit_face}, the block under the crosshair (the client's own pick) when the read ended.
+     */
     static final class Hud extends Step {
         Hud(JsonObject spec) {
             super(spec, 20 * 20);
@@ -78,6 +83,10 @@ public final class HudRecorder {
             result.addProperty("gui_scaled_height", ex.mc.getWindow().getGuiScaledHeight());
             result.addProperty("screen", ex.mc.screen == null ? null : ex.mc.screen.getClass().getName());
             result.addProperty("hide_gui", ex.mc.options.hideGui);
+            if (ex.mc.hitResult instanceof BlockHitResult hit && hit.getType() == HitResult.Type.BLOCK) {
+                result.add("hit", Steps.arr(hit.getBlockPos().getX(), hit.getBlockPos().getY(), hit.getBlockPos().getZ()));
+                result.addProperty("hit_face", hit.getDirection().getSerializedName());
+            }
             if (ex.mc.screen instanceof net.minecraft.client.gui.screens.inventory.AbstractContainerScreen<?> cs) {
                 result.addProperty("gui_left", cs.getGuiLeft());
                 result.addProperty("gui_top", cs.getGuiTop());

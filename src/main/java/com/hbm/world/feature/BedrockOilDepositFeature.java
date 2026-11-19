@@ -3,8 +3,10 @@ package com.hbm.world.feature;
 import com.hbm.blocks.NtmBlocks;
 import com.mojang.serialization.Codec;
 import net.minecraft.core.BlockPos;
+import net.minecraft.tags.BlockTags;
 import net.minecraft.world.level.WorldGenLevel;
 import net.minecraft.world.level.block.Blocks;
+import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.levelgen.feature.Feature;
 import net.minecraft.world.level.levelgen.feature.FeaturePlaceContext;
 import net.minecraft.world.level.levelgen.feature.configurations.NoneFeatureConfiguration;
@@ -31,7 +33,9 @@ public class BedrockOilDepositFeature extends Feature<NoneFeatureConfiguration> 
                     }
 
                     pos.set(origin.getX() + dx, minY + dy, origin.getZ() + dz);
-                    if(level.getBlockState(pos).is(Blocks.BEDROCK)) {
+                    // Original MapGenBedrockOil.java:22,45: stone (1.21: the overworld base stones) or bedrock
+                    BlockState state = level.getBlockState(pos);
+                    if(state.is(BlockTags.BASE_STONE_OVERWORLD) || state.is(Blocks.BEDROCK)) {
                         level.setBlock(pos, NtmBlocks.ORE_BEDROCK_OIL.get().defaultBlockState(), 3);
                         placed = true;
                     }

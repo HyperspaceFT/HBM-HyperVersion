@@ -201,10 +201,10 @@ public class HeaterOilburnerBlockEntity extends AbstractHeaterMachineBlockEntity
         return false;
     }
 
-    // Slots 0-2 take items from automation, which cannot take any back out; the overdrive upgrade stays out of it, as the original exposes no slot to automation
+    // Original TileEntityMachineBase.java:127-140, not overridden by TileEntityHeaterOilburner: automation reaches no slot; the fuel comes in through the fluid network
     @Override
     public int[] getSlotsForFace(Direction direction) {
-        return new int[] {0, 1, 2};
+        return new int[] {};
     }
 
     @Override

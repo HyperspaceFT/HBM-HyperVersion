@@ -117,12 +117,13 @@ def run(ctx):
         ctx.step('cmd', command='item replace entity @s weapon.mainhand with minecraft:air')
         ctx.step('view', pos=[x + 0.5, Y, 2.5], look_at=[x + 0.5, Y + 0.5, 0.5], fly=False, hide_gui=False)
         ctx.step('wait', ticks=3)
-        hud = ctx.step('hud', frames=6)
+        hud, problems = _lib.hud_on(ctx, (x, Y, 0))
         cross = _lib.crosshair_texts(hud)
         # the same view and read on a block that has an overlay must find text, or "none" proves nothing
         control = _lib.look_control(ctx, x + 3, Y, 0)
-        ctx.check('conveyor-cranes.no-overlay-%s' % n, not cross and bool(control),
-                  'texts at the crosshair: %s; control (standard fluid duct beside it, same view and read): %s' % (cross, control))
+        ctx.check('conveyor-cranes.no-overlay-%s' % n, not cross and bool(control) and not problems,
+                  'texts at the crosshair: %s; same read: %s; control (standard fluid duct beside it, same view and read): %s'
+                  % (cross, '; '.join(problems) or 'action-bar probe read, crosshair on the crane', control))
         ctx.step('cmd', command='item replace entity @s weapon.mainhand with hbmsntm:%s 16' % c)
         got = {}
         # beside: standing two blocks south of the target cell, clicking the ground under it

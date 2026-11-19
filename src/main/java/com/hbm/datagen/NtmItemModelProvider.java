@@ -336,7 +336,6 @@ public class NtmItemModelProvider extends ItemModelProvider {
         this.basicItem(NtmItems.TURBINE_TITANIUM.get());
         this.basicItem(NtmItems.TURBINE_TUNGSTEN.get());
         this.basicItem(NtmItems.FLYWHEEL_BERYLLIUM.get());
-        this.basicItem(NtmItems.TOOTHPICKS.get());
         this.basicItem(NtmItems.DUCTTAPE.get());
         this.basicItem(NtmItems.PLANT_ITEM.get());
         this.basicItem(NtmItems.CANISTER_EMPTY.get());
@@ -393,8 +392,8 @@ public class NtmItemModelProvider extends ItemModelProvider {
         this.basicItem(NtmItems.THERMO_ELEMENT.get());
         this.basicItem(NtmItems.RTG_UNIT.get());
         this.basicItem(NtmItems.GEAR_LARGE.get());
-        this.basicItem(NtmItems.CAST_PLATE_WELDED.get());
-        this.basicItem(NtmItems.CAST_PLATE.get());
+        this.basicItem(NtmItems.PLATE_WELDED.get());
+        this.basicItem(NtmItems.PLATE_CAST.get());
         this.basicItem(NtmItems.MOLD_BASE.get());
         this.basicItem(NtmItems.MOLD_PLATE_CAST.get());
         this.basicItem(NtmItems.MOLD_INGOT.get());
@@ -495,7 +494,6 @@ public class NtmItemModelProvider extends ItemModelProvider {
         this.basicItem(NtmItems.BILLET_AUSTRALIUM.get());
         this.basicItem(NtmItems.BILLET_AUSTRALIUM_LESSER.get());
         this.basicItem(NtmItems.BILLET_AUSTRALIUM_GREATER.get());
-        this.basicItem(NtmItems.BILLET_UNOBTAINIUM.get());
         this.basicItem(NtmItems.BILLET_YHARONITE.get());
         this.basicItem(NtmItems.BILLET_BALEFIRE_GOLD.get());
         this.basicItem(NtmItems.BILLET_FLASHLEAD.get());
@@ -508,7 +506,6 @@ public class NtmItemModelProvider extends ItemModelProvider {
         this.basicItem(NtmItems.INGOT_CAESIUM.get());
         this.basicItem(NtmItems.INGOT_CERIUM.get());
         this.basicItem(NtmItems.INGOT_CHAINSTEEL.get());
-        this.basicItem(NtmItems.INGOT_DAFFERGON.get());
         this.basicItem(NtmItems.INGOT_FIBERGLASS.get());
         this.basicItem(NtmItems.INGOT_I131.get());
         this.basicItem(NtmItems.INGOT_IODINE.get());
@@ -517,28 +514,17 @@ public class NtmItemModelProvider extends ItemModelProvider {
         this.basicItem(NtmItems.INGOT_PHOSPHORUS.get());
         this.basicItem(NtmItems.INGOT_RAW.get());
         this.basicItem(NtmItems.INGOT_RED_COPPER.get());
-        this.basicItem(NtmItems.INGOT_REIIUM.get());
         this.basicItem(NtmItems.INGOT_SEMTEX.get());
         this.basicItem(NtmItems.INGOT_STEEL_DUSTED.get());
         this.basicItem(NtmItems.INGOT_TENNESSINE.get());
         this.basicItem(NtmItems.INGOT_TH232.get());
         this.basicItem(NtmItems.INGOT_TUNGSTEN_CARBIDE.get());
-        this.basicItem(NtmItems.INGOT_UNOBTAINIUM.get());
-        this.basicItem(NtmItems.INGOT_VERTICIUM.get());
-        this.basicItem(NtmItems.INGOT_WEIDANIUM.get());
         this.basicItem(NtmItems.NUGGET_AUSTRALIUM.get());
         this.basicItem(NtmItems.NUGGET_AUSTRALIUM_GREATER.get());
         this.basicItem(NtmItems.NUGGET_AUSTRALIUM_LESSER.get());
-        this.basicItem(NtmItems.NUGGET_DAFFERGON.get());
         this.basicItem(NtmItems.NUGGET_MERCURY.get());
-        this.basicItem(NtmItems.NUGGET_REIIUM.get());
         this.basicItem(NtmItems.NUGGET_STRONTIUM.get());
         this.basicItem(NtmItems.NUGGET_TH232.get());
-        this.basicItem(NtmItems.NUGGET_UNOBTAINIUM.get());
-        this.basicItem(NtmItems.NUGGET_UNOBTAINIUM_GREATER.get());
-        this.basicItem(NtmItems.NUGGET_UNOBTAINIUM_LESSER.get());
-        this.basicItem(NtmItems.NUGGET_VERTICIUM.get());
-        this.basicItem(NtmItems.NUGGET_WEIDANIUM.get());
         this.basicItem(NtmItems.PLATE_ARMOR_AJR.get());
         this.basicItem(NtmItems.PLATE_ARMOR_DNT.get());
         this.basicItem(NtmItems.PLATE_ARMOR_FAU.get());
@@ -581,7 +567,6 @@ public class NtmItemModelProvider extends ItemModelProvider {
         this.basicItem(NtmItems.POWDER_CERIUM_TINY.get());
         this.basicItem(NtmItems.POWDER_CHLOROCALCITE.get());
         this.basicItem(NtmItems.POWDER_CHLOROPHYTE.get());
-        this.basicItem(NtmItems.POWDER_CLOUD.get());
         this.basicItem(NtmItems.POWDER_CO60.get());
         this.basicItem(NtmItems.POWDER_CO60_TINY.get());
         this.basicItem(NtmItems.POWDER_COAL_TINY.get());
@@ -590,7 +575,6 @@ public class NtmItemModelProvider extends ItemModelProvider {
         this.basicItem(NtmItems.POWDER_COLTAN_ORE.get());
         this.basicItem(NtmItems.POWDER_CS137.get());
         this.basicItem(NtmItems.POWDER_CS137_TINY.get());
-        this.basicItem(NtmItems.POWDER_DAFFERGON.get());
         this.basicItem(NtmItems.POWDER_DESH_MIX.get());
         this.basicItem(NtmItems.POWDER_DESH_READY.get());
         this.basicItem(NtmItems.POWDER_EUPHEMIUM.get());
@@ -626,7 +610,6 @@ public class NtmItemModelProvider extends ItemModelProvider {
         this.basicItem(NtmItems.POWDER_POWER.get());
         this.basicItem(NtmItems.POWDER_RA226.get());
         this.basicItem(NtmItems.POWDER_RED_COPPER.get());
-        this.basicItem(NtmItems.POWDER_REIIUM.get());
         this.basicItem(NtmItems.POWDER_SAWDUST.get());
         this.basicItem(NtmItems.POWDER_SCHRABIDATE.get());
         this.basicItem(NtmItems.POWDER_SEMTEX_MIX.get());
@@ -642,9 +625,6 @@ public class NtmItemModelProvider extends ItemModelProvider {
         this.basicItem(NtmItems.POWDER_TENNESSINE.get());
         this.basicItem(NtmItems.POWDER_THERMITE.get());
         this.basicItem(NtmItems.POWDER_THORIUM.get());
-        this.basicItem(NtmItems.POWDER_UNOBTAINIUM.get());
-        this.basicItem(NtmItems.POWDER_VERTICIUM.get());
-        this.basicItem(NtmItems.POWDER_WEIDANIUM.get());
         this.basicItem(NtmItems.POWDER_XE135.get());
         this.basicItem(NtmItems.POWDER_XE135_TINY.get());
         this.basicItem(NtmItems.POWDER_YELLOWCAKE.get());
@@ -655,7 +635,6 @@ public class NtmItemModelProvider extends ItemModelProvider {
         this.basicItem(NtmItems.GEM_VOLCANIC.get());
         this.basicItem(NtmItems.CRYSTAL_CHARRED.get());
         this.basicItem(NtmItems.CRYSTAL_COAL.get());
-        this.basicItem(NtmItems.CRYSTAL_ENERGY.get());
         this.basicItem(NtmItems.CRYSTAL_HORN.get());
         this.basicItem(NtmItems.CRYSTAL_XEN.get());
 

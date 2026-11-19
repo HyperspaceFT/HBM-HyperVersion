@@ -163,12 +163,66 @@ final class ReadSteps {
             }
             result.addProperty("title", tab.getDisplayName().getString());
             JsonArray items = new JsonArray();
+            JsonArray tooltips = new JsonArray();
+            boolean withTooltips = bool("tooltips", false);
             for (ItemStack s : tab.getDisplayItems()) {
                 String id = BuiltInRegistries.ITEM.getKey(s.getItem()).toString();
                 items.add(s.getComponentsPatch().isEmpty() ? id : id + s.getComponentsPatch());
+                if (withTooltips) tooltips.add(tooltipOf(mc, s));
             }
             result.add("items", items);
+            // tooltips: each stack's lines as the client builds them (name first; Shift/Ctrl/Alt from the mod step)
+            if (withTooltips) {
+                result.add("tooltips", tooltips);
+                result.addProperty("shift", Screen.hasShiftDown());
+            }
             path = "CreativeModeTab.getDisplayItems";
+            ok();
+        }
+    }
+
+    /** The stack's tooltip lines; a tooltip that throws gives one line naming the exception, so the other stacks are still read. */
+    static JsonArray tooltipOf(Minecraft mc, ItemStack stack) {
+        try {
+            return Steps.lines(Screen.getTooltipFromItem(mc, stack));
+        } catch (RuntimeException e) {
+            JsonArray a = new JsonArray();
+            a.add("tooltip error: " + e);
+            return a;
+        }
+    }
+
+    /**
+     * Every registered item of {@code namespace} (default hbmsntm) as its default stack: id, display name and tooltip lines
+     * as the client builds them (Screen.getTooltipFromItem; Shift/Ctrl/Alt from the mod step). Reaches the items no
+     * creative tab shows.
+     */
+    static final class Items extends Step {
+        Items(JsonObject spec) {
+            super(spec, 20 * 30);
+        }
+
+        @Override
+        void tick(Executor ex) {
+            Minecraft mc = ex.mc;
+            if (!Steps.inWorld(mc)) {
+                fail("not in a world");
+                return;
+            }
+            String namespace = str("namespace", "hbmsntm");
+            JsonArray items = new JsonArray();
+            for (ResourceLocation id : BuiltInRegistries.ITEM.keySet().stream().sorted().toList()) {
+                if (!id.getNamespace().equals(namespace)) continue;
+                ItemStack s = new ItemStack(BuiltInRegistries.ITEM.get(id));
+                JsonObject o = new JsonObject();
+                o.addProperty("item", id.toString());
+                o.addProperty("name", s.getHoverName().getString());
+                o.add("tooltip", tooltipOf(mc, s));
+                items.add(o);
+            }
+            result.add("items", items);
+            result.addProperty("shift", Screen.hasShiftDown());
+            path = "BuiltInRegistries.ITEM, Screen.getTooltipFromItem";
             ok();
         }
     }

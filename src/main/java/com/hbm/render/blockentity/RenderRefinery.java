@@ -13,6 +13,7 @@ import net.minecraft.client.renderer.blockentity.BlockEntityRenderer;
 import net.minecraft.core.Direction;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.phys.AABB;
 
 public class RenderRefinery extends BlockEntityRendererNT<MachineRefineryBlockEntity> implements IBEWLRProvider {
 
@@ -36,6 +37,11 @@ public class RenderRefinery extends BlockEntityRendererNT<MachineRefineryBlockEn
         bindTexture(ResourceManager.REFINERY_TEX);
         ResourceManager.refinery.renderAll();
     }
+
+    // ORIG TileEntityMachineRefinery.java:341-345: the tower renders whenever the core is within view distance; shouldRenderOffScreen keeps it
+    // out of the per-section culling that hides it with the core's chunk section.
+    @Override public AABB getRenderBoundingBox(MachineRefineryBlockEntity be) { return AABB.INFINITE; }
+    @Override public boolean shouldRenderOffScreen(MachineRefineryBlockEntity be) { return true; }
 
     @Override
     public Item getItemForRenderer() {

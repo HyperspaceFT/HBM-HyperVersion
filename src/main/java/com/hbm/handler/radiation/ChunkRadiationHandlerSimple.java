@@ -105,8 +105,8 @@ public class ChunkRadiationHandlerSimple extends ChunkRadiationHandler {
                         float rad = radiation.get(newCoord);
                         if(rad > NtmConfig.COMMON.FOG_RAD.get() && level != null && level.random.nextInt(NtmConfig.COMMON.FOG_RAD_CH.get()) == 0 && level.hasChunk(coord.x, coord.z)) {
 
-                            int x = newCoord.getMinBlockX() + level.random.nextInt(16);
-                            int z = newCoord.getMinBlockZ() + level.random.nextInt(16);
+                            int x = coord.getMinBlockX() + level.random.nextInt(16);
+                            int z = coord.getMinBlockZ() + level.random.nextInt(16);
                             int y = level.getHeight(Heightmap.Types.WORLD_SURFACE, x, z) + level.random.nextInt(5);
 
                             ParticleUtil.addParticle(level, NtmParticleTypes.RADIATION_FOG.get(), x, y, z, 100.0);
@@ -149,7 +149,11 @@ public class ChunkRadiationHandlerSimple extends ChunkRadiationHandler {
         SimpleRadiationPerWorld radWorld = perWorld.get(level);
 
         if (radWorld != null) {
-            radWorld.radiation.put(event.getChunk().getPos(), event.getData().getFloat(NBT_KEY_CHUNK_RADIATION));
+            ChunkPos coords = event.getChunk().getPos();
+            float rad = event.getData().getFloat(NBT_KEY_CHUNK_RADIATION);
+            radWorld.radiation.put(coords, rad);
+            radWorld.recordStored(coords, rad);
+            if (coords.equals(radWorld.unloading)) radWorld.unloading = null;
         }
     }
 
@@ -160,9 +164,15 @@ public class ChunkRadiationHandlerSimple extends ChunkRadiationHandler {
         SimpleRadiationPerWorld radWorld = perWorld.get(level);
 
         if (radWorld != null) {
-            Float val = radWorld.radiation.get(event.getChunk().getPos());
+            ChunkPos coords = event.getChunk().getPos();
+            Float val = radWorld.radiation.get(coords);
             float rad = val == null ? 0F : val;
             event.getData().putFloat(NBT_KEY_CHUNK_RADIATION, rad);
+            if (coords.equals(radWorld.unloading)) {
+                radWorld.unloading = null;
+            } else {
+                radWorld.recordStored(coords, rad);
+            }
         }
     }
 
@@ -173,12 +183,41 @@ public class ChunkRadiationHandlerSimple extends ChunkRadiationHandler {
         SimpleRadiationPerWorld radWorld = perWorld.get(level);
 
         if (radWorld != null) {
-            radWorld.radiation.remove(event.getChunk().getPos());
+            // The chunk keeps its entry: unloaded chunks go on spreading and decaying, and getRadiation reads them,
+            // as in the original, whose unload handler (ChunkRadiationHandlerSimple.java:172-183) removes nothing.
+            // ChunkMap.scheduleUnload posts this event and then saves the chunk only if it is unsaved, so a value that
+            // differs from the saved one (spreading never marks the chunk) marks it here; the chunk's next load reads
+            // back the value it held at this moment. The event's own chunk is marked, since level.getChunk would ask
+            // the chunk map again for a chunk it has already let go.
+            ChunkPos coords = event.getChunk().getPos();
+            Float val = radWorld.radiation.get(coords);
+            float rad = val == null ? 0F : val;
+            if (rad != radWorld.stored.getOrDefault(coords, 0F)) {
+                event.getChunk().setUnsaved(true);
+            }
+            radWorld.stored.remove(coords);
+            radWorld.unloading = coords;
         }
     }
 
     public static class SimpleRadiationPerWorld {
         public HashMap<ChunkPos, Float> radiation = new HashMap<>();
+        /**
+         * Nonzero values the chunks hold in their save data, from their last load or save; a chunk missing here holds 0.
+         * A chunk is dropped at its unload event; one that leaves without that event (a proto chunk) keeps its entry, which
+         * still equals what its save data holds.
+         */
+        public HashMap<ChunkPos, Float> stored = new HashMap<>();
+        /** The chunk whose unload is being saved, so that its value is not recorded for a chunk that is gone. */
+        public ChunkPos unloading;
+
+        void recordStored(ChunkPos coords, float rad) {
+            if (rad != 0F) {
+                stored.put(coords, rad);
+            } else {
+                stored.remove(coords);
+            }
+        }
     }
 
     @Override

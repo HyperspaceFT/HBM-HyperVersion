@@ -31,7 +31,7 @@ public class HazardTypeDigamma extends HazardTypeBase {
         components.add(Component.literal(digamma + "mDRX/s").withStyle(ChatFormatting.DARK_RED));
 
         if (stack.getCount() > 1) {
-            components.add(Component.literal("Stack: " + ((Math.floor(lvl * 10000F * stack.getCount()) / 10F) + "mDRX/s")).withStyle(ChatFormatting.DARK_RED));
+            components.add(Component.translatable("trait.stack", (Math.floor(lvl * 10000F * stack.getCount()) / 10F) + "mDRX/s").withStyle(ChatFormatting.DARK_RED));
         }
     }
 }

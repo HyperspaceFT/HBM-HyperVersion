@@ -6,7 +6,7 @@ modes:
   depth    - y=-64 and y=-63 bedrock vs depth rock; nether y 0 and 127
   willow   - mustard willow plants and the block under them, oil-spot blocks at the surface
   double   - every mustard willow with the blocks above and below it, and vanilla double plants missing their other half
-The region dir is relative to the NEO root (e.g. build/migration/accept-goal29/old-world/region) or absolute.
+The region dir is relative to the NEO root (e.g. build/migration/accept/old-world/region) or absolute.
 """
 import collections, os, sys
 from pathlib import Path

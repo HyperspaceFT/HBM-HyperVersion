@@ -138,57 +138,67 @@ public class CentrifugeRecipes extends SerializableRecipe {
         private void setRecipe(ItemStack input, ItemStack... outputs) { owner.addRecipe(MetaHelper.newStack(input.getItem(), 1, MetaHelper.getMeta(input)), outputs); }
         private void setRecipe(Block input, ItemStack... outputs) { owner.addRecipe(MetaHelper.newStack(input, 1, MetaHelper.WILDCARD_VALUE), outputs); }
     private void registerOreRecipes() {
-        setRecipe(Blocks.COAL_ORE, stack(NtmItems.POWDER_COAL.get(), 2), stack(NtmItems.POWDER_COAL.get(), 2), stack(NtmItems.POWDER_COAL.get(), 2), stack(Blocks.STONE, 1));
-        setRecipe(Blocks.DEEPSLATE_COAL_ORE, stack(NtmItems.POWDER_COAL.get(), 2), stack(NtmItems.POWDER_COAL.get(), 2), stack(NtmItems.POWDER_COAL.get(), 2), stack(Blocks.STONE, 1));
-        setRecipe(Blocks.IRON_ORE, stack(NtmItems.POWDER_IRON.get(), 1), stack(NtmItems.POWDER_IRON.get(), 1), stack(NtmItems.POWDER_IRON.get(), 1), stack(Blocks.STONE, 1));
-        setRecipe(Blocks.DEEPSLATE_IRON_ORE, stack(NtmItems.POWDER_IRON.get(), 1), stack(NtmItems.POWDER_IRON.get(), 1), stack(NtmItems.POWDER_IRON.get(), 1), stack(Blocks.STONE, 1));
-        setRecipe(Blocks.GOLD_ORE, stack(NtmItems.POWDER_GOLD.get(), 1), stack(NtmItems.POWDER_GOLD.get(), 1), stack(NtmItems.POWDER_GOLD.get(), 1), stack(Blocks.STONE, 1));
-        setRecipe(Blocks.DEEPSLATE_GOLD_ORE, stack(NtmItems.POWDER_GOLD.get(), 1), stack(NtmItems.POWDER_GOLD.get(), 1), stack(NtmItems.POWDER_GOLD.get(), 1), stack(Blocks.STONE, 1));
-        setRecipe(Blocks.DIAMOND_ORE, stack(NtmItems.POWDER_DIAMOND.get(), 1), stack(NtmItems.POWDER_DIAMOND.get(), 1), stack(NtmItems.POWDER_DIAMOND.get(), 1), stack(Blocks.STONE, 1));
-        setRecipe(Blocks.DEEPSLATE_DIAMOND_ORE, stack(NtmItems.POWDER_DIAMOND.get(), 1), stack(NtmItems.POWDER_DIAMOND.get(), 1), stack(NtmItems.POWDER_DIAMOND.get(), 1), stack(Blocks.STONE, 1));
-        setRecipe(Blocks.EMERALD_ORE, stack(NtmItems.POWDER_EMERALD.get(), 1), stack(NtmItems.POWDER_EMERALD.get(), 1), stack(NtmItems.POWDER_EMERALD.get(), 1), stack(Blocks.STONE, 1));
-        setRecipe(Blocks.DEEPSLATE_EMERALD_ORE, stack(NtmItems.POWDER_EMERALD.get(), 1), stack(NtmItems.POWDER_EMERALD.get(), 1), stack(NtmItems.POWDER_EMERALD.get(), 1), stack(Blocks.STONE, 1));
-        setRecipe(Blocks.COPPER_ORE, stack(NtmItems.POWDER_COPPER.get(), 1), stack(NtmItems.POWDER_COPPER.get(), 1), stack(NtmItems.POWDER_GOLD.get(), 1), stack(Blocks.STONE, 1));
-        setRecipe(Blocks.DEEPSLATE_COPPER_ORE, stack(NtmItems.POWDER_COPPER.get(), 1), stack(NtmItems.POWDER_COPPER.get(), 1), stack(NtmItems.POWDER_GOLD.get(), 1), stack(Blocks.STONE, 1));
-        setRecipe(Blocks.REDSTONE_ORE, stack(Items.REDSTONE, 3), stack(Items.REDSTONE, 3), stack(NtmItems.NUGGET_MERCURY.get(), 1), stack(Blocks.STONE, 1));
-        setRecipe(Blocks.DEEPSLATE_REDSTONE_ORE, stack(Items.REDSTONE, 3), stack(Items.REDSTONE, 3), stack(NtmItems.NUGGET_MERCURY.get(), 1), stack(Blocks.STONE, 1));
-        setRecipe(Blocks.LAPIS_ORE, stack(NtmItems.POWDER_LAPIS.get(), 6), stack(NtmItems.POWDER_COBALT_TINY.get(), 1), stack(NtmItems.GEM_SODALITE.get(), 1), stack(Blocks.STONE, 1));
-        setRecipe(Blocks.DEEPSLATE_LAPIS_ORE, stack(NtmItems.POWDER_LAPIS.get(), 6), stack(NtmItems.POWDER_COBALT_TINY.get(), 1), stack(NtmItems.GEM_SODALITE.get(), 1), stack(Blocks.STONE, 1));
+        // Original CentrifugeRecipes.java:54-202: the ore rows end in gravel; nether quartz, nether fire and NEO's nether gold ore end in
+        // netherrack, tikite in end stone.
+        setRecipe(Blocks.COAL_ORE, stack(NtmItems.POWDER_COAL.get(), 2), stack(NtmItems.POWDER_COAL.get(), 2), stack(NtmItems.POWDER_COAL.get(), 2), stack(Blocks.GRAVEL, 1));
+        setRecipe(Blocks.DEEPSLATE_COAL_ORE, stack(NtmItems.POWDER_COAL.get(), 2), stack(NtmItems.POWDER_COAL.get(), 2), stack(NtmItems.POWDER_COAL.get(), 2), stack(Blocks.GRAVEL, 1));
+        setRecipe(Blocks.IRON_ORE, stack(NtmItems.POWDER_IRON.get(), 1), stack(NtmItems.POWDER_IRON.get(), 1), stack(NtmItems.POWDER_IRON.get(), 1), stack(Blocks.GRAVEL, 1));
+        setRecipe(Blocks.DEEPSLATE_IRON_ORE, stack(NtmItems.POWDER_IRON.get(), 1), stack(NtmItems.POWDER_IRON.get(), 1), stack(NtmItems.POWDER_IRON.get(), 1), stack(Blocks.GRAVEL, 1));
+        setRecipe(Blocks.GOLD_ORE, stack(NtmItems.POWDER_GOLD.get(), 1), stack(NtmItems.POWDER_GOLD.get(), 1), stack(NtmItems.POWDER_GOLD.get(), 1), stack(Blocks.GRAVEL, 1));
+        setRecipe(Blocks.DEEPSLATE_GOLD_ORE, stack(NtmItems.POWDER_GOLD.get(), 1), stack(NtmItems.POWDER_GOLD.get(), 1), stack(NtmItems.POWDER_GOLD.get(), 1), stack(Blocks.GRAVEL, 1));
+        setRecipe(Blocks.DIAMOND_ORE, stack(NtmItems.POWDER_DIAMOND.get(), 1), stack(NtmItems.POWDER_DIAMOND.get(), 1), stack(NtmItems.POWDER_DIAMOND.get(), 1), stack(Blocks.GRAVEL, 1));
+        setRecipe(Blocks.DEEPSLATE_DIAMOND_ORE, stack(NtmItems.POWDER_DIAMOND.get(), 1), stack(NtmItems.POWDER_DIAMOND.get(), 1), stack(NtmItems.POWDER_DIAMOND.get(), 1), stack(Blocks.GRAVEL, 1));
+        setRecipe(Blocks.EMERALD_ORE, stack(NtmItems.POWDER_EMERALD.get(), 1), stack(NtmItems.POWDER_EMERALD.get(), 1), stack(NtmItems.POWDER_EMERALD.get(), 1), stack(Blocks.GRAVEL, 1));
+        setRecipe(Blocks.DEEPSLATE_EMERALD_ORE, stack(NtmItems.POWDER_EMERALD.get(), 1), stack(NtmItems.POWDER_EMERALD.get(), 1), stack(NtmItems.POWDER_EMERALD.get(), 1), stack(Blocks.GRAVEL, 1));
+        setRecipe(Blocks.COPPER_ORE, stack(NtmItems.POWDER_COPPER.get(), 1), stack(NtmItems.POWDER_COPPER.get(), 1), stack(NtmItems.POWDER_GOLD.get(), 1), stack(Blocks.GRAVEL, 1));
+        setRecipe(Blocks.DEEPSLATE_COPPER_ORE, stack(NtmItems.POWDER_COPPER.get(), 1), stack(NtmItems.POWDER_COPPER.get(), 1), stack(NtmItems.POWDER_GOLD.get(), 1), stack(Blocks.GRAVEL, 1));
+        // Original CentrifugeRecipes.java:168-172: the third output is ingot_mercury, registered as nugget_mercury and NEO's NUGGET_MERCURY
+        setRecipe(Blocks.REDSTONE_ORE, stack(Items.REDSTONE, 3), stack(Items.REDSTONE, 3), stack(NtmItems.NUGGET_MERCURY.get(), 1), stack(Blocks.GRAVEL, 1));
+        setRecipe(Blocks.DEEPSLATE_REDSTONE_ORE, stack(Items.REDSTONE, 3), stack(Items.REDSTONE, 3), stack(NtmItems.NUGGET_MERCURY.get(), 1), stack(Blocks.GRAVEL, 1));
+        setRecipe(Blocks.LAPIS_ORE, stack(NtmItems.POWDER_LAPIS.get(), 6), stack(NtmItems.POWDER_COBALT_TINY.get(), 1), stack(NtmItems.GEM_SODALITE.get(), 1), stack(Blocks.GRAVEL, 1));
+        setRecipe(Blocks.DEEPSLATE_LAPIS_ORE, stack(NtmItems.POWDER_LAPIS.get(), 6), stack(NtmItems.POWDER_COBALT_TINY.get(), 1), stack(NtmItems.GEM_SODALITE.get(), 1), stack(Blocks.GRAVEL, 1));
         setRecipe(Blocks.NETHER_QUARTZ_ORE, stack(NtmItems.POWDER_QUARTZ.get(), 1), stack(NtmItems.POWDER_QUARTZ.get(), 1), stack(NtmItems.POWDER_LITHIUM_TINY.get(), 1), stack(Blocks.NETHERRACK, 1));
         setRecipe(Blocks.NETHER_GOLD_ORE, stack(NtmItems.POWDER_GOLD.get(), 1), stack(NtmItems.POWDER_GOLD.get(), 1), stack(NtmItems.POWDER_GOLD.get(), 1), stack(Blocks.NETHERRACK, 1));
 
-        setRecipe(NtmBlocks.ORE_LIGNITE.get(), stack(NtmItems.POWDER_LIGNITE.get(), 2), stack(NtmItems.POWDER_LIGNITE.get(), 2), stack(NtmItems.POWDER_LIGNITE.get(), 2), stack(Blocks.STONE, 1));
-        setRecipe(NtmBlocks.ORE_DEEPSLATE_LIGNITE.get(), stack(NtmItems.POWDER_LIGNITE.get(), 2), stack(NtmItems.POWDER_LIGNITE.get(), 2), stack(NtmItems.POWDER_LIGNITE.get(), 2), stack(Blocks.STONE, 1));
-        setRecipe(NtmBlocks.ORE_TITANIUM.get(), stack(NtmItems.POWDER_TITANIUM.get(), 1), stack(NtmItems.POWDER_TITANIUM.get(), 1), stack(NtmItems.POWDER_IRON.get(), 1), stack(Blocks.STONE, 1));
-        setRecipe(NtmBlocks.ORE_TITANIUM_DEEPSLATE.get(), stack(NtmItems.POWDER_TITANIUM.get(), 1), stack(NtmItems.POWDER_TITANIUM.get(), 1), stack(NtmItems.POWDER_IRON.get(), 1), stack(Blocks.STONE, 1));
-        setRecipe(NtmBlocks.ORE_TUNGSTEN.get(), stack(NtmItems.POWDER_TUNGSTEN.get(), 1), stack(NtmItems.POWDER_TUNGSTEN.get(), 1), stack(NtmItems.POWDER_IRON.get(), 1), stack(Blocks.STONE, 1));
-        setRecipe(NtmBlocks.ORE_TUNGSTEN_DEEPSLATE.get(), stack(NtmItems.POWDER_TUNGSTEN.get(), 1), stack(NtmItems.POWDER_TUNGSTEN.get(), 1), stack(NtmItems.POWDER_IRON.get(), 1), stack(Blocks.STONE, 1));
-        setRecipe(NtmBlocks.ORE_LEAD.get(), stack(NtmItems.POWDER_LEAD.get(), 1), stack(NtmItems.POWDER_LEAD.get(), 1), stack(NtmItems.POWDER_GOLD.get(), 1), stack(Blocks.STONE, 1));
-        setRecipe(NtmBlocks.ORE_LEAD_DEEPSLATE.get(), stack(NtmItems.POWDER_LEAD.get(), 1), stack(NtmItems.POWDER_LEAD.get(), 1), stack(NtmItems.POWDER_GOLD.get(), 1), stack(Blocks.STONE, 1));
-        setRecipe(NtmBlocks.ORE_URANIUM.get(), stack(NtmItems.POWDER_URANIUM.get(), 1), stack(NtmItems.POWDER_URANIUM.get(), 1), stack(NtmItems.NUGGET_RA226.get(), 1), stack(Blocks.STONE, 1));
-        setRecipe(NtmBlocks.ORE_URANIUM_DEEPSLATE.get(), stack(NtmItems.POWDER_URANIUM.get(), 1), stack(NtmItems.POWDER_URANIUM.get(), 1), stack(NtmItems.NUGGET_RA226.get(), 1), stack(Blocks.STONE, 1));
-        setRecipe(NtmBlocks.ORE_URANIUM_SCORCHED.get(), stack(NtmItems.POWDER_URANIUM.get(), 1), stack(NtmItems.POWDER_URANIUM.get(), 1), stack(NtmItems.NUGGET_RA226.get(), 1), stack(Blocks.STONE, 1));
-        setRecipe(NtmBlocks.ORE_NETHER_URANIUM.get(), stack(NtmItems.POWDER_URANIUM.get(), 1), stack(NtmItems.POWDER_URANIUM.get(), 1), stack(NtmItems.NUGGET_RA226.get(), 1), stack(Blocks.NETHERRACK, 1));
-        setRecipe(NtmBlocks.ORE_NETHER_URANIUM_SCORCHED.get(), stack(NtmItems.POWDER_URANIUM.get(), 1), stack(NtmItems.POWDER_URANIUM.get(), 1), stack(NtmItems.NUGGET_RA226.get(), 1), stack(Blocks.NETHERRACK, 1));
-        setRecipe(NtmBlocks.ORE_GNEISS_URANIUM.get(), stack(NtmItems.POWDER_URANIUM.get(), 1), stack(NtmItems.POWDER_URANIUM.get(), 1), stack(NtmItems.NUGGET_RA226.get(), 1), stack(Blocks.STONE, 1));
-        setRecipe(NtmBlocks.ORE_GNEISS_URANIUM_SCORCHED.get(), stack(NtmItems.POWDER_URANIUM.get(), 1), stack(NtmItems.POWDER_URANIUM.get(), 1), stack(NtmItems.NUGGET_RA226.get(), 1), stack(Blocks.STONE, 1));
+        setRecipe(NtmBlocks.ORE_LIGNITE.get(), stack(NtmItems.POWDER_LIGNITE.get(), 2), stack(NtmItems.POWDER_LIGNITE.get(), 2), stack(NtmItems.POWDER_LIGNITE.get(), 2), stack(Blocks.GRAVEL, 1));
+        setRecipe(NtmBlocks.ORE_LIGNITE_DEEPSLATE.get(), stack(NtmItems.POWDER_LIGNITE.get(), 2), stack(NtmItems.POWDER_LIGNITE.get(), 2), stack(NtmItems.POWDER_LIGNITE.get(), 2), stack(Blocks.GRAVEL, 1));
+        // Original CentrifugeRecipes.java:90-94: the second output is two ilmenite chunks; NEO has no ilmenite item, so a second titanium
+        // powder stands in (migration/GOAL19.md, kept linked to the titanium chain)
+        setRecipe(NtmBlocks.ORE_TITANIUM.get(), stack(NtmItems.POWDER_TITANIUM.get(), 1), stack(NtmItems.POWDER_TITANIUM.get(), 1), stack(NtmItems.POWDER_IRON.get(), 1), stack(Blocks.GRAVEL, 1));
+        setRecipe(NtmBlocks.ORE_TITANIUM_DEEPSLATE.get(), stack(NtmItems.POWDER_TITANIUM.get(), 1), stack(NtmItems.POWDER_TITANIUM.get(), 1), stack(NtmItems.POWDER_IRON.get(), 1), stack(Blocks.GRAVEL, 1));
+        setRecipe(NtmBlocks.ORE_TUNGSTEN.get(), stack(NtmItems.POWDER_TUNGSTEN.get(), 1), stack(NtmItems.POWDER_TUNGSTEN.get(), 1), stack(NtmItems.POWDER_IRON.get(), 1), stack(Blocks.GRAVEL, 1));
+        setRecipe(NtmBlocks.ORE_TUNGSTEN_DEEPSLATE.get(), stack(NtmItems.POWDER_TUNGSTEN.get(), 1), stack(NtmItems.POWDER_TUNGSTEN.get(), 1), stack(NtmItems.POWDER_IRON.get(), 1), stack(Blocks.GRAVEL, 1));
+        setRecipe(NtmBlocks.ORE_LEAD.get(), stack(NtmItems.POWDER_LEAD.get(), 1), stack(NtmItems.POWDER_LEAD.get(), 1), stack(NtmItems.POWDER_GOLD.get(), 1), stack(Blocks.GRAVEL, 1));
+        setRecipe(NtmBlocks.ORE_LEAD_DEEPSLATE.get(), stack(NtmItems.POWDER_LEAD.get(), 1), stack(NtmItems.POWDER_LEAD.get(), 1), stack(NtmItems.POWDER_GOLD.get(), 1), stack(Blocks.GRAVEL, 1));
+        setRecipe(NtmBlocks.ORE_URANIUM.get(), stack(NtmItems.POWDER_URANIUM.get(), 1), stack(NtmItems.POWDER_URANIUM.get(), 1), stack(NtmItems.NUGGET_RA226.get(), 1), stack(Blocks.GRAVEL, 1));
+        setRecipe(NtmBlocks.ORE_URANIUM_DEEPSLATE.get(), stack(NtmItems.POWDER_URANIUM.get(), 1), stack(NtmItems.POWDER_URANIUM.get(), 1), stack(NtmItems.NUGGET_RA226.get(), 1), stack(Blocks.GRAVEL, 1));
+        setRecipe(NtmBlocks.ORE_URANIUM_SCORCHED.get(), stack(NtmItems.POWDER_URANIUM.get(), 1), stack(NtmItems.POWDER_URANIUM.get(), 1), stack(NtmItems.NUGGET_RA226.get(), 1), stack(Blocks.GRAVEL, 1));
+        setRecipe(NtmBlocks.ORE_NETHER_URANIUM.get(), stack(NtmItems.POWDER_URANIUM.get(), 1), stack(NtmItems.POWDER_URANIUM.get(), 1), stack(NtmItems.NUGGET_RA226.get(), 1), stack(Blocks.GRAVEL, 1));
+        setRecipe(NtmBlocks.ORE_NETHER_URANIUM_SCORCHED.get(), stack(NtmItems.POWDER_URANIUM.get(), 1), stack(NtmItems.POWDER_URANIUM.get(), 1), stack(NtmItems.NUGGET_RA226.get(), 1), stack(Blocks.GRAVEL, 1));
+        setRecipe(NtmBlocks.ORE_GNEISS_URANIUM.get(), stack(NtmItems.POWDER_URANIUM.get(), 1), stack(NtmItems.POWDER_URANIUM.get(), 1), stack(NtmItems.NUGGET_RA226.get(), 1), stack(Blocks.GRAVEL, 1));
+        setRecipe(NtmBlocks.ORE_GNEISS_URANIUM_SCORCHED.get(), stack(NtmItems.POWDER_URANIUM.get(), 1), stack(NtmItems.POWDER_URANIUM.get(), 1), stack(NtmItems.NUGGET_RA226.get(), 1), stack(Blocks.GRAVEL, 1));
         // The schist members of the original IRON, GOLD and CU .ore() rows, so the same outputs as the vanilla ores above
-        setRecipe(NtmBlocks.ORE_GNEISS_IRON.get(), stack(NtmItems.POWDER_IRON.get(), 1), stack(NtmItems.POWDER_IRON.get(), 1), stack(NtmItems.POWDER_IRON.get(), 1), stack(Blocks.STONE, 1));
-        setRecipe(NtmBlocks.ORE_GNEISS_GOLD.get(), stack(NtmItems.POWDER_GOLD.get(), 1), stack(NtmItems.POWDER_GOLD.get(), 1), stack(NtmItems.POWDER_GOLD.get(), 1), stack(Blocks.STONE, 1));
-        setRecipe(NtmBlocks.ORE_GNEISS_COPPER.get(), stack(NtmItems.POWDER_COPPER.get(), 1), stack(NtmItems.POWDER_COPPER.get(), 1), stack(NtmItems.POWDER_GOLD.get(), 1), stack(Blocks.STONE, 1));
-        setRecipe(NtmBlocks.ORE_THORIUM.get(), stack(NtmItems.POWDER_THORIUM.get(), 1), stack(NtmItems.POWDER_THORIUM.get(), 1), stack(NtmItems.POWDER_URANIUM.get(), 1), stack(Blocks.STONE, 1));
-        setRecipe(NtmBlocks.ORE_THORIUM_DEEPSLATE.get(), stack(NtmItems.POWDER_THORIUM.get(), 1), stack(NtmItems.POWDER_THORIUM.get(), 1), stack(NtmItems.POWDER_URANIUM.get(), 1), stack(Blocks.STONE, 1));
-        setRecipe(NtmBlocks.ORE_BERYLLIUM.get(), stack(NtmItems.POWDER_BERYLLIUM.get(), 1), stack(NtmItems.POWDER_BERYLLIUM.get(), 1), stack(NtmItems.POWDER_EMERALD.get(), 1), stack(Blocks.STONE, 1));
-        setRecipe(NtmBlocks.ORE_BERYLLIUM_DEEPSLATE.get(), stack(NtmItems.POWDER_BERYLLIUM.get(), 1), stack(NtmItems.POWDER_BERYLLIUM.get(), 1), stack(NtmItems.POWDER_EMERALD.get(), 1), stack(Blocks.STONE, 1));
-        setRecipe(NtmBlocks.ORE_ALUMINIUM.get(), stack(NtmItems.CHUNK_CRYOLITE.get(), 2), stack(NtmItems.POWDER_TITANIUM.get(), 1), stack(NtmItems.POWDER_IRON.get(), 1), stack(Blocks.STONE, 1));
-        setRecipe(NtmBlocks.ORE_ALUMINIUM_DEEPSLATE.get(), stack(NtmItems.CHUNK_CRYOLITE.get(), 2), stack(NtmItems.POWDER_TITANIUM.get(), 1), stack(NtmItems.POWDER_IRON.get(), 1), stack(Blocks.STONE, 1));
-        setRecipe(NtmBlocks.ORE_FLUORITE.get(), stack(NtmItems.FLUORITE.get(), 3), stack(NtmItems.FLUORITE.get(), 3), stack(NtmItems.GEM_SODALITE.get(), 1), stack(Blocks.STONE, 1));
-        setRecipe(NtmBlocks.ORE_FLUORITE_DEEPSLATE.get(), stack(NtmItems.FLUORITE.get(), 3), stack(NtmItems.FLUORITE.get(), 3), stack(NtmItems.GEM_SODALITE.get(), 1), stack(Blocks.STONE, 1));
-        setRecipe(NtmBlocks.ORE_COBALT.get(), stack(NtmItems.POWDER_COBALT.get(), 2), stack(NtmItems.POWDER_IRON.get(), 1), stack(NtmItems.POWDER_COPPER.get(), 1), stack(Blocks.STONE, 1));
-        setRecipe(NtmBlocks.ORE_COBALT_DEEPSLATE.get(), stack(NtmItems.POWDER_COBALT.get(), 2), stack(NtmItems.POWDER_IRON.get(), 1), stack(NtmItems.POWDER_COPPER.get(), 1), stack(Blocks.STONE, 1));
-        setRecipe(NtmBlocks.ORE_SCHRABIDIUM.get(), stack(NtmItems.POWDER_SCHRABIDIUM.get(), 1), stack(NtmItems.POWDER_SCHRABIDIUM.get(), 1), stack(NtmItems.NUGGET_SOLINIUM.get(), 1), stack(Blocks.STONE, 1));
-        setRecipe(NtmBlocks.ORE_NETHER_SCHRABIDIUM.get(), stack(NtmItems.POWDER_SCHRABIDIUM.get(), 1), stack(NtmItems.POWDER_SCHRABIDIUM.get(), 1), stack(NtmItems.NUGGET_SOLINIUM.get(), 1), stack(Blocks.NETHERRACK, 1));
-        setRecipe(NtmBlocks.ORE_GNEISS_SCHRABIDIUM.get(), stack(NtmItems.POWDER_SCHRABIDIUM.get(), 1), stack(NtmItems.POWDER_SCHRABIDIUM.get(), 1), stack(NtmItems.NUGGET_SOLINIUM.get(), 1), stack(Blocks.STONE, 1));
+        setRecipe(NtmBlocks.ORE_GNEISS_IRON.get(), stack(NtmItems.POWDER_IRON.get(), 1), stack(NtmItems.POWDER_IRON.get(), 1), stack(NtmItems.POWDER_IRON.get(), 1), stack(Blocks.GRAVEL, 1));
+        setRecipe(NtmBlocks.ORE_GNEISS_GOLD.get(), stack(NtmItems.POWDER_GOLD.get(), 1), stack(NtmItems.POWDER_GOLD.get(), 1), stack(NtmItems.POWDER_GOLD.get(), 1), stack(Blocks.GRAVEL, 1));
+        setRecipe(NtmBlocks.ORE_GNEISS_COPPER.get(), stack(NtmItems.POWDER_COPPER.get(), 1), stack(NtmItems.POWDER_COPPER.get(), 1), stack(NtmItems.POWDER_GOLD.get(), 1), stack(Blocks.GRAVEL, 1));
+        setRecipe(NtmBlocks.ORE_THORIUM.get(), stack(NtmItems.POWDER_THORIUM.get(), 1), stack(NtmItems.POWDER_THORIUM.get(), 1), stack(NtmItems.POWDER_URANIUM.get(), 1), stack(Blocks.GRAVEL, 1));
+        setRecipe(NtmBlocks.ORE_THORIUM_DEEPSLATE.get(), stack(NtmItems.POWDER_THORIUM.get(), 1), stack(NtmItems.POWDER_THORIUM.get(), 1), stack(NtmItems.POWDER_URANIUM.get(), 1), stack(Blocks.GRAVEL, 1));
+        setRecipe(NtmBlocks.ORE_BERYLLIUM.get(), stack(NtmItems.POWDER_BERYLLIUM.get(), 1), stack(NtmItems.POWDER_BERYLLIUM.get(), 1), stack(NtmItems.POWDER_EMERALD.get(), 1), stack(Blocks.GRAVEL, 1));
+        setRecipe(NtmBlocks.ORE_BERYLLIUM_DEEPSLATE.get(), stack(NtmItems.POWDER_BERYLLIUM.get(), 1), stack(NtmItems.POWDER_BERYLLIUM.get(), 1), stack(NtmItems.POWDER_EMERALD.get(), 1), stack(Blocks.GRAVEL, 1));
+        setRecipe(NtmBlocks.ORE_ALUMINIUM.get(), stack(NtmItems.CHUNK_CRYOLITE.get(), 2), stack(NtmItems.POWDER_TITANIUM.get(), 1), stack(NtmItems.POWDER_IRON.get(), 1), stack(Blocks.GRAVEL, 1));
+        setRecipe(NtmBlocks.ORE_ALUMINIUM_DEEPSLATE.get(), stack(NtmItems.CHUNK_CRYOLITE.get(), 2), stack(NtmItems.POWDER_TITANIUM.get(), 1), stack(NtmItems.POWDER_IRON.get(), 1), stack(Blocks.GRAVEL, 1));
+        setRecipe(NtmBlocks.ORE_FLUORITE.get(), stack(NtmItems.FLUORITE.get(), 3), stack(NtmItems.FLUORITE.get(), 3), stack(NtmItems.GEM_SODALITE.get(), 1), stack(Blocks.GRAVEL, 1));
+        setRecipe(NtmBlocks.ORE_FLUORITE_DEEPSLATE.get(), stack(NtmItems.FLUORITE.get(), 3), stack(NtmItems.FLUORITE.get(), 3), stack(NtmItems.GEM_SODALITE.get(), 1), stack(Blocks.GRAVEL, 1));
+        setRecipe(NtmBlocks.ORE_COBALT.get(), stack(NtmItems.POWDER_COBALT.get(), 2), stack(NtmItems.POWDER_IRON.get(), 1), stack(NtmItems.POWDER_COPPER.get(), 1), stack(Blocks.GRAVEL, 1));
+        setRecipe(NtmBlocks.ORE_COBALT_DEEPSLATE.get(), stack(NtmItems.POWDER_COBALT.get(), 2), stack(NtmItems.POWDER_IRON.get(), 1), stack(NtmItems.POWDER_COPPER.get(), 1), stack(Blocks.GRAVEL, 1));
+        setRecipe(NtmBlocks.ORE_SCHRABIDIUM.get(), stack(NtmItems.POWDER_SCHRABIDIUM.get(), 1), stack(NtmItems.POWDER_SCHRABIDIUM.get(), 1), stack(NtmItems.NUGGET_SOLINIUM.get(), 1), stack(Blocks.GRAVEL, 1));
+        setRecipe(NtmBlocks.ORE_NETHER_SCHRABIDIUM.get(), stack(NtmItems.POWDER_SCHRABIDIUM.get(), 1), stack(NtmItems.POWDER_SCHRABIDIUM.get(), 1), stack(NtmItems.NUGGET_SOLINIUM.get(), 1), stack(Blocks.GRAVEL, 1));
+        setRecipe(NtmBlocks.ORE_GNEISS_SCHRABIDIUM.get(), stack(NtmItems.POWDER_SCHRABIDIUM.get(), 1), stack(NtmItems.POWDER_SCHRABIDIUM.get(), 1), stack(NtmItems.NUGGET_SOLINIUM.get(), 1), stack(Blocks.GRAVEL, 1));
+        // Original CentrifugeRecipes.java:132-136: the RAREEARTH.ore() row; its members are the rare earth ore and its schist
+        // variant (OreDictManager.java:471), and NEO's deepslate variant shares it
+        setRecipe(NtmBlocks.ORE_RARE.get(), stack(NtmItems.POWDER_DESH_MIX.get(), 1), stack(NtmItems.NUGGET_ZIRCONIUM.get(), 1), stack(NtmItems.NUGGET_ZIRCONIUM.get(), 1), stack(Blocks.GRAVEL, 1));
+        setRecipe(NtmBlocks.ORE_RARE_DEEPSLATE.get(), stack(NtmItems.POWDER_DESH_MIX.get(), 1), stack(NtmItems.NUGGET_ZIRCONIUM.get(), 1), stack(NtmItems.NUGGET_ZIRCONIUM.get(), 1), stack(Blocks.GRAVEL, 1));
+        setRecipe(NtmBlocks.ORE_GNEISS_RARE.get(), stack(NtmItems.POWDER_DESH_MIX.get(), 1), stack(NtmItems.NUGGET_ZIRCONIUM.get(), 1), stack(NtmItems.NUGGET_ZIRCONIUM.get(), 1), stack(Blocks.GRAVEL, 1));
         // Original CentrifugeRecipes.java:138-142: the PU.ore() row, whose only member is the nether plutonium ore, ends in gravel
         setRecipe(NtmBlocks.ORE_NETHER_PLUTONIUM.get(), stack(NtmItems.POWDER_PLUTONIUM.get(), 1), stack(NtmItems.POWDER_PLUTONIUM.get(), 1), stack(NtmItems.NUGGET_POLONIUM.get(), 3), stack(Blocks.GRAVEL, 1));
         // Original CentrifugeRecipes.java:174-178: ends in end stone
@@ -199,7 +209,11 @@ public class CentrifugeRecipes extends SerializableRecipe {
         setRecipe(NtmBlocks.ORE_NETHER_COBALT.get(), stack(NtmItems.POWDER_COBALT.get(), 2), stack(NtmItems.POWDER_IRON.get(), 1), stack(NtmItems.POWDER_COPPER.get(), 1), stack(Blocks.GRAVEL, 1));
         // Original CentrifugeRecipes.java:192-195
         setRecipe(NtmBlocks.ORE_NETHER_FIRE.get(), stack(Items.BLAZE_POWDER, 2), stack(NtmItems.POWDER_FIRE.get(), 2), stack(NtmItems.INGOT_PHOSPHORUS.get(), 1), stack(Blocks.NETHERRACK, 1));
-        setRecipe(NtmBlocks.GRAVEL_DIAMOND.get(), stack(NtmItems.POWDER_DIAMOND.get(), 3), stack(Blocks.GRAVEL, 1));
+        // Original CentrifugeRecipes.java:78-82: the DIAMOND.ore() and EMERALD.ore() rows; their members include the diamond gravel and
+        // the Sellafield diamond and emerald ores (OreDictManager.java:341-342), so all share the vanilla ore outputs
+        setRecipe(NtmBlocks.GRAVEL_DIAMOND.get(), stack(NtmItems.POWDER_DIAMOND.get(), 1), stack(NtmItems.POWDER_DIAMOND.get(), 1), stack(NtmItems.POWDER_DIAMOND.get(), 1), stack(Blocks.GRAVEL, 1));
+        setRecipe(NtmBlocks.ORE_SELLAFIELD_DIAMOND.get(), stack(NtmItems.POWDER_DIAMOND.get(), 1), stack(NtmItems.POWDER_DIAMOND.get(), 1), stack(NtmItems.POWDER_DIAMOND.get(), 1), stack(Blocks.GRAVEL, 1));
+        setRecipe(NtmBlocks.ORE_SELLAFIELD_EMERALD.get(), stack(NtmItems.POWDER_EMERALD.get(), 1), stack(NtmItems.POWDER_EMERALD.get(), 1), stack(NtmItems.POWDER_EMERALD.get(), 1), stack(Blocks.GRAVEL, 1));
 
         setRecipe(stack(Items.BLAZE_ROD, 1), stack(Items.BLAZE_POWDER, 1), stack(Items.BLAZE_POWDER, 1), stack(NtmItems.POWDER_FIRE.get(), 1), stack(NtmItems.POWDER_FIRE.get(), 1));
     }

@@ -44,7 +44,7 @@ public interface ITooltipProvider {
         String key = stack.getDescriptionId() + ".desc";
 
         if(PolaroidItem.polaroidID == 11) {
-            String keyP11 = key + ".P11";
+            String keyP11 = key + ".p11";
             if(I18nUtil.exist(keyP11)) return I18nUtil.resolveKeyArray(keyP11);
         }
 

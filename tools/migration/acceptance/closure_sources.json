@@ -1,0 +1,963 @@
+{
+ "comment": "Process sources for closure.py: products of machine code and player actions outside the exported recipe tables and the crafting JSON. Each entry: products, inputs (a list of alternative sets), machine (one id or alternatives), the NEO file:line it rests on and the original counterpart. Written from a static inventory of NEO (Goal32A) and checked entry by entry against the code.",
+ "sources": [
+  {
+   "name": "ZIRNOX burns NATURAL_URANIUM_FUEL",
+   "products": [
+    "hbmsntm:rod_zirnox_natural_uranium_fuel_depleted"
+   ],
+   "inputs": [
+    [
+     "hbmsntm:rod_zirnox@0"
+    ]
+   ],
+   "machine": "hbmsntm:machine_zirnox",
+   "neo": "src/main/java/com/hbm/blockentity/machine/ReactorZirnoxBlockEntity.java:77-87,167-179,320-336",
+   "original": "TileEntityReactorZirnox.java:79-89,340-356"
+  },
+  {
+   "name": "ZIRNOX burns URANIUM_FUEL",
+   "products": [
+    "hbmsntm:rod_zirnox_uranium_fuel_depleted"
+   ],
+   "inputs": [
+    [
+     "hbmsntm:rod_zirnox@1"
+    ]
+   ],
+   "machine": "hbmsntm:machine_zirnox",
+   "neo": "src/main/java/com/hbm/blockentity/machine/ReactorZirnoxBlockEntity.java:77-87,167-179,320-336",
+   "original": "TileEntityReactorZirnox.java:79-89,340-356"
+  },
+  {
+   "name": "ZIRNOX burns THORIUM_FUEL",
+   "products": [
+    "hbmsntm:rod_zirnox_thorium_fuel_depleted"
+   ],
+   "inputs": [
+    [
+     "hbmsntm:rod_zirnox@3"
+    ]
+   ],
+   "machine": "hbmsntm:machine_zirnox",
+   "neo": "src/main/java/com/hbm/blockentity/machine/ReactorZirnoxBlockEntity.java:77-87,167-179,320-336",
+   "original": "TileEntityReactorZirnox.java:79-89,340-356"
+  },
+  {
+   "name": "ZIRNOX burns MOX_FUEL",
+   "products": [
+    "hbmsntm:rod_zirnox_mox_fuel_depleted"
+   ],
+   "inputs": [
+    [
+     "hbmsntm:rod_zirnox@4"
+    ]
+   ],
+   "machine": "hbmsntm:machine_zirnox",
+   "neo": "src/main/java/com/hbm/blockentity/machine/ReactorZirnoxBlockEntity.java:77-87,167-179,320-336",
+   "original": "TileEntityReactorZirnox.java:79-89,340-356"
+  },
+  {
+   "name": "ZIRNOX burns PLUTONIUM_FUEL",
+   "products": [
+    "hbmsntm:rod_zirnox_plutonium_fuel_depleted"
+   ],
+   "inputs": [
+    [
+     "hbmsntm:rod_zirnox@5"
+    ]
+   ],
+   "machine": "hbmsntm:machine_zirnox",
+   "neo": "src/main/java/com/hbm/blockentity/machine/ReactorZirnoxBlockEntity.java:77-87,167-179,320-336",
+   "original": "TileEntityReactorZirnox.java:79-89,340-356"
+  },
+  {
+   "name": "ZIRNOX burns U233_FUEL",
+   "products": [
+    "hbmsntm:rod_zirnox_u233_fuel_depleted"
+   ],
+   "inputs": [
+    [
+     "hbmsntm:rod_zirnox@6"
+    ]
+   ],
+   "machine": "hbmsntm:machine_zirnox",
+   "neo": "src/main/java/com/hbm/blockentity/machine/ReactorZirnoxBlockEntity.java:77-87,167-179,320-336",
+   "original": "TileEntityReactorZirnox.java:79-89,340-356"
+  },
+  {
+   "name": "ZIRNOX burns U235_FUEL",
+   "products": [
+    "hbmsntm:rod_zirnox_u235_fuel_depleted"
+   ],
+   "inputs": [
+    [
+     "hbmsntm:rod_zirnox@7"
+    ]
+   ],
+   "machine": "hbmsntm:machine_zirnox",
+   "neo": "src/main/java/com/hbm/blockentity/machine/ReactorZirnoxBlockEntity.java:77-87,167-179,320-336",
+   "original": "TileEntityReactorZirnox.java:79-89,340-356"
+  },
+  {
+   "name": "ZIRNOX burns LES_FUEL",
+   "products": [
+    "hbmsntm:rod_zirnox_les_fuel_depleted"
+   ],
+   "inputs": [
+    [
+     "hbmsntm:rod_zirnox@8"
+    ]
+   ],
+   "machine": "hbmsntm:machine_zirnox",
+   "neo": "src/main/java/com/hbm/blockentity/machine/ReactorZirnoxBlockEntity.java:77-87,167-179,320-336",
+   "original": "TileEntityReactorZirnox.java:79-89,340-356"
+  },
+  {
+   "name": "ZIRNOX burns ZFB_MOX",
+   "products": [
+    "hbmsntm:rod_zirnox_zfb_mox_depleted"
+   ],
+   "inputs": [
+    [
+     "hbmsntm:rod_zirnox@10"
+    ]
+   ],
+   "machine": "hbmsntm:machine_zirnox",
+   "neo": "src/main/java/com/hbm/blockentity/machine/ReactorZirnoxBlockEntity.java:77-87,167-179,320-336",
+   "original": "TileEntityReactorZirnox.java:79-89,340-356"
+  },
+  {
+   "name": "ZIRNOX breeds TH232 into thorium fuel",
+   "products": [
+    "hbmsntm:rod_zirnox@3"
+   ],
+   "inputs": [
+    [
+     "hbmsntm:rod_zirnox@2"
+    ],
+    [
+     "hbmsntm:rod_zirnox@0",
+     "hbmsntm:rod_zirnox@1",
+     "hbmsntm:rod_zirnox@3",
+     "hbmsntm:rod_zirnox@4",
+     "hbmsntm:rod_zirnox@5",
+     "hbmsntm:rod_zirnox@6",
+     "hbmsntm:rod_zirnox@7",
+     "hbmsntm:rod_zirnox@8",
+     "hbmsntm:rod_zirnox@10"
+    ]
+   ],
+   "machine": "hbmsntm:machine_zirnox",
+   "neo": "src/main/java/com/hbm/blockentity/machine/ReactorZirnoxBlockEntity.java:79,320-336",
+   "original": "TileEntityReactorZirnox.java:81",
+   "note": "a breeding rod needs a fuel rod beside it"
+  },
+  {
+   "name": "ZIRNOX breeds lithium into tritium",
+   "products": [
+    "hbmsntm:rod_zirnox_tritium"
+   ],
+   "inputs": [
+    [
+     "hbmsntm:rod_zirnox@9"
+    ],
+    [
+     "hbmsntm:rod_zirnox@0",
+     "hbmsntm:rod_zirnox@1",
+     "hbmsntm:rod_zirnox@3",
+     "hbmsntm:rod_zirnox@4",
+     "hbmsntm:rod_zirnox@5",
+     "hbmsntm:rod_zirnox@6",
+     "hbmsntm:rod_zirnox@7",
+     "hbmsntm:rod_zirnox@8",
+     "hbmsntm:rod_zirnox@10"
+    ]
+   ],
+   "machine": "hbmsntm:machine_zirnox",
+   "neo": "src/main/java/com/hbm/blockentity/machine/ReactorZirnoxBlockEntity.java:86,320-336",
+   "original": "TileEntityReactorZirnox.java:88",
+   "note": "a breeding rod needs a fuel rod beside it"
+  },
+  {
+   "name": "RTG pellet radium decays",
+   "products": [
+    "hbmsntm:pellet_rtg_depleted@3"
+   ],
+   "inputs": [
+    [
+     "hbmsntm:pellet_rtg_radium"
+    ]
+   ],
+   "machine": "hbmsntm:machine_rtg",
+   "neo": "src/main/java/com/hbm/blockentity/machine/MachineRTGBlockEntity.java:61-83; src/main/java/com/hbm/util/RTGUtil.java:14-16,45-66; src/main/java/com/hbm/items/machine/RTGPelletItem.java:76-78,88-102; src/main/java/com/hbm/items/NtmItems.java:537-546; config doRTGsDecay default true (config/CommonConfig.java:543-546)",
+   "original": "ModItems.java:2653-2662; TileEntityMachineRTG.java:100"
+  },
+  {
+   "name": "RTG pellet weak decays",
+   "products": [
+    "hbmsntm:pellet_rtg_depleted@3"
+   ],
+   "inputs": [
+    [
+     "hbmsntm:pellet_rtg_weak"
+    ]
+   ],
+   "machine": "hbmsntm:machine_rtg",
+   "neo": "src/main/java/com/hbm/blockentity/machine/MachineRTGBlockEntity.java:61-83; src/main/java/com/hbm/util/RTGUtil.java:14-16,45-66; src/main/java/com/hbm/items/machine/RTGPelletItem.java:76-78,88-102; src/main/java/com/hbm/items/NtmItems.java:537-546; config doRTGsDecay default true (config/CommonConfig.java:543-546)",
+   "original": "ModItems.java:2653-2662; TileEntityMachineRTG.java:100"
+  },
+  {
+   "name": "RTG pellet plutonium decays",
+   "products": [
+    "hbmsntm:pellet_rtg_depleted@3"
+   ],
+   "inputs": [
+    [
+     "hbmsntm:pellet_rtg"
+    ]
+   ],
+   "machine": "hbmsntm:machine_rtg",
+   "neo": "src/main/java/com/hbm/blockentity/machine/MachineRTGBlockEntity.java:61-83; src/main/java/com/hbm/util/RTGUtil.java:14-16,45-66; src/main/java/com/hbm/items/machine/RTGPelletItem.java:76-78,88-102; src/main/java/com/hbm/items/NtmItems.java:537-546; config doRTGsDecay default true (config/CommonConfig.java:543-546)",
+   "original": "ModItems.java:2653-2662; TileEntityMachineRTG.java:100"
+  },
+  {
+   "name": "RTG pellet strontium decays",
+   "products": [
+    "hbmsntm:pellet_rtg_depleted@4"
+   ],
+   "inputs": [
+    [
+     "hbmsntm:pellet_rtg_strontium"
+    ]
+   ],
+   "machine": "hbmsntm:machine_rtg",
+   "neo": "src/main/java/com/hbm/blockentity/machine/MachineRTGBlockEntity.java:61-83; src/main/java/com/hbm/util/RTGUtil.java:14-16,45-66; src/main/java/com/hbm/items/machine/RTGPelletItem.java:76-78,88-102; src/main/java/com/hbm/items/NtmItems.java:537-546; config doRTGsDecay default true (config/CommonConfig.java:543-546)",
+   "original": "ModItems.java:2653-2662; TileEntityMachineRTG.java:100"
+  },
+  {
+   "name": "RTG pellet cobalt decays",
+   "products": [
+    "hbmsntm:pellet_rtg_depleted@5"
+   ],
+   "inputs": [
+    [
+     "hbmsntm:pellet_rtg_cobalt"
+    ]
+   ],
+   "machine": "hbmsntm:machine_rtg",
+   "neo": "src/main/java/com/hbm/blockentity/machine/MachineRTGBlockEntity.java:61-83; src/main/java/com/hbm/util/RTGUtil.java:14-16,45-66; src/main/java/com/hbm/items/machine/RTGPelletItem.java:76-78,88-102; src/main/java/com/hbm/items/NtmItems.java:537-546; config doRTGsDecay default true (config/CommonConfig.java:543-546)",
+   "original": "ModItems.java:2653-2662; TileEntityMachineRTG.java:100"
+  },
+  {
+   "name": "RTG pellet actinium decays",
+   "products": [
+    "hbmsntm:pellet_rtg_depleted@3"
+   ],
+   "inputs": [
+    [
+     "hbmsntm:pellet_rtg_actinium"
+    ]
+   ],
+   "machine": "hbmsntm:machine_rtg",
+   "neo": "src/main/java/com/hbm/blockentity/machine/MachineRTGBlockEntity.java:61-83; src/main/java/com/hbm/util/RTGUtil.java:14-16,45-66; src/main/java/com/hbm/items/machine/RTGPelletItem.java:76-78,88-102; src/main/java/com/hbm/items/NtmItems.java:537-546; config doRTGsDecay default true (config/CommonConfig.java:543-546)",
+   "original": "ModItems.java:2653-2662; TileEntityMachineRTG.java:100"
+  },
+  {
+   "name": "RTG pellet americium decays",
+   "products": [
+    "hbmsntm:pellet_rtg_depleted@2"
+   ],
+   "inputs": [
+    [
+     "hbmsntm:pellet_rtg_americium"
+    ]
+   ],
+   "machine": "hbmsntm:machine_rtg",
+   "neo": "src/main/java/com/hbm/blockentity/machine/MachineRTGBlockEntity.java:61-83; src/main/java/com/hbm/util/RTGUtil.java:14-16,45-66; src/main/java/com/hbm/items/machine/RTGPelletItem.java:76-78,88-102; src/main/java/com/hbm/items/NtmItems.java:537-546; config doRTGsDecay default true (config/CommonConfig.java:543-546)",
+   "original": "ModItems.java:2653-2662; TileEntityMachineRTG.java:100"
+  },
+  {
+   "name": "RTG pellet polonium decays",
+   "products": [
+    "hbmsntm:pellet_rtg_depleted@3"
+   ],
+   "inputs": [
+    [
+     "hbmsntm:pellet_rtg_polonium"
+    ]
+   ],
+   "machine": "hbmsntm:machine_rtg",
+   "neo": "src/main/java/com/hbm/blockentity/machine/MachineRTGBlockEntity.java:61-83; src/main/java/com/hbm/util/RTGUtil.java:14-16,45-66; src/main/java/com/hbm/items/machine/RTGPelletItem.java:76-78,88-102; src/main/java/com/hbm/items/NtmItems.java:537-546; config doRTGsDecay default true (config/CommonConfig.java:543-546)",
+   "original": "ModItems.java:2653-2662; TileEntityMachineRTG.java:100"
+  },
+  {
+   "name": "RTG pellet gold decays",
+   "products": [
+    "hbmsntm:pellet_rtg_depleted@1"
+   ],
+   "inputs": [
+    [
+     "hbmsntm:pellet_rtg_gold"
+    ]
+   ],
+   "machine": "hbmsntm:machine_rtg",
+   "neo": "src/main/java/com/hbm/blockentity/machine/MachineRTGBlockEntity.java:61-83; src/main/java/com/hbm/util/RTGUtil.java:14-16,45-66; src/main/java/com/hbm/items/machine/RTGPelletItem.java:76-78,88-102; src/main/java/com/hbm/items/NtmItems.java:537-546; config doRTGsDecay default true (config/CommonConfig.java:543-546)",
+   "original": "ModItems.java:2653-2662; TileEntityMachineRTG.java:100"
+  },
+  {
+   "name": "RTG pellet lead decays",
+   "products": [
+    "hbmsntm:pellet_rtg_depleted@0"
+   ],
+   "inputs": [
+    [
+     "hbmsntm:pellet_rtg_lead"
+    ]
+   ],
+   "machine": "hbmsntm:machine_rtg",
+   "neo": "src/main/java/com/hbm/blockentity/machine/MachineRTGBlockEntity.java:61-83; src/main/java/com/hbm/util/RTGUtil.java:14-16,45-66; src/main/java/com/hbm/items/machine/RTGPelletItem.java:76-78,88-102; src/main/java/com/hbm/items/NtmItems.java:537-546; config doRTGsDecay default true (config/CommonConfig.java:543-546)",
+   "original": "ModItems.java:2653-2662; TileEntityMachineRTG.java:100"
+  },
+  {
+   "name": "rag dropped in water",
+   "products": [
+    "hbmsntm:rag_damp"
+   ],
+   "inputs": [
+    [
+     "hbmsntm:rag"
+    ],
+    [
+     "minecraft:water_bucket"
+    ]
+   ],
+   "machine": null,
+   "neo": "src/main/java/com/hbm/items/special/RagItem.java:31-39",
+   "original": "ItemRag.java:17-31"
+  },
+  {
+   "name": "rag used by the player",
+   "products": [
+    "hbmsntm:rag_piss"
+   ],
+   "inputs": [
+    [
+     "hbmsntm:rag"
+    ]
+   ],
+   "machine": null,
+   "neo": "src/main/java/com/hbm/items/special/RagItem.java:42-58",
+   "original": "ItemRag.java:33-38"
+  },
+  {
+   "name": "IV bag drawn from oneself",
+   "products": [
+    "hbmsntm:iv_blood"
+   ],
+   "inputs": [
+    [
+     "hbmsntm:iv_empty"
+    ]
+   ],
+   "machine": null,
+   "neo": "src/main/java/com/hbm/items/special/SimpleConsumableItem.java:109-116",
+   "original": "ItemSimpleConsumable.java:113-118"
+  },
+  {
+   "name": "mustard willow grows on dead or oily dirt by water",
+   "products": [
+    "hbmsntm:plant_item_mustardwillow"
+   ],
+   "inputs": [
+    [
+     "hbmsntm:plant_mustard_willow"
+    ],
+    [
+     "hbmsntm:dirt_dead",
+     "hbmsntm:dirt_oily"
+    ],
+    [
+     "minecraft:water_bucket"
+    ]
+   ],
+   "machine": null,
+   "neo": "src/main/java/com/hbm/blocks/generic/MustardWillowBlock.java:59-62,122-189; loot pool 2 at age 4 (datagen/NtmBlockLootTableProvider.java:432-440)",
+   "original": "BlockTallPlant.java:225-290 (growth on dead or oily dirt next to water), :347 (3-6 mustard willow leaves)"
+  },
+  {
+   "name": "gas centrifuge cascade end: low-enriched UF6 with no centrifuge after it",
+   "products": [
+    "hbmsntm:nugget_uranium_fuel",
+    "hbmsntm:fluorite"
+   ],
+   "inputs": [
+    [
+     "fluid:UF6"
+    ]
+   ],
+   "machine": "hbmsntm:machine_gas_centrifuge",
+   "neo": "src/main/java/com/hbm/blockentity/machine/MachineGasCentrifugeBlockEntity.java:64,153-166",
+   "original": "TileEntityMachineGasCent.java:222-229"
+  },
+  {
+   "name": "wood burner ash from wood",
+   "products": [
+    "hbmsntm:powder_ash_wood"
+   ],
+   "inputs": [
+    [
+     "minecraft:oak_log",
+     "minecraft:charcoal"
+    ]
+   ],
+   "machine": "hbmsntm:machine_wood_burner",
+   "neo": "src/main/java/com/hbm/blockentity/machine/MachineWoodBurnerBlockEntity.java:118-146,163-201",
+   "original": "TileEntityMachineWoodBurner.java:208-210 (one powder_ash of the fuel's EnumAshType)"
+  },
+  {
+   "name": "wood burner ash from coal",
+   "products": [
+    "hbmsntm:powder_ash_coal"
+   ],
+   "inputs": [
+    [
+     "minecraft:coal"
+    ]
+   ],
+   "machine": "hbmsntm:machine_wood_burner",
+   "neo": "src/main/java/com/hbm/blockentity/machine/MachineWoodBurnerBlockEntity.java:118-146,163-201",
+   "original": "TileEntityMachineWoodBurner.java:208-210 (one powder_ash of the fuel's EnumAshType)"
+  },
+  {
+   "name": "wood burner ash from other fuel",
+   "products": [
+    "hbmsntm:powder_ash_misc"
+   ],
+   "inputs": [
+    [
+     "minecraft:blaze_rod"
+    ]
+   ],
+   "machine": "hbmsntm:machine_wood_burner",
+   "neo": "src/main/java/com/hbm/blockentity/machine/MachineWoodBurnerBlockEntity.java:118-146,163-201",
+   "original": "TileEntityMachineWoodBurner.java:208-210 (one powder_ash of the fuel's EnumAshType)"
+  },
+  {
+   "name": "refinery: HOTOIL",
+   "products": [
+    "fluid:HEAVYOIL",
+    "fluid:NAPHTHA",
+    "fluid:LIGHTOIL",
+    "fluid:PETROLEUM",
+    "hbmsntm:sulfur"
+   ],
+   "inputs": [
+    [
+     "fluid:HOTOIL"
+    ]
+   ],
+   "machine": "hbmsntm:machine_refinery",
+   "neo": "src/main/java/com/hbm/inventory/recipes/RefineryRecipes.java:40-47; src/main/java/com/hbm/blockentity/machine/oil/MachineRefineryBlockEntity.java:164-218",
+   "original": "RefineryRecipes.java:48-54"
+  },
+  {
+   "name": "refinery: HOTCRACKOIL",
+   "products": [
+    "fluid:NAPHTHA_CRACK",
+    "fluid:LIGHTOIL_CRACK",
+    "fluid:AROMATICS",
+    "fluid:UNSATURATEDS",
+    "hbmsntm:oil_tar_crack"
+   ],
+   "inputs": [
+    [
+     "fluid:HOTCRACKOIL"
+    ]
+   ],
+   "machine": "hbmsntm:machine_refinery",
+   "neo": "src/main/java/com/hbm/inventory/recipes/RefineryRecipes.java:49-56; src/main/java/com/hbm/blockentity/machine/oil/MachineRefineryBlockEntity.java:164-218",
+   "original": "RefineryRecipes.java:55-61"
+  },
+  {
+   "name": "refinery: HOTOIL_DS",
+   "products": [
+    "fluid:HEAVYOIL",
+    "fluid:NAPHTHA_DS",
+    "fluid:LIGHTOIL_DS",
+    "fluid:UNSATURATEDS",
+    "hbmsntm:oil_tar_paraffin"
+   ],
+   "inputs": [
+    [
+     "fluid:HOTOIL_DS"
+    ]
+   ],
+   "machine": "hbmsntm:machine_refinery",
+   "neo": "src/main/java/com/hbm/inventory/recipes/RefineryRecipes.java:58-65; src/main/java/com/hbm/blockentity/machine/oil/MachineRefineryBlockEntity.java:164-218",
+   "original": "RefineryRecipes.java:62-68"
+  },
+  {
+   "name": "refinery: HOTCRACKOIL_DS",
+   "products": [
+    "fluid:NAPHTHA_DS",
+    "fluid:LIGHTOIL_DS",
+    "fluid:AROMATICS",
+    "fluid:UNSATURATEDS",
+    "hbmsntm:oil_tar_paraffin"
+   ],
+   "inputs": [
+    [
+     "fluid:HOTCRACKOIL_DS"
+    ]
+   ],
+   "machine": "hbmsntm:machine_refinery",
+   "neo": "src/main/java/com/hbm/inventory/recipes/RefineryRecipes.java:67-74; src/main/java/com/hbm/blockentity/machine/oil/MachineRefineryBlockEntity.java:164-218",
+   "original": "RefineryRecipes.java:69-75"
+  },
+  {
+   "name": "water from a bucket into any machine tank",
+   "products": [
+    "fluid:WATER"
+   ],
+   "inputs": [
+    [
+     "minecraft:water_bucket"
+    ]
+   ],
+   "machine": null,
+   "neo": "src/main/java/com/hbm/inventory/FluidContainerRegistry.java:37",
+   "original": "FluidContainerRegistry.java:33"
+  },
+  {
+   "name": "electric pump",
+   "products": [
+    "fluid:WATER"
+   ],
+   "inputs": [],
+   "machine": "hbmsntm:pump_electric",
+   "neo": "src/main/java/com/hbm/blockentity/machine/MachinePumpElectricBlockEntity.java:63-79",
+   "original": "TileEntityMachinePumpElectric.java:37-39"
+  },
+  {
+   "name": "gas shale emptied into a tank",
+   "products": [
+    "fluid:PETROLEUM"
+   ],
+   "inputs": [
+    [
+     "hbmsntm:ore_gneiss_gas"
+    ]
+   ],
+   "machine": null,
+   "neo": "src/main/java/com/hbm/inventory/FluidContainerRegistry.java:41",
+   "original": "FluidContainerRegistry.java:45"
+  },
+  {
+   "name": "oil derrick on an oil deposit",
+   "products": [
+    "fluid:OIL",
+    "fluid:GAS"
+   ],
+   "inputs": [
+    [
+     "block:hbmsntm:ore_oil"
+    ]
+   ],
+   "machine": "hbmsntm:machine_well",
+   "neo": "src/main/java/com/hbm/blockentity/machine/oil/MachineOilWellBlockEntity.java:34-37,61-101; src/main/java/com/hbm/blockentity/machine/oil/OilDrillBaseBlockEntity.java:220-301",
+   "original": "TileEntityMachineOilWell.java:35-38,93-102"
+  },
+  {
+   "name": "pumpjack on an oil deposit",
+   "products": [
+    "fluid:OIL",
+    "fluid:GAS"
+   ],
+   "inputs": [
+    [
+     "block:hbmsntm:ore_oil"
+    ]
+   ],
+   "machine": "hbmsntm:machine_pumpjack",
+   "neo": "src/main/java/com/hbm/blockentity/machine/oil/MachinePumpjackBlockEntity.java:36-39,129-142",
+   "original": "TileEntityMachinePumpjack.java:37"
+  },
+  {
+   "name": "fracking tower on an oil or bedrock oil deposit",
+   "products": [
+    "fluid:OIL",
+    "fluid:GAS"
+   ],
+   "inputs": [
+    [
+     "block:hbmsntm:ore_oil",
+     "block:hbmsntm:ore_bedrock_oil"
+    ],
+    [
+     "fluid:FRACKSOL"
+    ]
+   ],
+   "machine": "hbmsntm:machine_fracking_tower",
+   "neo": "src/main/java/com/hbm/blockentity/machine/oil/MachineFrackingTowerBlockEntity.java:28-39,67-128",
+   "original": "TileEntityMachineFrackingTower.java:36-39,107-118"
+  },
+  {
+   "name": "boiler: water to steam",
+   "products": [
+    "fluid:STEAM"
+   ],
+   "inputs": [
+    [
+     "fluid:WATER"
+    ],
+    [
+     "hbmsntm:heater_firebox",
+     "hbmsntm:heater_oven",
+     "hbmsntm:heater_oilburner",
+     "hbmsntm:heater_electric"
+    ]
+   ],
+   "machine": [
+    "hbmsntm:heat_boiler",
+    "hbmsntm:machine_industrial_boiler"
+   ],
+   "neo": "src/main/java/com/hbm/inventory/fluid/Fluids.java:603-604; src/main/java/com/hbm/blockentity/machine/boiler/AbstractBoilerBlockEntity.java:109-158",
+   "original": "Fluids.java:629 (WATER heats to STEAM in boilers)",
+   "note": "a boiler takes the first heating step"
+  },
+  {
+   "name": "boiler: OIL to HOTOIL",
+   "products": [
+    "fluid:HOTOIL"
+   ],
+   "inputs": [
+    [
+     "fluid:OIL"
+    ],
+    [
+     "hbmsntm:heater_firebox",
+     "hbmsntm:heater_oven",
+     "hbmsntm:heater_oilburner",
+     "hbmsntm:heater_electric"
+    ]
+   ],
+   "machine": [
+    "hbmsntm:heat_boiler",
+    "hbmsntm:machine_industrial_boiler"
+   ],
+   "neo": "src/main/java/com/hbm/inventory/fluid/Fluids.java:616; src/main/java/com/hbm/blockentity/machine/boiler/AbstractBoilerBlockEntity.java:109-158",
+   "original": "Fluids.java:642"
+  },
+  {
+   "name": "boiler: OIL_DS to HOTOIL_DS",
+   "products": [
+    "fluid:HOTOIL_DS"
+   ],
+   "inputs": [
+    [
+     "fluid:OIL_DS"
+    ],
+    [
+     "hbmsntm:heater_firebox",
+     "hbmsntm:heater_oven",
+     "hbmsntm:heater_oilburner",
+     "hbmsntm:heater_electric"
+    ]
+   ],
+   "machine": [
+    "hbmsntm:heat_boiler",
+    "hbmsntm:machine_industrial_boiler"
+   ],
+   "neo": "src/main/java/com/hbm/inventory/fluid/Fluids.java:617; src/main/java/com/hbm/blockentity/machine/boiler/AbstractBoilerBlockEntity.java:109-158",
+   "original": "Fluids.java:643"
+  },
+  {
+   "name": "boiler: CRACKOIL to HOTCRACKOIL",
+   "products": [
+    "fluid:HOTCRACKOIL"
+   ],
+   "inputs": [
+    [
+     "fluid:CRACKOIL"
+    ],
+    [
+     "hbmsntm:heater_firebox",
+     "hbmsntm:heater_oven",
+     "hbmsntm:heater_oilburner",
+     "hbmsntm:heater_electric"
+    ]
+   ],
+   "machine": [
+    "hbmsntm:heat_boiler",
+    "hbmsntm:machine_industrial_boiler"
+   ],
+   "neo": "src/main/java/com/hbm/inventory/fluid/Fluids.java:618; src/main/java/com/hbm/blockentity/machine/boiler/AbstractBoilerBlockEntity.java:109-158",
+   "original": "Fluids.java:644"
+  },
+  {
+   "name": "boiler: CRACKOIL_DS to HOTCRACKOIL_DS",
+   "products": [
+    "fluid:HOTCRACKOIL_DS"
+   ],
+   "inputs": [
+    [
+     "fluid:CRACKOIL_DS"
+    ],
+    [
+     "hbmsntm:heater_firebox",
+     "hbmsntm:heater_oven",
+     "hbmsntm:heater_oilburner",
+     "hbmsntm:heater_electric"
+    ]
+   ],
+   "machine": [
+    "hbmsntm:heat_boiler",
+    "hbmsntm:machine_industrial_boiler"
+   ],
+   "neo": "src/main/java/com/hbm/inventory/fluid/Fluids.java:619; src/main/java/com/hbm/blockentity/machine/boiler/AbstractBoilerBlockEntity.java:109-158",
+   "original": "Fluids.java:645"
+  },
+  {
+   "name": "ZIRNOX: water to super hot steam",
+   "products": [
+    "fluid:SUPERHOTSTEAM"
+   ],
+   "inputs": [
+    [
+     "fluid:WATER"
+    ],
+    [
+     "fluid:CARBONDIOXIDE"
+    ]
+   ],
+   "machine": "hbmsntm:machine_zirnox",
+   "neo": "src/main/java/com/hbm/blockentity/machine/ReactorZirnoxBlockEntity.java:72-74,276-291",
+   "original": "TileEntityReactorZirnox.java:94 (the steam tank holds SUPERHOTSTEAM)"
+  },
+  {
+   "name": "turbine: STEAM to SPENTSTEAM",
+   "products": [
+    "fluid:SPENTSTEAM"
+   ],
+   "inputs": [
+    [
+     "fluid:STEAM"
+    ]
+   ],
+   "machine": [
+    "hbmsntm:machine_steam_engine",
+    "hbmsntm:machine_industrial_turbine",
+    "hbmsntm:machine_chungus"
+   ],
+   "neo": "src/main/java/com/hbm/inventory/fluid/Fluids.java:611; src/main/java/com/hbm/blockentity/machine/TurbineBaseBlockEntity.java:62,111-124",
+   "original": "Fluids.java:637"
+  },
+  {
+   "name": "turbine: HOTSTEAM to STEAM",
+   "products": [
+    "fluid:STEAM"
+   ],
+   "inputs": [
+    [
+     "fluid:HOTSTEAM"
+    ]
+   ],
+   "machine": [
+    "hbmsntm:machine_industrial_turbine",
+    "hbmsntm:machine_chungus"
+   ],
+   "neo": "src/main/java/com/hbm/inventory/fluid/Fluids.java:612; src/main/java/com/hbm/blockentity/machine/TurbineBaseBlockEntity.java:62,111-124",
+   "original": "Fluids.java:638",
+   "note": "only the turbines that switch steam grades (TurbineBaseBlockEntity.java:111-124); the steam engine forces STEAM and SPENTSTEAM (MachineSteamEngineBlockEntity.java:68-69)"
+  },
+  {
+   "name": "turbine: SUPERHOTSTEAM to HOTSTEAM",
+   "products": [
+    "fluid:HOTSTEAM"
+   ],
+   "inputs": [
+    [
+     "fluid:SUPERHOTSTEAM"
+    ]
+   ],
+   "machine": [
+    "hbmsntm:machine_industrial_turbine",
+    "hbmsntm:machine_chungus"
+   ],
+   "neo": "src/main/java/com/hbm/inventory/fluid/Fluids.java:613; src/main/java/com/hbm/blockentity/machine/TurbineBaseBlockEntity.java:62,111-124",
+   "original": "Fluids.java:639",
+   "note": "only the turbines that switch steam grades (TurbineBaseBlockEntity.java:111-124); the steam engine forces STEAM and SPENTSTEAM (MachineSteamEngineBlockEntity.java:68-69)"
+  },
+  {
+   "name": "turbine: ULTRAHOTSTEAM to SUPERHOTSTEAM",
+   "products": [
+    "fluid:SUPERHOTSTEAM"
+   ],
+   "inputs": [
+    [
+     "fluid:ULTRAHOTSTEAM"
+    ]
+   ],
+   "machine": [
+    "hbmsntm:machine_industrial_turbine",
+    "hbmsntm:machine_chungus"
+   ],
+   "neo": "src/main/java/com/hbm/inventory/fluid/Fluids.java:614; src/main/java/com/hbm/blockentity/machine/TurbineBaseBlockEntity.java:62,111-124",
+   "original": "Fluids.java:640",
+   "note": "only the turbines that switch steam grades (TurbineBaseBlockEntity.java:111-124); the steam engine forces STEAM and SPENTSTEAM (MachineSteamEngineBlockEntity.java:68-69)"
+  },
+  {
+   "name": "ZIRNOX meltdown leaves the destroyed reactor",
+   "products": [
+    "block:hbmsntm:zirnox_destroyed"
+   ],
+   "inputs": [],
+   "machine": "hbmsntm:machine_zirnox",
+   "neo": "src/main/java/com/hbm/blockentity/machine/ReactorZirnoxBlockEntity.java:339,399-407",
+   "original": "TileEntityReactorZirnox.java:360,405-413",
+   "note": "pressure or heat over 100000"
+  },
+  {
+   "name": "a ZIRNOX meltdown scorches ore_uranium within 35 blocks (1 in 250 becomes schrabidium ore)",
+   "products": [
+    "hbmsntm:ore_uranium_scorched",
+    "hbmsntm:ore_schrabidium"
+   ],
+   "inputs": [
+    [
+     "hbmsntm:ore_uranium",
+     "hbmsntm:ore_uranium_deepslate"
+    ]
+   ],
+   "machine": "hbmsntm:machine_zirnox",
+   "neo": "src/main/java/com/hbm/blockentity/machine/ReactorZirnoxBlockEntity.java:415; src/main/java/com/hbm/explosion/ExplosionNukeGeneric.java:114-158,151,248-254",
+   "original": "TileEntityReactorZirnox.java:417; ExplosionNukeGeneric.java:216-238,306-330; VersatileConfig.java:12-15 (1 in 250 without LBSM)",
+   "note": "the scorched and schrabidium ore blocks drop themselves (loot tables); any nuclear explosion does the same"
+  },
+  {
+   "name": "a ZIRNOX meltdown scorches ore_nether_uranium within 35 blocks (1 in 250 becomes schrabidium ore)",
+   "products": [
+    "hbmsntm:ore_nether_uranium_scorched",
+    "hbmsntm:ore_nether_schrabidium"
+   ],
+   "inputs": [
+    [
+     "hbmsntm:ore_nether_uranium"
+    ]
+   ],
+   "machine": "hbmsntm:machine_zirnox",
+   "neo": "src/main/java/com/hbm/blockentity/machine/ReactorZirnoxBlockEntity.java:415; src/main/java/com/hbm/explosion/ExplosionNukeGeneric.java:114-158,151,257-263",
+   "original": "TileEntityReactorZirnox.java:417; ExplosionNukeGeneric.java:216-238,306-330; VersatileConfig.java:12-15 (1 in 250 without LBSM)",
+   "note": "the scorched and schrabidium ore blocks drop themselves (loot tables); any nuclear explosion does the same"
+  },
+  {
+   "name": "a ZIRNOX meltdown scorches ore_gneiss_uranium within 35 blocks (1 in 250 becomes schrabidium ore)",
+   "products": [
+    "hbmsntm:ore_gneiss_uranium_scorched",
+    "hbmsntm:ore_gneiss_schrabidium"
+   ],
+   "inputs": [
+    [
+     "hbmsntm:ore_gneiss_uranium"
+    ]
+   ],
+   "machine": "hbmsntm:machine_zirnox",
+   "neo": "src/main/java/com/hbm/blockentity/machine/ReactorZirnoxBlockEntity.java:415; src/main/java/com/hbm/explosion/ExplosionNukeGeneric.java:114-158,151,266-272",
+   "original": "TileEntityReactorZirnox.java:417; ExplosionNukeGeneric.java:216-238,306-330; VersatileConfig.java:12-15 (1 in 250 without LBSM)",
+   "note": "the scorched and schrabidium ore blocks drop themselves (loot tables); any nuclear explosion does the same"
+  },
+  {
+   "name": "conveyor wand places conveyor",
+   "products": [
+    "block:hbmsntm:conveyor"
+   ],
+   "inputs": [
+    [
+     "hbmsntm:conveyor_wand@0"
+    ]
+   ],
+   "machine": null,
+   "neo": "src/main/java/com/hbm/items/tools/ConveyorWandItem.java:56-77",
+   "original": "ItemConveyorWand.java:59-67,106-126"
+  },
+  {
+   "name": "conveyor wand places conveyor_express",
+   "products": [
+    "block:hbmsntm:conveyor_express"
+   ],
+   "inputs": [
+    [
+     "hbmsntm:conveyor_wand@1"
+    ]
+   ],
+   "machine": null,
+   "neo": "src/main/java/com/hbm/items/tools/ConveyorWandItem.java:56-77",
+   "original": "ItemConveyorWand.java:59-67,106-126"
+  },
+  {
+   "name": "conveyor wand places conveyor_double",
+   "products": [
+    "block:hbmsntm:conveyor_double"
+   ],
+   "inputs": [
+    [
+     "hbmsntm:conveyor_wand@2"
+    ]
+   ],
+   "machine": null,
+   "neo": "src/main/java/com/hbm/items/tools/ConveyorWandItem.java:56-77",
+   "original": "ItemConveyorWand.java:59-67,106-126"
+  },
+  {
+   "name": "conveyor wand places conveyor_triple",
+   "products": [
+    "block:hbmsntm:conveyor_triple"
+   ],
+   "inputs": [
+    [
+     "hbmsntm:conveyor_wand@3"
+    ]
+   ],
+   "machine": null,
+   "neo": "src/main/java/com/hbm/items/tools/ConveyorWandItem.java:56-77",
+   "original": "ItemConveyorWand.java:59-67,106-126"
+  },
+  {
+   "name": "conveyor wand turns a straight belt into a conveyor_lift",
+   "products": [
+    "block:hbmsntm:conveyor_lift"
+   ],
+   "inputs": [
+    [
+     "hbmsntm:conveyor_wand@0"
+    ],
+    [
+     "block:hbmsntm:conveyor"
+    ]
+   ],
+   "machine": null,
+   "neo": "src/main/java/com/hbm/items/tools/ConveyorWandItem.java:82-84,188-201",
+   "original": "ItemConveyorWand.java:59-67,106-126",
+   "note": "only the regular wand (hasSnakesAndLadders)"
+  },
+  {
+   "name": "conveyor wand turns a straight belt into a conveyor_chute",
+   "products": [
+    "block:hbmsntm:conveyor_chute"
+   ],
+   "inputs": [
+    [
+     "hbmsntm:conveyor_wand@0"
+    ],
+    [
+     "block:hbmsntm:conveyor"
+    ]
+   ],
+   "machine": null,
+   "neo": "src/main/java/com/hbm/items/tools/ConveyorWandItem.java:82-84,188-202",
+   "original": "ItemConveyorWand.java:59-67,106-126",
+   "note": "only the regular wand (hasSnakesAndLadders)"
+  }
+ ]
+}

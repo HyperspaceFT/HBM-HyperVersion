@@ -1,0 +1,13 @@
+{
+  "type": "minecraft:smelting",
+  "category": "misc",
+  "cookingtime": 200,
+  "experience": 0.7,
+  "ingredient": {
+    "item": "hbmsntm:ore_meteor_aluminium"
+  },
+  "result": {
+    "count": 16,
+    "id": "hbmsntm:chunk_cryolite"
+  }
+}

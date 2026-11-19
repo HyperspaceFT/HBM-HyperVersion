@@ -7,11 +7,13 @@ import com.hbm.blockentity.machine.FoundryCastingBlockEntity;
 import com.hbm.blocks.ILookOverlay;
 import com.hbm.inventory.material.Mats;
 import com.hbm.items.machine.MoldItem;
+import com.hbm.registry.NtmSoundEvents;
 import net.minecraft.ChatFormatting;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.network.chat.Component;
+import net.minecraft.sounds.SoundSource;
 import net.minecraft.tags.ItemTags;
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.Containers;
@@ -39,7 +41,6 @@ import java.util.List;
 /**
  * Upstream FoundryCastingBase (FoundryCastingBase.java:33-209), shared by foundry_mold and foundry_basin: right-click takes the cast,
  * then inserts a held mold of the right size, a shovel scrapes the material out, a screwdriver removes the empty block's mold.
- * The mold insertion is silent: NEO has no upgradePlug sound.
  */
 public abstract class FoundryCastingBlock extends BaseEntityBlock implements IToolable, ILookOverlay, ICrucibleAcceptor {
 
@@ -58,7 +59,10 @@ public abstract class FoundryCastingBlock extends BaseEntityBlock implements ITo
         }
         MoldItem.Mold mold = MoldItem.of(held);
         if(mold != null && mold.size == cast.getMoldSize() && cast.getItem(0).isEmpty() && cast.amount == 0) {
-            if(!level.isClientSide) cast.insertMold(held);
+            // ORIG FoundryCastingBase.java:105
+            if(!level.isClientSide && cast.insertMold(held)) {
+                level.playSound(null, pos.getX() + 0.5, pos.getY() + 0.5, pos.getZ() + 0.5, NtmSoundEvents.UPGRADE_PLUG.get(), SoundSource.BLOCKS, 1.0F, 1.0F);
+            }
             return true;
         }
         if(held.is(ItemTags.SHOVELS)) {

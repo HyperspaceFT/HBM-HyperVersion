@@ -3,10 +3,195 @@
   "pools": [
     {
       "bonus_rolls": 0.0,
+      "conditions": [
+        {
+          "condition": "minecraft:survives_explosion"
+        }
+      ],
       "entries": [
         {
           "type": "minecraft:alternatives",
           "children": [
+            {
+              "type": "minecraft:item",
+              "conditions": [
+                {
+                  "condition": "minecraft:match_tool",
+                  "predicate": {
+                    "predicates": {
+                      "minecraft:enchantments": [
+                        {
+                          "enchantments": "minecraft:silk_touch",
+                          "levels": {
+                            "min": 1
+                          }
+                        }
+                      ]
+                    }
+                  }
+                },
+                {
+                  "block": "hbmsntm:ore_basalt",
+                  "condition": "minecraft:block_state_property",
+                  "properties": {
+                    "subtype": "0"
+                  }
+                }
+              ],
+              "functions": [
+                {
+                  "components": {
+                    "hbmsntm:meta": 0
+                  },
+                  "function": "minecraft:set_components"
+                }
+              ],
+              "name": "hbmsntm:ore_basalt"
+            },
+            {
+              "type": "minecraft:item",
+              "conditions": [
+                {
+                  "condition": "minecraft:match_tool",
+                  "predicate": {
+                    "predicates": {
+                      "minecraft:enchantments": [
+                        {
+                          "enchantments": "minecraft:silk_touch",
+                          "levels": {
+                            "min": 1
+                          }
+                        }
+                      ]
+                    }
+                  }
+                },
+                {
+                  "block": "hbmsntm:ore_basalt",
+                  "condition": "minecraft:block_state_property",
+                  "properties": {
+                    "subtype": "1"
+                  }
+                }
+              ],
+              "functions": [
+                {
+                  "components": {
+                    "hbmsntm:meta": 1
+                  },
+                  "function": "minecraft:set_components"
+                }
+              ],
+              "name": "hbmsntm:ore_basalt"
+            },
+            {
+              "type": "minecraft:item",
+              "conditions": [
+                {
+                  "condition": "minecraft:match_tool",
+                  "predicate": {
+                    "predicates": {
+                      "minecraft:enchantments": [
+                        {
+                          "enchantments": "minecraft:silk_touch",
+                          "levels": {
+                            "min": 1
+                          }
+                        }
+                      ]
+                    }
+                  }
+                },
+                {
+                  "block": "hbmsntm:ore_basalt",
+                  "condition": "minecraft:block_state_property",
+                  "properties": {
+                    "subtype": "2"
+                  }
+                }
+              ],
+              "functions": [
+                {
+                  "components": {
+                    "hbmsntm:meta": 2
+                  },
+                  "function": "minecraft:set_components"
+                }
+              ],
+              "name": "hbmsntm:ore_basalt"
+            },
+            {
+              "type": "minecraft:item",
+              "conditions": [
+                {
+                  "condition": "minecraft:match_tool",
+                  "predicate": {
+                    "predicates": {
+                      "minecraft:enchantments": [
+                        {
+                          "enchantments": "minecraft:silk_touch",
+                          "levels": {
+                            "min": 1
+                          }
+                        }
+                      ]
+                    }
+                  }
+                },
+                {
+                  "block": "hbmsntm:ore_basalt",
+                  "condition": "minecraft:block_state_property",
+                  "properties": {
+                    "subtype": "3"
+                  }
+                }
+              ],
+              "functions": [
+                {
+                  "components": {
+                    "hbmsntm:meta": 3
+                  },
+                  "function": "minecraft:set_components"
+                }
+              ],
+              "name": "hbmsntm:ore_basalt"
+            },
+            {
+              "type": "minecraft:item",
+              "conditions": [
+                {
+                  "condition": "minecraft:match_tool",
+                  "predicate": {
+                    "predicates": {
+                      "minecraft:enchantments": [
+                        {
+                          "enchantments": "minecraft:silk_touch",
+                          "levels": {
+                            "min": 1
+                          }
+                        }
+                      ]
+                    }
+                  }
+                },
+                {
+                  "block": "hbmsntm:ore_basalt",
+                  "condition": "minecraft:block_state_property",
+                  "properties": {
+                    "subtype": "4"
+                  }
+                }
+              ],
+              "functions": [
+                {
+                  "components": {
+                    "hbmsntm:meta": 4
+                  },
+                  "function": "minecraft:set_components"
+                }
+              ],
+              "name": "hbmsntm:ore_basalt"
+            },
             {
               "type": "minecraft:item",
               "conditions": [
@@ -18,7 +203,7 @@
                   }
                 }
               ],
-              "name": "hbmsntm:nothing"
+              "name": "hbmsntm:sulfur"
             },
             {
               "type": "minecraft:item",
@@ -31,7 +216,7 @@
                   }
                 }
               ],
-              "name": "hbmsntm:detonator"
+              "name": "hbmsntm:fluorite"
             },
             {
               "type": "minecraft:item",
@@ -44,7 +229,7 @@
                   }
                 }
               ],
-              "name": "hbmsntm:can_key"
+              "name": "hbmsntm:ingot_asbestos"
             },
             {
               "type": "minecraft:item",
@@ -57,7 +242,7 @@
                   }
                 }
               ],
-              "name": "hbmsntm:crackpipe"
+              "name": "hbmsntm:gem_volcanic"
             },
             {
               "type": "minecraft:item",
@@ -70,7 +255,7 @@
                   }
                 }
               ],
-              "name": "hbmsntm:cigarette"
+              "name": "hbmsntm:powder_molysite"
             }
           ]
         }

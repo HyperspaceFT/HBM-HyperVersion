@@ -7,7 +7,7 @@
       "components": {
         "hbmsntm:meta": 0
       },
-      "items": "hbmsntm:cast_plate"
+      "items": "hbmsntm:plate_cast"
     },
     "B": {
       "item": "hbmsntm:block_beryllium"

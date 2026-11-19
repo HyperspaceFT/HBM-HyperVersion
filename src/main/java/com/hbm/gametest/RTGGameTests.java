@@ -627,11 +627,11 @@ public class RTGGameTests {
             // ass.rtgunit (:159-160): two lead cast plates, four copper plates, two thermo elements.
             GenericRecipe unit = row("ass.rtgunit", 100, 100);
             check(unit.inputItem.length == 3, "ass.rtgunit has " + unit.inputItem.length + " inputs, expected 3");
-            check(unit.inputItem[0] instanceof ComparableStack plate && plate.item == NtmItems.CAST_PLATE.get() && plate.stacksize == 2 && plate.meta == CastPlateItem.Type.LEAD.ordinal(),
+            check(unit.inputItem[0] instanceof ComparableStack plate && plate.item == NtmItems.PLATE_CAST.get() && plate.stacksize == 2 && plate.meta == CastPlateItem.Type.LEAD.ordinal(),
                     "ass.rtgunit input 0 is " + describe(unit.inputItem[0]) + ", expected 2 lead cast plates");
-            check(unit.inputItem[0].matchesRecipe(MetaHelper.newStack(NtmItems.CAST_PLATE.get(), 2, CastPlateItem.Type.LEAD.ordinal()), false), "the lead cast plate input rejects two lead cast plates");
+            check(unit.inputItem[0].matchesRecipe(MetaHelper.newStack(NtmItems.PLATE_CAST.get(), 2, CastPlateItem.Type.LEAD.ordinal()), false), "the lead cast plate input rejects two lead cast plates");
             for(CastPlateItem.Type type : CastPlateItem.Type.values()) {
-                if(type != CastPlateItem.Type.LEAD) check(!unit.inputItem[0].matchesRecipe(MetaHelper.newStack(NtmItems.CAST_PLATE.get(), 2, type.ordinal()), false), "the lead cast plate input accepts the " + type + " cast plate");
+                if(type != CastPlateItem.Type.LEAD) check(!unit.inputItem[0].matchesRecipe(MetaHelper.newStack(NtmItems.PLATE_CAST.get(), 2, type.ordinal()), false), "the lead cast plate input accepts the " + type + " cast plate");
             }
             tag(unit, 1, "c", "plates/copper", 4);
             item(unit, 2, NtmItems.THERMO_ELEMENT.get(), 2);

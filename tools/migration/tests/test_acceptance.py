@@ -111,9 +111,9 @@ class AcceptanceToolTests(unittest.TestCase):
     def test_properties_rewrite_keeps_other_lines(self):
         p = self.root / "server.properties"
         p.write_text("#comment\nmotd=old\nlevel-name=world\npvp=true\n", encoding="utf-8")
-        server.write_properties(p, {"level-name": "accept-goal29-x", "enable-rcon": "true"})
+        server.write_properties(p, {"level-name": "accept-x", "enable-rcon": "true"})
         self.assertEqual(p.read_text(encoding="utf-8"),
-                         "#comment\nmotd=old\nlevel-name=accept-goal29-x\npvp=true\nenable-rcon=true\n")
+                         "#comment\nmotd=old\nlevel-name=accept-x\npvp=true\nenable-rcon=true\n")
 
     def test_backup_restore_round_trip(self):
         run = self.root / "run"
@@ -140,17 +140,17 @@ class AcceptanceToolTests(unittest.TestCase):
         saved = common.WORLDS, common.SESSION
         common.WORLDS, common.SESSION = self.root / "worlds.json", self.root / "session.json"
         self.addCleanup(lambda: setattr(common, "WORLDS", saved[0]) or setattr(common, "SESSION", saved[1]))
-        (self.root / "run" / "accept-goal29-mine").mkdir(parents=True)
-        (self.root / "run" / "accept-goal29-other").mkdir(parents=True)
-        server.register_world(self.root / "run" / "accept-goal29-mine", "mine")
+        (self.root / "run" / "accept-mine").mkdir(parents=True)
+        (self.root / "run" / "accept-other").mkdir(parents=True)
+        server.register_world(self.root / "run" / "accept-mine", "mine")
         args = type("A", (), {"root": str(self.root)})
         args.tag = "other"
         with self.assertRaises(SystemExit):
             server.cmd_delete_world(args)
-        self.assertTrue((self.root / "run" / "accept-goal29-other").is_dir())
+        self.assertTrue((self.root / "run" / "accept-other").is_dir())
         args.tag = "mine"
         self.assertEqual(server.cmd_delete_world(args), 0)
-        self.assertFalse((self.root / "run" / "accept-goal29-mine").exists())
+        self.assertFalse((self.root / "run" / "accept-mine").exists())
         with self.assertRaises(SystemExit):
             server.cmd_delete_world(args)
 

@@ -10,7 +10,7 @@
       "components": {
         "hbmsntm:meta": 11
       },
-      "items": "hbmsntm:cast_plate_welded"
+      "items": "hbmsntm:plate_welded"
     }
   },
   "pattern": [

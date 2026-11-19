@@ -569,8 +569,8 @@ public class NetherEndWorldgenGameTests {
                     // randomTick flags: uranium ticks, nether coal does not (ModBlocks.java:1258,1260-1261)
                     check(NtmBlocks.ORE_NETHER_URANIUM.get().defaultBlockState().isRandomlyTicking() && NtmBlocks.ORE_NETHER_URANIUM_SCORCHED.get().defaultBlockState().isRandomlyTicking(), "nether uranium does not tick randomly");
                     check(!NtmBlocks.ORE_NETHER_COAL.get().defaultBlockState().isRandomlyTicking(), "nether coal ticks randomly");
-                    // NEO local difference kept by Goal28A (task book: not changed): the overworld uranium ore is a plain block
-                    check(!(NtmBlocks.ORE_URANIUM.get() instanceof OutgasBlock), "ore_uranium became an outgassing block");
+                    // ModBlocks.java:1239: the overworld uranium ore is a BlockOutgas giving radon (BlockOutgas.java:41-45)
+                    check(NtmBlocks.ORE_URANIUM.get() instanceof OutgasBlock outgasUranium && outgasUranium.getGas().is(radon), "ore_uranium is not an outgassing block giving radon");
 
                     // random tick: one of the six air neighbours gets radon
                     int n = 0;
@@ -605,13 +605,13 @@ public class NetherEndWorldgenGameTests {
                         check(after.is(b.gas()), BuiltInRegistries.BLOCK.getKey(b.block()) + " broken by a player left " + after + ", expected " + BuiltInRegistries.BLOCK.getKey(b.gas()));
                         helper.setBlock(rel, Blocks.AIR);
                     }
-                    // the overworld uranium ore (NEO plain block) leaves air
-                    BlockPos plain = new BlockPos(14, 2, 11);
-                    helper.setBlock(plain, NtmBlocks.ORE_URANIUM.get());
-                    playerBreak(helper, player, plain);
-                    check(helper.getBlockState(plain).isAir(), "ore_uranium broken by a player left " + helper.getBlockState(plain));
+                    // the overworld uranium ore broken with a pickaxe leaves radon (ModBlocks.java:1239, onBreak true)
+                    BlockPos overworld = new BlockPos(14, 2, 11);
+                    helper.setBlock(overworld, NtmBlocks.ORE_URANIUM.get());
+                    playerBreak(helper, player, overworld);
+                    check(helper.getBlockState(overworld).is(radon), "ore_uranium broken by a player left " + helper.getBlockState(overworld));
                     discardItems(helper);
-                    LOGGER.info("{} outgas: nether uranium (both) radon on random tick and break, nether coal monoxide on break and no random ticks, brick_asbestos asbestos, ore_uranium plain", TAG);
+                    LOGGER.info("{} outgas: nether uranium (both) radon on random tick and break, nether coal monoxide on break and no random ticks, brick_asbestos asbestos, ore_uranium radon on break", TAG);
                 }))
                 .thenExecute(() -> LOGGER.info("{} {} passed", TAG, "outgas"))
                 .thenSucceed();
@@ -894,7 +894,7 @@ public class NetherEndWorldgenGameTests {
 
     // TileEntityHeaterOilburner.java (4f5924e2b): :42-48 burnRate 1, maxBurnRate 10, maxHeatEnergy 500_000; :74-81 slot 3 overdrive (max level 3,
     // :130-133), maxBurnRate 10 * (od + 1), maxHeatEnergy 500_000 * (od + 1), burnRate and heat clamped down; :106 no cooling at the cap;
-    // :166,:175 NBT "setting"; HeaterOilburner.java: no IToolable any more. NEO decisions: the control key stays "setting" and the server
+    // :166,:175 NBT "setting"; HeaterOilburner.java: no IToolable any more; TileEntityMachineBase.java:127-140: automation reaches no slot. NEO decisions: the control key stays "setting" and the server
     // clamps it to 1..maxBurnRate; slot 3 accepts only overdrive upgrades.
     @GameTest(template = TEMPLATE, batch = "hbm28a_fluid_burner", timeoutTicks = 200)
     public static void fluid_burner(GameTestHelper helper) {
@@ -906,7 +906,7 @@ public class NetherEndWorldgenGameTests {
                     HeaterOilburnerBlockEntity be = burner(helper, core);
                     check(be.slots.size() == 4 && HeaterOilburnerBlockEntity.SLOT_UPGRADE == 3, "burner slots " + be.slots.size() + ", upgrade slot " + HeaterOilburnerBlockEntity.SLOT_UPGRADE);
                     for(Direction side : Direction.values()) {
-                        check(java.util.Arrays.equals(be.getSlotsForFace(side), new int[] {0, 1, 2}), "automation reaches burner slots " + java.util.Arrays.toString(be.getSlotsForFace(side)) + " from " + side);
+                        check(java.util.Arrays.equals(be.getSlotsForFace(side), new int[] {}), "automation reaches burner slots " + java.util.Arrays.toString(be.getSlotsForFace(side)) + " from " + side);
                     }
                     check(be.maxHeatEnergy == 500_000 && be.maxBurnRate == 10 && be.setting == 1, "fresh burner: max heat " + be.maxHeatEnergy + ", max rate " + be.maxBurnRate + ", setting " + be.setting);
                     control(be, 7);

@@ -1,11 +1,11 @@
 {
   "parent": "minecraft:recipes/root",
   "criteria": {
-    "has_cast_plate": {
+    "has_plate_cast": {
       "conditions": {
         "items": [
           {
-            "items": "hbmsntm:cast_plate"
+            "items": "hbmsntm:plate_cast"
           }
         ]
       },
@@ -21,7 +21,7 @@
   "requirements": [
     [
       "has_the_recipe",
-      "has_cast_plate"
+      "has_plate_cast"
     ]
   ],
   "rewards": {

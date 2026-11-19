@@ -215,10 +215,19 @@ public class BarrelBlockEntity extends MachineBaseBlockEntity implements IFluidS
 
     @Override
     public boolean canPlaceItem(int slot, ItemStack stack) {
+        // ORIG TileEntityBarrel.java:152-156 isItemValidForSlot: only the identifier slot is restricted; 1, 3 and 5 are take-only in the menu.
         return switch(slot) {
-            case 0, 1 -> stack.getItem() instanceof IItemFluidIdentifier;
-            // As in the original: the tank loads from full containers in slot 2 and fills empty ones in slot 4,
-            // each only within the tank's capacity.
+            case 0 -> stack.getItem() instanceof IItemFluidIdentifier;
+            case 2, 4 -> true;
+            default -> false;
+        };
+    }
+
+    @Override
+    public boolean canPlaceItemThroughFace(int slot, ItemStack stack, Direction direction) {
+        // ORIG TileEntityBarrel.java:140-150 canInsertItem: the tank loads from full containers in slot 2 and fills empty ones in slot 4,
+        // each only within the tank's capacity.
+        return switch(slot) {
             case 2 -> {
                 int content = FluidContainerRegistry.getFluidContent(stack, this.tank.getTankType());
                 yield content > 0 && content <= this.tank.getMaxFill();
@@ -227,25 +236,18 @@ public class BarrelBlockEntity extends MachineBaseBlockEntity implements IFluidS
                 ItemStack full = FluidContainerRegistry.getFullContainer(stack, this.tank.getTankType());
                 yield !full.isEmpty() && FluidContainerRegistry.getFluidContent(full, this.tank.getTankType()) <= this.tank.getMaxFill();
             }
-            default -> true;
+            default -> false;
         };
     }
 
     @Override
     public boolean canTakeItemThroughFace(int slot, ItemStack stack, Direction direction) {
-        return switch(slot) {
-            case 1, 3, 5 -> true;
-            default -> !this.canPlaceItem(slot, stack);
-        };
+        return slot == 3 || slot == 5;
     }
 
     @Override
     public int[] getSlotsForFace(Direction direction) {
-        return switch(direction.get3DDataValue()) {
-            case 0 -> new int[] {3, 5};
-            case 1 -> new int[] {2};
-            default -> new int[] {4};
-        };
+        return new int[] {2, 3, 4, 5};
     }
 
     @Override

@@ -31,7 +31,7 @@ public class FT_Poison extends FluidTrait {
 
     @Override
     public void addInfoHidden(List<Component> info) {
-        info.add(Component.literal("[Toxic Fumes]").withStyle(ChatFormatting.GREEN));
+        info.add(Component.literal("[").append(Component.translatable("hbmfluid.trait.toxic_fumes")).append("]").withStyle(ChatFormatting.GREEN));
     }
 
     @Override public void serializeJSON(JsonWriter writer) throws IOException {

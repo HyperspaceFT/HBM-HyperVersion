@@ -1015,10 +1015,11 @@ public class OverworldWorldgenGameTests {
 
     // ---------------------------------------------------------------- 8. depth rock and the block properties
 
-    // BlockDepth.java:18-22 (setBlockUnbreakable, setResistance 10), :25-33 (1/50 when the held item is an IDepthRockTool whose canBreakRock is true,
-    // else the unbreakable default), :37-39 (tooltip trait.tile.depth in yellow); ModBlocks.java:1271-1281 schist hardness 1.5 resistance 10, :1253-1256
-    // clusters hardness 5 resistance 15, :1274-1277 BlockOutgas(rock, true, 5, true) for the schist uranium (both) and asbestos ores; BlockOutgas.java:41-44
-    // radon for the schist uranium ores, :57-61 asbestos gas for the schist asbestos ore
+    // BlockDepth.java:18-22 (setBlockUnbreakable, setResistance 10: effective 10 * 3 / 5 = 6), :25-33 (1/50 when the held item is an IDepthRockTool whose
+    // canBreakRock is true, else the unbreakable default), :37-39 (tooltip trait.tile.depth in yellow); ModBlocks.java:1274-1284 schist setHardness(1.5F)
+    // then setResistance(10.0F) (effective 10 * 3 / 5 = 6), :1256-1259 clusters setHardness(5.0F) then setResistance(15.0F) (effective 15 * 3 / 5 = 9),
+    // :1277-1278,1280 BlockOutgas(rock, true, 5, true) for the schist uranium (both) and asbestos ores; BlockOutgas.java:41-44 radon for the schist
+    // uranium ores, :57-61 asbestos gas for the schist asbestos ore
     @GameTest(template = TEMPLATE, batch = "hbm28b_depth_rock", timeoutTicks = 100)
     public static void depth_rock(GameTestHelper helper) {
         helper.startSequence()
@@ -1037,7 +1038,7 @@ public class OverworldWorldgenGameTests {
                         helper.setBlock(rel, b);
                         BlockState state = level.getBlockState(abs);
                         check(state.getDestroySpeed(level, abs) == -1.0F, BuiltInRegistries.BLOCK.getKey(b) + " destroy speed " + state.getDestroySpeed(level, abs));
-                        check(b.getExplosionResistance() == 10.0F, BuiltInRegistries.BLOCK.getKey(b) + " resistance " + b.getExplosionResistance());
+                        check(b.getExplosionResistance() == 6.0F, BuiltInRegistries.BLOCK.getKey(b) + " resistance " + b.getExplosionResistance() + ", original 6");
                         float withTool = progress(helper, state, abs, new ItemStack(breaker), ItemStack.EMPTY);
                         check(withTool == 1.0F / 50.0F, BuiltInRegistries.BLOCK.getKey(b) + " with bismuth_pickaxe: " + withTool + " per tick, original 1/50");
                         check(progress(helper, state, abs, new ItemStack(plainAbility), ItemStack.EMPTY) == 0.0F, BuiltInRegistries.BLOCK.getKey(b) + " breaks with a non-breaker ability tool");
@@ -1063,12 +1064,12 @@ public class OverworldWorldgenGameTests {
                     List<Block> schist = List.of(NtmBlocks.STONE_GNEISS.get(), NtmBlocks.ORE_GNEISS_IRON.get(), NtmBlocks.ORE_GNEISS_GOLD.get(), NtmBlocks.ORE_GNEISS_COPPER.get(), NtmBlocks.ORE_GNEISS_ASBESTOS.get(),
                             NtmBlocks.ORE_GNEISS_LITHIUM.get(), NtmBlocks.ORE_GNEISS_RARE.get(), NtmBlocks.ORE_GNEISS_GAS.get(), NtmBlocks.ORE_GNEISS_URANIUM.get(), NtmBlocks.ORE_GNEISS_URANIUM_SCORCHED.get());
                     for(Block b : schist) {
-                        check(b.defaultBlockState().getDestroySpeed(level, BlockPos.ZERO) == 1.5F && b.getExplosionResistance() == 10.0F, BuiltInRegistries.BLOCK.getKey(b) + " hardness / resistance "
+                        check(b.defaultBlockState().getDestroySpeed(level, BlockPos.ZERO) == 1.5F && b.getExplosionResistance() == 6.0F, BuiltInRegistries.BLOCK.getKey(b) + " hardness / resistance "
                                 + b.defaultBlockState().getDestroySpeed(level, BlockPos.ZERO) + " / " + b.getExplosionResistance());
                         check(b.defaultBlockState().is(BlockTags.MINEABLE_WITH_PICKAXE), BuiltInRegistries.BLOCK.getKey(b) + " is not pickaxe-mineable");
                     }
                     for(Block b : List.of(NtmBlocks.CLUSTER_IRON.get(), NtmBlocks.CLUSTER_TITANIUM.get(), NtmBlocks.CLUSTER_ALUMINIUM.get(), NtmBlocks.CLUSTER_COPPER.get())) {
-                        check(b.defaultBlockState().getDestroySpeed(level, BlockPos.ZERO) == 5.0F && b.getExplosionResistance() == 15.0F, BuiltInRegistries.BLOCK.getKey(b) + " hardness / resistance");
+                        check(b.defaultBlockState().getDestroySpeed(level, BlockPos.ZERO) == 5.0F && b.getExplosionResistance() == 9.0F, BuiltInRegistries.BLOCK.getKey(b) + " hardness / resistance");
                         check(b.defaultBlockState().is(BlockTags.MINEABLE_WITH_PICKAXE), BuiltInRegistries.BLOCK.getKey(b) + " is not pickaxe-mineable");
                     }
 
@@ -1315,12 +1316,20 @@ public class OverworldWorldgenGameTests {
                         for(int i = 0; ok && i < 4; i++) ok = ItemStack.matches(got[i], vanilla[i]);
                         check(ok, BuiltInRegistries.BLOCK.getKey((Block) row[0]) + " centrifuges to " + List.of(got) + ", vanilla row " + List.of(vanilla) + ", original first three " + first);
                     }
-                    for(Block b : List.of(NtmBlocks.ORE_GNEISS_RARE.get(), NtmBlocks.ORE_GNEISS_LITHIUM.get(), NtmBlocks.ORE_GNEISS_ASBESTOS.get(), NtmBlocks.ORE_GNEISS_GAS.get())) {
+                    for(Block b : List.of(NtmBlocks.ORE_GNEISS_LITHIUM.get(), NtmBlocks.ORE_GNEISS_ASBESTOS.get(), NtmBlocks.ORE_GNEISS_GAS.get())) {
                         check(CentrifugeRecipes.getOutput(new ItemStack(b)).length == 0, BuiltInRegistries.BLOCK.getKey(b) + " has a centrifuge row");
                     }
-                    check(CentrifugeRecipes.getOutput(new ItemStack(NtmBlocks.ORE_RARE.get())).length == 0, "ore_rare has a centrifuge row now; the schist rare row decision no longer holds");
-                    check(CentrifugeRecipes.getJeiRecipes().size() == 83 && CentrifugeRecipes.getDefaultRecipes().size() == 83, "the centrifuge table has " + CentrifugeRecipes.getJeiRecipes().size() + " / "
-                            + CentrifugeRecipes.getDefaultRecipes().size() + " rows, expected 83 (80 + 3)");
+                    // Goal32A: original CentrifugeRecipes.java:132-136, the RAREEARTH.ore() row (OreDictManager.java:471: ore_rare and
+                    // ore_gneiss_rare; NEO's deepslate variant shares it): desh mix 1, zirconium nugget 1, zirconium nugget 1, gravel 1
+                    List<ItemStack> rare = List.of(s(NtmItems.POWDER_DESH_MIX.get(), 1), s(NtmItems.NUGGET_ZIRCONIUM.get(), 1), s(NtmItems.NUGGET_ZIRCONIUM.get(), 1), s(Blocks.GRAVEL, 1));
+                    for(Block b : List.of(NtmBlocks.ORE_RARE.get(), NtmBlocks.ORE_RARE_DEEPSLATE.get(), NtmBlocks.ORE_GNEISS_RARE.get())) {
+                        ItemStack[] got = CentrifugeRecipes.getOutput(new ItemStack(b));
+                        boolean same = got.length == rare.size();
+                        for(int i = 0; same && i < got.length; i++) same = got[i].is(rare.get(i).getItem()) && got[i].getCount() == rare.get(i).getCount();
+                        check(same, BuiltInRegistries.BLOCK.getKey(b) + " centrifuges to " + List.of(got) + ", original " + rare);
+                    }
+                    check(CentrifugeRecipes.getJeiRecipes().size() == 88 && CentrifugeRecipes.getDefaultRecipes().size() == 88, "the centrifuge table has " + CentrifugeRecipes.getJeiRecipes().size() + " / "
+                            + CentrifugeRecipes.getDefaultRecipes().size() + " rows, expected 88 (80 + 3 schist + 3 rare earth + 2 Sellafield diamond / emerald)");
 
                     // gas shale holds petroleum gas and leaves nothing behind
                     ItemStack shale = new ItemStack(NtmBlocks.ORE_GNEISS_GAS.get());
@@ -1337,7 +1346,7 @@ public class OverworldWorldgenGameTests {
                     }
                     check(found == 1, "gas shale is registered " + found + " times");
                     for(FluidType other : List.of(Fluids.OIL, Fluids.GAS, Fluids.WATER)) check(FluidContainerRegistry.getFluidContent(shale, other) == 0, "gas shale holds " + other.getInternalName());
-                    LOGGER.info("{} processing: smelting 5 (0.7 xp), shredder (3 depth ore rows), acidizer 60 rows, centrifuge 83 rows, gas shale {} mB petroleum gas", TAG, want);
+                    LOGGER.info("{} processing: smelting 5 (0.7 xp), shredder (3 depth ore rows), acidizer 60 rows, centrifuge 88 rows, gas shale {} mB petroleum gas", TAG, want);
                 }))
                 .thenExecute(() -> LOGGER.info("{} {} passed", TAG, "processing"))
                 .thenSucceed();

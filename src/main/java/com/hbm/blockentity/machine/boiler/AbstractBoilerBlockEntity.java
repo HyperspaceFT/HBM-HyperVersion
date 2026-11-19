@@ -3,6 +3,7 @@ package com.hbm.blockentity.machine.boiler;
 import api.hbm.fluidmk2.IFluidStandardTransceiverMK2;
 import api.hbm.fluidmk2.IFluidConnectorMK2;
 import api.hbm.tile.IHeatSource;
+import com.hbm.blockentity.IFluidCopiable;
 import com.hbm.blockentity.IOverpressurable;
 import com.hbm.blockentity.ITickable;
 import com.hbm.blockentity.IPersistentNBT;
@@ -27,7 +28,7 @@ import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.AABB;
 import net.minecraft.world.phys.Vec3;
 
-public abstract class AbstractBoilerBlockEntity extends LoadedBaseBlockEntity implements ITickable, IFluidStandardTransceiverMK2, IFluidConnectorMK2, IOverpressurable, IHeatSource, IPersistentNBT {
+public abstract class AbstractBoilerBlockEntity extends LoadedBaseBlockEntity implements ITickable, IFluidStandardTransceiverMK2, IFluidConnectorMK2, IOverpressurable, IHeatSource, IPersistentNBT, IFluidCopiable {
 
     protected static final double DIFFUSION = 0.1D;
 

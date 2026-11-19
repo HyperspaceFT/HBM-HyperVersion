@@ -18,7 +18,7 @@ public class AnvilSmithingCastMoldRecipe extends AnvilSmithingRecipe {
     @Override
     public int matchesInt(ItemStack left, ItemStack right) {
         int meta = MetaHelper.getMeta(left);
-        return left.is(NtmItems.CAST_PLATE.get()) && left.getCount() == 1
+        return left.is(NtmItems.PLATE_CAST.get()) && left.getCount() == 1
                 && meta >= 0 && meta < CastPlateItem.Type.values().length
                 && right.is(NtmItems.MOLD_BASE.get()) && right.getCount() >= 1 ? 0 : -1;
     }

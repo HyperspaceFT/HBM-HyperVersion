@@ -96,11 +96,13 @@ final class Steps {
             case "close" -> new Close(spec);
             case "screen" -> new ScreenCheck(spec);
             case "chat" -> new Chat(spec);
+            case "server" -> new ServerCommand(spec);
             case "export" -> new Export(spec);
             case "itemmodel" -> new ReadSteps.ItemModel(spec);
             case "itemtip" -> new ReadSteps.ItemTip(spec);
             case "inv" -> new ReadSteps.Inv(spec);
             case "tab" -> new ReadSteps.Tab(spec);
+            case "items" -> new ReadSteps.Items(spec);
             case "option" -> new ReadSteps.Option(spec);
             case "hud" -> new HudRecorder.Hud(spec);
             case "i18n" -> new ReadSteps.Lang18n(spec);
@@ -190,7 +192,11 @@ final class Steps {
 
     // ------------------------------------------------------------------ world
 
-    /** Creates a flat creative world with commands at the title screen: WorldOpenFlows.createFreshLevel, as Create World does. */
+    /**
+     * Creates a world at the title screen: WorldOpenFlows.createFreshLevel, as Create World does. Defaults: creative,
+     * peaceful, commands on, seed 31, the flat preset; {@code gamemode}, {@code difficulty}, {@code cheats}, {@code seed}
+     * and {@code preset} (flat or normal) change them, and a name the game does not know fails the step.
+     */
     static final class NewWorld extends Step {
         NewWorld(JsonObject spec) {
             super(spec, 20 * 300);
@@ -212,13 +218,34 @@ final class Steps {
                 fail("world exists: " + name + " (use openworld)");
                 return;
             }
-            GameType mode = GameType.byName(str("gamemode", "creative"));
-            LevelSettings settings = new LevelSettings(name, mode, false, Difficulty.byName(str("difficulty", "peaceful")),
-                    bool("cheats", true), new GameRules(), WorldDataConfiguration.DEFAULT);
-            WorldOptions options = new WorldOptions(spec.has("seed") ? spec.get("seed").getAsLong() : 31L, false, false);
+            // GameType.byName falls back to survival and Difficulty.byName to null for a misspelt name; both fail here instead.
+            String modeName = str("gamemode", "creative");
+            GameType mode = GameType.byName(modeName, null);
+            Difficulty difficulty = Difficulty.byName(str("difficulty", "peaceful"));
             String preset = str("preset", "flat");
+            if (mode == null) {
+                fail("unknown gamemode: " + modeName);
+                return;
+            }
+            if (difficulty == null) {
+                fail("unknown difficulty: " + str("difficulty", ""));
+                return;
+            }
+            if (!preset.equals("flat") && !preset.equals("normal")) {
+                fail("unknown preset: " + preset + " (flat or normal)");
+                return;
+            }
+            boolean cheats = bool("cheats", true);
+            long seed = spec.has("seed") ? spec.get("seed").getAsLong() : 31L;
+            LevelSettings settings = new LevelSettings(name, mode, false, difficulty, cheats, new GameRules(), WorldDataConfiguration.DEFAULT);
+            WorldOptions options = new WorldOptions(seed, !preset.equals("flat"), false);
             path = "WorldOpenFlows.createFreshLevel";
             result.addProperty("world", name);
+            result.addProperty("gamemode", mode.getName());
+            result.addProperty("difficulty", difficulty.getKey());
+            result.addProperty("cheats", cheats);
+            result.addProperty("seed", seed);
+            result.addProperty("preset", preset);
             mc.createWorldOpenFlows().createFreshLevel(name, settings, options,
                     reg -> reg.registryOrThrow(Registries.WORLD_PRESET)
                             .getHolderOrThrow(preset.equals("normal") ? WorldPresets.NORMAL : WorldPresets.FLAT).value().createWorldDimensions(),
@@ -633,7 +660,7 @@ final class Steps {
                             tile.copyRect(sheet, 0, 0, x, y + label, tw, th, false, false);
                         }
                     }
-                    PixelFont.draw(sheet, x + 2, y + 2, entry.get("label").getAsString(), 0xFFFFFFFF, 2, tw - 4);
+                    PixelFont.drawLabel(sheet, x + 2, y + 2, entry.get("label").getAsString(), 0xFFFFFFFF, tw - 4);
                     index.add(entry);
                 }
                 sheet.writeToFile(file);
@@ -1416,8 +1443,100 @@ final class Steps {
     }
 
     /**
-     * Writes recipe tables that hbmsntm defines in Java and never writes as JSON (the anvil's construction and smithing
-     * recipes, AnvilRecipes.getConstruction / getSmithing) to exports/anvil.json for closure.py. Read-only.
+     * Server-side reads in a single-player world: an optional {@code command} runs on the integrated server's own thread
+     * (MinecraftServer.submit) as the server's command source (permission 4, overworld spawn), its output lines and
+     * result value are collected there, and the server's tick state is read in the same task: overworld game time,
+     * sprinting, frozen, tick rate and mean tick time. Unlike {@code cmd} nothing depends on client ticks or on chat
+     * arriving at the client, so it keeps answering while the server sprints. A dedicated server is read over RCON.
+     */
+    static final class ServerCommand extends Step {
+        private CompletableFuture<JsonObject> future;
+
+        ServerCommand(JsonObject spec) {
+            super(spec, 20 * 60);
+        }
+
+        @Override
+        void start(Executor ex) {
+            net.minecraft.client.server.IntegratedServer server = ex.mc.getSingleplayerServer();
+            if (server == null) {
+                fail("no integrated server (single player only; read a dedicated server over RCON)");
+                return;
+            }
+            String command = str("command", null);
+            path = "MinecraftServer.submit";
+            waiting = "server task";
+            future = server.submit(() -> {
+                JsonObject r = new JsonObject();
+                if (command != null) {
+                    JsonArray lines = new JsonArray();
+                    net.minecraft.commands.CommandSource sink = new net.minecraft.commands.CommandSource() {
+                        @Override
+                        public void sendSystemMessage(Component message) {
+                            lines.add(message.getString());
+                        }
+
+                        @Override
+                        public boolean acceptsSuccess() {
+                            return true;
+                        }
+
+                        @Override
+                        public boolean acceptsFailure() {
+                            return true;
+                        }
+
+                        @Override
+                        public boolean shouldInformAdmins() {
+                            return false;
+                        }
+                    };
+                    boolean[] success = {false};
+                    int[] value = {0};
+                    boolean[] called = {false};
+                    net.minecraft.commands.CommandSourceStack source = server.createCommandSourceStack().withSource(sink)
+                            .withCallback((ok, v) -> {
+                                called[0] = true;
+                                success[0] |= ok;
+                                value[0] = v;
+                            });
+                    server.getCommands().performPrefixedCommand(source, command.startsWith("/") ? command.substring(1) : command);
+                    r.addProperty("command", command);
+                    r.add("messages", lines);
+                    r.addProperty("success", called[0] && success[0]);
+                    r.addProperty("result", value[0]);
+                }
+                net.minecraft.server.ServerTickRateManager rate = server.tickRateManager();
+                r.addProperty("game_time", server.overworld().getGameTime());
+                r.addProperty("sprinting", rate.isSprinting());
+                r.addProperty("frozen", rate.isFrozen());
+                r.addProperty("tick_rate", rate.tickrate());
+                r.addProperty("mean_tick_ms", server.getAverageTickTimeNanos() / 1.0e6);
+                return r;
+            });
+        }
+
+        @Override
+        void tick(Executor ex) {
+            if (future == null || !future.isDone()) return;
+            JsonObject r;
+            try {
+                r = future.join();
+            } catch (Exception e) {
+                fail("server task: " + e);
+                return;
+            }
+            for (Map.Entry<String, JsonElement> e : r.entrySet()) result.add(e.getKey(), e.getValue());
+            if (r.has("success") && !r.get("success").getAsBoolean() && !bool("allow_error", false)) fail("command failed on the server");
+            else ok();
+        }
+    }
+
+    /**
+     * Writes recipe tables that hbmsntm defines in Java and never writes as JSON for closure.py: kind anvil (the anvil's
+     * construction and smithing recipes, AnvilRecipes.getConstruction / getSmithing) to exports/anvil.json, kind crucible to
+     * exports/crucible.json, kind machines (gas centrifuge, combination oven, RBMK rod disassembly) to exports/machines.json.
+     * Read-only.
      */
     static final class Export extends Step {
         Export(JsonObject spec) {
@@ -1429,6 +1548,10 @@ final class Steps {
             String kind = str("kind", "anvil");
             if ("crucible".equals(kind)) {
                 crucible(ex);
+                return;
+            }
+            if ("machines".equals(kind)) {
+                machines(ex);
                 return;
             }
             if (!"anvil".equals(kind)) {
@@ -1532,6 +1655,61 @@ final class Steps {
             result.addProperty("smelting", smelting.size());
             result.addProperty("casts", casts.size());
             path = "Mats.getSmeltingMaterialsFromItem, MoldItem.Mold.getOutput";
+            ok();
+        }
+
+        /**
+         * The machine tables that are not serializable recipes and so never reach config/hbmRecipes: the gas centrifuge
+         * cascade summaries (GasCentrifugeRecipes.getJeiRecipes, one row per cascade with its centrifuge count and whether it
+         * needs the speed upgrade), the combination oven (CombinationRecipes.getJeiRecipes) and the RBMK fuel rods taken apart
+         * into pellets (RBMKRodDisassemblyRecipe: a cold, burnt rod gives 8 of its pellet item, the meta 0-9 from its
+         * enrichment and xenon; a fresh rod gives nothing).
+         */
+        private void machines(Executor ex) throws Exception {
+            JsonObject out = new JsonObject();
+            JsonArray gas = new JsonArray();
+            for (com.hbm.inventory.recipes.GasCentrifugeRecipes.GasCentrifugeRecipe r : com.hbm.inventory.recipes.GasCentrifugeRecipes.getJeiRecipes()) {
+                JsonObject o = new JsonObject();
+                o.addProperty("fluid", r.input().getInternalName());
+                o.addProperty("amount", r.amount());
+                o.add("outputs", stacks(List.of(r.outputs())));
+                o.addProperty("high_speed", r.highSpeed());
+                o.addProperty("centrifuges", r.centrifuges());
+                gas.add(o);
+            }
+            JsonArray combination = new JsonArray();
+            for (com.hbm.inventory.recipes.CombinationRecipes.JeiRecipe r : com.hbm.inventory.recipes.CombinationRecipes.getJeiRecipes()) {
+                JsonObject o = new JsonObject();
+                o.add("inputs", stacks(r.inputStacks()));
+                if (r.outputItem() != null && !r.outputItem().isEmpty()) o.add("output", stackJson(r.outputItem()));
+                if (r.outputFluid() != null) {
+                    JsonArray fluid = new JsonArray();
+                    fluid.add(r.outputFluid().type.getInternalName());
+                    fluid.add(r.outputFluid().fill);
+                    o.add("fluid", fluid);
+                }
+                combination.add(o);
+            }
+            JsonArray rods = new JsonArray();
+            for (net.minecraft.world.item.Item item : BuiltInRegistries.ITEM) {
+                if (!(item instanceof com.hbm.items.machine.RBMKRodItem rod) || rod.pellet == null) continue;
+                JsonObject o = new JsonObject();
+                o.addProperty("rod", BuiltInRegistries.ITEM.getKey(item).toString());
+                o.addProperty("pellet", BuiltInRegistries.ITEM.getKey(rod.pellet).toString());
+                o.addProperty("count", 8);
+                rods.add(o);
+            }
+            out.add("gas_centrifuge", gas);
+            out.add("combination", combination);
+            out.add("rbmk_disassembly", rods);
+            Path file = ex.dir.resolve("exports").resolve("machines.json");
+            Files.createDirectories(file.getParent());
+            Files.writeString(file, Executor.GSON.toJson(out));
+            result.addProperty("file", ex.dir.relativize(file).toString());
+            result.addProperty("gas_centrifuge", gas.size());
+            result.addProperty("combination", combination.size());
+            result.addProperty("rbmk_disassembly", rods.size());
+            path = "GasCentrifugeRecipes.getJeiRecipes, CombinationRecipes.getJeiRecipes, RBMKRodItem.pellet";
             ok();
         }
 

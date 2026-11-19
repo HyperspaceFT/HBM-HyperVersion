@@ -23,10 +23,10 @@ final class DropsBatchRegression {
     static final InfestedBlock INFESTED = new InfestedBlock("infested_stone", Blocks.STONE);
     /** Needs a tool but is not pickaxe-mineable: fails breakExtraBlock's tool check. */
     static final Block DIRT = new Block("dirt_like");
-    /** 2.5 times as hard as the reference block: fails the strength check. */
-    static final Block HARD = hardness("hard_ore", 0.02F);
-    /** Exactly twice as hard: passes, as the check is refStrength / strength > 2f. */
-    static final Block EVEN = hardness("even_ore", 0.025F);
+    /** 12.5 times as hard as the reference block: fails the strength check. */
+    static final Block HARD = hardness("hard_ore", 0.004F);
+    /** Exactly ten times as hard: passes, as the check is refStrength / strength > 10f. */
+    static final Block EVEN = hardness("even_ore", 0.005F);
     static final GameMasterOre MASTER = new GameMasterOre();
     /** Need no tool and are not pickaxe-mineable, like coal gas, glass or a torch: they pass hasCorrectToolForDrops but fail the effectiveness gate. */
     static final Block COAL_GAS = noTool("coal_gas", false), GLASS = noTool("glass_like", false);
@@ -243,13 +243,12 @@ final class DropsBatchRegression {
             BlockState state = level.getBlockState(pos), refState = level.getBlockState(refPos);
             BlockEntity be = level.getBlockEntity(pos);
             // The expected checks: neither block is air, a non-empty hand, a block the pickaxe is effective for (SILK takes any block; shears
-            // take a shearable one), the right tool, and at most twice as hard as the reference (NEO keeps 2f; the original uses 10f, which is
-            // out of scope here).
+            // take a shearable one), the right tool, and at most ten times as hard as the reference (the original's 10f, ItemToolAbility.java:316-323).
             boolean silk = config.getActivePreset().harvestAbility == IToolHarvestAbility.SILK;
             boolean effective = state.is(BlockTags.MINEABLE_WITH_PICKAXE) && player.hasCorrectToolForDrops(state);
             boolean gate = !player.getMainHandItem().isEmpty() && (silk || effective || (isShears && state.getBlock() instanceof IShearable));
             boolean passes = !state.isAir() && !refState.isAir() && gate && player.hasCorrectToolForDrops(state)
-                    && !(refState.getDestroyProgress(player, level, refPos) / state.getDestroyProgress(player, level, pos) > 2f);
+                    && !(refState.getDestroyProgress(player, level, refPos) / state.getDestroyProgress(player, level, pos) > 10f);
             int from = level.journal.size();
             super.breakExtraBlock(level, pos, player, refPos);
             probes.add(new Probe(pos, state, be, refState, passes, from, level.journal.size(), level.getBlockState(pos), level.getBlockEntity(pos),
@@ -668,7 +667,7 @@ final class DropsBatchRegression {
             String label = "break events " + mode + " " + harvest.getKey() + " keep " + keep;
             List<Probe> probes = mine(label, level, player, ORIGIN, cancelled);
             for(BlockPos pos : List.of(south, hard)) check(probes.stream().anyMatch(p -> p.pos().equals(pos) && !p.passes()), label + ": the checks skip " + pos);
-            check(probes.stream().anyMatch(p -> p.pos().equals(even) && p.passes()), label + ": twice as hard still passes");
+            check(probes.stream().anyMatch(p -> p.pos().equals(even) && p.passes()), label + ": ten times as hard still passes");
             Map<BlockPos, AbilityHarvestRegression.Expect> broken = new HashMap<>();
             broken.put(ORIGIN, mined);
             for(Probe p : probes) if(p.passes() && !cancelled.test(p) && candidates.containsKey(p.pos())) broken.put(p.pos(), candidates.get(p.pos()));

@@ -166,6 +166,11 @@ public class HazardRegistry {
         HazardSystem.register(Items.PUMPKIN_PIE, makeData(EXPLOSIVE, 1F));
         HazardSystem.register(Blocks.TNT, makeData(EXPLOSIVE, 4F));
 
+        // Original HazardRegistry.java:175-178 (dustCoal, dustTinyCoal, dustLignite; no tiny lignite item exists)
+        HazardSystem.register(item(POWDER_COAL), makeData(COAL, powder));
+        HazardSystem.register(item(POWDER_COAL_TINY), makeData(COAL, powder_tiny));
+        HazardSystem.register(item(POWDER_LIGNITE), makeData(COAL, powder));
+
         HazardSystem.register(item(CELL_TRITIUM), makeData(RADIATION, 0.001F));
         HazardSystem.register(item(CELL_SAS3), makeData().addEntry(RADIATION, sas3).addEntry(BLINDING, 60F));
         HazardSystem.register(item(CELL_BALEFIRE), makeData(RADIATION, 50F));

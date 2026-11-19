@@ -1,6 +1,7 @@
 package com.hbm.blockentity.machine;
 
 import api.hbm.fluidmk2.IFluidStandardTransceiverMK2;
+import com.hbm.blockentity.IFluidCopiable;
 import com.hbm.blockentity.MachineBaseBlockEntity;
 import com.hbm.blockentity.NtmBlockEntityTypes;
 import com.hbm.inventory.fluid.FluidType;
@@ -25,7 +26,7 @@ import net.minecraft.world.inventory.AbstractContainerMenu;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.block.state.BlockState;
 
-public class MachineBlastFurnaceBlockEntity extends MachineBaseBlockEntity implements IFluidStandardTransceiverMK2 {
+public class MachineBlastFurnaceBlockEntity extends MachineBaseBlockEntity implements IFluidStandardTransceiverMK2, IFluidCopiable {
 
     public static final int MAX_FUEL = 25_600;
     public static final int FUEL_RATE = 800;
@@ -205,6 +206,14 @@ public class MachineBlastFurnaceBlockEntity extends MachineBaseBlockEntity imple
         return false;
     }
 
+    // ORIG TileEntityMachineBlastFurnace.java:228-248: automation refuses an item equal to the other input slot's content; the menu keeps canPlaceItem alone.
+    @Override
+    public boolean canPlaceItemThroughFace(int index, ItemStack stack, Direction direction) {
+        if(index == SLOT_INPUT_1 && ItemStack.isSameItem(stack, this.slots.get(SLOT_INPUT_2))) return false;
+        if(index == SLOT_INPUT_2 && ItemStack.isSameItem(stack, this.slots.get(SLOT_INPUT_1))) return false;
+        return this.canPlaceItem(index, stack);
+    }
+
     @Override
     public boolean canTakeItemThroughFace(int index, ItemStack stack, Direction direction) {
         return index == SLOT_OUTPUT_1 || index == SLOT_OUTPUT_2;
@@ -271,6 +280,8 @@ public class MachineBlastFurnaceBlockEntity extends MachineBaseBlockEntity imple
     @Override public FluidTank[] getReceivingTanks() { return new FluidTank[] { this.tanks[0] }; }
     @Override public FluidTank[] getSendingTanks() { return new FluidTank[] { this.tanks[1] }; }
     @Override public FluidTank[] getAllTanks() { return this.tanks; }
+    // ORIG TileEntityMachineBlastFurnace.java:332: copies the fluid types but pastes nothing.
+    @Override public FluidTank getTankToPaste() { return null; }
 
     @Override public int getFloorCount() { return 4; }
     @Override public BlockPos getFloorPosFromIndex(int index) { return this.standardFloor3x3(index); }

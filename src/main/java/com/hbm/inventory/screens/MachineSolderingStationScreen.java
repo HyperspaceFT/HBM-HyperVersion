@@ -42,9 +42,9 @@ public class MachineSolderingStationScreen extends InfoScreen<MachineSolderingSt
         this.drawCustomInfoStat(guiGraphics, mouseX, mouseY, this.leftPos + 78, this.topPos + 67, 8, 8, mouseX, mouseY, this.getUpgradeInfo());
 
         List<Component> lines = new ArrayList<>();
-        lines.add(Component.literal("Recipe Collision Prevention: ").append(this.be.collisionPrevention ? Component.literal("ON").withStyle(ChatFormatting.GREEN) : Component.literal("OFF").withStyle(ChatFormatting.RED)));
-        lines.add(Component.literal("Prevents no-fluid recipes from being processed"));
-        lines.add(Component.literal("when fluid is present."));
+        lines.add(Component.translatable("container.machine_soldering_station.collision", this.be.collisionPrevention ? Component.translatable("container.machine_soldering_station.collision.on").withStyle(ChatFormatting.GREEN) : Component.translatable("container.machine_soldering_station.collision.off").withStyle(ChatFormatting.RED)));
+        lines.add(Component.translatable("container.machine_soldering_station.collision.desc1"));
+        lines.add(Component.translatable("container.machine_soldering_station.collision.desc2"));
         this.drawCustomInfoStat(guiGraphics, mouseX, mouseY, this.leftPos + 5, this.topPos + 66, 10, 10, mouseX, mouseY, lines);
 
         this.renderTooltip(guiGraphics, mouseX, mouseY);
@@ -99,7 +99,7 @@ public class MachineSolderingStationScreen extends InfoScreen<MachineSolderingSt
         }
 
         if(levels.isEmpty()) {
-            lines.add(Component.literal("No upgrades installed"));
+            lines.add(Component.translatable("upgrade.gui.none"));
             return lines;
         }
 

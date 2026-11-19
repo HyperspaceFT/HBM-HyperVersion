@@ -3,6 +3,7 @@ package com.hbm.blockentity.machine;
 import api.hbm.fluidmk2.IFluidStandardTransceiverMK2;
 import api.hbm.fluidmk2.IFillableItem;
 import api.hbm.tile.IHeatSource;
+import com.hbm.blockentity.IFluidCopiable;
 import com.hbm.blockentity.LoadedBaseBlockEntity;
 import com.hbm.blockentity.MachineBaseBlockEntity;
 import com.hbm.blockentity.NtmBlockEntityTypes;
@@ -33,7 +34,7 @@ import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
 
-public class MachineFurnaceCombinationBlockEntity extends MachineBaseBlockEntity implements IFluidStandardTransceiverMK2 {
+public class MachineFurnaceCombinationBlockEntity extends MachineBaseBlockEntity implements IFluidStandardTransceiverMK2, IFluidCopiable {
 
     public static final int PROCESS_TIME = 20_000;
     public static final int MAX_HEAT = 100_000;
@@ -295,6 +296,8 @@ public class MachineFurnaceCombinationBlockEntity extends MachineBaseBlockEntity
     @Override public FluidTank[] getReceivingTanks() { return FluidTank.EMPTY_ARRAY; }
     @Override public FluidTank[] getSendingTanks() { return new FluidTank[] { this.tank }; }
     @Override public FluidTank[] getAllTanks() { return new FluidTank[] { this.tank }; }
+    // The original is a sender only, so its settings tool copies the byproduct type and pastes nothing.
+    @Override public FluidTank getTankToPaste() { return null; }
 
     @Override
     public AbstractContainerMenu createMenu(int id, Inventory inventory, Player player) {

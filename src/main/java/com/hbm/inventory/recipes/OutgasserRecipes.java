@@ -35,7 +35,7 @@ import java.util.List;
 /**
  * Irradiation channel table (original OutgasserRecipes.java): one input item (exact item/META or tag) turns into a solid output,
  * a gas output into the channel's 64,000 mB tank, or both, once the RBMK flux has filled the channel's progress. Lookups ignore the
- * stack count and any component but META and try the exact item rows before the tag rows (original getOutput :65-83).
+ * stack count and any component but META and try the exact item rows before the tag rows (original getOutput :67-85).
  * The original keys its rows on ore dictionary names (lithium, gold, thorium-232, coal, PVC); NEO's default rows use concrete items
  * instead: its datagen registers item tags only for aluminium, its other tables use concrete items for gold and coal
  * (PressRecipes, BlastFurnaceRecipes, CombinationRecipes) and the NeoForge common tags (c:ingots/gold ...) do not hold NEO's own
@@ -89,7 +89,7 @@ public class OutgasserRecipes extends SerializableRecipe {
                 if(fluidOutput.pressure != 0) throw invalid("fluid output pressure must be 0");
                 this.fluidOutput = new FluidStack(fluidOutput.type, fluidOutput.fill);
             }
-            // The original readRecipe (:127-129) silently drops a row without any output.
+            // The original readRecipe (:129-131) silently drops a row without any output.
             if(this.solidOutput.isEmpty() && this.fluidOutput == null) throw invalid("row needs a solid output, a fluid output or both");
             this.fusionOnly = fusionOnly;
         }
@@ -123,7 +123,7 @@ public class OutgasserRecipes extends SerializableRecipe {
         return result;
     }
     public static OutgasserRecipe getOutput(ItemStack stack) { return getOutput(RECIPES, stack); }
-    /** The exact item rows first, then the tag rows (original :65-83: the exact stack before the ore dictionary); null if none matches. */
+    /** The exact item rows first, then the tag rows (original :67-85: the exact stack before the ore dictionary); null if none matches. */
     public static OutgasserRecipe getOutput(List<OutgasserRecipe> source, ItemStack stack) {
         if(stack == null || stack.isEmpty()) return null;
         for(OutgasserRecipe recipe : source) if(recipe.input instanceof ComparableStack && recipe.input.matchesRecipe(stack, true)) return recipe;
@@ -150,7 +150,7 @@ public class OutgasserRecipes extends SerializableRecipe {
 
     @Override public String getFileName() { return "hbmIrradiation.json"; }
     @Override public Object getRecipeObject() { return table; }
-    /** Original registerDefaults (:32-63), in the original order. */
+    /** Original registerDefaults (:32-65), in the original order. */
     @Override public void registerDefaults() {
         // Lithium to tritium (:35-38).
         gas(NtmBlocks.BLOCK_LITHIUM, Fluids.TRITIUM, 10_000);
@@ -166,13 +166,15 @@ public class OutgasserRecipes extends SerializableRecipe {
         solid(NtmItems.NUGGET_TH232.get(), NtmItems.NUGGET_THORIUM_FUEL.get());
         solid(NtmItems.BILLET_TH232.get(), NtmItems.BILLET_THORIUM_FUEL.get());
         // The mushroom rows (:51-53) are not ported: NEO has neither the glowing mushroom nor the glowing stew.
-        // Coal to coal tar and syngas (:55-57).
+        // Potato to poisonous potato (:54).
+        solid(Items.POTATO, Items.POISONOUS_POTATO);
+        // Coal to coal tar and syngas (:56-58).
         both(Items.COAL, NtmItems.OIL_TAR_COAL.get(), 1, Fluids.SYNGAS, 50);
         both(NtmItems.POWDER_COAL.get(), NtmItems.OIL_TAR_COAL.get(), 1, Fluids.SYNGAS, 50);
         both(Items.COAL_BLOCK, NtmItems.OIL_TAR_COAL.get(), 9, Fluids.SYNGAS, 500);
-        // PVC (:59).
+        // PVC (:60).
         both(NtmItems.INGOT_PVC.get(), NtmItems.INGOT_C4.get(), 1, Fluids.COLLOID, 250);
-        // Tar (:61-62).
+        // Tar (:62-63).
         gas(NtmItems.OIL_TAR_COAL.get(), Fluids.COALOIL, 100);
         gas(NtmItems.OIL_TAR_WAX.get(), Fluids.RADIOSOLVENT, 100);
     }
@@ -191,7 +193,7 @@ public class OutgasserRecipes extends SerializableRecipe {
             add(new OutgasserRecipe(input, solid, fluid, fusionOnly));
         } catch(RuntimeException ex) { throw invalid("recipe " + table.size() + ": " + ex.getMessage()); }
     }
-    /** Original writeRecipe (:132-150): input, the outputs that are present, and always fusionOnly. */
+    /** Original writeRecipe (:134-152): input, the outputs that are present, and always fusionOnly. */
     @Override public void writeRecipe(Object value, JsonWriter writer) throws IOException {
         OutgasserRecipe row = (OutgasserRecipe) value;
         writer.name("input"); writeInput(row.input, writer);

@@ -402,12 +402,6 @@ public class NtmBlockEntityTypes {
                             CrateDeshBlockEntity::new,
                             NtmBlocks.CRATE_DESH.get())
                     .build(null));
-    public static final Supplier<BlockEntityType<CrateTemplateBlockEntity>> CRATE_TEMPLATE = BLOCK_ENTITY_TYPES.register(
-            "crate_template",
-            () -> BlockEntityType.Builder.of(
-                            CrateTemplateBlockEntity::new,
-                            NtmBlocks.CRATE_TEMPLATE.get())
-                    .build(null));
 
     public static final Supplier<BlockEntityType<MachinePressBlockEntity>> PRESS = BLOCK_ENTITY_TYPES.register("press", () -> BlockEntityType.Builder.of(MachinePressBlockEntity::new, NtmBlocks.MACHINE_PRESS.get()).build(null));
 

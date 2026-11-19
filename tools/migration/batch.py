@@ -46,8 +46,9 @@ DEBUG_NAME_OWNER = "recompile-debug-names"
 EVERGREEN_SUITES = (("verify_goal18a_structures", ()), ("verify_goal19b_structures", ()),
                     ("verify_review_block_lifecycle", ()), ("verify_review_ability_harvest", ()),
                     ("verify_goal7b_resources", ("--source-only",)))
+# The acceptance executor (src/acceptance) compiles against the main classes; build does not compile it.
 GRADLE_STEPS = (("runData", "rundata.log", "runData"), ("gametest", "gametest.log", "runGameTestServer"),
-                ("build", "build.log", "build"))
+                ("build", "build.log", "build"), ("acceptance", "acceptance-classes.log", "acceptanceClasses"))
 RECORD_STEPS = (("loc", "localization.log", "localization-audit.json"), ("audit", "resources-audit.log", "resources-audit.json"),
                 ("jar", "packaged-resources.log", "packaged-resources.json"), ("validate", "validate.log", None))
 TEXT_SUFFIXES = {".java", ".json", ".md", ".py", ".txt", ".lang", ".sh", ".toml", ".properties", ".gradle", ".cfg",
@@ -59,7 +60,7 @@ GAMETEST_TAG = re.compile(r'String TAG = "(\[hbm-[^"\]]*\])"')
 GAMETEST_MARKER = re.compile(r'passed\("(\w+)"\)')
 
 MANIFEST_DEFAULTS = {"compare": False, "records": [], "optional_records": [], "names_package": [], "row_diff": [],
-                     "deleted": [], "optional": [], "carried": {}, "groups": {}, "gametests_new": [],
+                     "deleted": [], "deleted_earlier": [], "optional": [], "carried": {}, "groups": {}, "gametests_new": [],
                      "gametests_changed": {}, "status_changes": [], "language_keys_removed": False, "scope": "", "evidence": "", "gametest_note": "",
                      "radiation_note": "", "meltdown_note": ""}
 MANIFEST_REQUIRED = ("batch", "previous", "task_book", "source_head", "start_head", "snapshot")
@@ -141,7 +142,7 @@ def load_manifest(path: Path, name: str) -> dict:
             raise MigrationError(f"{path.name}: every [{key}] entry is a list of paths")
     literal = [p for paths in manifest["carried"].values() for p in paths]
     literal += manifest["gametests_new"] + list(manifest["gametests_changed"]) + manifest["records"]
-    literal += manifest["optional_records"] + manifest["names_package"] + manifest["row_diff"] + manifest["deleted"]
+    literal += manifest["optional_records"] + manifest["names_package"] + manifest["row_diff"] + manifest["deleted"] + manifest["deleted_earlier"]
     literal += [manifest["task_book"], manifest["snapshot"]]
     for pattern in literal + manifest["optional"] + [p for paths in manifest["groups"].values() for p in paths]:
         relative_path(pattern)
@@ -152,6 +153,19 @@ def load_manifest(path: Path, name: str) -> dict:
     if unexplained:
         raise MigrationError(f"{path.name}: gametests_changed needs a reason for {unexplained}")
     return manifest
+
+
+def earlier_manifest_paths(batch: Batch) -> set[str]:
+    """Paths the other batch manifests in migration/ delete or carry: where a deletion before this batch's start is recorded."""
+    paths = set()
+    for path in sorted((batch.root / "migration").glob("*-batch.toml")):
+        if path.name == f"{batch.name}-batch.toml":
+            continue
+        with path.open("rb") as handle:
+            other = tomllib.load(handle)
+        paths.update(other.get("deleted", []))
+        paths.update(p for group in other.get("carried", {}).values() for p in group)
+    return paths
 
 
 def jar_name(root: Path) -> str:
@@ -287,7 +301,7 @@ def cmd_freeze(batch: Batch, dry: bool) -> int:
             raise MigrationError(f"{path} changed while the start was being copied; freeze again on a stable tree")
     gametests = sorted((batch.root / GAMETESTS).glob("*.java"))
     record = {"batch": batch.name, "captured_at_utc": datetime.now(timezone.utc).isoformat(), **state,
-              "carried": {"groups": manifest["carried"], "hashes": {path: files[path] for path in carried}},
+              "carried": {"groups": manifest["carried"], "hashes": {path: files.get(path) for path in carried}},
               "files": files, "migration_files": migration, "copied": copied, "previous_release": previous,
               "snapshot": {"path": manifest["snapshot"], "sha256": sha(snapshot) if snapshot.is_file() else None},
               "build_libs_jar_sha256_at_freeze": sha(batch.jar) if batch.jar.is_file() else None,
@@ -445,6 +459,8 @@ def chain_steps(batch: Batch, tools_changed: bool) -> list[tuple[str, str, list[
     for name, log, output in RECORD_STEPS:
         command = python + [str(TOOLS / "migration.py"), "--source", str(batch.source), "--target", str(batch.root), *arguments[name]]
         steps.append((name, log, command + (["--output", str(batch.final / output)] if output else []), "records"))
+    # README "批次验证链" item 2: the frozen-name lists of migration/frozen/, in the records segment after the GameTests.
+    steps.append(("frozen", "frozen-check.log", python + [str(TOOLS / "frozen_check.py"), "--root", str(batch.root)], "records"))
     for suite, extra in EVERGREEN_SUITES:
         steps.append((suite, f"suite-{suite}.log", python + [str(TOOLS / f"{suite}.py"), *extra], "suite"))
     if tools_changed:
@@ -622,6 +638,11 @@ def cmd_package(batch: Batch, check: bool, gametest_log: str | None) -> int:
         need(changes.get(path) == "modified", "gametests_changed lists a GameTest file that equals its start: " + path)
     for path in manifest["deleted"]:
         need(changes.get(path) == "deleted", "deleted lists a path that still exists: " + path)
+    # deleted_earlier: removals a whole-Goal compare reports that an earlier package made (deleted or carried there).
+    earlier = earlier_manifest_paths(batch) if manifest["deleted_earlier"] else set()
+    for path in manifest["deleted_earlier"]:
+        hard(not (root / path).exists() and path not in start and path in earlier,
+             "deleted_earlier lists a path that exists now, existed at the start or no other batch manifest deletes or carries: " + path)
     baselines = sorted(path for path in changes if path.startswith("migration/baselines/") and changes[path] != "added")
     hard(not baselines, "an existing observation snapshot changed or was deleted: " + str(baselines))
     change_list = [{"path": path, "change": change, "group": owners[path][0] if owners[path] else None,
@@ -745,7 +766,7 @@ def cmd_package(batch: Batch, check: bool, gametest_log: str | None) -> int:
     for name in logs:
         if need((final / name).is_file(), f"evidence missing: {batch.rel(final / name)} (written by `batch.py chain`)"):
             evidence[batch.rel(final / name)] = sha(final / name)
-    for name in ("rundata.log", "build.log"):
+    for name in ("rundata.log", "build.log", "acceptance-classes.log"):
         if (final / name).is_file():
             need("BUILD SUCCESSFUL" in (final / name).read_text(encoding="utf-8-sig", errors="replace"), f"final/{name} is not a successful Gradle run")
     if (final / "jar.sha256").is_file() and batch.jar.is_file():
@@ -770,7 +791,8 @@ def cmd_package(batch: Batch, check: bool, gametest_log: str | None) -> int:
                  "compare.json is not a comparison of the current original against the manifest's snapshot")
             need(report["current_target_state"]["commit"] == start_head, "compare.json records another NEO commit than the start commit")
             need(not any(counts["source"].values()), f"compare.json reports original changes against the snapshot: {counts['source']}")
-            need(counts["target"]["removed"] == 0 or bool(manifest["deleted"]), f"compare.json reports removed NEO paths: {report['changes']['target']['removed'][:6]}")
+            removed = [path for path in report["changes"]["target"]["removed"] if path not in manifest["deleted_earlier"]]
+            need(not removed or bool(manifest["deleted"]), f"compare.json reports removed NEO paths: {removed[:6]}")
             need(not report["unmapped_changes"]["source"] and not report["unmapped_changes"]["target"], "compare.json reports unmapped changes: " + str(report["unmapped_changes"])[:300])
             need(not report["removed_feature_ids"] and not report["manifest_missing_files"], "compare.json reports removed features or missing mapped files")
             need(len(report["features"]) == len(features) and set(states) <= {"no-observed-file-change", "target-changed"}, f"compare.json feature states are {dict(states)}")
@@ -817,10 +839,12 @@ def cmd_package(batch: Batch, check: bool, gametest_log: str | None) -> int:
     jar_delta, dir_delta, entry_owners, classes = None, None, {}, []
     if need(batch.jar.is_file(), "build/libs holds no JAR yet"):
         jar_sha = sha(batch.jar)
-        need(jar_sha != previous_sha, f"{batch.rel(batch.jar)} is still the {manifest['previous']} package (run the final chain)")
         # A batch that changes no JAR input (src/main, generated resources other than the stamp) rebuilds the start's JAR
-        # byte for byte; only then may build/libs equal the build of the start.
+        # byte for byte; only then may build/libs equal the build of the start, and the previous package too when the
+        # start was that package (nothing carried).
         jar_inputs = sorted(path for path in changes if path.startswith(("src/main/", GENERATED)) and path != STAMP)
+        need(jar_sha != previous_sha or (not jar_inputs and base.get("build_libs_jar_sha256_at_freeze") == previous_sha),
+             f"{batch.rel(batch.jar)} is still the {manifest['previous']} package (run the final chain)")
         need(jar_sha != base.get("build_libs_jar_sha256_at_freeze") or not jar_inputs,
              f"{batch.rel(batch.jar)} is still the build of the start although JAR inputs changed since then (first {jar_inputs[:4]}); run the final chain")
         classes_root, resources_root = root / "build/classes/java/main", root / "build/resources/main"

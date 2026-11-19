@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Disposable loopback dedicated server for Goal 29 acceptance (offline runServer, RCON, flat world).
+"""Disposable loopback dedicated server for acceptance runs (offline runServer, RCON, flat world).
 
 Run from the NEO root:
   python3 -B -X utf8 tools/migration/acceptance/server.py start --tag smoke --op alice --op bob
@@ -9,13 +9,13 @@ Run from the NEO root:
 
 start  backs up the files under <root>/run that a run changes (server.properties, ops.json, usercache.json,
        usernamecache.json, options.txt, eula.txt and every file under config/ and defaultconfigs/; a file that does
-       not exist is recorded as absent) to build/migration/accept-goal29/backup-<time>/, writes a one-off
-       server.properties (server-ip=127.0.0.1, online-mode=false, world accept-goal29-<tag>, flat unless
+       not exist is recorded as absent) to build/migration/accept/backup-<time>/, writes a one-off
+       server.properties (server-ip=127.0.0.1, online-mode=false, world accept-<tag>, flat unless
        --world-type normal (world-generation checks), peaceful (slimes kill
        a survival player on a flat world; `difficulty` over RCON changes it), RCON on with a random
-       password stored only in build/migration/accept-goal29/rcon.password) and ops.json (offline UUIDs), starts
+       password stored only in build/migration/accept/rcon.password) and ops.json (offline UUIDs), starts
        `tools/migration/build.sh --offline runServer` in the background with its output in
-       build/migration/accept-goal29/logs/server-<tag>-<time>.log, and waits for "Done" and "RCON running on
+       build/migration/accept/logs/server-<tag>-<time>.log, and waits for "Done" and "RCON running on
        127.0.0.1:<port>" (anything else: it stops the server and restores run/). That Gradle-output log is the
        server's evidence: any other run in the same run/ (a capture's runClient, a GameTest server) rotates
        run/logs/latest.log away from the running server.
@@ -29,13 +29,17 @@ stop   sends `stop` over RCON (Gradle does not pass stdin to runServer, and TERM
 restart stops the server over RCON and starts it again on the same world without restoring run/ in between: edit
        run/config files during a session, then restart, and the final stop still restores the start state.
 restore repeats the restore of the last session (after a crash of this tool, or when a restore reported mismatches).
-delete-world removes <root>/run/accept-goal29-<tag> only when this tool created it (worlds.json) and no server runs.
-start --from-world DIR copies an existing world (for example build/migration/accept-goal29/old-world) in as the
+delete-world removes <root>/run/accept-<tag> only when this tool created it (worlds.json) and no server runs.
+start --from-world DIR copies an existing world (for example build/migration/accept/old-world) in as the
        session's world, so the kept original is never written.
 
---root runs another checkout (the old-version tree under build/migration/accept-goal29/); its Gradle uses this
-repository's .gradle/user-home. EULA: NeoForge's dev runs agree automatically (Eula.java:20, IS_RUNNING_IN_IDE), so
-no eula.txt is written. No network beyond 127.0.0.1, no download, no real world.
+--root runs another checkout (the old-version tree under build/migration/accept/); its Gradle uses this
+repository's .gradle/user-home.
+start --java-argv FILE launches the JVM command line in FILE (JSON {"argv": [...]}, written by oldworld.py prepare-jar)
+       directly instead of `build.sh runServer`, with <root>/run as working and game directory; --root is then a
+       game root that holds run/ and the argument files under build/moddev/ (so the JVM is found and stopped like a
+       ModDevGradle run), and needs no build.sh. Used to run a release JAR in the dev environment.
+EULA: NeoForge's dev runs agree automatically (Eula.java:20, IS_RUNNING_IN_IDE), so no eula.txt is written. No network beyond 127.0.0.1, no download, no real world.
 """
 import argparse
 import os
@@ -221,9 +225,18 @@ def cmd_start(args):
         raise SystemExit('--tag: lowercase letters, digits and "-" only')
     root = common.resolve(args.root).resolve()
     run = run_dir(root)
-    build_sh = root / 'tools' / 'migration' / 'build.sh'
-    if not build_sh.is_file():
-        raise SystemExit('No tools/migration/build.sh in ' + str(root))
+    java_argv = None
+    if args.java_argv:
+        java_argv = common.read_json(common.resolve(args.java_argv))
+        if not java_argv or not java_argv.get('argv'):
+            raise SystemExit('--java-argv has no "argv" list: ' + args.java_argv)
+        java_argv = [str(a) for a in java_argv['argv']]
+        if not any(a == '@' + str(root / 'build' / 'moddev' / 'serverRunVmArgs.txt') for a in java_argv):
+            raise SystemExit('--java-argv must pass @<root>/build/moddev/serverRunVmArgs.txt (how stop finds the JVM)')
+    else:
+        build_sh = root / 'tools' / 'migration' / 'build.sh'
+        if not build_sh.is_file():
+            raise SystemExit('No tools/migration/build.sh in ' + str(root))
     level = common.WORLD_PREFIX + args.tag
     world = run / level
     if world.exists():
@@ -249,6 +262,8 @@ def cmd_start(args):
     session = dict(tag=args.tag, root=str(root), run=str(run), level=level, world=str(world), port=args.port,
                    rcon_port=args.rcon_port, ops=args.op, backup=str(backup_dir), backed_up=len(manifest),
                    log=None, exit_file=None, pid=None, started=stamp, status='backed-up')
+    if java_argv:
+        session['java_argv'] = java_argv
     common.write_json(common.SESSION, session)
     register_world(world, args.tag)
     if source_world:
@@ -289,11 +304,18 @@ def launch(session, stamp):
     logs.mkdir(parents=True, exist_ok=True)
     log = logs / ('server-%s-%s.log' % (session['tag'], stamp))
     exit_file = logs / ('server-%s-%s.exit' % (session['tag'], stamp))
-    script = 'sh "$1" --offline --gradle-user-home "$2" runServer; echo "$?" > "$3"'
+    if session.get('java_argv'):
+        # A JVM command line of its own (a release JAR in the dev environment): no Gradle, the run directory is the
+        # working and game directory, as ModDevGradle's JavaExec has it.
+        command = ['/bin/sh', '-c', 'f=$1; shift; "$@"; echo "$?" > "$f"', 'sh', str(exit_file), *session['java_argv']]
+        cwd = Path(session['run'])
+    else:
+        script = 'sh "$1" --offline --gradle-user-home "$2" runServer; echo "$?" > "$3"'
+        command = ['/bin/sh', '-c', script, 'sh', str(root / 'tools' / 'migration' / 'build.sh'),
+                   str(common.GRADLE_USER_HOME), str(exit_file)]
+        cwd = root
     with open(log, 'wb') as out:
-        proc = subprocess.Popen(['/bin/sh', '-c', script, 'sh', str(root / 'tools' / 'migration' / 'build.sh'),
-                                 str(common.GRADLE_USER_HOME), str(exit_file)],
-                                cwd=root, stdout=out, stderr=subprocess.STDOUT, stdin=subprocess.DEVNULL,
+        proc = subprocess.Popen(command, cwd=cwd, stdout=out, stderr=subprocess.STDOUT, stdin=subprocess.DEVNULL,
                                 start_new_session=True)
     session.update(log=str(log), exit_file=str(exit_file), pid=proc.pid, status='launched')
     session.setdefault('logs', []).append(str(log))
@@ -473,7 +495,7 @@ def cmd_delete_world(args):
     run = run_dir(root).resolve()
     target = run_dir(root) / (common.WORLD_PREFIX + args.tag)
     if not target.name.startswith(common.WORLD_PREFIX) or target.parent.resolve() != run:
-        raise SystemExit('refusing: not an accept-goal29- world directly under run/')
+        raise SystemExit('refusing: not an accept- world directly under run/')
     if world_status(target) != 'created':
         raise SystemExit('refusing: %s was not created by this tool (or is already deleted/kept)' % common.rel(target))
     session = common.read_json(common.SESSION)
@@ -501,9 +523,11 @@ def main(argv=None):
     p.add_argument('--port', type=int, default=25565)
     p.add_argument('--rcon-port', type=int, default=25575)
     p.add_argument('--timeout', type=int, default=1200, help='seconds to wait for Done (first runs compile)')
-    p.add_argument('--from-world', help='copy this world directory in as run/accept-goal29-<tag> before starting')
+    p.add_argument('--from-world', help='copy this world directory in as run/accept-<tag> before starting')
     p.add_argument('--world-type', choices=('flat', 'normal'), default='flat',
                    help='normal for world-generation checks (structures on); flat otherwise')
+    p.add_argument('--java-argv', help='JSON file with the JVM command line to run instead of build.sh runServer '
+                                       '(oldworld.py prepare-jar); --root is then the game root')
     p.set_defaults(func=cmd_start)
     p = sub.add_parser('stop')
     p.add_argument('--force', action='store_true')

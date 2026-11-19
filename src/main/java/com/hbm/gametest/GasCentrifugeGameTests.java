@@ -212,6 +212,10 @@ public class GasCentrifugeGameTests {
 
     @GameTest(template = TEMPLATE, timeoutTicks = 300)
     public static void gas_centrifuge_feed_and_power(GameTestHelper helper) {
+        SmokeTestSupport.whenTicking(helper, "gas_centrifuge_feed_and_power", () -> gasCentrifugeFeedAndPower(helper));
+    }
+
+    private static void gasCentrifugeFeedAndPower(GameTestHelper helper) {
         MachineGasCentrifugeBlockEntity be = placeCentrifuge(helper, CENTER);
         be.setPower(0);
         be.tank.setFill(1200);

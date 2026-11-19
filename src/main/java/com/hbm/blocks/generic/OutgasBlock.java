@@ -3,11 +3,16 @@ package com.hbm.blocks.generic;
 import com.hbm.blocks.NtmBlocks;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
+import net.minecraft.core.Holder;
 import net.minecraft.core.particles.ParticleTypes;
+import net.minecraft.core.registries.Registries;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.enchantment.Enchantment;
+import net.minecraft.world.item.enchantment.EnchantmentHelper;
+import net.minecraft.world.item.enchantment.Enchantments;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.Blocks;
@@ -32,9 +37,11 @@ public class OutgasBlock extends Block {
         this.onNeighbour = onNeighbour;
     }
 
+    // Original BlockOutgas.java:40-64; NEO's deepslate uranium and asbestos ores follow their base ores
     public BlockState getGas() {
 
-        if(this == NtmBlocks.ORE_GNEISS_URANIUM.get() || this == NtmBlocks.ORE_GNEISS_URANIUM_SCORCHED.get() ||
+        if(this == NtmBlocks.ORE_URANIUM.get() || this == NtmBlocks.ORE_URANIUM_DEEPSLATE.get() || this == NtmBlocks.ORE_URANIUM_SCORCHED.get() ||
+                this == NtmBlocks.ORE_GNEISS_URANIUM.get() || this == NtmBlocks.ORE_GNEISS_URANIUM_SCORCHED.get() ||
                 this == NtmBlocks.ORE_NETHER_URANIUM.get() || this == NtmBlocks.ORE_NETHER_URANIUM_SCORCHED.get()) {
             return NtmBlocks.GAS_RADON.get().defaultBlockState();
         }
@@ -43,20 +50,23 @@ public class OutgasBlock extends Block {
             return NtmBlocks.GAS_MONOXIDE.get().defaultBlockState();
         }
 
-        if(this == NtmBlocks.ORE_GNEISS_ASBESTOS.get() || this == NtmBlocks.BRICK_ASBESTOS.get()) {
+        if(this == NtmBlocks.ORE_ASBESTOS.get() || this == NtmBlocks.ORE_ASBESTOS_DEEPSLATE.get() ||
+                this == NtmBlocks.ORE_GNEISS_ASBESTOS.get() || this == NtmBlocks.BLOCK_ASBESTOS.get() ||
+                this == NtmBlocks.DECO_ASBESTOS.get() || this == NtmBlocks.BRICK_ASBESTOS.get()) {
             return NtmBlocks.GAS_ASBESTOS.get().defaultBlockState();
         }
 
         return Blocks.AIR.defaultBlockState();
     }
 
+    // Original BlockOutgas.java:67-81; the gas is placed on the server only, the particles show on the client
     @Override
     public void stepOn(Level level, BlockPos pos, BlockState state, Entity entity) {
 
         if(this.randomTick && this.getGas().is(NtmBlocks.GAS_ASBESTOS.get())) {
             BlockPos posAbove = pos.above();
             if(level.getBlockState(posAbove).isAir()) {
-                if(level.random.nextInt(10) == 0) level.setBlock(posAbove, NtmBlocks.GAS_ASBESTOS.get().defaultBlockState(), 3);
+                if(!level.isClientSide && level.random.nextInt(10) == 0) level.setBlock(posAbove, NtmBlocks.GAS_ASBESTOS.get().defaultBlockState(), 3);
 
                 for(int i = 0; i < 5; i++) {
                     level.addParticle(ParticleTypes.MYCELIUM, pos.getX() + level.random.nextFloat(), pos.getY() + 1.1F, pos.getZ() + level.random.nextFloat(), 0.0D, 0.0D, 0.0D);
@@ -75,9 +85,12 @@ public class OutgasBlock extends Block {
         }
     }
 
+    // Original BlockOutgas.java:93-101: the gas comes with dropBlockAsItemWithChance, which a silk touch harvest does not reach;
+    // breaks without a tool, such as explosions, still release it
     @Override
     protected void spawnAfterBreak(BlockState state, ServerLevel level, BlockPos pos, ItemStack stack, boolean dropExperience) {
-        if(onBreak) level.setBlock(pos, this.getGas(), 3);
+        Holder<Enchantment> silkTouch = level.registryAccess().registryOrThrow(Registries.ENCHANTMENT).getHolderOrThrow(Enchantments.SILK_TOUCH);
+        if(onBreak && EnchantmentHelper.getItemEnchantmentLevel(silkTouch, stack) == 0) level.setBlock(pos, this.getGas(), 3);
     }
 
     @Override

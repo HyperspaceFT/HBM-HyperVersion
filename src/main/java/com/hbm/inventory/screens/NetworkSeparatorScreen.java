@@ -44,7 +44,7 @@ public class NetworkSeparatorScreen extends Screen {
     }
 
     private Component priorityLabel() {
-        return Component.literal(EnumUtil.<ConnectionPriority>grabEnumSafely(ConnectionPriority.class, this.priority).name());
+        return Component.translatable("block.hbmsntm.network_control.priority." + EnumUtil.<ConnectionPriority>grabEnumSafely(ConnectionPriority.class, this.priority).name().toLowerCase(java.util.Locale.ROOT));
     }
 
     @Override

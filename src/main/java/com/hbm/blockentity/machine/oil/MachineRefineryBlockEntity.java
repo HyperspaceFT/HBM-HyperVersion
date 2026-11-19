@@ -2,6 +2,7 @@ package com.hbm.blockentity.machine.oil;
 
 import api.hbm.energymk2.IEnergyReceiverMK2;
 import api.hbm.fluidmk2.IFluidStandardTransceiverMK2;
+import com.hbm.blockentity.IFluidCopiable;
 import com.hbm.blockentity.IOverpressurable;
 import com.hbm.blockentity.IPersistentNBT;
 import com.hbm.blockentity.LoadedBaseBlockEntity;
@@ -41,7 +42,7 @@ import net.minecraft.world.level.block.state.BlockState;
 
 import java.util.List;
 
-public class MachineRefineryBlockEntity extends MachineBaseBlockEntity implements IEnergyReceiverMK2, IFluidStandardTransceiverMK2, IPersistentNBT, IOverpressurable {
+public class MachineRefineryBlockEntity extends MachineBaseBlockEntity implements IEnergyReceiverMK2, IFluidStandardTransceiverMK2, IPersistentNBT, IOverpressurable, IFluidCopiable {
 
     /** Original TileEntityMachineRefinery.maxSulfur: one byproduct every 10 runs. */
     public static final int MAX_SULFUR = 10;

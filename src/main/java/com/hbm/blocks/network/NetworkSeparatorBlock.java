@@ -86,7 +86,7 @@ public class NetworkSeparatorBlock extends DummyableBlock implements ILookOverla
         text.add(arrows(Component.translatable("block.hbmsntm.network_separator.per_tick", BobMathUtil.getShortNumber(separator.deltaTick[19]))));
         text.add(arrows(Component.translatable("block.hbmsntm.network_separator.per_second", BobMathUtil.getShortNumber(separator.deltaSecond))));
         text.add(Component.translatable("block.hbmsntm.network_separator.configured", BobMathUtil.getShortNumber(separator.configuredLimit)));
-        text.add(Component.translatable("block.hbmsntm.network_control.priority", Component.literal(separator.priority.name()).withStyle(ChatFormatting.YELLOW)));
+        text.add(Component.translatable("block.hbmsntm.network_control.priority", Component.translatable("block.hbmsntm.network_control.priority." + separator.priority.name().toLowerCase(java.util.Locale.ROOT)).withStyle(ChatFormatting.YELLOW)));
         if(separator.redstone) text.add(Component.translatable("block.hbmsntm.network_control.redstone").withStyle(ChatFormatting.RED));
         ILookOverlay.printGeneric(event, Component.translatable(this.getDescriptionId()), 0xffff00, 0x404000, text);
     }

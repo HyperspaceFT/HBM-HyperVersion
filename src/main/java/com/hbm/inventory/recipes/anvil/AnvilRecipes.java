@@ -56,7 +56,8 @@ public class AnvilRecipes {
             return false;
         }
 
-        int repeat = mode == 1 ? 64 : 1;
+        // ORIG AnvilCraftPacket.java:58, single-output recipes repeat until one stack of the output is full
+        int repeat = mode == 1 ? (recipe.output.size() > 1 ? 64 : (recipe.output.get(0).stack.getMaxStackSize() / recipe.output.get(0).stack.getCount())) : 1;
         boolean crafted = false;
 
         for(int i = 0; i < repeat; i++) {
@@ -133,7 +134,7 @@ public class AnvilRecipes {
         addMoldSmithing(0, NtmItems.MOLD_NUGGET.get(), new ItemStack(Items.GOLD_NUGGET), MaterialShapes.NUGGET, 1);
         addMoldSmithing(1, NtmItems.MOLD_BILLET.get(), new ItemStack(NtmItems.BILLET_URANIUM.get()), MaterialShapes.BILLET, 1);
         addMoldSmithing(3, NtmItems.MOLD_PLATE.get(), new ItemStack(NtmItems.PLATE_IRON.get()), MaterialShapes.PLATE, 1);
-        addMoldSmithing(13, NtmItems.MOLD_PLATES_CAST.get(), MetaHelper.newStack(NtmItems.CAST_PLATE.get(), 3, CastPlateItem.Type.IRON.ordinal()), MaterialShapes.CASTPLATE, 3);
+        addMoldSmithing(13, NtmItems.MOLD_PLATES_CAST.get(), MetaHelper.newStack(NtmItems.PLATE_CAST.get(), 3, CastPlateItem.Type.IRON.ordinal()), MaterialShapes.CASTPLATE, 3);
         addMoldSmithing(4, NtmItems.MOLD_WIRE.get(), new ItemStack(NtmItems.WIRE_COPPER.get()), MaterialShapes.WIRE, 1);
         SMITHING_RECIPES.add(new AnvilSmithingMoldRecipe(6, new ItemStack(NtmItems.MOLD_BLADES.get()),
                 List.of(new ItemStack(NtmItems.BLADES_STEEL.get())),

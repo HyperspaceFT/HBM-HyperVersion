@@ -75,8 +75,7 @@ public class ItemStackUtil {
             if (!stacks[i].isEmpty()) {
                 CompoundTag slotNBT = new CompoundTag();
                 slotNBT.putByte("slot", (byte) i);
-                stacks[i].save(registryAccess, slotNBT);
-                items.add(slotNBT);
+                items.add(stacks[i].save(registryAccess, slotNBT));
             }
         }
         tag.put("items", items);

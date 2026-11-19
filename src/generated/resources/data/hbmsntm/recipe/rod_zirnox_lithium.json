@@ -1,0 +1,22 @@
+{
+  "type": "minecraft:crafting_shapeless",
+  "category": "misc",
+  "ingredients": [
+    {
+      "item": "hbmsntm:rod_zirnox_empty"
+    },
+    {
+      "item": "hbmsntm:lithium"
+    },
+    {
+      "item": "hbmsntm:lithium"
+    }
+  ],
+  "result": {
+    "components": {
+      "hbmsntm:meta": 9
+    },
+    "count": 1,
+    "id": "hbmsntm:rod_zirnox"
+  }
+}

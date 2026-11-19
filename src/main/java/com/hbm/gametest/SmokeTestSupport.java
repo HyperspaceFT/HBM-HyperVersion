@@ -62,6 +62,33 @@ final class SmokeTestSupport {
         if(!condition) throw new GameTestAssertException(message);
     }
 
+    /**
+     * Runs {@code body} once every chunk of the test's bounds ticks its block entities. The framework starts a test when its chunks are
+     * entity-ticking by position (GameTestInfo.startTest / ServerLevel.isPositionEntityTicking) and 20 ticks later, but a block entity only
+     * ticks once LevelChunk.isTicking also sees the chunk's entities loaded (ServerLevel.areEntitiesLoaded), which arrives asynchronously;
+     * on a fast GameTest server those 20 ticks are a few milliseconds. A test that counts its machine's updates from tick 0 therefore
+     * waits for that here, so its machine's first update is not late; the tick at which the chunks became ready is logged.
+     */
+    static void whenTicking(GameTestHelper helper, String test, Runnable body) {
+        net.minecraft.server.level.ServerLevel level = helper.getLevel();
+        net.minecraft.world.phys.AABB box = helper.getBounds();
+        int minX = net.minecraft.util.Mth.floor(box.minX) >> 4, maxX = net.minecraft.util.Mth.floor(box.maxX) >> 4;
+        int minZ = net.minecraft.util.Mth.floor(box.minZ) >> 4, maxZ = net.minecraft.util.Mth.floor(box.maxZ) >> 4;
+        helper.startSequence().thenWaitUntil(() -> {
+            for(int cx = minX; cx <= maxX; cx++) for(int cz = minZ; cz <= maxZ; cz++) {
+                long chunk = net.minecraft.world.level.ChunkPos.asLong(cx, cz);
+                net.minecraft.world.level.chunk.LevelChunk loaded = level.getChunkSource().getChunkNow(cx, cz);
+                if(!level.shouldTickBlocksAt(chunk) || !level.areEntitiesLoaded(chunk) || loaded == null
+                        || !loaded.getFullStatus().isOrAfter(net.minecraft.server.level.FullChunkStatus.BLOCK_TICKING)) {
+                    throw new GameTestAssertException("chunk " + cx + ", " + cz + " does not tick block entities yet");
+                }
+            }
+        }).thenExecute(() -> {
+            com.mojang.logging.LogUtils.getLogger().info("[hbm-ready] {}: chunks tick block entities at test tick {}", test, helper.getTick());
+            body.run();
+        });
+    }
+
     /** MachineCrystallizerBlock dimensions {5, 0, 1, 1, 1, 1}: 3x3, six tall. */
     static Set<BlockPos> crystallizerCells(BlockPos core) {
         Set<BlockPos> cells = new HashSet<>();

@@ -1,0 +1,154 @@
+# Budget inputs for the Goal 32 master list. Numbers given by the task book (GOAL32G.md:15,69;
+# GOAL32E.md:126-134; GOAL32F.md:144-150,276-291) and prose for the budget, session and
+# authorization sections. Per-scenario times are read from results.json by the generator.
+
+smoke = 368
+solo_start_s = 15            # client start to executor, GOAL32E.md:136 ("约 14 秒")
+mp_session_overhead_s = 55   # 32F final runs: wall minus scenario time 45.7 (mpn-35) .. 60.6 (mpm-7) s
+mp_final_walls = [146, 183, 183, 170, 186, 490, 182, 608, 385]
+mp_scenario_only_s = 1700
+stations_count = 13
+stations_measured = "13 站（站 S1–S13）加出生点前的 S0 牌子（单人超平坦世界）；搭建、存档、重开与探针一次 144.4 s（g32u-stations，13 站探针与复位都过）；人走一遍按 solo-report 估计 29.5 分钟（每站 1.5–4 分钟）加沿 190 格走路约 1 分钟，约 30.5 分钟，没有实测；S0 牌子不另占时间；两人清单（migration/goal32u-two-person.md）用户一侧约 10 分钟，没有实测；用户一侧合计约 40.5 分钟"
+stations_measured_note = "站数排得进 25 站；13 站约 30.5 分钟，比 30 分钟约超 0.5 分钟。用户 2026-11-18 定（缺口账 G-49）：13 站照走，两人清单另坐一次（约 10 分钟），不计进站点的 30 分钟"
+
+mp_compat = [
+  "**核能非熔毁五个文件**（`rbmk-crane/mp_players`、`rbmk-autoloader/mp_autoloader`、`rtg-power/mp_rtg`、`purex-reprocessing/mp_purex`、`rbmk-console/mp_console`）可以同一次启停：`g32f-mpn-21`、`-25`、`-26`、`-27` 都是五个一起跑完的（541、482、541、541 s）；`g32g-mpfix-group` 把控制台、吊车、RTG、PUREX 四个放在一次会话里跑（413 s）；`g32u-console-crane` 把控制台、吊车放在一次会话里跑（263 s，`rbmk-crane.mp-crane-drive` 通过）。",
+  "**其他五个文件**（`radio-torch/mp_selfdestruct`、`radar/mp_first_scan`、`goal30-fixes/mp_item_nbt_string`、`machine-item-capability/mp_automation`、`power-control/mp_sounds`）可以同一次启停：`g32f-mpm-5` 五个一起跑（608 s），`g32f-mpm-7` 跑了前三个（385 s）。`mp_item_nbt_string` 会写 `run/config/hbmRecipes` 并重启服务端，由 `server.py` 备份与还原，放在会话最后。`mp_sounds` 两条归用户站点，在脚本会话里只占 0.4 s。",
+  "**熔毁类五个文件各要自己的一次性世界**（32F 的做法，GOAL32F.md:171）：熔毁改地形、留辐射与残骸，跟别的文件同世界会互相干扰，所以不并。`zirnox-reactor/mp_meltdown` 与 `mp_debris`、`rbmk-reactor/mp_meltdown` 与 `mp_meltdown_chunk` 各用同一种熔毁布置（GOAL32T.md:241-245），把每对改写成一个世界里一次熔毁、两组读数，可以各省一次启停与一次熔毁的搭建（每对约 100–150 s）；这是改场景，fixes-mp 道本批没有做（熔毁类文件里它只改了 `mp_meltdown_chunk` 的等待时间与 `mp_meltdown` 的一行文字），本表没有算进去。`zirnox-reactor/mp_contamination` 用的是另一种布置。",
+  "**稳定性短版**（stability 道，12 格矩阵）：`power-transmission/mp_stability_unload` 与 `mp_stability_restart` 两个文件一次会话跑完 12 格（`g32g-matrix2` 实测墙钟 393 s；本表按两个文件的现用运行 180＋306 s 加 55 s 估 541 s）。32U 的停服重启文件里每次要停服重启两次，场景约 298–306 s，整次约 340–348 s（`g32u-stab-restart1` 至 `restart6`）；走开卸载文件 180 s、整次 225 s（`g32u-stab-unload`）。它要等区块卸载与停服重启，不宜并进别的会话（stability short-version.md）。区块辐射改正之后重启文件连跑六次，`restart4`、`5`、`6` 三次连续全部通过；改成停服后、开服前读区域文件并按衰减下限判之后，`g32u-stab-restart-b1`、`b2`、`b3` 三次连续全部通过（整次 336–343 s）。`rbmk-reactor/mp_overpressure` 要改配置、长时间运行按 G-25，都只在批次里跑，不在本表。",
+]
+
+mp_suggest_note = "用户 2026-11-18 定（缺口账 G-49，对规划会话的推荐答复“照推荐办”）：上表六项（自动化、坏 NBT 配方、ZIRNOX 碎片与污染、RBMK 熔毁、无线电火把自毁）与停服重启文件只在批次里跑，走开卸载文件留在统一验收里；它们在表里的组写“只在批次里跑（预算，用户 2026-11-18；G-49）”，证据是各自的批次运行。舍前专服组按现用运行估计 2,491 s（41.5 分钟）；舍后按留下的会话重算约 1,309 s（21.8 分钟，本表上面的“专服组”一行），超出 20 分钟约 1.8 分钟；用户接受的是规划时估的约 24.0 分钟、超出约 4 分钟，那个数按上表最后一行“只留停服重启、舍走开卸载”的估法算，取的是留走开卸载（场景 180 s）、舍停服重启（约 306 s）这一种，所以实际更短。没有舍的：吊车、装料机、RTG、PUREX、控制台与雷达的各行（Goal 23–25 欠了很久的多人项与 32T 修过的两处缺陷，风险最高）、两个熔毁世界里各留的一个文件、走开卸载文件。"
+
+solo_suggest = [
+  "单人一侧：用户 2026-11-18 定（缺口账 G-49）冒烟（`world-generation/default_terrain_smoke`）只在批次里跑（证据 `g32u-smoke3`），合计约 2,596 s（43.3 分钟），排得进 45 分钟。构成：十个阶段（不含阶段 4）现用运行 2,341 s（阶段 5–11 用 32G 的重跑），加 32U 补的八个脚本文件（`单人·32U 补的脚本行`）场景 240 s 加一次启动约 15 s 共约 255 s。八个文件的场景秒数：`recipe-completion/jei_pages` 40.5、`press/press_bar` 17.7、`materials/outgas_visible` 29.9、`materials/survival_hand` 88.2、`settings-tool/adventure_tool` 8.0、`conveyor-cranes/screwdriver_wear` 11.1、`localization-zh-cn/zh_messages` 27.7、`localization-zh-cn/death_message` 17.3。阶段表（`[stages]`）是任务书给的 32E、32F 各阶段最终试跑的墙钟，不含阶段 4 合计 2,396 s；2,341 s 是现用运行之和，差的 55 s 来自 32S 至 32G 的重跑（阶段 7、8、10 各快 9、23、13 s 等）与逐项取整，主清单预算表里两列都列着。语言扫描（7.2 分钟）与三个旧文件（5.4 分钟）在各自的预算行里，不在这 45 分钟里。",
+  "阶段 4 已由用户定为只在批次里跑（GOAL32.md:159）：它的 38 条在表里写“只在批次里跑”，证据是 `g32s-s4`（37 通过、1 待人看），32E 的 `g32e-final3-s4` 在“此前”里。",
+  "无线电火把潜行右键（`radio-torch/sneak_use`，g32g-radio 整次 33 s，5 条通过）不在预算表的哪一格里；放在单人组里一次启动的话约加 18 s 场景。",
+]
+
+known_issues = [
+  "**D6**：传走玩家、原处卸载、传回、随即停服时专服偶发卡住。开发环境里复现不了（缺口账 G-27，32C 试过）；卡死路径上没有本模组的代码（堆转储）。用户 2026-11-15 答复不阻断 1.0.0；不列行，触发条件与规避办法照 Goal 31 的说明写进发布说明。本批 stability 道的运行里没有出现（stability report.md 第 2 节）。",
+  "stations 道的观察（未定为缺陷）：粉碎机声音的节奏与音高同原版不同（站 S3）；离心机循环音的距离原版 10、NEO 15；生成的 `en_us.json:166` 写 `Ducrete Brick`，原版是 `Ducrete Bricks`（站 S4）。",
+  "oldworld 道：比对口径 `migration/goal32g-oldworld-criteria.md` 里 R1 的理由（每秒约 1%）写错，实际约 5%；本批窗口 1.2 s，判定不受影响，口径文件待另行更正（oldworld report.md 开放问题 1）。路 B 构建时 `downloadAssets` 打印了下载资源索引的行，是否真的联网未能确定（同上，开放问题 2）。",
+  "32G 收掉的旧账：`conveyor-cranes.bare-hand-belt` 改照原版后通过（g32g-survival2）；`conveyor-cranes.splitter-break` 改计数后通过（g32g-sorter2）；`rbmk-reactor.mp-meltdown-chunk` 按算式定等待（不放气的概率 9.51e-10）后通过（g32g-mpfix-chunk）；阶段 10 的两条重载行改名为 `rbmk-fuel.reload-stage10`、`rbmk-recycling.reload-stage10`，与阶段 9 不再重名。仍重名的是 `chemical-plant.peroxide`、`chemical-plant.reload`（阶段 4 与 7），表里按文件限定。",
+  "32F 的观察：功率计在区块重新加载后约 6 秒读 0，本批 stability 道没有复现（读 0 一次，8 个游戏刻后非零，`power-transmission.mp-unload-gauge-zero`）；螺丝刀的寿命可能比原版少一次（32D 审阅 F7，未核实）。",
+]
+
+unplaced = [
+  "**32U 第五节的 18 行占位行**（32G 主清单里写“未建站”的 `station.*` 行，逐行去向见 report.md“占位行的去向”）：15 行写成脚本场景并跑过（`单人·32U 补的脚本行`），1 行（`station.ore-outgas-visible`）是脚本加代理看图（`materials/outgas_visible`，三行“look”由代理判定），2 行进用户站点：玄武岩精准放置成站 S13（`materials.station-basalt-precise-place`），中文界面观感成站点世界出生点前的 S0 牌子（`localization-zh-cn.station-zh-ui-look`）。stations 道现在是 13 站加 S0 牌子（`*/stations_g32.py`，g32u-stations），编号 S1–S13 同牌子；机器循环音的两站（站 S1 装配机、站 S3 粉碎机与离心机）是 stations 道新定的期望，其余循环音（化工厂、结晶器、PUREX、锅炉、柴油与燃烧发电机、涡扇、气体离心机、电热器）没有站。`station.az5-alarm-heard` 与 G-42 的另三行（`power-control.mp-switch-sound`、`conveyors.mp-cram-explosion-sound`、`rbmk-console.mp-console-set-depth`）留在表里，指向两人清单（migration/goal32u-two-person.md）。三行没有改的说明：`station.explosion-info-tooltip` 的原前提“钢块 30”不对（钢块的物品两边都没有爆炸抗性一行），场景改查四个有 BlastInfo 的方块；伤害抗性类别那一行只是字串级证据（G-46）；`station.belt-cable-hand` 的皮带一半是已有的 `conveyor-cranes.bare-hand-belt`。",
+  "32S 候选 3 的“地表有泥土与沙子的油迹和漏油口”：32U 在冒烟里加了一段油泡截图（`oil-extraction.sand-oil-bubble-look`，代理看图判通过，G-43 已收）；竖井底那一层很暗，认作漏油口靠扫描位置与原版几何，不是贴图比对。",
+  "32D 候选 13 的后半“化工厂 `chem.ducrete` 的产物是光滑的那一种”：阶段 4 的线里没有这条配方；没有放进行。名字与外观放在站点 S4。",
+  "GOAL32G 第三节列的站点类别里“输入法与系统快捷键”：站 S2（配方选择界面的输入法与字母 e）是唯一的一站；“机器的循环音”见上面第一条。",
+  "32C 候选的冲刺试点专服一遍 `g32c-pilot-mp`：与单人 `g32c-pilot3` 同一组期望编号，只列单人一遍的行，专服一遍写在出处里。",
+  "按候选建议的“在游戏里做一遍”但没有另外客户端一面的 6 项留在 GameTest 道，没有另开站点行（理由写在行里）：32A 候选 2（稀土离心）、3（绳子摆法）、6 的后半（实际放硼玻璃跑一次）、32B 候选 2（桶与储罐界面经 `menu.clicked`）、16（设定工具在几台之间粘贴）、19（拆弹器）。这是本表定的道，若规划要它们进站点，按 README 第 5 条在 LOG 记一行改道。",
+]
+
+[[mp_suggest]]
+what = "`machine-item-capability/mp_automation` 只在批次里跑"
+ids = "`machine-item-capability.mp-*` 12 条（32B 候选 1、3–7 的客户端一面）"
+saves = "约 210 s（场景）"
+risk = "每台机器的规则都有 GameTest（`Goal32BAutomationGameTests`）；统一验收里不再看两个客户端在真实专服上读到的物品数一致与重启保留。32B 之后没有批次改这些规则。"
+
+[[mp_suggest]]
+what = "`goal30-fixes/mp_item_nbt_string` 只在批次里跑"
+ids = "`goal30-fixes.mp-item-nbt-*` 5 条（G-22）"
+saves = "约 102 s（场景）"
+risk = "坏 NBT 字符串的配方文件在专服上的读入不再在统一验收的构建上看；它要写 `run/config/hbmRecipes`，省掉也省了一项配置写入的授权。G-22 已在 32F 收。"
+
+[[mp_suggest]]
+what = "`zirnox-reactor/mp_debris` 只在批次里跑（或与 `mp_meltdown` 合成一个世界，见上）"
+ids = "`zirnox-reactor.mp-debris-seen-gone`、`-simultaneous`、`-range-128`、重启比对"
+saves = "约 156 s（一次会话）"
+risk = "碎片同步与拾取仍由 `mp_meltdown` 覆盖；两人同时右键只一人得到、128 格外看不到、B 看到拾走的碎片消失这三项只剩批次证据。"
+
+[[mp_suggest]]
+what = "`zirnox-reactor/mp_contamination` 只在批次里跑"
+ids = "`zirnox-reactor.mp-contamination`、`mp-wreck-radiation`、重启比对"
+saves = "约 175 s（一次会话）"
+risk = "污染与残骸辐射按人计算只剩批次证据；32T 改过方块抗性后这个文件重跑过并改了一处记录项（GOAL32T.md:270）。"
+
+[[mp_suggest]]
+what = "`rbmk-reactor/mp_meltdown` 只在批次里跑（保留 `mp_meltdown_chunk`；或两者合成一个世界）"
+ids = "`rbmk-reactor.mp-meltdown-sync`、`mp-debris-pickup`、`mp-wreck-radiation`、重启比对"
+saves = "约 149 s（一次会话）"
+risk = "RBMK 碎片同步与区块辐射仍由 `mp_meltdown_chunk` 覆盖；碎片拾取与残骸辐射按人计算只剩批次证据。"
+
+[[mp_suggest]]
+what = "`radio-torch/mp_selfdestruct` 只在批次里跑"
+ids = "`radio-torch.mp-selfdestruct`、`-server`、`-restart`"
+saves = "约 82 s（场景）"
+risk = "无线电火把不在主线上（G-26）；接收器自毁在专服上不再在统一验收的构建上看。"
+
+[[mp_suggest]]
+what = "稳定性短版整个只在批次里跑（两个文件都不进统一验收）"
+ids = "`power-transmission/mp_stability_unload` 15 条、`mp_stability_restart` 12 条（稳定性矩阵 12 格及配套行，含两个辐射源行）"
+saves = "约 541 s（一次会话估计；g32u 两个文件各自整次 225 s、348 s）"
+risk = "卸载与重启后电力、流体、皮带、RBMK、跨区块长线与区块辐射的读数一致只剩批次证据（g32u-stab-unload、g32u-stab-restart-b1 至 b3）；区块辐射存盘的几行（`hazard-system.mp-unload-radiation-saved`、`mp-restart-radiation-saved` 等）也只剩批次证据。"
+
+[[mp_suggest]]
+what = "停服重启文件只在批次里跑（走开卸载文件留下；用户 2026-11-18 取这一项）"
+ids = "`power-transmission/mp_stability_restart` 的 12 条（含停服时区块辐射的存盘与钋块重启后不再放）"
+saves = "约 300 s（场景；它每次要停服重启两次，整次约 340–350 s）"
+risk = "停服重启后电力、流体、皮带、RBMK、长线与区块辐射的读数一致只剩批次证据；区块辐射在区块卸载时的存盘仍由留下的走开卸载文件在统一验收里看。"
+
+[[authorizations]]
+what = "下载 NeoForge 安装器（联网）"
+rows = "`release-form.real-server`（开场的发布形态检查）"
+if_not = "真实安装的专服做不出来，这一行记“未执行”；静态部分 `release-form.static-jar` 照旧成立；发布 JAR 离开开发环境能否加载没有实测，算不算 1.0.0 的阻断由用户定。"
+
+[[authorizations]]
+what = "为安装出来的真实专服接受 EULA"
+rows = "`release-form.real-server`"
+if_not = "同上：服务端起不来，这一行记“未执行”。"
+
+[[authorizations]]
+what = "专服组运行中写 `run/config/hbmRecipes` 下的配方文件（`server.py` 备份并还原）"
+rows = "`goal30-fixes.mp-item-nbt-*` 5 条"
+if_not = "这 5 条记“未执行”，或按上面的建议改为只在批次里跑（证据 `g32f-mpm-7`）。"
+
+[[authorizations]]
+what = "临时把 `run/config/hbmsntm-common.toml` 的 `dialEnableMeltdownOverpressure` 改成 true 并还原"
+rows = "`rbmk-reactor/mp_overpressure` 的 6 行（只在批次里跑；stability 道 g32g-overpressure4 已在用户 2026-11-17 的同意下做过）与 `rbmk-reactor.mp-overpressure-observe`"
+if_not = "只有用户要它进统一验收时才需要；不授权时这一行只有批次证据。"
+
+[[authorizations]]
+what = "把站点世界放进用户自己的游戏实例（写用户的存档目录）"
+rows = "站点世界的 13 站（站 S1–S13）与 S0 牌子"
+if_not = "站点改在开发客户端里走；真实客户端一面（GOAL32 决定 8：由用户在自己的实例里走站点世界兼任）没有覆盖。"
+
+[[authorizations]]
+what = "专服站点：用户的客户端连开发专服（回环），与执行器的一个客户端同在"
+rows = "专服人工站点（两人清单，migration/goal32u-two-person.md）：`power-control.mp-switch-sound`、`conveyors.mp-cram-explosion-sound`、`station.az5-alarm-heard`、`rbmk-console.mp-console-set-depth`"
+if_not = "这 4 行记“未执行”，G-38 与 G-31 留在账上；世界与清单已备（`build/migration/acceptance-runs/g32u-two-person/accept-g32u2p.zip`）；用户 2026-11-18 定两人清单另坐一次，不计进站点的 30 分钟。"
+
+[[gaps]]
+id = "G-49（已记）"
+item = "统一验收预算超出时定为只在批次里跑的文件（专服组 20 分钟、单人 45 分钟、用户 30 分钟）"
+why = "预算取舍：用户 2026-11-18 定，单人一侧冒烟、专服一侧六个文件与停服重启文件只在批次里跑，用户一侧两人清单另坐一次"
+next = "已写进缺口账 G-49 与 LOG（规划补记之二十八）；表里这些文件的组写“只在批次里跑（预算，用户 2026-11-18；G-49）”"
+
+[stages]
+"1" = 317
+"2" = 156
+"3" = 266
+"4" = 576
+"5" = 273
+"6" = 183
+"7" = 175
+"8" = 218
+"9" = 352
+"10" = 184
+"11" = 272
+
+[stage_refs]
+"1" = "materials/mainline_stage1"
+"2" = "blast-furnace/mainline_stage2"
+"3" = "wood-burner/mainline_stage3"
+"4" = "basic-assembly/mainline_stage4"
+"5" = "oil-extraction/mainline_stage5"
+"6" = "power-transmission/mainline_stage6"
+"7" = "gas-centrifuge/mainline_stage7"
+"8" = "zirnox-reactor/mainline_stage8"
+"9" = "rbmk-reactor/mainline_stage9"
+"10" = "spent-fuel/mainline_stage10"
+"11" = "hazard-system/mainline_stage11"

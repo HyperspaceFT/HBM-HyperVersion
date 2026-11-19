@@ -196,7 +196,6 @@ public class NtmLanguageProvider extends LanguageProvider {
         this.add(NtmItems.BILLET_AUSTRALIUM, "Australium Billet");
         this.add(NtmItems.BILLET_AUSTRALIUM_LESSER, "Lesser Australium Billet");
         this.add(NtmItems.BILLET_AUSTRALIUM_GREATER, "Greater Australium Billet");
-        this.add(NtmItems.BILLET_UNOBTAINIUM, "Unobtainium Neutron Billet");
         this.add(NtmItems.BILLET_YHARONITE, "Yharonite Billet");
         this.add(NtmItems.BILLET_BALEFIRE_GOLD, "Flashgold Billet");
         this.add(NtmItems.BILLET_FLASHLEAD, "Flashlead Billet");
@@ -210,7 +209,6 @@ public class NtmLanguageProvider extends LanguageProvider {
         this.add(NtmItems.INGOT_CAESIUM, "Caesium Ingot");
         this.add(NtmItems.INGOT_CERIUM, "Cerium Ingot");
         this.add(NtmItems.INGOT_CHAINSTEEL, "Heavy Chainsteel");
-        this.add(NtmItems.INGOT_DAFFERGON, "Daffergon Ingot");
         this.add(NtmItems.INGOT_FIBERGLASS, "Fiberglass Bar");
         this.add(NtmItems.INGOT_I131, "Iodine-131 Ingot");
         this.add(NtmItems.INGOT_IODINE, "Iodine Ingot");
@@ -231,28 +229,17 @@ public class NtmLanguageProvider extends LanguageProvider {
         this.add("hbmmat.strontium", "Strontium");
         this.add("hbmmat.slag", "Slag");
         this.add(NtmItems.INGOT_RED_COPPER, "Minecraft Grade Copper Ingot");
-        this.add(NtmItems.INGOT_REIIUM, "Reiium Ingot");
         this.add(NtmItems.INGOT_SEMTEX, "Bar of Semtex");
         this.add(NtmItems.INGOT_STEEL_DUSTED, "Dusted Steel Ingot");
         this.add(NtmItems.INGOT_TENNESSINE, "Tennessine-294 Ingot");
         this.add(NtmItems.INGOT_TH232, "Thorium-232 Ingot");
         this.add(NtmItems.INGOT_TUNGSTEN_CARBIDE, "Tungsten Carbide Ingot");
-        this.add(NtmItems.INGOT_UNOBTAINIUM, "Unobtainium Ingot");
-        this.add(NtmItems.INGOT_VERTICIUM, "Verticium Ingot");
-        this.add(NtmItems.INGOT_WEIDANIUM, "Weidanium Ingot");
         this.add(NtmItems.NUGGET_AUSTRALIUM, "Australium Nugget");
         this.add(NtmItems.NUGGET_AUSTRALIUM_GREATER, "Greater Australium Nugget");
         this.add(NtmItems.NUGGET_AUSTRALIUM_LESSER, "Lesser Australium Nugget");
-        this.add(NtmItems.NUGGET_DAFFERGON, "Daffergon Nugget");
         this.add(NtmItems.NUGGET_MERCURY, "Drop of Mercury");
-        this.add(NtmItems.NUGGET_REIIUM, "Reiium Nugget");
         this.add(NtmItems.NUGGET_STRONTIUM, "Strontium Nugget");
         this.add(NtmItems.NUGGET_TH232, "Thorium-232 Nugget");
-        this.add(NtmItems.NUGGET_UNOBTAINIUM, "Unobtainium Nugget");
-        this.add(NtmItems.NUGGET_UNOBTAINIUM_GREATER, "Unobtainium-440 Nugget");
-        this.add(NtmItems.NUGGET_UNOBTAINIUM_LESSER, "Unobtainium-439 Nugget");
-        this.add(NtmItems.NUGGET_VERTICIUM, "Verticium Nugget");
-        this.add(NtmItems.NUGGET_WEIDANIUM, "Weidanium Nugget");
         this.add(NtmItems.PLATE_ARMOR_AJR, "Iron-Shod Armor Plating");
         this.add(NtmItems.PLATE_ARMOR_DNT, "DNT Armor Plating");
         this.add(NtmItems.PLATE_ARMOR_FAU, "Fau Armor Plating");
@@ -369,7 +356,6 @@ public class NtmLanguageProvider extends LanguageProvider {
         this.add(NtmItems.POWDER_CERIUM_TINY, "Tiny Pile of Cerium Powder");
         this.add(NtmItems.POWDER_CHLOROCALCITE, "Chlorocalcite");
         this.add(NtmItems.POWDER_CHLOROPHYTE, "Chlorophyte Powder");
-        this.add(NtmItems.POWDER_CLOUD, "Cloud Residue");
         this.add(NtmItems.POWDER_CO60, "Cobalt-60 Powder");
         this.add(NtmItems.POWDER_CO60_TINY, "Tiny Pile of Cobalt-60 Powder");
         this.add(NtmItems.POWDER_COAL_TINY, "Tiny Pile of Coal Powder");
@@ -378,7 +364,6 @@ public class NtmLanguageProvider extends LanguageProvider {
         this.add(NtmItems.POWDER_COLTAN_ORE, "Crushed Coltan");
         this.add(NtmItems.POWDER_CS137, "Caesium-137 Powder");
         this.add(NtmItems.POWDER_CS137_TINY, "Tiny Pile of Caesium-137 Powder");
-        this.add(NtmItems.POWDER_DAFFERGON, "Daffergon Powder");
         this.add(NtmItems.POWDER_DESH_MIX, "Desh Blend");
         this.add(NtmItems.POWDER_DESH_READY, "DeshReady™ Blend");
         this.add(NtmItems.POWDER_EUPHEMIUM, "Euphemium Powder");
@@ -414,7 +399,6 @@ public class NtmLanguageProvider extends LanguageProvider {
         this.add(NtmItems.POWDER_POWER, "Energy Powder");
         this.add(NtmItems.POWDER_RA226, "Radium-226 Powder");
         this.add(NtmItems.POWDER_RED_COPPER, "Red Copper Powder");
-        this.add(NtmItems.POWDER_REIIUM, "Reiium Powder");
         this.add(NtmItems.POWDER_SAWDUST, "Sawdust");
         this.add(NtmItems.POWDER_SCHRABIDATE, "Ferric Schrabidate Powder");
         this.add(NtmItems.POWDER_SEMTEX_MIX, "Semtex Blend");
@@ -430,9 +414,6 @@ public class NtmLanguageProvider extends LanguageProvider {
         this.add(NtmItems.POWDER_TENNESSINE, "Tennessine Powder");
         this.add(NtmItems.POWDER_THERMITE, "Thermite");
         this.add(NtmItems.POWDER_THORIUM, "Thorium Powder");
-        this.add(NtmItems.POWDER_UNOBTAINIUM, "Unobtainium Powder");
-        this.add(NtmItems.POWDER_VERTICIUM, "Verticium Powder");
-        this.add(NtmItems.POWDER_WEIDANIUM, "Weidanium Powder");
         this.add(NtmItems.POWDER_XE135, "Xenon-135 Powder");
         this.add(NtmItems.POWDER_XE135_TINY, "Tiny Pile of Xenon-135 Powder");
         this.add(NtmItems.POWDER_YELLOWCAKE, "Yellowcake");
@@ -443,7 +424,6 @@ public class NtmLanguageProvider extends LanguageProvider {
         this.add(NtmItems.GEM_VOLCANIC, "Volcanic Gem");
         this.add(NtmItems.CRYSTAL_CHARRED, "Charred Crystal");
         this.add(NtmItems.CRYSTAL_COAL, "Coal Crystals");
-        this.add(NtmItems.CRYSTAL_ENERGY, "Energy Crystal");
         this.add(NtmItems.CRYSTAL_HORN, "Crystal Horn");
         this.add(NtmItems.CRYSTAL_XEN, "Artificial Xen Crystal");
 
@@ -589,7 +569,7 @@ public class NtmLanguageProvider extends LanguageProvider {
         this.add(NtmItems.NUGGET_U233, "Uranium-233 Nugget");
         this.add(NtmItems.NUGGET_U235, "Uranium-235 Nugget");
         this.add(NtmItems.NUGGET_U238, "Uranium-238 Nugget");
-        this.add(NtmItems.NUGGET_U238M2, "Metastable Uranium-238 Nugget");
+        this.add(NtmItems.NUGGET_U238M2, "Metastable Uranium-238M2 Nugget");
         this.add(NtmItems.NUGGET_PLUTONIUM, "Plutonium Nugget");
         this.add(NtmItems.NUGGET_PU238, "Plutonium-238 Nugget");
         this.add(NtmItems.NUGGET_PU239, "Plutonium-239 Nugget");
@@ -799,8 +779,8 @@ public class NtmLanguageProvider extends LanguageProvider {
         this.add(NtmItems.RTG_UNIT, "RTG Unit");
         this.add(NtmItems.MOTOR_DESH, "Desh Motor");
         this.add(NtmItems.GEAR_LARGE, "Large Gear");
-        this.add(NtmItems.CAST_PLATE_WELDED, "Welded Plate");
-        this.add(NtmItems.CAST_PLATE, "Cast Plate");
+        this.add(NtmItems.PLATE_WELDED, "Welded Plate");
+        this.add(NtmItems.PLATE_CAST, "Cast Plate");
         this.add(NtmItems.MOLD_BASE, "Blank Foundry Mold");
         this.add(NtmItems.MOLD_PLATE_CAST, "Cast Plate Foundry Mold");
         this.add(NtmItems.MOLD_INGOT, "Ingot Foundry Mold");
@@ -848,7 +828,6 @@ public class NtmLanguageProvider extends LanguageProvider {
         this.add(NtmItems.TURBINE_TITANIUM, "Titanium Steam Turbine");
         this.add(NtmItems.TURBINE_TUNGSTEN, "Reinforced Turbofan Blades");
         this.add(NtmItems.FLYWHEEL_BERYLLIUM, "Beryllium Flywheel");
-        this.add(NtmItems.TOOTHPICKS, "Toothpicks");
         this.add(NtmItems.DUCTTAPE, "Duct Tape");
         this.add(NtmItems.PLANT_ITEM, "Rope");
         this.add(NtmItems.PLANT_ITEM_MUSTARDWILLOW, "Mustard Willow Leaf");
@@ -1035,9 +1014,9 @@ public class NtmLanguageProvider extends LanguageProvider {
 
 
         for(CastPlateItem.Type type : CastPlateItem.Type.values()) {
-            this.add("item.hbmsntm.cast_plate." + type.key, type.displayName + " Cast Plate");
+            this.add("item.hbmsntm.plate_cast." + type.key, type.displayName + " Cast Plate");
             if(type.weldedAllowed) {
-                this.add("item.hbmsntm.cast_plate_welded." + type.key, type.displayName + " Welded Plate");
+                this.add("item.hbmsntm.plate_welded." + type.key, type.displayName + " Welded Plate");
             }
         }
 
@@ -1751,6 +1730,102 @@ public class NtmLanguageProvider extends LanguageProvider {
         this.add("item.hbmsntm.ammo_standard.ct_mortar_charge", "Heavy Demolition Charge");
         this.add("item.hbmsntm.ammo_standard.nuke_balefire", "Mini Nuke, Balefire Egg");
         this.add("item.hbmsntm.ammo_standard.bmg50_sm", ".50 BMG Round (Starmetal)");
+        // ammo_secret and casing variants (EnumMultiItem names): original item.ammo_secret.<name>.name, en_US.lang:1827-1834, and
+        // item.casing.<name>.name, en_US.lang:2385-2391
+        this.add("item.hbmsntm.ammo_secret.folly_sm", "Silver Bullet");
+        this.add("item.hbmsntm.ammo_secret.folly_nuke", "Silver Bullet, Nuclear");
+        this.add("item.hbmsntm.ammo_secret.m44_equestrian", ".44 Magnum Head-Exploder");
+        this.add("item.hbmsntm.ammo_secret.g12_equestrian", "12 Gauge Railway Spike Shot");
+        this.add("item.hbmsntm.ammo_secret.bmg50_equestrian", ".50 BMG Demolisher");
+        this.add("item.hbmsntm.ammo_secret.p35_800", ".35-800 V9");
+        this.add("item.hbmsntm.ammo_secret.bmg50_black", ".50 BMG Bypass Round");
+        this.add("item.hbmsntm.ammo_secret.p35_800_bl", ".35-800 V9 (Black Lightning)");
+        this.add("item.hbmsntm.casing.small", "Small Gunmetal Casing");
+        this.add("item.hbmsntm.casing.large", "Large Gunmetal Casing");
+        this.add("item.hbmsntm.casing.small_steel", "Small Weapon Steel Casing");
+        this.add("item.hbmsntm.casing.large_steel", "Large Weapon Steel Casing");
+        this.add("item.hbmsntm.casing.shotshell", "Black Powder Shotshell Casing");
+        this.add("item.hbmsntm.casing.buckshot", "Plastic Shotshell Casing");
+        this.add("item.hbmsntm.casing.buckshot_advanced", "Advanced Shotshell Casing");
+        // Guns (GunFactory) and their tooltip (ItemGunBaseNT.addInformation): en_US.lang:1246-1257,2994,3013,3029; the original has no
+        // name for gun_debug (it shows its raw key)
+        this.add(NtmItems.GUN_DEBUG.get(), "Debug Gun");
+        this.add(NtmItems.GUN_MARESLEG.get(), "Lever Action Shotgun");
+        this.add(NtmItems.GUN_SPAS12.get(), "SPAS-12");
+        this.add(NtmItems.GUN_HANGMAN.get(), "Hangman");
+        this.add("gui.weapon.baseDamage", "Base Damage");
+        this.add("gui.weapon.damageWithAmmo", "Damage with current ammo");
+        this.add("gui.weapon.condition", "Condition");
+        this.add("gui.weapon.quality.aside", "Standard Arsenal");
+        this.add("gui.weapon.quality.bside", "B-Side");
+        this.add("gui.weapon.quality.legendary", "Legendary Weapon");
+        this.add("gui.weapon.quality.special", "Special Weapon");
+        this.add("gui.weapon.quality.utility", "Utility");
+        this.add("gui.weapon.quality.secret", "SECRET");
+        this.add("gui.weapon.quality.debug", "DEBUG");
+
+        // Text the original hard-codes in Java, keyed in NEO (Goal32D): the English is the original's string at the cited line
+        for(String priority : new String[] { "lowest", "low", "normal", "high", "highest" }) {
+            // ConnectionPriority's enum name, which the original shows as is (FlowControlPump.java:109, GUIDiode.java:42,89, GUIPump.java:47,106)
+            this.add("block.hbmsntm.network_control.priority." + priority, priority.toUpperCase(Locale.ROOT));
+        }
+        this.add("block.hbmsntm.radio_torch.freq", "Freq: %s"); // RadioTorchRWBase.java:42, RadioTorchRelay.java:38
+        this.add("block.hbmsntm.radio_torch.signal", "Signal: %s"); // RadioTorchRWBase.java:43, RadioTorchRelay.java:39
+        // BlockWriting.java:26-35
+        this.add("block.hbmsntm.brick_concrete_marked.msg0", "You should not have come here.");
+        this.add("block.hbmsntm.brick_concrete_marked.msg1", "This is not a place of honor. No great deed is commemorated here.");
+        this.add("block.hbmsntm.brick_concrete_marked.msg2", "Nothing of value is here.");
+        this.add("block.hbmsntm.brick_concrete_marked.msg3", "What is here is dangerous and repulsive.");
+        this.add("block.hbmsntm.brick_concrete_marked.msg4", "We considered ourselves a powerful culture. We harnessed the hidden fire, and used it for our own purposes.");
+        this.add("block.hbmsntm.brick_concrete_marked.msg5", "Then we saw the fire could burn within living things, unnoticed until it destroyed them.");
+        this.add("block.hbmsntm.brick_concrete_marked.msg6", "And we were afraid.");
+        this.add("block.hbmsntm.brick_concrete_marked.msg7", "We built great tombs to hold the fire for one hundred thousand years, after which it would no longer kill.");
+        this.add("block.hbmsntm.brick_concrete_marked.msg8", "If this place is opened, the fire will not be isolated from the world, and we will have failed to protect you.");
+        this.add("block.hbmsntm.brick_concrete_marked.msg9", "Leave this place and never come back.");
+        this.add("upgrade.gui.none", "No upgrades installed"); // NEO's own line on the arc welder and soldering station screens
+        // GUIMachineSolderingStation.java:43-45
+        this.add("container.machine_soldering_station.collision", "Recipe Collision Prevention: %s");
+        this.add("container.machine_soldering_station.collision.on", "ON");
+        this.add("container.machine_soldering_station.collision.off", "OFF");
+        this.add("container.machine_soldering_station.collision.desc1", "Prevents no-fluid recipes from being processed");
+        this.add("container.machine_soldering_station.collision.desc2", "when fluid is present.");
+        this.add("hbmfluid.trait.toxic_fumes", "Toxic Fumes"); // FT_Poison.java:34
+        this.add("item.hbmsntm.key_kit.desc", "Use on a locked container to create two counterfeit keys!"); // ItemCounterfeitKeys.java:54
+        // ItemKeyPin.java:18-25
+        this.add("item.hbmsntm.obj_key_pin.configuration", "Pin configuration: %s");
+        this.add("item.hbmsntm.obj_key_pin.not_set", "Pins not set!");
+        this.add("item.hbmsntm.obj_key_pin.fixed", "Pins can neither be changed, nor copied.");
+        this.add("tool.ability.depth_rock", "Can break depth rock!"); // ItemToolAbility.java:288
+        // ItemMultiDetonator.java:112,127
+        this.add("item.hbmsntm.obj_detonator.triggered", "Triggered %s/%s!");
+        this.add("item.hbmsntm.obj_detonator.pos_cleared", "Locations cleared!");
+        // ItemModCharm.java:23-32
+        this.add("item.hbmsntm.obj_mod_charm.blessed", "You feel blessed.");
+        this.add("item.hbmsntm.meteor_charm.desc1", "Disables meteorite spawning.");
+        this.add("item.hbmsntm.meteor_charm.desc2", "Negates broadcaster damage");
+        this.add("item.hbmsntm.protection_charm.desc1", "Diverts meteors away from the player.");
+        this.add("item.hbmsntm.protection_charm.desc2", "Meteors no longer destroy blocks.");
+        this.add("item.hbmsntm.protection_charm.desc3", "Halves broadcaster damage");
+        this.add("trait.stack", "Stack: %s"); // HazardTypeRadiation.java:64, HazardTypeDigamma.java:35
+        // Advanced tooltips (F3+H); the original lists the ore dictionary as "Ore Dict:" (ModEventHandlerClient.java:749)
+        this.add("desc.misc.itemTags", "Item tags:");
+        this.add("desc.misc.blockTags", "Block tags:");
+        // HbmPlayerProps.java:102-125
+        this.add("info.jetpack_on", "Jetpack ON");
+        this.add("info.jetpack_off", "Jetpack OFF");
+        this.add("info.magnet_on", "Magnet ON");
+        this.add("info.magnet_off", "Magnet OFF");
+        this.add("info.hud_on", "HUD ON");
+        this.add("info.hud_off", "HUD OFF");
+        this.add("message.hbmsntm.horizons_activated", "Horizons has been activated."); // SatelliteHorizons.java:102
+        // Armor resistances (DamageResistanceHandler.addInfo): en_US.lang:883-893, NEO's category names spelled out
+        this.add("damage.inset", "Resistances when worn in set:");
+        this.add("damage.item", "Resistances when worn:");
+        this.add("damage.category.ENERGY", "Energy");
+        this.add("damage.category.EXPLOSION", "Explosion");
+        this.add("damage.category.FIRE", "Fire");
+        this.add("damage.category.PHYSICAL", "Physical");
+        this.add("damage.other", "Other");
         // Armor mod tooltips (ItemArmorMod, ItemModCladding): en_US.lang:170-185; "Slot:" and the cladding line are hard-coded in the original
         this.add("armorMod.all", "All");
         this.add("armorMod.applicableTo", "Applicable To:");
@@ -1801,7 +1876,7 @@ public class NtmLanguageProvider extends LanguageProvider {
         this.add(NtmItems.KEY_RED, "Red Key");
         this.add(NtmItems.KEY_RED, DESC, "Explore the other side.");
         this.add(NtmItems.KEY_RED, DESC + P11, "§4e§r");
-        this.add(NtmItems.KEY_RED_CRACKED, "Red Key");
+        this.add(NtmItems.KEY_RED_CRACKED, "Cracked Key");
         this.add(NtmItems.KEY_RED_CRACKED, DESC, "???");
         this.add(NtmItems.KEY_RED_CRACKED, DESC + P11,"§4???§r");
         this.add(NtmItems.KEY_KIT, "Key Imitation Kit");
@@ -1861,7 +1936,7 @@ public class NtmLanguageProvider extends LanguageProvider {
         this.add("item.hbmsntm.obj_soyuz.skin", "Skin:");
         this.add("item.hbmsntm.obj_soyuz.skin.original", "Original");
         this.add("item.hbmsntm.obj_soyuz.skin.luna", "Luna Space Center");
-        this.add("item.hbmsntm.obj_soyuz.skin.post", "Post War");
+        this.add("item.hbmsntm.obj_soyuz.skin.post", "Post-War");
         this.add(NtmItems.MISSILE_SOYUZ, "Soyuz-FG");
 
         this.add("item.hbmsntm.obj_sat_chip.frequency", "Satellite frequency: %s");
@@ -1878,8 +1953,8 @@ public class NtmLanguageProvider extends LanguageProvider {
         this.add(NtmItems.SAT_GERALD, "Gerald The Construction Android");
         this.add(NtmItems.SAT_GERALD, DESC, "Single use.$Requires orbital module.$Melter of CPUs, bane of every server owner.");
         this.add(NtmItems.SAT_CHIP, "Satellite ID-Chip");
-        this.add(NtmItems.SAT_COORD, "Satellite Laser Designator");
-        this.add(NtmItems.SAT_DESIGNATOR, "Satellite Designator");
+        this.add(NtmItems.SAT_COORD, "Satellite Designator");
+        this.add(NtmItems.SAT_DESIGNATOR, "Satellite Laser Designator");
 
         this.add(NtmItems.BALEFIRE_AND_STEEL, "Balefire and Steel");
 
@@ -1916,7 +1991,7 @@ public class NtmLanguageProvider extends LanguageProvider {
         this.add(NtmItems.DRINK, this.getName(DrinkType.SPARKLE) + DESC + P11, "Contains trace amounts of taint.");
         this.add(NtmItems.DRINK, this.getName(DrinkType.RAD), "Bottle of S~Cola RAD");
         this.add(NtmItems.DRINK, this.getName(DrinkType.RAD) + DESC, "Tastes like radish and radiation.");
-        this.add(NtmItems.DRINK, this.getName(DrinkType.RAD) + DESC + P11, "Now with 400% more radiation!");
+        this.add(NtmItems.DRINK, this.getName(DrinkType.RAD) + DESC + P11, "Now with 400%% more radiation!");
         this.add(NtmItems.DRINK, this.getName(DrinkType.BOTTLE2_EMPTY), "Empty Bottle");
         this.add(NtmItems.DRINK, this.getName(DrinkType.KORL), "Korl");
         this.add(NtmItems.DRINK, this.getName(DrinkType.KORL) + DESC, "Contains actual orange juice!");
@@ -2108,7 +2183,7 @@ public class NtmLanguageProvider extends LanguageProvider {
         this.add(NtmBlocks.BASALT, "Basalt");
         this.add(NtmBlocks.BASALT_SMOOTH, "Smooth Basalt");
         this.add(NtmBlocks.BASALT_BRICK, "Basalt Bricks");
-        this.add(NtmBlocks.BASALT_POLISHED, "Basalt Tiles");
+        this.add(NtmBlocks.BASALT_POLISHED, "Polished Basalt");
         this.add(NtmBlocks.BASALT_TILES, "Basalt Tiles");
         this.add(NtmBlocks.STONE_CRACKED, "Cracked Stone");
         this.add(NtmBlocks.DIRT_DEAD, "Dead Dirt");
@@ -2119,7 +2194,7 @@ public class NtmLanguageProvider extends LanguageProvider {
 
         this.add(NtmBlocks.BOBBLEHEAD, "Bobblehead");
         this.add(NtmBlocks.PLUSHIE, this.getName(PlushieType.YOMI), "Yomi Plushie");
-        this.add(NtmBlocks.PLUSHIE, this.getName(PlushieType.YOMI) + DESC, "Hi! Can I be your rabbit friend");
+        this.add(NtmBlocks.PLUSHIE, this.getName(PlushieType.YOMI) + DESC, "Hi! Can I be your rabbit friend?");
         this.add(NtmBlocks.PLUSHIE, this.getName(PlushieType.NUMBERNINE), "Number Nine Plushie");
         this.add(NtmBlocks.PLUSHIE, this.getName(PlushieType.NUMBERNINE) + DESC, "None of y'all deserve coal.");
         this.add(NtmBlocks.PLUSHIE, this.getName(PlushieType.HUNDUN), "Hundun Plushie");
@@ -2151,10 +2226,10 @@ public class NtmLanguageProvider extends LanguageProvider {
         this.add(NtmBlocks.CONCRETE, "Concrete Tile");
         this.add(NtmBlocks.CONCRETE_SMOOTH, "Concrete");
         this.add(NtmBlocks.CONCRETE_ASBESTOS, "Asbestos Concrete");
-        this.add(NtmBlocks.DUCRETE, "Ducrete");
-        this.add(NtmBlocks.DUCRETE_SMOOTH, "Ducrete Tile");
-        this.add(NtmBlocks.DUCRETE_REINFORCED, "Reinforced Ducrete");
-        this.add(NtmBlocks.DUCRETE_BRICK, "Ducrete Brick");
+        this.add(NtmBlocks.DUCRETE, "Ducrete Tile");
+        this.add(NtmBlocks.DUCRETE_SMOOTH, "Ducrete");
+        this.add(NtmBlocks.REINFORCED_DUCRETE, "Reinforced Ducrete");
+        this.add(NtmBlocks.BRICK_DUCRETE, "Ducrete Bricks");
         this.add(NtmBlocks.STEEL_SCAFFOLD, "Steel Scaffold");
         this.add(NtmBlocks.STEEL_BEAM, "Steel Beam");
         this.add(NtmBlocks.STEEL_GRATE, "Steel Grate");
@@ -2276,7 +2351,7 @@ public class NtmLanguageProvider extends LanguageProvider {
         this.add(NtmBlocks.ORE_SULFUR, "Sulfur Ore");
         this.add(NtmBlocks.ORE_SULFUR_DEEPSLATE, "Deepslate Sulfur Ore");
         this.add(NtmBlocks.ORE_LIGNITE, "Lignite Ore");
-        this.add(NtmBlocks.ORE_DEEPSLATE_LIGNITE, "Deepslate Lignite Ore");
+        this.add(NtmBlocks.ORE_LIGNITE_DEEPSLATE, "Deepslate Lignite Ore");
         this.add(NtmBlocks.RESOURCE_LIMESTONE, "Limestone");
         this.add(NtmBlocks.RESOURCE_MALACHITE, "Malachite");
         this.add(NtmBlocks.RESOURCE_BAUXITE, "Bauxite");
@@ -2351,12 +2426,10 @@ public class NtmLanguageProvider extends LanguageProvider {
         this.add(NtmBlocks.CRATE_TUNGSTEN, "Tungsten Crate");
         this.add(NtmBlocks.CRATE_STEEL, "Steel Crate");
         this.add(NtmBlocks.CRATE_DESH, "Desh Crate");
-        this.add(NtmBlocks.CRATE_TEMPLATE, "Template Crate");
         this.add("container.crateIron", "Iron Crate");
         this.add("container.crateTungsten", "Tungsten Crate");
         this.add("container.crateSteel", "Steel Crate");
         this.add("container.crateDesh", "Desh Crate");
-        this.add("container.crateTemplate", "Template Crate");
         this.add("desc.slots", "Slots: %s");
         this.add("desc.crate_slots_used", "%s/%s Slots used (%s%%)");
         this.add("desc.crate_contents", "Contains %s stacks / %s items");
@@ -2612,6 +2685,7 @@ public class NtmLanguageProvider extends LanguageProvider {
         this.add("container.rtty.change", "State Change");
         this.add("container.rtty.save", "Save Settings");
         this.add(NtmBlocks.MACHINE_CHUNGUS, "Leviathan Steam Turbine");
+        this.add("block.hbmsntm.machine_chungus.desc", "Efficiency: 85%%");
         this.add("machine_chungus.compressor_locked", "Cannot change compressor setting while operational!");
         this.add(NtmBlocks.MACHINE_INDUSTRIAL_TURBINE, "Industrial Steam Turbine");
         this.add("block.hbmsntm.machine_industrial_turbine.desc", "Efficiency: 100%%");
@@ -3409,22 +3483,36 @@ public class NtmLanguageProvider extends LanguageProvider {
         this.addDamagePlayer("euthanizedSelf", "%1$s euthanized himself, what a dork.");
         this.addDamagePlayer("euthanizedSelf2", "%1$s wins the Darwin Award.");
 
-        this.addDamage("sednaPhysical", "%1$s was shot");
-        this.addDamagePlayer("sednaPhysical", "%1$s was shot by %2$s");
-        this.addDamage("sednaFire", "%1$s was incinerated");
-        this.addDamagePlayer("sednaFire", "%1$s was incinerated by %2$s");
+        // ItemGunBaseNT damage classes: original death.sedna.<class> and .attacker, en_US.lang:953-968. The ".item" form is what 1.21 asks
+        // for when the attacker holds a renamed item; the original has none (1.7.10 never asks), so it is local English.
+        this.addDamage("sednaPhysical", "%1$s was shot.");
+        this.addDamagePlayer("sednaPhysical", "%1$s was shot by %2$s.");
+        this.add("death.attack.sednaPhysical.item", "%1$s was shot by %2$s using %3$s.");
+        this.addDamage("sednaFire", "%1$s was incinerated.");
+        this.addDamagePlayer("sednaFire", "%1$s was incinerated by %2$s.");
+        this.add("death.attack.sednaFire.item", "%1$s was incinerated by %2$s using %3$s.");
         this.addDamage("sednaExplosion", "%1$s was blown up.");
         this.addDamagePlayer("sednaExplosion", "%1$s was blown up by %2$s.");
-        this.addDamage("sednaElectric", "%1$s was fried");
-        this.addDamagePlayer("sednaElectric", "%1$s was fried by %2$s");
-        this.addDamage("sednaLaser", "%1$s was pulverized");
-        this.addDamagePlayer("sednaLaser", "%1$s was pulverized by %2$s");
-        this.addDamage("sednaMicrowave", "%1$s was microwaved");
-        this.addDamagePlayer("sednaMicrowave", "%1$s was microwaved by %2$s");
-        this.addDamage("sednaSubatomic", "%1$s was atomized");
-        this.addDamagePlayer("sednaSubatomic", "%1$s was atomized by %2$s");
-        this.addDamage("sednaOther", "%1$s was killed");
+        this.add("death.attack.sednaExplosion.item", "%1$s was blown up by %2$s using %3$s.");
+        this.addDamage("sednaElectric", "%1$s was fried.");
+        this.addDamagePlayer("sednaElectric", "%1$s was fried by %2$s.");
+        this.add("death.attack.sednaElectric.item", "%1$s was fried by %2$s using %3$s.");
+        this.addDamage("sednaLaser", "%1$s was pulverized.");
+        this.addDamagePlayer("sednaLaser", "%1$s was pulverized by %2$s.");
+        this.add("death.attack.sednaLaser.item", "%1$s was pulverized by %2$s using %3$s.");
+        this.addDamage("sednaMicrowave", "%1$s was microwaved.");
+        this.addDamagePlayer("sednaMicrowave", "%1$s was microwaved by %2$s.");
+        this.add("death.attack.sednaMicrowave.item", "%1$s was microwaved by %2$s using %3$s.");
+        this.addDamage("sednaSubatomic", "%1$s was atomized.");
+        this.addDamagePlayer("sednaSubatomic", "%1$s was atomized by %2$s.");
+        this.add("death.attack.sednaSubatomic.item", "%1$s was atomized by %2$s using %3$s.");
+        this.addDamage("sednaOther", "%1$s was killed.");
         this.addDamagePlayer("sednaOther", "%1$s was killed by %2$s.");
+        this.add("death.attack.sednaOther.item", "%1$s was killed by %2$s using %3$s.");
+        // sednaPlasma (data/hbmsntm/damage_type/plasma.json) is NEO-only, with no original line: local English.
+        this.addDamage("sednaPlasma", "%1$s was vaporized.");
+        this.addDamagePlayer("sednaPlasma", "%1$s was vaporized by %2$s.");
+        this.add("death.attack.sednaPlasma.item", "%1$s was vaporized by %2$s using %3$s.");
 
         // MISC //
         this.add("message.hbmsntm.loaded", "Loaded world with Hbm's Nuclear Tech Mod: %s for Minecraft 1.21.1!");

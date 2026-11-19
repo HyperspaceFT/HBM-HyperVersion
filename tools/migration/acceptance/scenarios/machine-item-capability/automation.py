@@ -17,7 +17,9 @@ Expected values follow the 1.7.10 original at cd0cff450:
 - heaters: the original lets nothing be taken from the firebox, oven, fluid burner or heat exchanger
   (TileEntityMachineBase.java:131-133, not overridden). A crane under the core reaches it only through the core's bottom
   face; inserting through that face first shows the face is reached. Whether automation can put items into the fluid
-  burner and the heat exchanger is recorded without a pass line.
+  burner is recorded without a pass line (NEO opens slots 0-2 to it on purpose, HeaterOilburnerBlockEntity.java:204-208).
+- heat exchanger (TileEntityHeaterHeatex: no accessible slot, Goal32B): an inserter under the core cannot put a fluid
+  identifier in (the item stays in the inserter, nothing lost), and an extractor takes nothing.
 """
 import re
 import sys
@@ -50,10 +52,12 @@ def expectations():
           'fits it stays, and so do the battery and upgrade slots', 'TileEntityMachineAssemblyMachine.java:255-271 (canExtractItem :264-266); ModuleMachineBase.java:235-242'),
          ('chemplant-side', 'extractor at a chemical plant port takes the output and the clogged input, not the battery or fluid slots',
           'TileEntityMachineChemicalPlant.java:230-248; ModuleMachineBase.java:235-242')]
-    for h in ('firebox', 'oven', 'oilburner', 'heatex'):
+    for h in ('firebox', 'oven', 'oilburner'):
         E.append(('heater-%s' % h, '%s: an extractor under the core takes nothing (after a control showing that face is reached)' % h,
                   'TileEntityMachineBase.java:131-133'))
-    E.append(('heater-insert-record', 'record: can an inserter under the core put a fluid identifier into the fluid burner and the heat exchanger',
+    E.append(('heater-heatex', 'heat exchanger: an inserter under the core cannot put a fluid identifier in (it stays in the inserter, '
+              'none lost) and an extractor under the core takes nothing', 'TileEntityHeaterHeatex (no accessible slot); TileEntityMachineBase.java:131-140'))
+    E.append(('heater-insert-record', 'record: can an inserter under the core put a fluid identifier into the fluid burner',
               'record item, no pass line'))
     return [dict(id='machine-item-capability.' + i, text=t, source=s) for i, t, s in E]
 
@@ -159,7 +163,9 @@ def hoppers(ctx):
         ctx.step('wait', ticks=120)
         a = items(ctx, (top_cell[0], top_y + 1, top_cell[2]))
         b = items(ctx, (bottom_cell[0], Y - 1, bottom_cell[2]))
-        ctx.check('machine-item-capability.refinery-dummy', total(a, 'minecraft:cobblestone') == 5 and total(b) == 0,
+        # Both cells must be refinery cells without a port, or an empty hopper below proves nothing.
+        is_dummy = cells.get(top_cell) == 'dummy' and cells.get(bottom_cell) == 'dummy'
+        ctx.check('machine-item-capability.refinery-dummy', is_dummy and total(a, 'minecraft:cobblestone') == 5 and total(b) == 0,
                   'cells %s / %s are %s / %s; hopper above keeps %s; hopper below got %s' % (
                       top_cell, bottom_cell, cells.get(top_cell), cells.get(bottom_cell), a, b))
 
@@ -232,7 +238,11 @@ def heater(ctx, block, x, ident):
     taken = [(s, i, c) for s, i, c in items(ctx, under) if 9 <= (s or 0) <= 17]
     detail = 'control insert through the bottom face: %s (inserter buffer %s, loose %d; core before %s, after %s); extractor took %s' % (
         inserted, buf, len(loose), before, after_insert, taken)
-    if inserted:
+    if block == 'heater_heatex':
+        # the original exposes no slot: the identifier must stay in the inserter's buffer (not in the core, not on the floor)
+        kept = total(buf) == 1 and not loose and after_insert == before
+        ctx.check(eid, kept and not taken, detail)
+    elif inserted:
         ctx.check(eid, not taken, detail)
     else:
         ctx.review(eid, 'the control insert did not go in, so reaching the face is not shown; ' + detail)
@@ -255,5 +265,5 @@ def run(ctx):
     rec = {}
     for i, (block, ident) in enumerate((('heater_firebox', False), ('heater_oven', False), ('heater_oilburner', True), ('heater_heatex', True))):
         rec[block] = heater(ctx, block, OX + 70 + 10 * i, ident)
-    ctx.review('machine-item-capability.heater-insert-record', 'fluid identifier put in through the core bottom: fluid burner %s, heat exchanger %s' % (
-        rec.get('heater_oilburner'), rec.get('heater_heatex')))
+    ctx.review('machine-item-capability.heater-insert-record', 'fluid identifier put in through the core bottom: fluid burner %s' % (
+        rec.get('heater_oilburner'),))

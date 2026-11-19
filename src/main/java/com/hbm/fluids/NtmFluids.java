@@ -29,7 +29,7 @@ public class NtmFluids {
                 .bucket(() -> Items.LAVA_BUCKET)
                 .block(NtmBlocks.VOLCANIC_LAVA)
                 .levelDecreasePerBlock(2)
-                .explosionResistance(500F)
+                .explosionResistance(300F) // original ModBlocks.java:2347 setResistance(500F), effective 300
                 .tickRate(15);
     }
 
@@ -38,7 +38,7 @@ public class NtmFluids {
                 .bucket(() -> Items.LAVA_BUCKET)
                 .block(NtmBlocks.RAD_LAVA)
                 .levelDecreasePerBlock(2)
-                .explosionResistance(500F)
+                .explosionResistance(300F) // original ModBlocks.java:2351 setResistance(500F), effective 300
                 .tickRate(15);
     }
 

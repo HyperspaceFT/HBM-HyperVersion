@@ -1,15 +1,16 @@
 {
-  "type": "minecraft:crafting_shaped",
+  "type": "minecraft:crafting_shapeless",
   "category": "misc",
-  "key": {
-    "A": {
+  "ingredients": [
+    {
+      "item": "minecraft:string"
+    },
+    {
+      "item": "minecraft:string"
+    },
+    {
       "item": "minecraft:string"
     }
-  },
-  "pattern": [
-    "AA ",
-    "A  ",
-    "   "
   ],
   "result": {
     "count": 1,

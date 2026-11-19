@@ -71,8 +71,7 @@ public class ZirnoxDestroyedBlockEntity extends BlockEntity implements ITickable
     /**
      * Original TileEntityZirnoxDestroyed.radiate (:58-95): every living entity within 100 blocks takes radiation scaled by the summed
      * block explosion resistance along the line to its eyes and by the inverse square of the distance; a burning wreck also burns
-     * entities closer than 5 blocks. NEO block resistances copy the 1.7.10 setResistance values, whose effective 1.7.10 resistance
-     * is value * 3 / 5, so shielding by HBM blocks is about 5/3 of the original; this is not converted (REVIEW-FIXES-ZIRNOX).
+     * entities closer than 5 blocks.
      */
     public void radiate() {
         if(this.level == null) return;

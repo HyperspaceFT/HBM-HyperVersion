@@ -110,7 +110,7 @@ public class FlowControlPumpBlock extends DummyableBlock implements ILookOverlay
                 .append(Component.translatable("block.hbmsntm.flow_control_pump.flow", pump.tank[0].getTankType().getName(),
                         pump.tank[0].getPressure(), BobMathUtil.format(pump.bufferSize)))
                 .append(Component.literal(" ->").withStyle(ChatFormatting.RED)));
-        text.add(Component.translatable("block.hbmsntm.network_control.priority", Component.literal(pump.priority.name()).withStyle(ChatFormatting.YELLOW)));
+        text.add(Component.translatable("block.hbmsntm.network_control.priority", Component.translatable("block.hbmsntm.network_control.priority." + pump.priority.name().toLowerCase(java.util.Locale.ROOT)).withStyle(ChatFormatting.YELLOW)));
         if(pump.redstone) text.add(Component.translatable("block.hbmsntm.network_control.redstone").withStyle(ChatFormatting.RED));
         if(pump.tank[0].getFill() > 0) text.add(Component.translatable("block.hbmsntm.flow_control_pump.buffered", BobMathUtil.format(pump.tank[0].getFill())));
         ILookOverlay.printGeneric(event, Component.translatable(this.getDescriptionId()), 0xffff00, 0x404000, text);

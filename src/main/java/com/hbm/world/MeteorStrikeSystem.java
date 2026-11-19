@@ -13,6 +13,7 @@ import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.level.Level;
 import net.minecraft.world.phys.Vec3;
 
 import java.util.HashMap;
@@ -42,7 +43,8 @@ public final class MeteorStrikeSystem {
         int meteorShower = METEOR_SHOWERS.getOrDefault(dimensionKey, 0);
         int chance = meteorShower > 0 ? NtmConfig.COMMON.METEOR_SHOWER_CHACE.get() : NtmConfig.COMMON.METEOR_STRIKE_CHACE.get();
 
-        if (chance > 0 && METEOR_RANDOM.nextInt(chance) == 0) {
+        // Original BossSpawnHandler.java:211-256: every level rolls, but only players in the overworld are struck
+        if (chance > 0 && METEOR_RANDOM.nextInt(chance) == 0 && level.dimension() == Level.OVERWORLD) {
             List<ServerPlayer> players = level.players();
             if (!players.isEmpty()) {
                 ServerPlayer player = players.get(level.random.nextInt(players.size()));

@@ -133,7 +133,7 @@ public class HazmatRegistry {
         if (player.getUUID().toString().equals(ShadyUtil.Pu_238)) res += 0.4F;
 
         for (int i = 0; i < 4; i++) {
-            res += (float) getResistance(player.level(), player.getInventory().armor.get(i));
+            res += getResistance(player.level(), player.getInventory().armor.get(i));
         }
 
         if (player.hasEffect(ModEffect.RADX))

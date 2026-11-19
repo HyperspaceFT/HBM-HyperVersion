@@ -6,6 +6,9 @@ Read-only over the disposable world. Usage:
 Prints, per hbmsntm block in the scanned chunks: total count, min and max y,
 sample coordinates, the host blocks next to it (in the 6 neighbours), and the
 number of scanned chunks.
+  --chunks            the JSON also lists the scanned chunks and, per block, the chunks holding it ([cx, cz, n])
+  --blueprint-chests  also counts vanilla chests walled in by obsidian on all 26 neighbours, the isolated blueprint
+                      chest's shape (BlueprintChestFeature.java:66-70; original HbmWorldGen.java:494-499)
 """
 import argparse, collections, gzip, json, os, re, struct, sys, zlib
 from pathlib import Path
@@ -137,6 +140,8 @@ def main():
     ap.add_argument('--json')
     ap.add_argument('--only', help='regex of block ids to report (default hbmsntm:)', default='hbmsntm:')
     ap.add_argument('--hosts', action='store_true', help='report host blocks of matched blocks')
+    ap.add_argument('--chunks', action='store_true', help='JSON: the scanned chunks and the chunks holding each block')
+    ap.add_argument('--blueprint-chests', action='store_true', help='count chests with obsidian on all 26 neighbours')
     a = ap.parse_args()
     a.region = str(common.resolve(a.region))  # relative to the NEO root, like scan_more.py
     rx = re.compile(a.only)
@@ -148,6 +153,8 @@ def main():
     hosts = collections.defaultdict(collections.Counter)
     scanned = 0
     perchunk = collections.defaultdict(collections.Counter)
+    scanned_chunks = []
+    chests = []
     for fn in sorted(os.listdir(a.region)):
         if not fn.endswith('.mca'):
             continue
@@ -161,24 +168,43 @@ def main():
             if a.z0 is not None and not (a.z0 <= bz + 15 and bz <= a.z1):
                 continue
             scanned += 1
+            scanned_chunks.append([cx, cz])
+            # sections are decoded only when read (a palette match, a host or shape lookup): most hold no match
+            raw = {s['Y']: s for s in ch['sections'] if s.get('block_states')}
             secs = {}
-            for s in ch['sections']:
-                pal, idx = decode(s)
-                if pal is None:
-                    continue
-                secs[s['Y']] = (pal, idx)
+
+            def section(sy):
+                if sy not in secs:
+                    secs[sy] = decode(raw[sy]) if sy in raw else (None, None)
+                return secs[sy]
 
             def at(x, y, z):
-                sy = y >> 4
-                e = secs.get(sy)
-                if e is None:
+                pal, idx = section(y >> 4)
+                if pal is None:
                     return None
-                pal, idx = e
                 if idx is None:
                     return pal[0]
                 return pal[idx[((y & 15) << 8) | ((z & 15) << 4) | (x & 15)]]
 
-            for sy, (pal, idx) in secs.items():
+            if a.blueprint_chests:
+                for sy, s in raw.items():
+                    if not any(e['Name'] == 'minecraft:chest' for e in s['block_states']['palette']):
+                        continue
+                    pal, idx = section(sy)
+                    for j in range(4096):
+                        if pal[idx[j] if idx is not None else 0] != 'minecraft:chest':
+                            continue
+                        if (j & 15) in (0, 15) or ((j >> 4) & 15) in (0, 15):
+                            continue  # the cube would leave the chunk; the feature's chest sits 8 blocks in (feature :68)
+                        x, y, z = bx + (j & 15), sy * 16 + (j >> 8), bz + ((j >> 4) & 15)
+                        if all(at(x + dx, y + dy, z + dz) == 'minecraft:obsidian'
+                               for dx in (-1, 0, 1) for dy in (-1, 0, 1) for dz in (-1, 0, 1) if dx or dy or dz):
+                            chests.append([x, y, z])
+
+            for sy in sorted(raw):
+                if not any(rx.search(e['Name']) for e in raw[sy]['block_states']['palette']):
+                    continue
+                pal, idx = section(sy)
                 hit = [i for i, n in enumerate(pal) if rx.search(n)]
                 if not hit:
                     continue
@@ -218,14 +244,22 @@ def main():
         }
         if a.hosts:
             r['hosts'] = hosts[n].most_common(6)
+        if a.chunks:
+            r['chunks'] = [[cx, cz, k] for (cx, cz), k in sorted(perchunk[n].items())]
         res[n] = r
         line = '%-48s n=%-7d chunks=%-4d y=%d..%d  e.g. %s' % (n, counts[n], len(perchunk[n]), miny[n], maxy[n], samples[n][0])
         print(line)
         if a.hosts:
             print('    hosts:', hosts[n].most_common(6))
+    out = {'scanned': scanned, 'blocks': res}
+    if a.chunks:
+        out['scanned_chunks'] = scanned_chunks
+    if a.blueprint_chests:
+        print('blueprint chests (chest with obsidian on all 26 neighbours): %d %s' % (len(chests), chests[:6]))
+        out['blueprint_chests'] = dict(count=len(chests), positions=chests)
     if a.json:
         with open(a.json, 'w', encoding='utf8') as f:
-            json.dump({'scanned': scanned, 'blocks': res}, f, indent=1)
+            json.dump(out, f, indent=1)
 
 
 if __name__ == '__main__':

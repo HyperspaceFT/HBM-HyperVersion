@@ -157,7 +157,7 @@ public class RecipeCompletionGameTests {
                         it("hbmsntm:plate_dura_steel", 8), it("hbmsntm:pipe_copper", 4), it("hbmsntm:motor", 2), it("hbmsntm:circuit_integrated_board", 1)),
                 // :301-304 ass.pumpjack and :305-308 ass.fracker (normal inputs; NEO decision: no setPools528, as ass.crackingtower)
                 row("ass.pumpjack", 400, 100, "hbmsntm:machine_pumpjack", 1, null, null,
-                        it("hbmsntm:plate_dura_steel", 8), mt("hbmsntm:cast_plate_welded", welded(), 8), it("hbmsntm:pipe_steel", 12),
+                        it("hbmsntm:plate_dura_steel", 8), mt("hbmsntm:plate_welded", welded(), 8), it("hbmsntm:pipe_steel", 12),
                         it("hbmsntm:motor_desh", 1), it("hbmsntm:drill_titanium", 1)),
                 row("ass.fracker", 600, 100, "hbmsntm:machine_fracking_tower", 1, null, null,
                         it("hbmsntm:shell_steel", 24), it("hbmsntm:pipe_steel", 12), it("hbmsntm:concrete_smooth", 64), it("hbmsntm:drill_titanium", 1),
@@ -167,11 +167,11 @@ public class RecipeCompletionGameTests {
                         tg("c:plates/steel", 12), tg("ntm:any_rubbers", 12), it("hbmsntm:magnetron", 5), it("hbmsntm:motor", 1),
                         it("hbmsntm:circuit_integrated_board", 8), it("hbmsntm:crt_display", 4)),
                 row("ass.radarlarge", 400, 100, "hbmsntm:machine_radar_large", 1, null, null,
-                        mt("hbmsntm:cast_plate_welded", welded(), 6), tg("ntm:ingots_resistant_alloy", 4), tg("ntm:any_rubbers", 24), it("hbmsntm:magnetron", 16),
+                        mt("hbmsntm:plate_welded", welded(), 6), tg("ntm:ingots_resistant_alloy", 4), tg("ntm:any_rubbers", 24), it("hbmsntm:magnetron", 16),
                         it("hbmsntm:motor_desh", 1), it("hbmsntm:circuit_military_grade_board", 4), it("hbmsntm:crt_display", 4)),
                 // :437-439 ass.leviturbine (normal inputs)
                 row("ass.leviturbine", 600, 100, "hbmsntm:machine_chungus", 1, null, null,
-                        it("hbmsntm:shell_steel", 6), mt("hbmsntm:cast_plate_welded", welded(), 16), it("hbmsntm:plate_titanium", 12), tg("ntm:ingots_resistant_alloy", 16),
+                        it("hbmsntm:shell_steel", 6), mt("hbmsntm:plate_welded", welded(), 16), it("hbmsntm:plate_titanium", 12), tg("ntm:ingots_resistant_alloy", 16),
                         it("hbmsntm:turbine_tungsten", 5), it("hbmsntm:turbine_titanium", 3), it("hbmsntm:flywheel_beryllium", 1), mt("hbmsntm:wire_dense", GOLD_META, 48),
                         it("hbmsntm:pipe_dura_steel", 16), it("hbmsntm:pipe_steel", 16)),
                 // :629-637 the overdrive upgrades, inside if(no528)
@@ -210,7 +210,7 @@ public class RecipeCompletionGameTests {
                 row("ass.boytarget", 200, 100, "hbmsntm:little_boy_target", 1, null, null, it("hbmsntm:ingot_uranium", 18)),  // :40-41
                 row("ass.machine_refinery", 200, 100, "hbmsntm:machine_refinery", 1, null, null,  // :43-52 (INSULATOR is plate_polymer)
                         it("hbmsntm:plate_copper", 8), it("hbmsntm:shell_steel", 4), it("hbmsntm:pipe_steel", 12), it("hbmsntm:plate_polymer", 8),
-                        it("hbmsntm:circuit_analog_board", 3), mt("hbmsntm:cast_plate_welded", welded(), 3)),
+                        it("hbmsntm:circuit_analog_board", 3), mt("hbmsntm:plate_welded", welded(), 3)),
                 row("ass.shredder", 100, 100, "hbmsntm:machine_shredder", 1, null, null,  // :253-256
                         tg("c:plates/steel", 8), tg("c:plates/copper", 4), it("hbmsntm:motor", 2)),
                 row("ass.gascent", 400, 100, "hbmsntm:machine_gas_centrifuge", 1, null, null,  // :302-307
@@ -223,12 +223,12 @@ public class RecipeCompletionGameTests {
                         it("hbmsntm:ingot_steel", 8), it("hbmsntm:pipe_copper", 2), it("hbmsntm:plate_polymer", 16), it("hbmsntm:motor", 2),
                         it("hbmsntm:coil_tungsten", 2), it("hbmsntm:circuit_analog_board", 1)),
                 row("ass.purex", 300, 100, "hbmsntm:machine_purex", 1, null, null,  // :367-372
-                        it("hbmsntm:shell_steel", 4), it("hbmsntm:pipe_rubber", 8), mt("hbmsntm:cast_plate", CastPlateItem.Type.LEAD.ordinal(), 4),
+                        it("hbmsntm:shell_steel", 4), it("hbmsntm:pipe_rubber", 8), mt("hbmsntm:plate_cast", CastPlateItem.Type.LEAD.ordinal(), 4),
                         it("hbmsntm:motor_desh", 1), it("hbmsntm:circuit_integrated_board", 4)),
                 row("ass.analogAlt", 200, 250, "hbmsntm:circuit_analog_board", 1, "alt..circuit", null,  // :396-401
                         it("hbmsntm:circuit_printed_board", 4), tg("ntm:ingots_plastic", 4), it("hbmsntm:wire_tungsten", 8), it("hbmsntm:ingot_niobium", 1)),
                 row("ass.rbmk", 100, 100, "hbmsntm:rbmk_blank", 1, null, null,  // :461-465
-                        it("hbmsntm:concrete_asbestos", 4), mt("hbmsntm:cast_plate", CastPlateItem.Type.STEEL.ordinal(), 2), it("hbmsntm:plate_copper", 4),
+                        it("hbmsntm:concrete_asbestos", 4), mt("hbmsntm:plate_cast", CastPlateItem.Type.STEEL.ordinal(), 2), it("hbmsntm:plate_copper", 4),
                         it("hbmsntm:ingot_rubber", 2)),
                 row("ass.filtercoal", 50, 100, "hbmsntm:filter_coal", 1, null, null,  // :476-479
                         it("hbmsntm:powder_coal", 4), it("minecraft:string", 2), it("minecraft:paper", 1)),
@@ -251,8 +251,8 @@ public class RecipeCompletionGameTests {
                     for(Row r : want) assertRow(set, r);
 
                     // welded steel plate by its META component, dense gold wire by meta (AssemblyMachineRecipes.java:302,396,438: STEEL.plateWelded(), GOLD.wireDense())
-                    ItemStack weldedSteel = MetaHelper.newStack(NtmItems.CAST_PLATE_WELDED.get(), 64, CastPlateItem.Type.STEEL.ordinal());
-                    ItemStack weldedCopper = MetaHelper.newStack(NtmItems.CAST_PLATE_WELDED.get(), 64, CastPlateItem.Type.COPPER.ordinal());
+                    ItemStack weldedSteel = MetaHelper.newStack(NtmItems.PLATE_WELDED.get(), 64, CastPlateItem.Type.STEEL.ordinal());
+                    ItemStack weldedCopper = MetaHelper.newStack(NtmItems.PLATE_WELDED.get(), 64, CastPlateItem.Type.COPPER.ordinal());
                     ItemStack goldWire = MetaHelper.newStack(NtmItems.WIRE_DENSE.get(), 64, GOLD_META);
                     ItemStack copperWire = MetaHelper.newStack(NtmItems.WIRE_DENSE.get(), 64, WireDenseItem.Type.COPPER.meta);
                     check(WireDenseItem.Type.GOLD.meta == GOLD_META, "WireDenseItem GOLD meta is " + WireDenseItem.Type.GOLD.meta + ", the original MAT_GOLD id is 7900");
@@ -260,7 +260,7 @@ public class RecipeCompletionGameTests {
                     for(String name : List.of("ass.pumpjack", "ass.radarlarge", "ass.leviturbine")) {
                         for(AStack a : set.recipeNameMap.get(name).inputItem) {
                             if(!(a instanceof ComparableStack c)) continue;
-                            if(c.item == NtmItems.CAST_PLATE_WELDED.get()) {
+                            if(c.item == NtmItems.PLATE_WELDED.get()) {
                                 check(MetaHelper.getMeta(c.toStack()) == CastPlateItem.Type.STEEL.ordinal() && c.matchesRecipe(weldedSteel, false) && !c.matchesRecipe(weldedCopper, true),
                                         name + ": the welded plate input " + c.toStack() + " is not the welded steel plate only");
                                 weldedInputs++;

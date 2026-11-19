@@ -13,7 +13,6 @@ import net.minecraft.world.level.levelgen.structure.Structure;
 
 // Basically new ore dict and its vanilla
 // Registration in datagens
-@Deprecated
 public class NtmTags {
 
     public static class Blocks {

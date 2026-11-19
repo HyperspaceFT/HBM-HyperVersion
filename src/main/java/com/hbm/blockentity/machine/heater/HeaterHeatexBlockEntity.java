@@ -183,6 +183,12 @@ public class HeaterHeatexBlockEntity extends AbstractHeaterMachineBlockEntity im
         return slot == 0 && stack.getItem() instanceof IItemFluidIdentifier;
     }
 
+    // ORIG TileEntityHeaterHeatex exposes no slot to automation.
+    @Override
+    public int[] getSlotsForFace(Direction direction) {
+        return new int[0];
+    }
+
     @Override
     public AbstractContainerMenu createMenu(int id, Inventory inventory, Player player) {
         return new com.hbm.inventory.menus.HeaterHeatexMenu(id, inventory, this);

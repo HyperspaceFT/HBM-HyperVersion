@@ -74,7 +74,7 @@ public class SatelliteHorizons extends SatelliteBase {
 //            ((EntityPlayer)p).triggerAchievement(MainRegistry.horizonsEnd);
 
         for(Player player : level.players()) {
-            player.sendSystemMessage(Component.literal("Horizons has been activated.").withStyle(ChatFormatting.RED));
+            player.sendSystemMessage(Component.translatable("message.hbmsntm.horizons_activated").withStyle(ChatFormatting.RED));
         }
     }
 

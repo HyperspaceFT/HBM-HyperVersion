@@ -1,0 +1,37 @@
+{
+  "type": "minecraft:crafting_shapeless",
+  "category": "misc",
+  "ingredients": [
+    {
+      "item": "hbmsntm:nugget_schrabidium"
+    },
+    {
+      "item": "hbmsntm:nugget_neptunium"
+    },
+    {
+      "item": "hbmsntm:nugget_neptunium"
+    },
+    {
+      "item": "hbmsntm:nugget_neptunium"
+    },
+    {
+      "item": "hbmsntm:nugget_neptunium"
+    },
+    {
+      "item": "hbmsntm:nugget_beryllium"
+    },
+    {
+      "item": "hbmsntm:nugget_beryllium"
+    },
+    {
+      "item": "hbmsntm:nugget_beryllium"
+    },
+    {
+      "item": "hbmsntm:nugget_beryllium"
+    }
+  ],
+  "result": {
+    "count": 1,
+    "id": "hbmsntm:ingot_les"
+  }
+}

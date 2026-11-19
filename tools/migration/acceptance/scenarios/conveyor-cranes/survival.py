@@ -14,9 +14,9 @@ crafted in the crafting table by real clicks, placed by the player in survival a
   lane into an inserter and a chest, the other into the partitioner (batches of 16), an inserter and the acidizer
   (16 oil scrap and 100 mB radiosolvent per arsenic nugget, CrystallizerRecipes.java:109); the acidizer's radiosolvent and
   power and the upgrades of the extractor and the unboxer are put in by command (the line is about the cranes).
-- a belt broken by hand in survival drops one regular placing tool. NEO deliberate difference: belts are pickaxe-mined
-  but drop without the right tool; the original drops the wand with the type as damage (BlockConveyor.java:19-21) only
-  when harvestable, and its Material.iron (BlockConveyorBase.java:34) needs a tool.
+- a belt broken by a bare hand in survival drops nothing, one broken with a wooden pickaxe drops one regular placing tool, as
+  in the original: it drops the wand with the type as damage (BlockConveyor.java:19-21) only when harvestable, and its
+  Material.iron (BlockConveyorBase.java:34) needs a tool.
 - the settings tool copies an extractor's switch to another extractor in survival.
 """
 import re
@@ -76,8 +76,9 @@ def expectations():
           'splitter: 128 in the lane chest, the other 128 through the partitioner and an inserter into the acidizer as 8 arsenic nuggets; '
           'nothing left in the boxer, unboxer or partitioner', 'TileEntityCraneBoxer/Unboxer/Splitter/Partitioner; CrystallizerRecipes.java:109'),
          ('survival-settings-copy', 'the settings tool made in survival copies an extractor\'s filter item onto another extractor', 'TileEntityCraneBase.java:113-175'),
-         ('bare-hand-belt', 'a belt broken by hand in survival drops one regular placing tool',
-          'NEO deliberate difference: no right tool needed (the original: BlockConveyor.java:19-21, Material.iron in BlockConveyorBase.java:34)')]
+         ('bare-hand-belt', 'a belt broken by a bare hand in survival drops nothing (the belt is gone); the same belt broken with a wooden pickaxe drops one regular placing tool',
+          'BlockConveyorBase.java:34 (Material.iron needs a tool to drop anything), BlockConveyor.java:19-21 (the drop is the wand) (original); '
+          'NtmBlocks.java:581-583 (requiresCorrectToolForDrops)')]
     return [dict(id='conveyor-cranes.' + i, text=t, source=s) for i, t, s in E]
 
 
@@ -332,17 +333,27 @@ def run(ctx):
     text = ' '.join(m['text'] for m in r.get('messages', []))
     ok = bool(placed2) and re.search(r'\{[^{}]*Slot:\s*0b[^{}]*id:\s*"%s"' % re.escape(IRON), text) is not None
     ctx.check('conveyor-cranes.survival-settings-copy', ok, 'second extractor %s; its items %s' % (placed2 and placed2['props'], text[-120:]))
-    # bare-hand belt break
-    cmd(ctx, 'setblock %d %d 14 hbmsntm:conveyor[facing=west,shape=straight]' % (x0, Y))
+    # bare-hand belt break: the original's belt is Material.iron (BlockConveyorBase.java:34), which drops nothing without a tool
+    # but still breaks, and drops the wand (BlockConveyor.java:19-21); a wooden pickaxe is a tool for it
+    def break_belt(hold_ticks):
+        cmd(ctx, 'setblock %d %d 14 hbmsntm:conveyor[facing=west,shape=straight]' % (x0, Y))
+        wands_before = count(ctx, WAND)
+        ctx.step('view', pos=[x0 + 0.5, Y, 16.5], look_at=[x0 + 0.5, Y + 0.1, 14.5], fly=False, hide_gui=False)
+        ctx.step('attack', target=dict(pos=[x0, Y, 14], face='up', offset=[0, -0.8, 0]), any_hit=True, hold=hold_ticks, after=10)
+        es = ctx.step('dump', **{'from': [x0 - 2, Y - 1, 12], 'to': [x0 + 2, Y + 2, 17]}, entities=True)['entities']
+        # a held attack goes on to the ground block under the belt once the belt is gone: its dirt is not the belt's drop
+        drops = [(e.get('item'), e.get('count')) for e in es if e['type'] == 'minecraft:item' and e.get('item') != 'minecraft:dirt']
+        left = ctx.step('dump', **{'from': [x0, Y, 14]})['blocks']
+        picked = count(ctx, WAND) - wands_before  # the drop may already be picked up
+        got = sum(c for i, c in drops if i == WAND) + picked
+        return drops, picked, got, (left[0]['block'] if left else None)
     empty_hand(ctx)
-    wands_before = count(ctx, WAND)
-    ctx.step('view', pos=[x0 + 0.5, Y, 16.5], look_at=[x0 + 0.5, Y + 0.1, 14.5], fly=False, hide_gui=False)
-    ctx.step('attack', target=dict(pos=[x0, Y, 14], face='up', offset=[0, -0.8, 0]), any_hit=True, hold=80, after=10)
-    es = ctx.step('dump', **{'from': [x0 - 2, Y - 1, 12], 'to': [x0 + 2, Y + 2, 17]}, entities=True)['entities']
-    drops = [(e.get('item'), e.get('count')) for e in es if e['type'] == 'minecraft:item']
-    left = ctx.step('dump', **{'from': [x0, Y, 14]})['blocks']
-    picked = count(ctx, WAND) - wands_before  # the drop may already be picked up
-    got = sum(c for i, c in drops if i == WAND) + picked
-    ctx.check('conveyor-cranes.bare-hand-belt', got == 1 and all(i == WAND for i, _ in drops) and not (left and left[0]['block'] == 'hbmsntm:conveyor'),
-              'drops on the ground %s, placing tools picked up %d; block left %s' % (drops, picked, left[0]['block'] if left else None))
+    # no correct tool: 2.0 hardness at 1/100 a tick is 200 ticks
+    hand_drops, hand_picked, hand_got, hand_left = break_belt(240)
+    cmd(ctx, 'item replace entity @s weapon.mainhand with minecraft:wooden_pickaxe')
+    wood_drops, wood_picked, wood_got, wood_left = break_belt(60)
+    ctx.check('conveyor-cranes.bare-hand-belt', hand_got == 0 and not hand_drops and hand_left != 'hbmsntm:conveyor'
+              and wood_got == 1 and all(i == WAND for i, _ in wood_drops) and wood_left != 'hbmsntm:conveyor',
+              'bare hand: drops on the ground %s, placing tools picked up %d, block left %s; wooden pickaxe: drops on the ground %s, '
+              'placing tools picked up %d, block left %s' % (hand_drops, hand_picked, hand_left, wood_drops, wood_picked, wood_left))
     cmd(ctx, 'gamemode creative')

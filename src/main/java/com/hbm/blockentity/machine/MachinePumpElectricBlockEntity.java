@@ -2,6 +2,7 @@ package com.hbm.blockentity.machine;
 
 import api.hbm.energymk2.IEnergyReceiverMK2;
 import api.hbm.fluidmk2.IFluidStandardTransceiverMK2;
+import com.hbm.blockentity.IFluidCopiable;
 import com.hbm.blockentity.ITickable;
 import com.hbm.blockentity.LoadedBaseBlockEntity;
 import com.hbm.blockentity.NtmBlockEntityTypes;
@@ -30,7 +31,7 @@ import java.util.Set;
  * Neither original class reads or writes NBT, so power and water are not saved here either: a reloaded pump starts
  * empty and refills its tank within at most 100 operations.
  */
-public class MachinePumpElectricBlockEntity extends LoadedBaseBlockEntity implements ITickable, IEnergyReceiverMK2, IFluidStandardTransceiverMK2 {
+public class MachinePumpElectricBlockEntity extends LoadedBaseBlockEntity implements ITickable, IEnergyReceiverMK2, IFluidStandardTransceiverMK2, IFluidCopiable {
 
     // The original's machine config "waterpump" (groundHeight, groundDepth, electricSpeed); NEO has no such config.
     public static final int GROUND_HEIGHT = 70;
@@ -224,6 +225,12 @@ public class MachinePumpElectricBlockEntity extends LoadedBaseBlockEntity implem
     @Override
     public FluidTank[] getAllTanks() {
         return new FluidTank[] { this.water };
+    }
+
+    // ORIG TileEntityMachinePumpBase.java:193-196: copies the fluid types but pastes nothing.
+    @Override
+    public FluidTank getTankToPaste() {
+        return null;
     }
 
     public AABB getRenderBoundingBox() {

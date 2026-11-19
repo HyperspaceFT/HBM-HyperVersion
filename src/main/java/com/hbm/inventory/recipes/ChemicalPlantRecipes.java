@@ -155,7 +155,7 @@ public class ChemicalPlantRecipes extends GenericRecipes<GenericRecipe> {
                 .inputItems(new ComparableStack(NtmItems.POWDER_SODIUM.get(), 24), new ComparableStack(NtmItems.POWDER_IRON.get(), 24), new ComparableStack(NtmItems.INGOT_PC.get(), 12))
                 .outputItems(MetaHelper.newStack(NtmItems.BATTERY_PACK.get(), 1, BatteryPackType.BATTERY_SODIUM.ordinal())));
         this.register(new GenericRecipe("chem.batteryschrabidium").setupNamed(100, 25000L)
-                .inputItems(new ComparableStack(NtmItems.POWDER_SCHRABIDIUM.get(), 24), new ComparableStack(NtmItems.CAST_PLATE.get(), 8, CastPlateItem.Type.IRON.ordinal()))
+                .inputItems(new ComparableStack(NtmItems.POWDER_SCHRABIDIUM.get(), 24), new ComparableStack(NtmItems.PLATE_CAST.get(), 8, CastPlateItem.Type.IRON.ordinal()))
                 .inputFluids(new FluidStack(Fluids.HELIUM4, 8000))
                 .outputItems(MetaHelper.newStack(NtmItems.BATTERY_PACK.get(), 1, BatteryPackType.BATTERY_SCHRABIDIUM.ordinal())));
         this.register(new GenericRecipe("chem.batteryquantum").setupNamed(100, 100000L)
@@ -277,7 +277,7 @@ public class ChemicalPlantRecipes extends GenericRecipes<GenericRecipe> {
                 .outputItems(new ItemStack(NtmItems.CANISTER_NAPALM.get())));
         this.register(new GenericRecipe("chem.laminate").setupNamed(20, 100L)
                 .inputFluids(new FluidStack(Fluids.XYLENE, 50), new FluidStack(Fluids.PHOSGENE, 50))
-                .inputItems(new TagStack(ItemTags.create(net.minecraft.resources.ResourceLocation.withDefaultNamespace("glass_blocks"))), new ComparableStack(NtmItems.BOLT.get(), 4, BoltItem.Type.STEEL.meta))
+                .inputItems(new TagStack(ItemTags.create(ResourceLocation.fromNamespaceAndPath("c", "glass_blocks"))), new ComparableStack(NtmItems.BOLT.get(), 4, BoltItem.Type.STEEL.meta))
                 .outputItems(new ItemStack(NtmBlocks.REINFORCED_LAMINATE.get())));
         this.register(new GenericRecipe("chem.polarized").setupNamed(100, 500L)
                 .inputFluids(new FluidStack(Fluids.PETROLEUM, 1000))

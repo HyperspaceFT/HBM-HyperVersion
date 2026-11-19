@@ -4,7 +4,7 @@
 Usage (from the NEO root):
   python3 -B -X utf8 tools/migration/acceptance/rcon.py "list" "time query gametime"
   python3 -B -X utf8 tools/migration/acceptance/rcon.py -f cmds.txt
-Port and password come from build/migration/accept-goal29/server-session.json and rcon.password (written by
+Port and password come from build/migration/accept/server-session.json and rcon.password (written by
 server.py start); --port overrides the port. Commands are sent one at a time, a leading "/" is dropped, blank lines and
 lines starting with "#" in a command file are skipped, and every reply is printed after "> command".
 The password is never printed or logged.

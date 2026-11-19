@@ -47,7 +47,7 @@ public class DetonatorItem extends Item {
                 TagsUtil.putCustomData(stack, tag);
 
                 level.playSound(null, player.getX(), player.getY(), player.getZ(), NtmSoundEvents.TECH_BOOP.get(), SoundSource.PLAYERS, 1.0F, 1.0F);
-                player.displayClientMessage(Component.literal("[" + this.getName(stack).getString() + "] ").withStyle(ChatFormatting.DARK_AQUA)
+                player.displayClientMessage(Component.literal("[").append(this.getName(stack)).append("] ").withStyle(ChatFormatting.DARK_AQUA)
                         .append(Component.translatable("item.hbmsntm.obj_detonator.pos_set").withStyle(ChatFormatting.GREEN)), false);
 
             }
@@ -62,7 +62,7 @@ public class DetonatorItem extends Item {
 
         if(!level.isClientSide) {
             if(!TagsUtil.hasCustomData(stack)) {
-                player.displayClientMessage(Component.literal("[" + this.getName(stack).getString() + "] ").withStyle(ChatFormatting.DARK_AQUA)
+                player.displayClientMessage(Component.literal("[").append(this.getName(stack)).append("] ").withStyle(ChatFormatting.DARK_AQUA)
                         .append(Component.translatable("item.hbmsntm.obj_detonator.pos_none").withStyle(ChatFormatting.RED)), false);
             } else {
                 CompoundTag tag = TagsUtil.getCustomData(stack);
@@ -81,10 +81,10 @@ public class DetonatorItem extends Item {
                         NuclearTechMod.LOGGER.info("[DETONATOR] {} detonated {} at {} / {} / {}!", player.getName().getString(), block.getName().getString(), x, y, z);
                     }
 
-                    player.displayClientMessage(Component.literal("[" + this.getName(stack).getString() + "] ").withStyle(ChatFormatting.DARK_AQUA)
+                    player.displayClientMessage(Component.literal("[").append(this.getName(stack)).append("] ").withStyle(ChatFormatting.DARK_AQUA)
                             .append(Component.translatable(ret.getUnlocalizedMessage()).withStyle(ret.wasSuccessful() ? ChatFormatting.YELLOW : ChatFormatting.RED)), false);
                 } else {
-                    player.displayClientMessage(Component.literal("[" + this.getName(stack).getString() + "] ").withStyle(ChatFormatting.DARK_AQUA)
+                    player.displayClientMessage(Component.literal("[").append(this.getName(stack)).append("] ").withStyle(ChatFormatting.DARK_AQUA)
                             .append(Component.translatable(BombReturnCode.ERROR_NO_BOMB.getUnlocalizedMessage()).withStyle(ChatFormatting.RED)), false);
                 }
             }

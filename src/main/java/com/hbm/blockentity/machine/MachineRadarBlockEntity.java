@@ -27,15 +27,27 @@ import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.inventory.AbstractContainerMenu;
+import net.minecraft.world.level.ChunkPos;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.chunk.ChunkAccess;
 import net.minecraft.world.level.chunk.status.ChunkStatus;
+import net.minecraft.world.level.dimension.DimensionType;
 import net.minecraft.world.level.levelgen.Heightmap;
+import net.minecraft.world.level.storage.LevelResource;
 import net.minecraft.world.phys.Vec3;
 
+import java.io.BufferedInputStream;
+import java.io.DataInputStream;
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.StandardOpenOption;
 import java.util.ArrayList;
+import java.util.BitSet;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.function.Function;
 
 /**
@@ -121,7 +133,12 @@ public class MachineRadarBlockEntity extends MachineBaseBlockEntity implements I
                 }
             }
 
+            // a new 400-tick sweep rereads the region headers; this only matters for cells the load cap left unscanned (0),
+            // since a cell written 50 for a missing chunk is not probed again until the map is cleared
+            if(!this.showMap || level.getGameTime() % 400 == 0) this.regionHeaders.clear();
+
             if(this.showMap) {
+                boolean mapChanged = false;
                 int chunkLoads = 0;
                 for(int i = 0; i < 100; i++) {
                     int index = (int) (level.getGameTime() % 400) * 100 + i;
@@ -134,35 +151,41 @@ public class MachineRadarBlockEntity extends MachineBaseBlockEntity implements I
                     int z = pos.getZ() - this.getRange() + iZ;
 
                     if(level.hasChunk(x >> 4, z >> 4)) {
-                        this.map[index] = (byte) Mth.clamp(level.getHeight(Heightmap.Types.MOTION_BLOCKING, x, z), 50, 128);
+                        mapChanged |= this.setMapCell(index, (byte) Mth.clamp(level.getHeight(Heightmap.Types.MOTION_BLOCKING, x, z), 50, 128));
                     } else {
                         if(this.map[index] == 0 && chunkLoads < chunkLoadCap) {
                             if(generateChunks) {
                                 level.getChunk(x >> 4, z >> 4);
-                                this.map[index] = (byte) Mth.clamp(level.getHeight(Heightmap.Types.MOTION_BLOCKING, x, z), 50, 128);
+                                mapChanged |= this.setMapCell(index, (byte) Mth.clamp(level.getHeight(Heightmap.Types.MOTION_BLOCKING, x, z), 50, 128));
                                 chunkLoads++;
-                            } else {
-                                // Original WorldUtil.provideChunk: read a chunk that is already saved, never generate one.
-                                // Requesting only EMPTY loads it from disk if present; a missing chunk stays an unsaved empty proto-chunk.
-                                // Like the original (TileEntityMachineRadarNT.java:197-200) the cell is written either way: a missing chunk's
-                                // height is 0, clamped to 50, so it is not requested again until the map is cleared; only an existing chunk counts as a load.
+                            } else if(level instanceof ServerLevel serverLevel && this.isChunkSaved(serverLevel, x >> 4, z >> 4)) {
+                                // Original WorldUtil.provideChunk (WorldUtil.java:129-155): read a chunk that is already saved, never generate one.
+                                // Requesting only EMPTY loads it from disk; every such load counts toward the cap.
                                 ChunkAccess chunk = level.getChunk(x >> 4, z >> 4, ChunkStatus.EMPTY, true);
                                 if(chunk != null && chunk.getPersistedStatus().isOrAfter(ChunkStatus.FULL)) {
-                                    this.map[index] = (byte) Mth.clamp(chunk.getHeight(Heightmap.Types.MOTION_BLOCKING, x & 15, z & 15) + 1, 50, 128);
-                                    chunkLoads++;
+                                    mapChanged |= this.setMapCell(index, (byte) Mth.clamp(chunk.getHeight(Heightmap.Types.MOTION_BLOCKING, x & 15, z & 15) + 1, 50, 128));
                                 } else {
-                                    this.map[index] = 50;
+                                    mapChanged |= this.setMapCell(index, (byte) 50);
                                 }
+                                chunkLoads++;
+                            } else {
+                                // Like the original (TileEntityMachineRadarNT.java:197-200) a chunk missing on disk is not loaded but its cell is
+                                // written: height 0 clamps to 50, so it is not probed again until the map is cleared, and it costs no load.
+                                // getChunk is never called here, since even an EMPTY request creates a proto-chunk and an empty region file.
+                                mapChanged |= this.setMapCell(index, (byte) 50);
                             }
                         }
                     }
                 }
+                // one mark per tick at most: setChanged also sends comparator updates to the neighbours
+                if(mapChanged) this.setChanged();
             }
 
             this.networkPackNT(50);
             if(this.clearFlag) {
                 this.map = new byte[40_000];
                 this.clearFlag = false;
+                this.setChanged();
             }
         } else {
             prevRotation = rotation;
@@ -173,6 +196,53 @@ public class MachineRadarBlockEntity extends MachineBaseBlockEntity implements I
                 prevRotation -= 360F;
             }
         }
+    }
+
+    /** Cached for the current map sweep: region key -> chunks present in that region file, an empty set when there is no readable file. */
+    protected final Map<Long, BitSet> regionHeaders = new HashMap<>();
+
+    protected boolean isChunkSaved(ServerLevel level, int chunkX, int chunkZ) {
+        BitSet saved = this.regionHeaders.computeIfAbsent(ChunkPos.asLong(chunkX >> 5, chunkZ >> 5), key -> readSavedChunks(getRegionFile(level, chunkX, chunkZ)));
+        return saved.get((chunkX & 31) + (chunkZ & 31) * 32);
+    }
+
+    /** The vanilla region file holding the chunk, as RegionFileStorage names it; the file may not exist. */
+    public static Path getRegionFile(ServerLevel level, int chunkX, int chunkZ) {
+        Path rootDir = level.getServer().getWorldPath(LevelResource.ROOT);
+        Path dimDir = DimensionType.getStorageFolder(level.dimension(), rootDir);
+        return dimDir.resolve("region").resolve("r." + (chunkX >> 5) + "." + (chunkZ >> 5) + ".mca");
+    }
+
+    /** Whether the chunk has been saved, read from the region header without going through the chunk storage. */
+    public static boolean isChunkSavedOnDisk(ServerLevel level, int chunkX, int chunkZ) {
+        return readSavedChunks(getRegionFile(level, chunkX, chunkZ)).get((chunkX & 31) + (chunkZ & 31) * 32);
+    }
+
+    /**
+     * Reads the 1024 location entries of a region file's first header sector (RegionFile's layout); a non-zero entry is a saved chunk.
+     * The file is only opened for reading: vanilla's RegionFile opens with CREATE and would leave an empty file for every probed region.
+     * A missing, truncated or unreadable file counts as holding no chunks.
+     */
+    public static BitSet readSavedChunks(Path regionFile) {
+        BitSet saved = new BitSet(1024);
+        try {
+            if(!Files.isRegularFile(regionFile) || Files.size(regionFile) < 8192) return saved;
+            try(DataInputStream in = new DataInputStream(new BufferedInputStream(Files.newInputStream(regionFile, StandardOpenOption.READ), 4096))) {
+                for(int i = 0; i < 1024; i++) {
+                    if(in.readInt() != 0) saved.set(i);
+                }
+            }
+        } catch(IOException ex) {
+            saved.clear();
+        }
+        return saved;
+    }
+
+    /** Writes a map cell and reports whether its value changed, so the caller marks the block entity changed only for a real change. */
+    private boolean setMapCell(int index, byte value) {
+        if(this.map[index] == value) return false;
+        this.map[index] = value;
+        return true;
     }
 
     protected void onRedPowerChanged() {
@@ -377,13 +447,15 @@ public class MachineRadarBlockEntity extends MachineBaseBlockEntity implements I
     @Override
     public void receiveControl(Player player, CompoundTag tag) {
 
-        if(tag.contains("missiles")) this.scanMissiles = !this.scanMissiles;
-        if(tag.contains("shells")) this.scanShells = !this.scanShells;
-        if(tag.contains("players")) this.scanPlayers = !this.scanPlayers;
-        if(tag.contains("smart")) this.smartMode = !this.smartMode;
-        if(tag.contains("red")) this.redMode = !this.redMode;
-        if(tag.contains("map")) this.showMap = !this.showMap;
+        boolean toggled = false;
+        if(tag.contains("missiles")) { this.scanMissiles = !this.scanMissiles; toggled = true; }
+        if(tag.contains("shells")) { this.scanShells = !this.scanShells; toggled = true; }
+        if(tag.contains("players")) { this.scanPlayers = !this.scanPlayers; toggled = true; }
+        if(tag.contains("smart")) { this.smartMode = !this.smartMode; toggled = true; }
+        if(tag.contains("red")) { this.redMode = !this.redMode; toggled = true; }
+        if(tag.contains("map")) { this.showMap = !this.showMap; toggled = true; }
         if(tag.contains("clear")) this.clearFlag = true;
+        if(toggled) this.setChanged();
 
     }
 

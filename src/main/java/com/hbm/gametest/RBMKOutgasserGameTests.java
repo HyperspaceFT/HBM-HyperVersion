@@ -106,7 +106,7 @@ import static com.hbm.gametest.SmokeTestSupport.guard;
  * {@link RBMKControlSteamGameTests} and {@link RBMKRecyclingGameTests}; every test has its own batch.
  * <p>
  * Expected values are derived from the ORIGINAL code cited per test (the efficiency min(1 - ratio * 0.8, 1), the strict progress >
- * duration 10000, the canProcess order with setTankType before the capacity test, the 16 default rows, 4 + nextInt(2) BLANK debris), not
+ * duration 10000, the canProcess order with setTankType before the capacity test, the 17 default rows, 4 + nextInt(2) BLANK debris), not
  * from the NEO implementation: call counts come from a Java double loop of the original formula next to the production call.
  * <p>
  * Real engine evidence: block placement and removal with neighbour updates, the block-entity tickers and the NeutronHandler server-tick
@@ -441,7 +441,7 @@ public class RBMKOutgasserGameTests {
     /** One expected default row: input, solid output (or null) and count, fluid (or null) and amount, with the original line. */
     private record Row(ItemLike input, ItemLike solid, int count, FluidType fluid, int amount, int line) {}
 
-    /** Original OutgasserRecipes.registerDefaults (:35-62) without the mushroom rows (:51-53), through the handoff's item table. */
+    /** Original OutgasserRecipes.registerDefaults (:35-63, d4708ef9c) without the mushroom rows (:51-53), through the handoff's item table. */
     private static List<Row> originalRows() {
         List<Row> rows = new ArrayList<>();
         rows.add(new Row(NtmBlocks.BLOCK_LITHIUM.get(), null, 0, Fluids.TRITIUM, 10_000, 35));
@@ -454,12 +454,13 @@ public class RBMKOutgasserGameTests {
         rows.add(new Row(NtmItems.INGOT_TH232.get(), NtmItems.INGOT_THORIUM_FUEL.get(), 1, null, 0, 46));
         rows.add(new Row(NtmItems.NUGGET_TH232.get(), NtmItems.NUGGET_THORIUM_FUEL.get(), 1, null, 0, 47));
         rows.add(new Row(NtmItems.BILLET_TH232.get(), NtmItems.BILLET_THORIUM_FUEL.get(), 1, null, 0, 48));
-        rows.add(new Row(Items.COAL, NtmItems.OIL_TAR_COAL.get(), 1, Fluids.SYNGAS, 50, 55));
-        rows.add(new Row(NtmItems.POWDER_COAL.get(), NtmItems.OIL_TAR_COAL.get(), 1, Fluids.SYNGAS, 50, 56));
-        rows.add(new Row(Items.COAL_BLOCK, NtmItems.OIL_TAR_COAL.get(), 9, Fluids.SYNGAS, 500, 57));
-        rows.add(new Row(NtmItems.INGOT_PVC.get(), NtmItems.INGOT_C4.get(), 1, Fluids.COLLOID, 250, 59));
-        rows.add(new Row(NtmItems.OIL_TAR_COAL.get(), null, 0, Fluids.COALOIL, 100, 61));
-        rows.add(new Row(NtmItems.OIL_TAR_WAX.get(), null, 0, Fluids.RADIOSOLVENT, 100, 62));
+        rows.add(new Row(Items.POTATO, Items.POISONOUS_POTATO, 1, null, 0, 54));
+        rows.add(new Row(Items.COAL, NtmItems.OIL_TAR_COAL.get(), 1, Fluids.SYNGAS, 50, 56));
+        rows.add(new Row(NtmItems.POWDER_COAL.get(), NtmItems.OIL_TAR_COAL.get(), 1, Fluids.SYNGAS, 50, 57));
+        rows.add(new Row(Items.COAL_BLOCK, NtmItems.OIL_TAR_COAL.get(), 9, Fluids.SYNGAS, 500, 58));
+        rows.add(new Row(NtmItems.INGOT_PVC.get(), NtmItems.INGOT_C4.get(), 1, Fluids.COLLOID, 250, 60));
+        rows.add(new Row(NtmItems.OIL_TAR_COAL.get(), null, 0, Fluids.COALOIL, 100, 62));
+        rows.add(new Row(NtmItems.OIL_TAR_WAX.get(), null, 0, Fluids.RADIOSOLVENT, 100, 63));
         return rows;
     }
 
@@ -479,8 +480,8 @@ public class RBMKOutgasserGameTests {
         }
     }
 
-    // Covers registerDefaults (:35-62, 16 rows without the mushrooms), getOutput (:65-83), the file contract (getFileName :103-106, readRecipe
-    // :113-130, writeRecipe :132-150 with fusionOnly always written) and canProcess's fusionOnly refusal (:92); NEO's lenient per-row file
+    // Covers registerDefaults (:35-63 at d4708ef9c, 17 rows without the mushrooms), getOutput (:67-85), the file contract (getFileName :105-108,
+    // readRecipe :115-132, writeRecipe :134-152 with fusionOnly always written) and canProcess's fusionOnly refusal (:94); NEO's lenient per-row file
     // loading (MACHINE-CHECKLIST.md:18: a bad or duplicate row is skipped, an unusable file makes readRecipeFile return false so initialize
     // falls back to the defaults) and the strict sync snapshot. Files live in a fresh temporary directory; the live table is restored.
     @GameTest(template = TEMPLATE, batch = "rbmk_outgasser_recipe_file", timeoutTicks = 100)
@@ -496,7 +497,7 @@ public class RBMKOutgasserGameTests {
                 List<Row> rows = originalRows();
                 List<OutgasserRecipe> table = OutgasserRecipes.getJeiRecipes();
                 List<OutgasserRecipe> defaults = OutgasserRecipes.getDefaultRecipes();
-                check(defaults.size() == 16 && rows.size() == 16, "the default table has " + defaults.size() + " rows, expected 16 (19 original rows minus the 3 mushroom rows)");
+                check(defaults.size() == 17 && rows.size() == 17, "the default table has " + defaults.size() + " rows, expected 17 (20 original rows minus the 3 mushroom rows)");
                 check(table.size() == defaults.size(), "the loaded table has " + table.size() + " rows, the defaults " + defaults.size() + " (a custom hbmIrradiation.json on the test server?)");
                 for(int i = 0; i < rows.size(); i++) {
                     Row want = rows.get(i);
@@ -542,14 +543,14 @@ public class RBMKOutgasserGameTests {
                 File broken = write(dir[0], "broken.json", "{\"recipes\": [ {\"input\": ");
                 check(!handler.readRecipeFile(broken), "readRecipeFile accepted malformed JSON");
 
-                // Template: fusionOnly on every row (:149), reading it back gives the 16 defaults.
+                // Template: fusionOnly on every row (:151), reading it back gives the 17 defaults.
                 live.clear();
                 handler.registerDefaults();
                 File template = dir[0].resolve("_hbmIrradiation.json").toFile();
                 handler.writeTemplateFile(template);
                 JsonObject root = JsonParser.parseString(io(() -> Files.readString(template.toPath(), StandardCharsets.UTF_8))).getAsJsonObject();
                 JsonArray written = root.getAsJsonArray("recipes");
-                check(root.has("comment") && written.size() == 16, "the template has comment " + root.has("comment") + " and " + written.size() + " rows");
+                check(root.has("comment") && written.size() == 17, "the template has comment " + root.has("comment") + " and " + written.size() + " rows");
                 for(JsonElement row : written) {
                     JsonObject o = row.getAsJsonObject();
                     check(o.has("input") && o.has("fusionOnly") && o.get("fusionOnly").isJsonPrimitive() && !o.get("fusionOnly").getAsBoolean() && (o.has("solidOutput") || o.has("fluidOutput")),
@@ -557,8 +558,8 @@ public class RBMKOutgasserGameTests {
                 }
                 live.clear();
                 check(handler.readRecipeFile(template), "readRecipeFile rejected the template");
-                check(live.size() == 16, "the template read back as " + live.size() + " rows");
-                for(int i = 0; i < 16; i++) check(live.get(i).sameRecipe(defaults.get(i)), "template row " + i + " is " + live.get(i).key() + ", expected " + defaults.get(i).key());
+                check(live.size() == 17, "the template read back as " + live.size() + " rows");
+                for(int i = 0; i < 17; i++) check(live.get(i).sameRecipe(defaults.get(i)), "template row " + i + " is " + live.get(i).key() + ", expected " + defaults.get(i).key());
 
                 // Snapshot (strict).
                 String json = io(OutgasserRecipes::writeSnapshot);
@@ -574,7 +575,7 @@ public class RBMKOutgasserGameTests {
                     LOGGER.info("{} strict snapshot rejected a bad row: {}", TAG, e.getMessage());
                 }
                 check(rejected, "the strict snapshot reader accepted a bad row");
-                LOGGER.info("{} recipe file: 16 default rows, fusionOnly kept and refused, lenient rows, duplicate skipped, malformed -> false, template {} rows, snapshot {} characters", TAG, written.size(), json.length());
+                LOGGER.info("{} recipe file: 17 default rows, fusionOnly kept and refused, lenient rows, duplicate skipped, malformed -> false, template {} rows, snapshot {} characters", TAG, written.size(), json.length());
             }).run();
         } finally {
             live.clear();

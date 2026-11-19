@@ -381,6 +381,12 @@ public class SoyuzLauncherBlockEntity extends MachineBaseBlockEntity implements 
         return true;
     }
 
+    // ORIG TileEntitySoyuzLauncher has no getAccessibleSlotsFromSide: automation reaches no slot.
+    @Override
+    public int[] getSlotsForFace(Direction direction) {
+        return new int[0];
+    }
+
     @Override public long getPower() { return this.power; }
     @Override public void setPower(long power) { this.power = power; }
     @Override public long getMaxPower() { return maxPower; }

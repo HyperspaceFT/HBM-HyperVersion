@@ -9,7 +9,6 @@ import com.google.gson.stream.JsonWriter;
 import com.hbm.main.NuclearTechMod;
 import com.hbm.registry.tags.NtmDamageTypeTags;
 import com.hbm.util.Tuple.Quartet;
-import com.hbm.util.i18n.I18nUtil;
 import net.minecraft.ChatFormatting;
 import net.minecraft.core.Registry;
 import net.minecraft.core.registries.BuiltInRegistries;
@@ -158,21 +157,21 @@ public class DamageResistanceHandler {
 
                 for(Entry<String, Resistance> entry : stats.categoryResistances.entrySet()) {
                     Resistance res = entry.getValue();
-                    toAdd.add(Component.translatable("damage.category." + entry.getKey(), res.threshold, ((int)(res.resistance * 100))).withStyle(ChatFormatting.GRAY));
+                    toAdd.add(Component.translatable("damage.category." + entry.getKey()).append(": " + res.threshold + "/" + ((int)(res.resistance * 100)) + "%").withStyle(ChatFormatting.GRAY));
                 }
 
                 for(Entry<ResourceLocation, Resistance> entry : stats.exactResistances.entrySet()) {
                     Resistance res = entry.getValue();
-                    toAdd.add(Component.translatable("damage.exact." + entry.getKey().toString(), res.threshold, ((int)(res.resistance * 100))).withStyle(ChatFormatting.GRAY));
+                    toAdd.add(Component.translatableWithFallback("damage.exact." + entry.getKey().toString(), entry.getKey().toString()).append(": " + res.threshold + "/" + ((int)(res.resistance * 100)) + "%").withStyle(ChatFormatting.GRAY));
                 }
 
                 if(stats.otherResistance != null) {
                     Resistance res = stats.otherResistance;
-                    toAdd.add(Component.translatable("damage.other", res.threshold, ((int)(res.resistance * 100))).withStyle(ChatFormatting.GRAY));
+                    toAdd.add(Component.translatable("damage.other").append(": " + res.threshold + "/" + ((int)(res.resistance * 100)) + "%").withStyle(ChatFormatting.GRAY));
                 }
 
                 if(!toAdd.isEmpty()) {
-                    components.add(Component.literal(I18nUtil.resolveKey("damage.inset")).withStyle(ChatFormatting.DARK_PURPLE));
+                    components.add(Component.translatable("damage.inset").withStyle(ChatFormatting.DARK_PURPLE));
 
                     //this sucks ass!
                     if(set.getW() != null) components.add(Component.literal("  ").append(new ItemStack(set.getW()).getHoverName()).withStyle(ChatFormatting.DARK_PURPLE));
@@ -195,22 +194,22 @@ public class DamageResistanceHandler {
             for(Entry<String, Resistance> entry : stats.categoryResistances.entrySet()) {
                 String key = "damage.category." + entry.getKey();
                 Resistance res = entry.getValue();
-                toAdd.add(Component.literal(I18nUtil.resolveKey(key) + ": " + res.threshold + "/" + ((int)(res.resistance * 100)) + "%").withStyle(ChatFormatting.GRAY));
+                toAdd.add(Component.translatable(key).append(": " + res.threshold + "/" + ((int)(res.resistance * 100)) + "%").withStyle(ChatFormatting.GRAY));
             }
 
             for(Entry<ResourceLocation, Resistance> entry : stats.exactResistances.entrySet()) {
                 String key = "damage.exact." + entry.getKey().toString();
                 Resistance res = entry.getValue();
-                toAdd.add(Component.literal(I18nUtil.resolveKey(key) + ": " + res.threshold + "/" + ((int)(res.resistance * 100)) + "%").withStyle(ChatFormatting.GRAY));
+                toAdd.add(Component.translatableWithFallback(key, entry.getKey().toString()).append(": " + res.threshold + "/" + ((int)(res.resistance * 100)) + "%").withStyle(ChatFormatting.GRAY));
             }
 
             if(stats.otherResistance != null) {
                 Resistance res = stats.otherResistance;
-                toAdd.add(Component.literal(I18nUtil.resolveKey("damage.other") + ": " + res.threshold + "/" + ((int)(res.resistance * 100)) + "%").withStyle(ChatFormatting.GRAY));
+                toAdd.add(Component.translatable("damage.other").append(": " + res.threshold + "/" + ((int)(res.resistance * 100)) + "%").withStyle(ChatFormatting.GRAY));
             }
 
             if(!toAdd.isEmpty()) {
-                components.add(Component.literal(I18nUtil.resolveKey("damage.item")).withStyle(ChatFormatting.DARK_PURPLE));
+                components.add(Component.translatable("damage.item").withStyle(ChatFormatting.DARK_PURPLE));
                 components.addAll(toAdd);
             }
         }

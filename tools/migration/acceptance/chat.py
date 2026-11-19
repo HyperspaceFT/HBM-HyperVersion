@@ -3,7 +3,7 @@
 
 Run from the NEO root:
   python3 -B -X utf8 tools/migration/acceptance/chat.py --client alice -n 20
-  python3 -B -X utf8 tools/migration/acceptance/chat.py build/migration/accept-goal29/clients/bob/logs/latest.log
+  python3 -B -X utf8 tools/migration/acceptance/chat.py build/migration/accept/clients/bob/logs/latest.log
   python3 -B -X utf8 tools/migration/acceptance/chat.py --client alice --grep joined --since "12:30:00"
 A log path is relative to the NEO root; .gz logs are read too. --server prints the server's lines instead, from the
 Gradle-output log of the open server.py session (or the newest server-*.log), filtered by --grep.
@@ -49,7 +49,7 @@ def chat_lines(lines, since=None, grep=None, chat_only=True):
 def main(argv=None):
     ap = argparse.ArgumentParser(description=__doc__, formatter_class=argparse.RawDescriptionHelpFormatter)
     ap.add_argument('log', nargs='?')
-    ap.add_argument('--client', help='client name under build/migration/accept-goal29/clients/')
+    ap.add_argument('--client', help='client name under build/migration/accept/clients/')
     ap.add_argument('--server', action='store_true', help='the server session log, all lines (use --grep)')
     ap.add_argument('-n', type=int, default=0, help='last N lines only')
     ap.add_argument('--grep')
@@ -67,7 +67,7 @@ def main(argv=None):
             logs = sorted((p for p in (common.STATE / 'logs').glob('server-*.log') if not p.name.endswith('-latest.log')),
                           key=lambda p: p.stat().st_mtime)
             if not logs:
-                ap.error('no server log under build/migration/accept-goal29/logs/')
+                ap.error('no server log under build/migration/accept/logs/')
             path = logs[-1]
     else:
         path = common.resolve(args.log)

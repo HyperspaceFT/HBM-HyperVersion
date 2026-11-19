@@ -142,29 +142,6 @@ public class NtmRecipeProvider extends RecipeProvider {
                 .requires(NtmBlocks.PLANT_FLOWER.get())
                 .unlockedBy("has_plant_flower", has(NtmBlocks.PLANT_FLOWER.get()))
                 .save(recipeOutput);
-        // this 2 below, to delete later
-        ShapedRecipeBuilder.shaped(RecipeCategory.BUILDING_BLOCKS, Blocks.GOLD_BLOCK, 1)
-                .pattern(" B ")
-                .pattern("BGB")
-                .pattern(" B ")
-                .define('B', DataComponentIngredient.of(false, NtmDataComponents.META, BoltItem.Type.DURA_STEEL.meta, NtmItems.BOLT.get()))
-                .define('G', Items.GOLD_INGOT)
-                .unlockedBy("has_bolt", has(NtmItems.BOLT.get()))
-                .save(recipeOutput, ResourceLocation.fromNamespaceAndPath("hbmsntm", "example_gold_block_from_dura_steel_bolts"));
-        ShapedRecipeBuilder.shaped(RecipeCategory.BUILDING_BLOCKS, Blocks.GOLD_BLOCK, 1)
-                .pattern("###")
-                .pattern("###")
-                .pattern("###")
-                .define('#', DataComponentIngredient.of(false, NtmDataComponents.META, CastPlateItem.Type.IRON.ordinal(), NtmItems.CAST_PLATE.get()))
-                .unlockedBy("has_iron_cast_plate", has(NtmItems.CAST_PLATE.get()))
-                .save(recipeOutput, ResourceLocation.fromNamespaceAndPath("hbmsntm", "gold_block_from_iron_cast_plates"));
-        ShapedRecipeBuilder.shaped(RecipeCategory.MISC, NtmItems.CAST_PLATE.get(), 1)
-                .pattern("###")
-                .pattern("###")
-                .pattern("###")
-                .define('#', Items.IRON_INGOT)
-                .unlockedBy("has_iron_ingot", has(Items.IRON_INGOT))
-                .save(recipeOutput, ResourceLocation.fromNamespaceAndPath("hbmsntm", "iron_cast_plate_from_iron_ingots"));
         ShapedRecipeBuilder.shaped(RecipeCategory.MISC, NtmBlocks.FOUNDRY_MOLD.get(), 1)
                 .pattern("B B")
                 .pattern("BSB")
@@ -531,8 +508,8 @@ public class NtmRecipeProvider extends RecipeProvider {
                 .pattern("SIS")
                 .define('S', NtmItems.INGOT_STEEL.get())
                 .define('I', NtmItems.PLATE_IRON.get())
-                .define('C', DataComponentIngredient.of(false, NtmDataComponents.META, CastPlateItem.Type.COPPER.ordinal(), NtmItems.CAST_PLATE.get()))
-                .unlockedBy("has_cast_plate", has(NtmItems.CAST_PLATE.get()))
+                .define('C', DataComponentIngredient.of(false, NtmDataComponents.META, CastPlateItem.Type.COPPER.ordinal(), NtmItems.PLATE_CAST.get()))
+                .unlockedBy("has_plate_cast", has(NtmItems.PLATE_CAST.get()))
                 .save(recipeOutput);
         // Upstream CraftingManager.java:230: beryllium ingots, copper cast plates, a furnace and tungsten coils.
         ShapedRecipeBuilder.shaped(RecipeCategory.MISC, NtmBlocks.MACHINE_ELECTRIC_FURNACE.get(), 1)
@@ -540,10 +517,10 @@ public class NtmRecipeProvider extends RecipeProvider {
                 .pattern("WFW")
                 .pattern("RRR")
                 .define('B', NtmItems.INGOT_BERYLLIUM.get())
-                .define('W', DataComponentIngredient.of(false, NtmDataComponents.META, CastPlateItem.Type.COPPER.ordinal(), NtmItems.CAST_PLATE.get()))
+                .define('W', DataComponentIngredient.of(false, NtmDataComponents.META, CastPlateItem.Type.COPPER.ordinal(), NtmItems.PLATE_CAST.get()))
                 .define('F', Items.FURNACE)
                 .define('R', NtmItems.COIL_TUNGSTEN.get())
-                .unlockedBy("has_cast_plate", has(NtmItems.CAST_PLATE.get()))
+                .unlockedBy("has_plate_cast", has(NtmItems.PLATE_CAST.get()))
                 .save(recipeOutput);
         // Original RodRecipes.java:26: zirconium nuggets around a beryllium ingot make four empty ZIRNOX rods.
         ShapedRecipeBuilder.shaped(RecipeCategory.MISC, NtmItems.ROD_ZIRNOX_EMPTY.get(), 4)
@@ -687,6 +664,15 @@ public class NtmRecipeProvider extends RecipeProvider {
                 .unlockedBy("has_hazmat_cloth_grey", has(NtmItems.HAZMAT_CLOTH_GREY.get()))
                 .save(recipeOutput, ResourceLocation.fromNamespaceAndPath("hbmsntm", "hazmat_helmet_grey"));
         addHazmatSuitRecipes(recipeOutput, NtmItems.HAZMAT_CLOTH_GREY.get(), NtmItems.HAZMAT_PLATE_GREY.get(), NtmItems.HAZMAT_LEGS_GREY.get(), NtmItems.HAZMAT_BOOTS_GREY.get());
+        // Original CraftingManager.java:100: STEEL.bolt() is the steel bolt and IRON.plate() plate_iron.
+        ShapedRecipeBuilder.shaped(RecipeCategory.MISC, NtmItems.castPlate(CastPlateItem.Type.IRON))
+                .pattern("BPB")
+                .pattern("BPB")
+                .pattern("BPB")
+                .define('B', DataComponentIngredient.of(false, NtmDataComponents.META, BoltItem.Type.STEEL.meta, NtmItems.BOLT.get()))
+                .define('P', NtmItems.PLATE_IRON.get())
+                .unlockedBy("has_plate_iron", has(NtmItems.PLATE_IRON.get()))
+                .save(recipeOutput, ResourceLocation.fromNamespaceAndPath("hbmsntm", "plate_cast_iron"));
         // Original CraftingManager.java:101-102: REDSTONE.dust() is vanilla redstone, PB.plate() NEO's plate_lead (no lead plate tag),
         // IRON.plate() plate_iron and ANY_RUBBER.ingot() the ntm:any_rubbers tag.
         ShapedRecipeBuilder.shaped(RecipeCategory.MISC, NtmItems.HAZMAT_CLOTH_RED.get(), 1)
@@ -1301,13 +1287,27 @@ public class NtmRecipeProvider extends RecipeProvider {
                 .unlockedBy("has_rod_zirnox_empty", has(NtmItems.ROD_ZIRNOX_EMPTY.get()))
                 .save(recipeOutput, ResourceLocation.fromNamespaceAndPath("hbmsntm", "rod_zirnox_u233_fuel"));
         // Original RodRecipes.java:37: an empty rod, one MOX fuel billet and one zirconium billet make the ZFB MOX rod; no "life"
-        // data. The LES rod (:35, billet_les has no survival source) and the lithium rod (:36, NEO has no lithium ingot) are deferred.
+        // data.
         ShapelessRecipeBuilder.shapeless(RecipeCategory.MISC, MetaHelper.newStack(NtmItems.ROD_ZIRNOX.get(), 1, ZirnoxType.ZFB_MOX.ordinal()))
                 .requires(NtmItems.ROD_ZIRNOX_EMPTY.get())
                 .requires(NtmItems.BILLET_MOX_FUEL.get())
                 .requires(NtmItems.BILLET_ZIRCONIUM.get())
                 .unlockedBy("has_rod_zirnox_empty", has(NtmItems.ROD_ZIRNOX_EMPTY.get()))
                 .save(recipeOutput, ResourceLocation.fromNamespaceAndPath("hbmsntm", "rod_zirnox_zfb_mox"));
+        // Original RodRecipes.java:35 (addZIRNOXRod(billet_les, LES_FUEL)): an empty rod and two LES billets make the LES rod; no
+        // "life" data. The LES ingot comes from schrabidium, neptunium and beryllium nuggets (MineralRecipes.java:418).
+        ShapelessRecipeBuilder.shapeless(RecipeCategory.MISC, MetaHelper.newStack(NtmItems.ROD_ZIRNOX.get(), 1, ZirnoxType.LES_FUEL.ordinal()))
+                .requires(NtmItems.ROD_ZIRNOX_EMPTY.get())
+                .requires(NtmItems.BILLET_LES.get(), 2)
+                .unlockedBy("has_rod_zirnox_empty", has(NtmItems.ROD_ZIRNOX_EMPTY.get()))
+                .save(recipeOutput, ResourceLocation.fromNamespaceAndPath("hbmsntm", "rod_zirnox_les_fuel"));
+        // Original RodRecipes.java:36: an empty rod and two lithium ingots make the lithium rod (shapeless; the reactor breeds it
+        // into a tritium rod). NEO's lithium ingot is the item "lithium" (smelted from schist lithium ore).
+        ShapelessRecipeBuilder.shapeless(RecipeCategory.MISC, MetaHelper.newStack(NtmItems.ROD_ZIRNOX.get(), 1, ZirnoxType.LITHIUM.ordinal()))
+                .requires(NtmItems.ROD_ZIRNOX_EMPTY.get())
+                .requires(NtmItems.LITHIUM.get(), 2)
+                .unlockedBy("has_rod_zirnox_empty", has(NtmItems.ROD_ZIRNOX_EMPTY.get()))
+                .save(recipeOutput, ResourceLocation.fromNamespaceAndPath("hbmsntm", "rod_zirnox_lithium"));
         // Original RodRecipes.java:30 (addZIRNOXRod(billet_thorium_fuel, THORIUM_FUEL), :250-252): an empty rod and two thorium fuel
         // billets make the thorium fuel rod; no "life" data. The billet has survival sources since Goal 22C; the reactor also still
         // turns a depleted TH232 breeding rod into this rod.
@@ -2106,7 +2106,7 @@ public class NtmRecipeProvider extends RecipeProvider {
                 .pattern("ABA")
                 .pattern("BCB")
                 .pattern("ABA")
-                .define('A', DataComponentIngredient.of(false, NtmDataComponents.META, CastPlateItem.Type.IRON.ordinal(), NtmItems.CAST_PLATE.get()))
+                .define('A', DataComponentIngredient.of(false, NtmDataComponents.META, CastPlateItem.Type.IRON.ordinal(), NtmItems.PLATE_CAST.get()))
                 .define('B', NtmBlocks.BLOCK_BERYLLIUM.get())
                 .define('C', NtmItems.PIPE_DURA_STEEL.get())
                 .unlockedBy("has_crafting_table", has(Items.CRAFTING_TABLE))
@@ -2156,19 +2156,9 @@ public class NtmRecipeProvider extends RecipeProvider {
                 .unlockedBy("has_crafting_table", has(Items.CRAFTING_TABLE))
                 .save(recipeOutput, ResourceLocation.fromNamespaceAndPath("hbmsntm", "50"));
 
-        ShapedRecipeBuilder.shaped(RecipeCategory.MISC, NtmItems.TOOTHPICKS.get(), 3)
-                .pattern("A  ")
-                .pattern("AA ")
-                .pattern("   ")
-                .define('A', Items.STICK)
-                .unlockedBy("has_crafting_table", has(Items.CRAFTING_TABLE))
-                .save(recipeOutput, ResourceLocation.fromNamespaceAndPath("hbmsntm", "51"));
-
-        ShapedRecipeBuilder.shaped(RecipeCategory.MISC, NtmItems.PLANT_ITEM.get(), 1)
-                .pattern("AA ")
-                .pattern("A  ")
-                .pattern("   ")
-                .define('A', Items.STRING)
+        // Original CraftingManager.java:202: shapeless, three string make one rope.
+        ShapelessRecipeBuilder.shapeless(RecipeCategory.MISC, NtmItems.PLANT_ITEM.get(), 1)
+                .requires(Items.STRING, 3)
                 .unlockedBy("has_crafting_table", has(Items.CRAFTING_TABLE))
                 .save(recipeOutput, ResourceLocation.fromNamespaceAndPath("hbmsntm", "52"));
 
@@ -2324,9 +2314,9 @@ public class NtmRecipeProvider extends RecipeProvider {
                 .save(recipeOutput, ResourceLocation.fromNamespaceAndPath("hbmsntm", "steel_grate"));
         ShapedRecipeBuilder.shaped(RecipeCategory.MISC, NtmBlocks.MACHINE_FRACTION_TOWER.get())
                 .pattern("H").pattern("G").pattern("H")
-                .define('H', DataComponentIngredient.of(false, NtmDataComponents.META, CastPlateItem.Type.STEEL.ordinal(), NtmItems.CAST_PLATE_WELDED.get()))
+                .define('H', DataComponentIngredient.of(false, NtmDataComponents.META, CastPlateItem.Type.STEEL.ordinal(), NtmItems.PLATE_WELDED.get()))
                 .define('G', NtmBlocks.STEEL_GRATE.get())
-                .unlockedBy("has_welded_plate", has(NtmItems.CAST_PLATE_WELDED.get()))
+                .unlockedBy("has_welded_plate", has(NtmItems.PLATE_WELDED.get()))
                 .save(recipeOutput, ResourceLocation.fromNamespaceAndPath("hbmsntm", "machine_fraction_tower"));
         ShapedRecipeBuilder.shaped(RecipeCategory.MISC, NtmBlocks.FRACTION_SPACER.get())
                 .pattern("BHB")
@@ -2448,6 +2438,41 @@ public class NtmRecipeProvider extends RecipeProvider {
                 .define('C', NtmItems.INGOT_FERROURANIUM.get())
                 .unlockedBy("has_crafting_table", has(Items.CRAFTING_TABLE))
                 .save(recipeOutput, ResourceLocation.fromNamespaceAndPath("hbmsntm", "72"));
+
+        // Original CraftingManager.java:347-356: every flat stamp also takes nether bricks in place of bricks.
+        ShapedRecipeBuilder.shaped(RecipeCategory.MISC, NtmItems.STAMP_STEEL_FLAT.get())
+                .pattern("BBB")
+                .pattern("III")
+                .define('B', Items.NETHER_BRICK)
+                .define('I', NtmItems.INGOT_STEEL.get())
+                .unlockedBy("has_nether_brick", has(Items.NETHER_BRICK))
+                .save(recipeOutput, ResourceLocation.fromNamespaceAndPath("hbmsntm", "stamp_steel_flat_from_nether_brick"));
+
+        ShapedRecipeBuilder.shaped(RecipeCategory.MISC, NtmItems.STAMP_TITANIUM_FLAT.get())
+                .pattern("BBB")
+                .pattern("III")
+                .define('B', Items.NETHER_BRICK)
+                .define('I', NtmItems.INGOT_TITANIUM.get())
+                .unlockedBy("has_nether_brick", has(Items.NETHER_BRICK))
+                .save(recipeOutput, ResourceLocation.fromNamespaceAndPath("hbmsntm", "stamp_titanium_flat_from_nether_brick"));
+
+        ShapedRecipeBuilder.shaped(RecipeCategory.MISC, NtmItems.STAMP_OBSIDIAN_FLAT.get())
+                .pattern("BBB")
+                .pattern("OOO")
+                .define('B', Items.NETHER_BRICK)
+                .define('O', Items.OBSIDIAN)
+                .unlockedBy("has_nether_brick", has(Items.NETHER_BRICK))
+                .save(recipeOutput, ResourceLocation.fromNamespaceAndPath("hbmsntm", "stamp_obsidian_flat_from_nether_brick"));
+
+        ShapedRecipeBuilder.shaped(RecipeCategory.MISC, NtmItems.STAMP_DESH_FLAT.get())
+                .pattern("BDB")
+                .pattern("DSD")
+                .pattern("BDB")
+                .define('B', Items.NETHER_BRICK)
+                .define('D', NtmItems.INGOT_DESH.get())
+                .define('S', NtmItems.INGOT_FERROURANIUM.get())
+                .unlockedBy("has_nether_brick", has(Items.NETHER_BRICK))
+                .save(recipeOutput, ResourceLocation.fromNamespaceAndPath("hbmsntm", "stamp_desh_flat_from_nether_brick"));
 
         ShapedRecipeBuilder.shaped(RecipeCategory.MISC, NtmItems.PHOTO_PANEL.get(), 1)
                 .pattern(" B ")
@@ -2642,22 +2667,31 @@ public class NtmRecipeProvider extends RecipeProvider {
         addOreSmelting(recipeOutput, NtmBlocks.ORE_GNEISS_COPPER.get(), Items.COPPER_INGOT, 0.7F);
         addOreSmelting(recipeOutput, NtmBlocks.ORE_GNEISS_LITHIUM.get(), NtmItems.LITHIUM.get(), 0.7F);
         addOreSmelting(recipeOutput, NtmBlocks.ORE_GNEISS_SCHRABIDIUM.get(), NtmItems.INGOT_SCHRABIDIUM.get(), 0.7F);
+        // Original SmeltingRecipes.java:43-44: the schrabidium and nether schrabidium ores (original 128.0F and 256.0F)
+        addOreSmelting(recipeOutput, NtmBlocks.ORE_SCHRABIDIUM.get(), NtmItems.INGOT_SCHRABIDIUM.get(), 0.7F);
+        addOreSmelting(recipeOutput, NtmBlocks.ORE_NETHER_SCHRABIDIUM.get(), NtmItems.INGOT_SCHRABIDIUM.get(), 0.7F);
+        // Original SmeltingRecipes.java:48-52: the meteorite ores (original 10.0F); copper gives the vanilla ingot like the schist
+        // copper ore above
+        addOreSmelting(recipeOutput, NtmBlocks.ORE_METEOR_IRON.get(), new ItemStack(Items.IRON_INGOT, 16), 0.7F);
+        addOreSmelting(recipeOutput, NtmBlocks.ORE_METEOR_COPPER.get(), new ItemStack(Items.COPPER_INGOT, 16), 0.7F);
+        addOreSmelting(recipeOutput, NtmBlocks.ORE_METEOR_ALUMINIUM.get(), new ItemStack(NtmItems.CHUNK_CRYOLITE.get(), 16), 0.7F);
+        addOreSmelting(recipeOutput, NtmBlocks.ORE_METEOR_RARE.get(), new ItemStack(NtmItems.RARE_EARTH_ORE_CHUNK.get(), 16), 0.7F);
+        addOreSmelting(recipeOutput, NtmBlocks.ORE_METEOR_COBALT.get(), new ItemStack(NtmItems.INGOT_COBALT.get(), 4), 0.7F);
         addOreSmelting(recipeOutput, NtmBlocks.ORE_TUNGSTEN.get(), NtmBlocks.ORE_TUNGSTEN_DEEPSLATE.get(), NtmItems.INGOT_TUNGSTEN.get(), 0.7F);
         addOreSmelting(recipeOutput, NtmBlocks.ORE_TITANIUM.get(), NtmBlocks.ORE_TITANIUM_DEEPSLATE.get(), NtmItems.INGOT_TITANIUM.get(), 0.7F);
         addOreSmelting(recipeOutput, NtmBlocks.ORE_LEAD.get(), NtmBlocks.ORE_LEAD_DEEPSLATE.get(), NtmItems.INGOT_LEAD.get(), 0.7F);
-        addOreSmelting(recipeOutput, NtmBlocks.ORE_ALUMINIUM.get(), NtmBlocks.ORE_ALUMINIUM_DEEPSLATE.get(), NtmItems.INGOT_ALUMINIUM.get(), 0.7F);
-        addOreSmelting(recipeOutput, NtmBlocks.ORE_ASBESTOS.get(), NtmBlocks.ORE_ASBESTOS_DEEPSLATE.get(), NtmItems.INGOT_ASBESTOS.get(), 0.7F);
+        // Original SmeltingRecipes.java:40: aluminium ore smelts to one cryolite chunk (original 2.5F)
+        addOreSmelting(recipeOutput, NtmBlocks.ORE_ALUMINIUM.get(), NtmBlocks.ORE_ALUMINIUM_DEEPSLATE.get(), NtmItems.CHUNK_CRYOLITE.get(), 0.7F);
         // Original SmeltingRecipes.java:30: thorium ore smelts to the thorium-232 ingot (Goal 20A; it smelted to the thorium fuel ingot
         // before, which the original only makes from TH232 and U233 billets, the outgasser, PUREX or SILEX). The experience stays NEO's 0.7F.
         addOreSmelting(recipeOutput, NtmBlocks.ORE_THORIUM.get(), NtmBlocks.ORE_THORIUM_DEEPSLATE.get(), NtmItems.INGOT_TH232.get(), 0.7F);
-        addOreSmelting(recipeOutput, NtmBlocks.ORE_NITER.get(), NtmBlocks.ORE_NITER_DEEPSLATE.get(), NtmItems.NITER.get(), 0.7F);
-        addOreSmelting(recipeOutput, NtmBlocks.ORE_COBALT.get(), NtmBlocks.ORE_COBALT_DEEPSLATE.get(), NtmItems.FRAGMENT_COBALT.get(), 0.7F);
-        addOreSmelting(recipeOutput, NtmBlocks.ORE_CINNABAR.get(), NtmBlocks.ORE_CINNABAR_DEEPSLATE.get(), NtmItems.CINNABAR.get(), 0.7F);
-        addOreSmelting(recipeOutput, NtmBlocks.ORE_FLUORITE.get(), NtmBlocks.ORE_FLUORITE_DEEPSLATE.get(), NtmItems.FLUORITE.get(), 0.7F);
-        addOreSmelting(recipeOutput, NtmBlocks.ORE_RARE.get(), NtmBlocks.ORE_RARE_DEEPSLATE.get(), NtmItems.RARE_EARTH_ORE_CHUNK.get(), 0.7F);
-        addOreSmelting(recipeOutput, NtmBlocks.ORE_SULFUR.get(), NtmBlocks.ORE_SULFUR_DEEPSLATE.get(), NtmItems.SULFUR.get(), 0.7F);
-        addOreSmelting(recipeOutput, NtmBlocks.ORE_LIGNITE.get(), NtmItems.LIGNITE.get(), 0.1F);
+        // Original SmeltingRecipes.java:45: cobalt ore smelts to the cobalt ingot (original 2.0F)
+        addOreSmelting(recipeOutput, NtmBlocks.ORE_COBALT.get(), NtmBlocks.ORE_COBALT_DEEPSLATE.get(), NtmItems.INGOT_COBALT.get(), 0.7F);
         addOreSmelting(recipeOutput, NtmBlocks.GRAVEL_DIAMOND.get(), Items.DIAMOND, 0.1F);
+        // Original SmeltingRecipes.java:65-67: briquettes smelt to coke and charcoal (original 1.0F)
+        addItemSmelting(recipeOutput, NtmItems.BRIQUETTE_COAL.get(), NtmItems.COKE_COAL.get());
+        addItemSmelting(recipeOutput, NtmItems.BRIQUETTE_LIGNITE.get(), NtmItems.COKE_LIGNITE.get());
+        addItemSmelting(recipeOutput, NtmItems.BRIQUETTE_WOOD.get(), Items.CHARCOAL);
 
         addNuggetCrafting(recipeOutput, NtmItems.INGOT_URANIUM.get(), NtmItems.NUGGET_URANIUM.get());
         addNuggetCrafting(recipeOutput, NtmItems.INGOT_U233.get(), NtmItems.NUGGET_U233.get());
@@ -3040,13 +3074,26 @@ public class NtmRecipeProvider extends RecipeProvider {
     }
 
     private void addOreSmelting(RecipeOutput recipeOutput, Block input, Item result, float experience) {
+        addOreSmelting(recipeOutput, input, new ItemStack(result), experience);
+    }
+
+    private void addOreSmelting(RecipeOutput recipeOutput, Block input, ItemStack result, float experience) {
         String inputName = BuiltInRegistries.BLOCK.getKey(input).getPath();
-        String resultName = BuiltInRegistries.ITEM.getKey(result).getPath();
+        String resultName = BuiltInRegistries.ITEM.getKey(result.getItem()).getPath();
         ResourceLocation recipeId = ResourceLocation.fromNamespaceAndPath("hbmsntm", resultName + "_from_smelting_" + inputName);
 
         SimpleCookingRecipeBuilder.smelting(Ingredient.of(input), RecipeCategory.MISC, result, experience, 200)
                 .unlockedBy("has_" + inputName, has(input))
                 .save(recipeOutput, recipeId);
+    }
+
+    private void addItemSmelting(RecipeOutput recipeOutput, Item input, Item result) {
+        String inputName = BuiltInRegistries.ITEM.getKey(input).getPath();
+        String resultName = BuiltInRegistries.ITEM.getKey(result).getPath();
+
+        SimpleCookingRecipeBuilder.smelting(Ingredient.of(input), RecipeCategory.MISC, result, 0.7F, 200)
+                .unlockedBy("has_" + inputName, has(input))
+                .save(recipeOutput, ResourceLocation.fromNamespaceAndPath("hbmsntm", resultName + "_from_smelting_" + inputName));
     }
 
     private void addPickaxeRecipe(RecipeOutput recipeOutput, Item result, Item ingredient, String baseName) {
@@ -3224,7 +3271,6 @@ public class NtmRecipeProvider extends RecipeProvider {
         addBilletRecipe(recipeOutput, NtmItems.BILLET_U233.get(), NtmItems.NUGGET_U233.get(), NtmItems.INGOT_U233.get());
         addBilletRecipe(recipeOutput, NtmItems.BILLET_U235.get(), NtmItems.NUGGET_U235.get(), NtmItems.INGOT_U235.get());
         addBilletRecipe(recipeOutput, NtmItems.BILLET_U238.get(), NtmItems.NUGGET_U238.get(), NtmItems.INGOT_U238.get());
-        addBilletRecipe(recipeOutput, NtmItems.BILLET_UNOBTAINIUM.get(), NtmItems.NUGGET_UNOBTAINIUM.get(), NtmItems.INGOT_UNOBTAINIUM.get());
         addBilletRecipe(recipeOutput, NtmItems.BILLET_URANIUM.get(), NtmItems.NUGGET_URANIUM.get(), NtmItems.INGOT_URANIUM.get());
         addBilletRecipe(recipeOutput, NtmItems.BILLET_URANIUM_FUEL.get(), NtmItems.NUGGET_URANIUM_FUEL.get(), NtmItems.INGOT_URANIUM_FUEL.get());
         addBilletRecipe(recipeOutput, NtmItems.BILLET_ZIRCONIUM.get(), NtmItems.NUGGET_ZIRCONIUM.get(), NtmItems.INGOT_ZIRCONIUM.get());
@@ -3327,6 +3373,54 @@ public class NtmRecipeProvider extends RecipeProvider {
                 .requires(NtmItems.NUGGET_PU240.get(), 2)
                 .unlockedBy("has_nugget_pu240", has(NtmItems.NUGGET_PU240.get()))
                 .save(recipeOutput, ResourceLocation.fromNamespaceAndPath("hbmsntm", "billet_pu_mix_from_nuggets"));
+        // :174: two uranium-238 billets and one neptunium-237 billet make three neptunium fuel billets.
+        ShapelessRecipeBuilder.shapeless(RecipeCategory.MISC, NtmItems.BILLET_NEPTUNIUM_FUEL.get(), 3)
+                .requires(NtmItems.BILLET_U238.get(), 2)
+                .requires(NtmItems.BILLET_NEPTUNIUM.get())
+                .unlockedBy("has_billet_neptunium", has(NtmItems.BILLET_NEPTUNIUM.get()))
+                .save(recipeOutput, ResourceLocation.fromNamespaceAndPath("hbmsntm", "billet_neptunium_fuel_from_billets"));
+        // :175: two neptunium-237 nuggets and four uranium-238 nuggets make one neptunium fuel billet (:176 is the same with the
+        // "tiny" ore names, which are the same nuggets).
+        ShapelessRecipeBuilder.shapeless(RecipeCategory.MISC, NtmItems.BILLET_NEPTUNIUM_FUEL.get(), 1)
+                .requires(NtmItems.NUGGET_NEPTUNIUM.get(), 2)
+                .requires(NtmItems.NUGGET_U238.get(), 4)
+                .unlockedBy("has_nugget_neptunium", has(NtmItems.NUGGET_NEPTUNIUM.get()))
+                .save(recipeOutput, ResourceLocation.fromNamespaceAndPath("hbmsntm", "billet_neptunium_fuel_from_nuggets"));
+        // :179: one schrabidium, one neptunium-237 and one beryllium billet make three schrabidium fuel billets.
+        ShapelessRecipeBuilder.shapeless(RecipeCategory.MISC, NtmItems.BILLET_SCHRABIDIUM_FUEL.get(), 3)
+                .requires(NtmItems.BILLET_SCHRABIDIUM.get())
+                .requires(NtmItems.BILLET_NEPTUNIUM.get())
+                .requires(NtmItems.BILLET_BERYLLIUM.get())
+                .unlockedBy("has_billet_schrabidium", has(NtmItems.BILLET_SCHRABIDIUM.get()))
+                .save(recipeOutput, ResourceLocation.fromNamespaceAndPath("hbmsntm", "billet_schrabidium_fuel_from_billets"));
+        // :180: two schrabidium, two neptunium-237 and two beryllium nuggets make one schrabidium fuel billet (:181 is the same
+        // with the "tiny" ore name).
+        ShapelessRecipeBuilder.shapeless(RecipeCategory.MISC, NtmItems.BILLET_SCHRABIDIUM_FUEL.get(), 1)
+                .requires(NtmItems.NUGGET_SCHRABIDIUM.get(), 2)
+                .requires(NtmItems.NUGGET_NEPTUNIUM.get(), 2)
+                .requires(NtmItems.NUGGET_BERYLLIUM.get(), 2)
+                .unlockedBy("has_nugget_schrabidium", has(NtmItems.NUGGET_SCHRABIDIUM.get()))
+                .save(recipeOutput, ResourceLocation.fromNamespaceAndPath("hbmsntm", "billet_schrabidium_fuel_from_nuggets"));
+        // :416-418: nine nuggets each make one schrabidium fuel ingot (3 schrabidium, 3 neptunium-237, 3 beryllium), one HES ingot
+        // (5, 2, 2) and one LES ingot (1, 4, 4).
+        ShapelessRecipeBuilder.shapeless(RecipeCategory.MISC, NtmItems.INGOT_SCHRABIDIUM_FUEL.get(), 1)
+                .requires(NtmItems.NUGGET_SCHRABIDIUM.get(), 3)
+                .requires(NtmItems.NUGGET_NEPTUNIUM.get(), 3)
+                .requires(NtmItems.NUGGET_BERYLLIUM.get(), 3)
+                .unlockedBy("has_nugget_schrabidium", has(NtmItems.NUGGET_SCHRABIDIUM.get()))
+                .save(recipeOutput, ResourceLocation.fromNamespaceAndPath("hbmsntm", "ingot_schrabidium_fuel_from_nuggets"));
+        ShapelessRecipeBuilder.shapeless(RecipeCategory.MISC, NtmItems.INGOT_HES.get(), 1)
+                .requires(NtmItems.NUGGET_SCHRABIDIUM.get(), 5)
+                .requires(NtmItems.NUGGET_NEPTUNIUM.get(), 2)
+                .requires(NtmItems.NUGGET_BERYLLIUM.get(), 2)
+                .unlockedBy("has_nugget_schrabidium", has(NtmItems.NUGGET_SCHRABIDIUM.get()))
+                .save(recipeOutput, ResourceLocation.fromNamespaceAndPath("hbmsntm", "ingot_hes_from_nuggets"));
+        ShapelessRecipeBuilder.shapeless(RecipeCategory.MISC, NtmItems.INGOT_LES.get(), 1)
+                .requires(NtmItems.NUGGET_SCHRABIDIUM.get())
+                .requires(NtmItems.NUGGET_NEPTUNIUM.get(), 4)
+                .requires(NtmItems.NUGGET_BERYLLIUM.get(), 4)
+                .unlockedBy("has_nugget_schrabidium", has(NtmItems.NUGGET_SCHRABIDIUM.get()))
+                .save(recipeOutput, ResourceLocation.fromNamespaceAndPath("hbmsntm", "ingot_les_from_nuggets"));
         // :177: two uranium fuel billets and one plutonium-239 billet make three MOX fuel billets.
         ShapelessRecipeBuilder.shapeless(RecipeCategory.MISC, NtmItems.BILLET_MOX_FUEL.get(), 3)
                 .requires(NtmItems.BILLET_URANIUM_FUEL.get(), 2)
@@ -3370,7 +3464,6 @@ public class NtmRecipeProvider extends RecipeProvider {
         addMaterialSmelting(recipeOutput, NtmItems.POWDER_COBALT.get(), NtmItems.INGOT_COBALT.get());
         addMaterialSmelting(recipeOutput, NtmItems.POWDER_COMBINE_STEEL.get(), NtmItems.INGOT_COMBINE_STEEL.get());
         addMaterialSmelting(recipeOutput, NtmItems.POWDER_COPPER.get(), NtmItems.INGOT_COPPER.get());
-        addMaterialSmelting(recipeOutput, NtmItems.POWDER_DAFFERGON.get(), NtmItems.INGOT_DAFFERGON.get());
         addMaterialSmelting(recipeOutput, NtmItems.POWDER_DESH.get(), NtmItems.INGOT_DESH.get());
         addMaterialSmelting(recipeOutput, NtmItems.POWDER_DINEUTRONIUM.get(), NtmItems.INGOT_DINEUTRONIUM.get());
         addMaterialSmelting(recipeOutput, NtmItems.POWDER_DURA_STEEL.get(), NtmItems.INGOT_DURA_STEEL.get());
@@ -3392,7 +3485,6 @@ public class NtmRecipeProvider extends RecipeProvider {
         addMaterialSmelting(recipeOutput, NtmItems.POWDER_POLYMER.get(), NtmItems.INGOT_POLYMER.get());
         addMaterialSmelting(recipeOutput, NtmItems.POWDER_RA226.get(), NtmItems.INGOT_RA226.get());
         addMaterialSmelting(recipeOutput, NtmItems.POWDER_RED_COPPER.get(), NtmItems.INGOT_RED_COPPER.get());
-        addMaterialSmelting(recipeOutput, NtmItems.POWDER_REIIUM.get(), NtmItems.INGOT_REIIUM.get());
         addMaterialSmelting(recipeOutput, NtmItems.POWDER_SCHRABIDATE.get(), NtmItems.INGOT_SCHRABIDATE.get());
         addMaterialSmelting(recipeOutput, NtmItems.POWDER_SCHRABIDIUM.get(), NtmItems.INGOT_SCHRABIDIUM.get());
         addMaterialSmelting(recipeOutput, NtmItems.POWDER_SR90.get(), NtmItems.INGOT_SR90.get());
@@ -3405,10 +3497,7 @@ public class NtmRecipeProvider extends RecipeProvider {
         addMaterialSmelting(recipeOutput, NtmItems.POWDER_THORIUM.get(), NtmItems.INGOT_TH232.get());
         addMaterialSmelting(recipeOutput, NtmItems.POWDER_TITANIUM.get(), NtmItems.INGOT_TITANIUM.get());
         addMaterialSmelting(recipeOutput, NtmItems.POWDER_TUNGSTEN.get(), NtmItems.INGOT_TUNGSTEN.get());
-        addMaterialSmelting(recipeOutput, NtmItems.POWDER_UNOBTAINIUM.get(), NtmItems.INGOT_UNOBTAINIUM.get());
         addMaterialSmelting(recipeOutput, NtmItems.POWDER_URANIUM.get(), NtmItems.INGOT_URANIUM.get());
-        addMaterialSmelting(recipeOutput, NtmItems.POWDER_VERTICIUM.get(), NtmItems.INGOT_VERTICIUM.get());
-        addMaterialSmelting(recipeOutput, NtmItems.POWDER_WEIDANIUM.get(), NtmItems.INGOT_WEIDANIUM.get());
         addMaterialSmelting(recipeOutput, NtmItems.POWDER_ZIRCONIUM.get(), NtmItems.INGOT_ZIRCONIUM.get());
     }
 

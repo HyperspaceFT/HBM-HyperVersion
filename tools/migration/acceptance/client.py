@@ -9,17 +9,17 @@ Run from the NEO root:
   python3 -B -X utf8 tools/migration/acceptance/client.py start solo --world MyWorld --lang zh_cn
   python3 -B -X utf8 tools/migration/acceptance/client.py stop alice
   python3 -B -X utf8 tools/migration/acceptance/client.py status | clean alice
-  python3 -B -X utf8 tools/migration/acceptance/client.py start g31e_solo --argv build/migration/accept-goal29/client-argv-g31e.json \
+  python3 -B -X utf8 tools/migration/acceptance/client.py start solo --argv build/migration/accept/client-argv.json \
       --jvm-prop hbm.accept.dir=/abs/dir --size 854x480
 
 capture  starts `tools/migration/build.sh --offline runClient` once, reads the client JVM's full command line with
          `ps -ww -o args=` (java, -Dfml.modFolders, @build/moddev/clientRunVmArgs.txt, -cp <classpath>,
          net.neoforged.devlaunch.Main, @build/moddev/clientRunProgramArgs.txt), saves it to
-         build/migration/accept-goal29/client-cmdline.txt (and the split argv to client-argv.json), then ends that
+         build/migration/accept/client-cmdline.txt (and the split argv to client-argv.json), then ends that
          client with TERM. It writes run/options.txt and run/logs like any runClient,
          so it refuses to run unless server.py has a session open (whose stop restores run/).
 start    launches java with the captured argv directly, the program-argument file swapped for
-         clients/<name>/program-args.txt: a copy with --gameDir build/migration/accept-goal29/clients/<name> (own
+         clients/<name>/program-args.txt: a copy with --gameDir build/migration/accept/clients/<name> (own
          logs/latest.log, options.txt, saves; also the working directory), --username <name>, and
          --quickPlayMultiplayer host:port or --quickPlaySingleplayer <world> (client Main.java:66-69); without
          either it stops at the title screen. --jvm-prop KEY=VALUE adds -DKEY=VALUE (repeatable), --size WxH the
@@ -28,7 +28,7 @@ start    launches java with the captured argv directly, the program-argument fil
          preset with pauseOnLostFocus:false and onboardAccessibility:false (without the latter the first start sits on
          the accessibility screen) plus --lang/--option values. --xmx caps the heap (default 2G, two clients and a server
          share 16 GB).
---argv   (capture and start) the captured-command-line file, default build/migration/accept-goal29/client-argv.json; a
+--argv   (capture and start) the captured-command-line file, default build/migration/accept/client-argv.json; a
          second capture under another name leaves the first one (and edits made to it) untouched. The plain-text copy
          is written next to it with the extension .txt.
 stop     kicks the player over RCON when a server session exists (the client drops back to a menu), then TERMs the JVM
@@ -338,7 +338,7 @@ def main(argv=None):
     p.add_argument('--timeout', type=int, default=900)
     p.add_argument('--wait-title', action='store_true', help='wait for the client to finish loading before TERM')
     p.add_argument('--without-session', action='store_true', help='allow capture without a server session (run/ is not restored)')
-    p.add_argument('--argv', help='captured-command-line file (default build/migration/accept-goal29/client-argv.json)')
+    p.add_argument('--argv', help='captured-command-line file (default build/migration/accept/client-argv.json)')
     p.set_defaults(func=cmd_capture)
     p = sub.add_parser('start')
     p.add_argument('name')
@@ -351,7 +351,7 @@ def main(argv=None):
     p.add_argument('--xmx', default='2G')
     p.add_argument('--wait-join', action='store_true')
     p.add_argument('--timeout', type=int, default=600)
-    p.add_argument('--argv', help='captured-command-line file (default build/migration/accept-goal29/client-argv.json)')
+    p.add_argument('--argv', help='captured-command-line file (default build/migration/accept/client-argv.json)')
     p.add_argument('--jvm-prop', action='append', default=[], help='KEY=VALUE passed as -DKEY=VALUE; repeatable')
     p.add_argument('--size', help='window size WIDTHxHEIGHT')
     p.set_defaults(func=cmd_start)

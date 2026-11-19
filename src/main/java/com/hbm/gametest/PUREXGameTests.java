@@ -264,6 +264,10 @@ public class PUREXGameTests {
 
     /** Fills the input tanks with twice the recipe amount, runs one cycle with no upgrades and checks every output slot, the input, the fluids and the energy. */
     private static void runRow(GameTestHelper helper, int index, String test) {
+        SmokeTestSupport.whenTicking(helper, test, () -> runRowBody(helper, index, test));
+    }
+
+    private static void runRowBody(GameTestHelper helper, int index, String test) {
         Row row = rows().get(index);
         MachinePUREXBlockEntity be = place(helper, Direction.NORTH);
         long start = row.power() * row.duration() + 1_000_000L;
@@ -605,6 +609,10 @@ public class PUREXGameTests {
 
     @GameTest(template = TEMPLATE, timeoutTicks = 300)
     public static void purex_blocked_outputs(GameTestHelper helper) {
+        SmokeTestSupport.whenTicking(helper, "purex_blocked_outputs", () -> purexBlockedOutputs(helper));
+    }
+
+    private static void purexBlockedOutputs(GameTestHelper helper) {
         Row row = rows().get(0);
         MachinePUREXBlockEntity be = place(helper, Direction.NORTH);
         be.setPower(1_000_000L);
@@ -856,6 +864,10 @@ public class PUREXGameTests {
 
     @GameTest(template = TEMPLATE, timeoutTicks = 300)
     public static void purex_persistence(GameTestHelper helper) {
+        SmokeTestSupport.whenTicking(helper, "purex_persistence", () -> purexPersistence(helper));
+    }
+
+    private static void purexPersistence(GameTestHelper helper) {
         Row row = rows().get(0);
         MachinePUREXBlockEntity be = place(helper, Direction.NORTH);
         be.setPower(3_000_000_000L);

@@ -59,7 +59,8 @@ public class MachinePressScreen extends InfoScreen<MachinePressMenu> {
             guiGraphics.blit(TEXTURE, this.leftPos + 26, this.topPos + 36, 0, 214, 14, 14);
         }
 
-        int k = (int) (be.renderPress * 16 / be.maxPress);
+        // The return stroke may end below 0 (original TileEntityMachinePress.java:90); the bar draws nothing there
+        int k = Math.max(0, (int) (be.renderPress * 16 / be.maxPress));
         guiGraphics.blit(TEXTURE, this.leftPos + 79, this.topPos + 35, 15, 214, 18, k);
 
         float i = (float) be.speed / (float) be.maxSpeed;

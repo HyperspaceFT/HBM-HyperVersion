@@ -1,0 +1,503 @@
+# Scenario file -> run directory for the Goal 32 master list (GOAL32G-ACCEPTANCE.md).
+#
+# One [[run]] per scenario file. The generator reads results.json (and judgments.json when the
+# run has one) from build/migration/acceptance-runs/<run>/ or build/migration/goal32t/scenarios/<run>/
+# (or the explicit `dir`), takes the scenario whose ref equals `scenario`, and writes one row per
+# expectation. To rebuild after a lane reruns a file, change `run` here (or pass
+# --map <scenario>=<run> on the command line) and clear `pending`.
+#
+# Fields:
+#   scenario  scenario ref (path under tools/migration/acceptance/scenarios without .py)
+#   run       run name whose result is the batch result
+#   history   earlier runs of the same file; a different verdict there is shown as "此前"
+#   source    出处 column
+#   lane      one of the five lanes
+#   group     统一验收的运行组
+#   pending   lane name of this batch that is still changing the file (rows marked 待重跑)
+#   only      restrict to these expectation ids (Goal 31 files that Goal 32 touched only in part)
+#   filled_by lane of this batch whose final run this is (report.md "本批各道填入的行")
+#   note      appended to the result of every row of the file
+
+# --- 32E stages 1-6 and the default-terrain smoke -------------------------------------------
+[[run]]
+scenario = "materials/mainline_stage1"
+run = "g32acc-s1"
+history = ["g32t-s1", "g32e-final-s1", "g32s-s1c"]
+source = "32E 阶段 1"
+lane = "脚本（单人）"
+group = "单人·阶段 1"
+filled_by = "统一验收主运行"
+
+[[run]]
+scenario = "blast-furnace/mainline_stage2"
+run = "g32acc-s2"
+history = ["g32s-s2b", "g32e-final3-s2"]
+source = "32E 阶段 2"
+lane = "脚本（单人）"
+group = "单人·阶段 2"
+filled_by = "统一验收主运行"
+
+[[run]]
+scenario = "wood-burner/mainline_stage3"
+run = "g32acc-s3"
+history = ["g32e-final3-s3"]
+source = "32E 阶段 3"
+lane = "脚本（单人）"
+group = "单人·阶段 3"
+filled_by = "统一验收主运行"
+
+[[run]]
+scenario = "basic-assembly/mainline_stage4"
+run = "g32acc-g51-s4"
+history = ["g32s-s4", "g32e-final3-s4"]
+source = "32E 阶段 4；统一验收开场重跑（G-51）"
+lane = "脚本（单人）"
+group = "只在批次里跑（阶段 4，用户 2026-11-17）"
+filled_by = "统一验收开场"
+note = "G-51：g32s-s4 早于小修之八、32T 与 32U，统一验收开场重跑一次（用户 2026-11-19 定“做”），只更新批次证据、不改道"
+
+[[run]]
+scenario = "oil-extraction/mainline_stage5"
+run = "g32acc-s5b"
+history = ["g32acc-s5", "g32g-s5", "g32e-final3-s5"]
+source = "32E 阶段 5"
+lane = "脚本（单人）"
+group = "单人·阶段 5"
+filled_by = "统一验收主运行"
+note = "g32acc-s5 里 13 条重开比对行未执行：世界里落了两颗陨石（坑在约 (10,-49,10) 与 (-8,-51,26)，是会话当时读区域文件所见，输出没有保存，世界已删，无法复核），炼油厂的木材燃烧炉 (11,-45,6) 被砸掉，重开前读它失败（第 1281 步“目标方块不是方块实体”）。陨石是默认开着的随机事件（NEO 的 meteorStrikeChance 默认 40000，CommonConfig.java:311-312，不是原版的默认值，见缺口账 G-55（a）；那次世界走到第 44,249 刻），不是游戏缺陷；验收的世界没有关陨石，记作后续。g32acc-s5b 重跑 38 条全部通过"
+
+[[run]]
+scenario = "power-transmission/mainline_stage6"
+run = "g32acc-s6"
+history = ["g32g-s6", "g32e-final3-s6"]
+source = "32E 阶段 6"
+lane = "脚本（单人）"
+group = "单人·阶段 6"
+filled_by = "统一验收主运行"
+
+[[run]]
+scenario = "world-generation/default_terrain_smoke"
+run = "g32u-smoke3"
+history = ["g32u-smoke2", "g32u-smoke", "g32g-smoke", "g32t-smoke", "g32e-final-smoke", "g32s-smoke3"]
+source = "32E 冒烟；32U 第五节（加了沙地油泡的截图，G-43）"
+lane = "脚本（单人）"
+group = "只在批次里跑（预算，用户 2026-11-18；G-49）"
+filled_by = "32U-solo"
+note = "g32u-smoke 第一次 world-generation.opening-tools 不通过：掉落的工作台停在离站立格 1.5 格、不是空气的格子里，collect() 只走空气格，后面的开场行未执行；掉落速度的偶发，不是游戏缺陷（g32u solo-report.md）；g32u-smoke2、g32u-smoke3 同一种子同一地形全部通过"
+
+# --- 32F stages 7-11 ------------------------------------------------------------------------
+[[run]]
+scenario = "gas-centrifuge/mainline_stage7"
+run = "g32acc-s7"
+history = ["g32g-s7", "g32f-s7-5"]
+source = "32F 阶段 7"
+lane = "脚本（单人）"
+group = "单人·阶段 7"
+filled_by = "统一验收主运行"
+
+[[run]]
+scenario = "zirnox-reactor/mainline_stage8"
+run = "g32acc-s8"
+history = ["g32g-s8", "g32f-s8-5"]
+source = "32F 阶段 8"
+lane = "脚本（单人）"
+group = "单人·阶段 8"
+filled_by = "统一验收主运行"
+
+[[run]]
+scenario = "rbmk-reactor/mainline_stage9"
+run = "g32acc-s9"
+history = ["g32g-s9", "g32f-s9-7"]
+source = "32F 阶段 9"
+lane = "脚本（单人）"
+group = "单人·阶段 9"
+filled_by = "统一验收主运行"
+
+[[run]]
+scenario = "spent-fuel/mainline_stage10"
+run = "g32acc-s10"
+history = ["g32g-s10", "g32f-s10-7"]
+source = "32F 阶段 10"
+lane = "脚本（单人）"
+group = "单人·阶段 10"
+filled_by = "统一验收主运行"
+
+[[run]]
+scenario = "hazard-system/mainline_stage11"
+run = "g32acc-s11"
+history = ["g32g-s11b", "g32t-s11-1", "g32f-s11-7"]
+source = "32F 阶段 11"
+lane = "脚本（单人）"
+group = "单人·阶段 11"
+filled_by = "统一验收主运行"
+
+# --- 32F dedicated-server group (32T reruns where they exist) --------------------------------
+[[run]]
+scenario = "zirnox-reactor/mp_meltdown"
+run = "g32acc-mp-zmelt"
+history = ["g32u-zmelt", "g32g-mpfix-zmelt", "g32t-mp-zmelt", "g32f-mpn-35"]
+source = "32F 专服组；32U 重跑"
+lane = "脚本（专服）"
+group = "专服·ZIRNOX 熔毁世界"
+filled_by = "统一验收主运行"
+
+[[run]]
+scenario = "zirnox-reactor/mp_debris"
+run = "g32acc-g51-zdeb"
+history = ["g32t-mp-zdeb", "g32f-mpn-36"]
+source = "32F 专服组；统一验收开场重跑（G-51）"
+lane = "脚本（专服）"
+group = "只在批次里跑（预算，用户 2026-11-18；G-49）"
+filled_by = "统一验收开场"
+note = "G-51：g32t-mp-zdeb 早于 32U，统一验收开场重跑一次（用户 2026-11-19 定“做”），只更新批次证据、不改道"
+
+[[run]]
+scenario = "zirnox-reactor/mp_contamination"
+run = "g32u-zcont"
+history = ["g32t-mp-zcont", "g32f-mpn-37"]
+source = "32F 专服组；32U 重跑"
+lane = "脚本（专服）"
+group = "只在批次里跑（预算，用户 2026-11-18；G-49）"
+filled_by = "32U-mp"
+note = "与 mp_meltdown 不能同一个世界（它用同一处场地、不放氟石矿），分两次会话跑，同 32G 的分组"
+
+[[run]]
+scenario = "rbmk-reactor/mp_meltdown"
+run = "g32acc-g51-rmelt3"
+history = ["g32acc-g51-rmelt2", "g32acc-g51-rmelt", "g32t-mp-rmelt", "g32f-mpn-38"]
+source = "32F 专服组；统一验收开场重跑（G-51）"
+lane = "脚本（专服）"
+group = "只在批次里跑（预算，用户 2026-11-18；G-49）"
+filled_by = "统一验收开场"
+note = "G-51：统一验收开场重跑两次（g32acc-g51-rmelt、g32acc-g51-rmelt2），两次都在第 59 步停下、5 条未执行：view 超时 “player at the target”，场景把 A 的眼睛放在最近碎片东边 2 格（mp_meltdown.py:270），没有检查那里是否空着，实际停在 x 64.25、目标 63.17（两次里离堆心最近的碎片都落在残骸顶上（y -56.0），东边 2 格的站位卡进了装置自己的残骸（pribris），客户端把玩家向东推出约 1.08 格，view 步超时；32T 通过的那次最近的碎片在 6.6 格外的地面上；32U 与小修没有动相关代码）。是场景自己的错，已有场景不在统一验收的授权内，没有改；当时批次证据仍是早于 32U 的 g32t-mp-rmelt。之后场景改了 rbmk-reactor/mp_meltdown.py 选碎片与站位的一处（原第 264–270 行，现第 264–281 行）：只在落在地面上的碎片里取离堆心最近的，眼睛放在它背向堆心一侧 2 格，view 前经 RCON 确认身体的两格是空气，地面上没有合适的碎片就报错停下；期望、判定条件与其他步骤没有动，重跑 g32acc-g51-rmelt3（2026-11-19，用户经规划会话定“都照推荐办”；在 32U 之后、陨石频率与两个界面标题三处生产小修之前，代码与被验 JAR 相同）：通过 4（mp-meltdown-sync、mp-debris-pickup、mp-wreck-radiation、mp-meltdown-restart），mp-overpressure-observe 未执行（过压开关默认关，与 g32t 同形，另由 mp_overpressure 覆盖）；场景 98.8 s，整次 146 s，改引这次运行"
+
+[[run]]
+scenario = "rbmk-reactor/mp_meltdown_chunk"
+run = "g32acc-mp-chunk"
+history = ["g32g-mpfix-chunk", "g32t-mp-rchunk-3", "g32t-mp-rchunk-2", "g32t-mp-rchunk", "g32f-mpn-39"]
+source = "32F 专服组"
+lane = "脚本（专服）"
+group = "专服·RBMK 区块辐射世界"
+filled_by = "统一验收主运行"
+
+[[run]]
+scenario = "rbmk-crane/mp_players"
+run = "g32acc-mp-core"
+history = ["g32u-console-crane", "g32g-mpfix-group2", "g32g-mpfix-group", "g32f-mpn-40"]
+source = "32F 专服组；32U 重跑"
+lane = "脚本（专服）"
+group = "专服·核能共用会话"
+filled_by = "统一验收主运行"
+note = "统一验收主运行的会话次序：吊车、自动装料机、RTG、PUREX、控制台，同一次会话（g32acc-mp-core）；32U 是先控制台、后吊车（g32u-console-crane）"
+
+[[run]]
+scenario = "rbmk-autoloader/mp_autoloader"
+run = "g32acc-mp-core"
+history = ["g32f-mpn-40"]
+source = "32F 专服组"
+lane = "脚本（专服）"
+group = "专服·核能共用会话"
+filled_by = "统一验收主运行"
+
+[[run]]
+scenario = "rtg-power/mp_rtg"
+run = "g32acc-mp-core"
+history = ["g32g-mpfix-group", "g32t-mp-rtgpurex", "g32f-mpn-40"]
+source = "32F 专服组"
+lane = "脚本（专服）"
+group = "专服·核能共用会话"
+filled_by = "统一验收主运行"
+
+[[run]]
+scenario = "purex-reprocessing/mp_purex"
+run = "g32acc-mp-core"
+history = ["g32g-mpfix-group2", "g32g-mpfix-group", "g32t-mp-rtgpurex", "g32f-mpn-40"]
+source = "32F 专服组"
+lane = "脚本（专服）"
+group = "专服·核能共用会话"
+filled_by = "统一验收主运行"
+
+[[run]]
+scenario = "rbmk-console/mp_console"
+run = "g32acc-mp-core"
+history = ["g32u-console-crane", "g32g-mpfix-group", "g32t-mp-console", "g32f-mpn-41"]
+source = "32F 专服组；32U 重跑"
+lane = "脚本（专服）"
+group = "专服·核能共用会话"
+filled_by = "统一验收主运行"
+
+[[run]]
+scenario = "radio-torch/mp_selfdestruct"
+run = "g32t-mp-torch"
+history = ["g32f-mpm-7"]
+source = "32F 专服组"
+lane = "脚本（专服）"
+group = "只在批次里跑（预算，用户 2026-11-18；G-49）"
+
+[[run]]
+scenario = "radar/mp_first_scan"
+run = "g32acc-mp-radar"
+history = ["g32g-mpfix-radar", "g32t-mp-radar", "g32f-mpm-7"]
+source = "32F 专服组"
+lane = "脚本（专服）"
+group = "专服·其他共用会话"
+filled_by = "统一验收主运行"
+
+[[run]]
+scenario = "goal30-fixes/mp_item_nbt_string"
+run = "g32f-mpm-7"
+source = "32F 专服组（G-22）"
+lane = "脚本（专服）"
+group = "只在批次里跑（预算，用户 2026-11-18；G-49）"
+
+[[run]]
+scenario = "machine-item-capability/mp_automation"
+run = "g32f-mpm-5"
+source = "32F 专服组"
+lane = "脚本（专服）"
+group = "只在批次里跑（预算，用户 2026-11-18；G-49）"
+
+[[run]]
+scenario = "power-control/mp_sounds"
+run = "g32f-mpm-5"
+source = "32F 专服组（G-38）；两人清单见 migration/goal32u-two-person.md"
+lane = "用户站点"
+group = "专服人工站点（两人清单，用户约 10 分钟，未实测）"
+
+# --- Goal 31 files of features changed in this Goal (GOAL32 budget table) --------------------
+[[run]]
+scenario = "crane-filter-upgrades/filters"
+run = "g32acc-g31"
+history = ["g32t-filters", "g32c-base-solo3"]
+source = "Goal 31 场景（预算表：过滤）"
+lane = "脚本（单人）"
+group = "单人·Goal 31 三个文件"
+filled_by = "统一验收主运行"
+
+[[run]]
+scenario = "machine-item-capability/automation"
+run = "g32acc-g31"
+history = ["g32c-base-solo2"]
+source = "Goal 31 场景（预算表：自动化）"
+lane = "脚本（单人）"
+group = "单人·Goal 31 三个文件"
+filled_by = "统一验收主运行"
+
+[[run]]
+scenario = "settings-tool/paste"
+run = "g32acc-g31"
+history = ["g32c-base-solo2"]
+source = "Goal 31 场景（预算表：设定工具粘贴）"
+lane = "脚本（单人）"
+group = "单人·Goal 31 三个文件"
+filled_by = "统一验收主运行"
+
+# Goal 31 files changed by this Goal only in the named expectations (G-24: not rerun in full).
+[[run]]
+scenario = "conveyor-cranes/survival"
+run = "g32g-survival2"
+history = ["g32t-survival", "g32c-base-solo2"]
+source = "32T 第四、五节（Goal 31 文件）"
+lane = "脚本（单人）"
+group = "只在批次里跑（G-24）"
+only = ["conveyor-cranes.bare-hand-belt"]
+
+[[run]]
+scenario = "conveyor-cranes/sorter_splitter_partitioner"
+run = "g32g-sorter2"
+history = ["g32t-sorter", "g32c-base-solo3"]
+source = "32T 第四节（Goal 31 文件）"
+lane = "脚本（单人）"
+group = "只在批次里跑（G-24）"
+only = ["conveyor-cranes.splitter-break"]
+
+# --- Language two-layer scan ------------------------------------------------------------------
+[[run]]
+scenario = "localization-zh-cn/items"
+run = "g32acc-lang-zh"
+history = ["g32d-lang1"]
+source = "32C、32D 候选（语言第一层）"
+lane = "脚本（单人）"
+group = "单人·语言扫描（中文、英文各一遍）"
+filled_by = "统一验收主运行"
+
+[[run]]
+scenario = "localization-zh-cn/screens"
+run = "g32acc-lang-zh"
+history = ["g32d-lang1"]
+source = "32C、32D 候选（语言第二层）"
+lane = "脚本（单人）"
+group = "单人·语言扫描（中文、英文各一遍）"
+filled_by = "统一验收主运行"
+note = "英文一遍在 g32acc-lang-en（drive.py --scenario-lang en_us），结果记在补充文件 P5（S0.4）"
+
+# --- 32C tool checks (batch only) -------------------------------------------------------------
+[[run]]
+scenario = "acceptance-executor/sprint_pilot"
+run = "g32c-pilot3"
+source = "32C 候选（冲刺试点；专服另有 g32c-pilot-mp）"
+lane = "脚本（单人）"
+group = "只在批次里跑（工具检查，32C）"
+
+[[run]]
+scenario = "acceptance-executor/world_settings"
+run = "g32e-probe"
+source = "32C 候选（建世界选项）"
+lane = "脚本（单人）"
+group = "只在批次里跑（工具检查；冒烟用同一选项）"
+
+# --- 32G stability lane (section 一) ------------------------------------------------------------
+[[run]]
+scenario = "power-transmission/mp_stability_unload"
+run = "g32acc-mp-stab"
+history = ["g32u-stab-unload", "g32g-matrix2", "g32g-matrix1"]
+source = "32G 第一节 稳定性矩阵（走开到区块卸载再回来）；32U 第一节（区块辐射改正、加辐射源一行）"
+lane = "脚本（专服）"
+group = "专服·稳定性短版"
+filled_by = "统一验收主运行"
+
+[[run]]
+scenario = "power-transmission/mp_stability_restart"
+run = "g32u-stab-restart-b3"
+history = ["g32u-stab-restart-b2", "g32u-stab-restart-b1", "g32u-stab-restart6", "g32u-stab-restart5", "g32u-stab-restart4", "g32u-stab-restart3", "g32u-stab-restart2", "g32u-stab-restart1", "g32g-restart4", "g32g-matrix2", "g32g-restart3", "g32g-matrix1"]
+source = "32G 第一节 稳定性矩阵（停服重启）；32U 第一节（区块辐射改正、加辐射源一行、停服重启两次）；32U 补充（停服后、开服前读区域文件，存下的值按衰减下限判）"
+lane = "脚本（专服）"
+group = "只在批次里跑（预算，用户 2026-11-18；G-49）"
+filled_by = "32U-mp"
+note = "g32u-stab-restart-b1、b2、b3 是停服后、开服前读区域文件之后连续三次全部通过（12/12）：T 与钋块存下的值每次都在衰减下限之上，下限都大于 0（T 320–586，钋块 3.2–10.4）；此前的 g32u-stab-restart1 至 6 在重启之后读区域文件，读到的是重启后的服务端重写的值，存盘两行只判大于 0"
+
+[[run]]
+scenario = "rbmk-reactor/mp_overpressure"
+run = "g32g-overpressure4"
+source = "32G 第一节（RBMK 过压时对未加载位置取方块实体；G-39）"
+lane = "脚本（专服）"
+group = "只在批次里跑（观察项；G-39，要临时改 dialEnableMeltdownOverpressure，每次要用户单独同意）"
+
+[[run]]
+scenario = "network-architecture/longrun"
+run = "g32g-longrun"
+source = "32G 第一节 长时间运行（tools/migration/acceptance/longrun.py）"
+lane = "脚本（专服）"
+group = "只在批次里跑（G-25：长时间运行只在本批跑，不进统一验收）"
+
+# --- 32G stations lane: radio torch (section 三) -------------------------------------------------
+[[run]]
+scenario = "radio-torch/sneak_use"
+run = "g32acc-radio"
+history = ["g32g-radio"]
+source = "GOAL29C-ACCEPTANCE.md:140、GOAL29B-ACCEPTANCE.md:24-28；32G 第三节"
+lane = "脚本（单人）"
+group = "单人·无线电火把"
+filled_by = "统一验收主运行"
+
+# --- 32U 第五节：原占位行（station.xxx）改成脚本行 ------------------------------------------------
+[[run]]
+scenario = "recipe-completion/jei_pages"
+run = "g32acc-u8"
+history = ["g32u-solo2"]
+source = "32U 第五节（原占位行 station.jei-centrifuge-gravel、station.jei-fuel-recipes、station.jei-laminate-cycle、station.jei-outgasser-potato、station.jei-centrifuge-sellafield、station.jei-burn-times）"
+lane = "脚本（单人）"
+group = "单人·32U 补的脚本行"
+filled_by = "统一验收主运行"
+
+[[run]]
+scenario = "press/press_bar"
+run = "g32acc-u8"
+history = ["g32u-solo2"]
+source = "32U 第五节（原占位行 station.press-progress-bar）"
+lane = "脚本（单人）"
+group = "单人·32U 补的脚本行"
+filled_by = "统一验收主运行"
+
+[[run]]
+scenario = "materials/outgas_visible"
+run = "g32acc-u8"
+history = ["g32u-outgas2"]
+source = "32U 第五节（原占位行 station.ore-outgas-visible，截图由代理审阅）"
+lane = "脚本（单人）"
+group = "单人·32U 补的脚本行"
+filled_by = "统一验收主运行"
+
+[[run]]
+scenario = "materials/survival_hand"
+run = "g32acc-u8"
+history = ["g32u-solo3"]
+source = "32U 第五节（原占位行 station.steel-block-hand、station.belt-cable-hand、station.explosion-info-tooltip、station.anvil-batch-shift）"
+lane = "脚本（单人）"
+group = "单人·32U 补的脚本行"
+filled_by = "统一验收主运行"
+
+[[run]]
+scenario = "settings-tool/adventure_tool"
+run = "g32acc-u8"
+history = ["g32u-solo3"]
+source = "32U 第五节（原占位行 station.settings-tool-adventure）"
+lane = "脚本（单人）"
+group = "单人·32U 补的脚本行"
+filled_by = "统一验收主运行"
+
+[[run]]
+scenario = "conveyor-cranes/screwdriver_wear"
+run = "g32acc-u8"
+history = ["g32u-solo2"]
+source = "32U 第五节（原占位行 station.screwdriver-durability）"
+lane = "脚本（单人）"
+group = "单人·32U 补的脚本行"
+filled_by = "统一验收主运行"
+
+[[run]]
+scenario = "localization-zh-cn/zh_messages"
+run = "g32acc-u8"
+history = ["g32u-solo2"]
+source = "32U 第五节（原占位行 station.zh-literal-messages）"
+lane = "脚本（单人）"
+group = "单人·32U 补的脚本行"
+filled_by = "统一验收主运行"
+
+[[run]]
+scenario = "localization-zh-cn/death_message"
+run = "g32acc-u8"
+history = ["g32u-solo3"]
+source = "32U 第五节（原占位行 station.weapon-death-message）"
+lane = "脚本（单人）"
+group = "单人·32U 补的脚本行"
+filled_by = "统一验收主运行"
+
+# --- 统一验收补充项 P1–P4（migration/GOAL32-ACCEPTANCE-SUPPLEMENT.md） ------------------------------------
+[[run]]
+scenario = "hazard-system/display_effects"
+run = "g32acc-supp2"
+history = ["g32acc-supp"]
+source = "统一验收补充项 P1（32U 的放辐射方块显示效果）"
+lane = "脚本（单人）"
+group = "单人·统一验收补充项 P1–P4"
+filled_by = "统一验收主运行"
+
+[[run]]
+scenario = "hazard-system/player_placed"
+run = "g32acc-supp2"
+history = ["g32acc-supp"]
+source = "统一验收补充项 P2（32U 交付记录第七节候选 2 至 4）"
+lane = "脚本（单人）"
+group = "单人·统一验收补充项 P1–P4"
+filled_by = "统一验收主运行"
+note = "g32acc-supp 里黄饼块两行不通过、未执行：同一世界里先跑的 display_effects 在相邻区块（x 2792–2796）放过钋块与 Pu-238 块，拆掉后区块辐射留着（放之前读 10.1），本场景要求放之前区块是干净的；是新场景自己的错，display_effects 移到 x 1208 起之后 g32acc-supp2 通过，期望没有改"
+
+[[run]]
+scenario = "materials/outgas_harvest"
+run = "g32acc-supp2"
+history = ["g32acc-supp"]
+source = "统一验收补充项 P3（小修之六、之八、之十一；缺口账 G-50）"
+lane = "脚本（单人）"
+group = "单人·统一验收补充项 P1–P4"
+filled_by = "统一验收主运行"
+note = "g32acc-supp 里 materials.silk-touch-no-gas 不通过：对照（普通铁镐挖铀矿）读到的氡气也没有。挖开时一定放气（OutgasBlock.java:91-93），但读在挖开约 10 刻之后，氡气每 2 刻更新一次、每次 1/50 消失（GasRadonBlock.java:54-57、GasBaseBlock.java:84-86），对照会偶尔落空；是新场景自己的错，挖与读期间冻结游戏刻之后 g32acc-supp2 通过，期望没有改"
+
+[[run]]
+scenario = "hazard-system/meltdown_gas_radon"
+run = "g32acc-supp2"
+history = ["g32acc-supp"]
+source = "统一验收补充项 P4（32U 改了熔毁气体放致密氡的位置）"
+lane = "脚本（单人）"
+group = "单人·统一验收补充项 P1–P4"
+filled_by = "统一验收主运行"

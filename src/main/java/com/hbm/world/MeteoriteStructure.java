@@ -262,7 +262,9 @@ public class MeteoriteStructure {
             return;
         }
 
-        if (oldState.getDestroySpeed(level, pos) < 10000.0F) {
+        // Original world/feature/Meteorite.java:704-705: unbreakable blocks (hardness -1) and blocks of hardness 10000 or more are kept
+        float hardness = oldState.getDestroySpeed(level, pos);
+        if (hardness != -1.0F && hardness < 10000.0F) {
             level.setBlock(pos, newState, 18);
         }
     }

@@ -742,8 +742,9 @@ public class Goal31AGameTests {
 
     // ---------------------------------------------------------------- 5. blocks: strength, shape, no item, mining
 
-    // ModBlocks.java:1908-1913 hardness and resistance 2, no creative tab; BlockConveyorBase.java:146-154 the belt is a quarter block high;
-    // GOAL31A.md "输送带方块": the belts take the pickaxe tag without needing the right tool and have no block item
+    // ModBlocks.java:1909-1914 setHardness(2.0F) then setResistance(2.0F) (1.7.10 effective resistance 2 * 3 / 5 = 1.2), no creative tab;
+    // BlockConveyorBase.java:34 Material.iron: drops only for a pickaxe of any tier; BlockConveyorBase.java:146-154 the belt is a quarter block high;
+    // GOAL31A.md "输送带方块": no block item
     @GameTest(template = TEMPLATE, batch = "hbm31a_belt_properties", timeoutTicks = 100)
     public static void belt_properties(GameTestHelper helper) {
         guard(() -> {
@@ -753,10 +754,10 @@ public class Goal31AGameTests {
             for(Block block : all) {
                 String name = BuiltInRegistries.BLOCK.getKey(block).toString();
                 BlockState state = block.defaultBlockState();
-                check(state.getDestroySpeed(level, probe) == 2.0F, name + " has hardness " + state.getDestroySpeed(level, probe) + ", expected 2 (ModBlocks.java:1908-1913)");
-                check(block.getExplosionResistance() == 2.0F, name + " has resistance " + block.getExplosionResistance() + ", expected 2 (ModBlocks.java:1908-1913)");
+                check(state.getDestroySpeed(level, probe) == 2.0F, name + " has hardness " + state.getDestroySpeed(level, probe) + ", expected 2 (ModBlocks.java:1909-1914)");
+                check(block.getExplosionResistance() == 1.2F, name + " has resistance " + block.getExplosionResistance() + ", expected 2 * 3 / 5 = 1.2 (ModBlocks.java:1909-1914)");
                 check(block.asItem() == Items.AIR, name + " has a block item " + block.asItem());
-                check(state.is(BlockTags.MINEABLE_WITH_PICKAXE) && !state.requiresCorrectToolForDrops(), name + " is not mined by the pickaxe without needing the tool");
+                check(state.is(BlockTags.MINEABLE_WITH_PICKAXE) && state.requiresCorrectToolForDrops(), name + " is not a pickaxe block that needs the tool for drops");
                 check(!state.isAir() && state.getBlock() instanceof ConveyorBaseBlock, name + " is not a conveyor base block");
             }
             for(ConveyorType type : ConveyorType.values()) {
@@ -2072,31 +2073,33 @@ public class Goal31AGameTests {
         helper.succeed();
     }
 
-    // :313-319: not crouching, not creative, or no wand in the main hand: only the one belt breaks (and in survival its wand drops)
+    // :313-319: not crouching, not creative, or no wand in the main hand: only the one belt breaks. BlockConveyorBase.java:34 Material.iron drops only
+    // for a pickaxe: the survival breaks with the wand in hand drop nothing, a survival break with a wooden pickaxe drops the belt's wand
     @GameTest(template = TEMPLATE, batch = "hbm31a_wand_single_break", timeoutTicks = 200)
     public static void wand_single_break(GameTestHelper helper) {
         guard(() -> {
             List<BlockPos> path = serpentine(helper);
             ServerLevel level = helper.getLevel();
-            int[] cases = { 0, 1, 2, 3 };
-            String[] what = { "creative, not crouching, wand in hand", "creative, crouching, empty hand", "survival, crouching, wand in hand", "survival, not crouching, wand in hand" };
+            int[] cases = { 0, 1, 2, 3, 4 };
+            String[] what = { "creative, not crouching, wand in hand", "creative, crouching, empty hand", "survival, crouching, wand in hand", "survival, not crouching, wand in hand",
+                    "survival, not crouching, wooden pickaxe" };
             int broken = 0;
             for(int c : cases) {
                 boolean creative = c < 2;
                 boolean crouch = c == 1 || c == 2;
-                boolean holdsWand = c != 1;
+                boolean holdsWand = c != 1 && c != 4;
                 WandPlayer player = player(helper, creative ? GameType.CREATIVE : GameType.SURVIVAL, 0F);
                 player.setShiftKeyDown(crouch);
-                player.setItemInHand(InteractionHand.MAIN_HAND, holdsWand ? wand(ConveyorType.REGULAR, 1) : ItemStack.EMPTY);
-                int index = 10 + 20 * c;
+                player.setItemInHand(InteractionHand.MAIN_HAND, holdsWand ? wand(ConveyorType.REGULAR, 1) : c == 4 ? new ItemStack(Items.WOODEN_PICKAXE) : ItemStack.EMPTY);
+                int index = c == 4 ? 80 : 10 + 20 * c;
                 check(player.gameMode.destroyBlock(helper.absolutePos(path.get(index))), what[c] + ": destroyBlock returned false");
                 broken++;
                 check(standing(helper, path) == path.size() - broken, what[c] + ": " + (path.size() - standing(helper, path)) + " belts are gone, expected " + broken + " (ItemConveyorWand.java:314,319)");
                 check(!(helper.getBlockState(path.get(index)).getBlock() instanceof ConveyorBaseBlock), what[c] + ": the clicked belt stands");
             }
-            // the two survival breaks dropped one wand each, the creative ones nothing
+            // only the survival break with the pickaxe dropped: one regular wand; the creative breaks never drop, the wand is no pickaxe
             List<ItemEntity> drops = itemEntitiesIn(helper);
-            check(drops.size() == 2, drops.size() + " items dropped, expected 2 (one per survival break)");
+            check(drops.size() == 1, drops.size() + " items dropped, expected 1 (the survival break with the wooden pickaxe)");
             for(ItemEntity d : drops) check(d.getItem().is(NtmItems.CONVEYOR_WAND.get()) && MetaHelper.getMeta(d.getItem()) == 0 && d.getItem().getCount() == 1, "a drop is " + d.getItem());
             check(level == helper.getLevel(), "level");
         }).run();

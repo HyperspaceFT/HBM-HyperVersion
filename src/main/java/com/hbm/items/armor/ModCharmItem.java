@@ -19,15 +19,15 @@ public class ModCharmItem extends ItemArmorMod {
 
     @Override
     public void appendHoverText(ItemStack stack, TooltipContext context, List<Component> components, TooltipFlag tooltipFlag) {
-        components.add(Component.literal("You feel blessed.").withStyle(ChatFormatting.AQUA));
+        components.add(Component.translatable("item.hbmsntm.obj_mod_charm.blessed").withStyle(ChatFormatting.AQUA));
 
         if (this.meteorCharm) {
-            components.add(Component.literal("Disables meteorite spawning.").withStyle(ChatFormatting.AQUA));
-            components.add(Component.literal("Negates broadcaster damage").withStyle(ChatFormatting.AQUA));
+            components.add(Component.translatable("item.hbmsntm.meteor_charm.desc1").withStyle(ChatFormatting.AQUA));
+            components.add(Component.translatable("item.hbmsntm.meteor_charm.desc2").withStyle(ChatFormatting.AQUA));
         } else {
-            components.add(Component.literal("Diverts meteors away from the player.").withStyle(ChatFormatting.AQUA));
-            components.add(Component.literal("Meteors no longer destroy blocks.").withStyle(ChatFormatting.AQUA));
-            components.add(Component.literal("Halves broadcaster damage").withStyle(ChatFormatting.AQUA));
+            components.add(Component.translatable("item.hbmsntm.protection_charm.desc1").withStyle(ChatFormatting.AQUA));
+            components.add(Component.translatable("item.hbmsntm.protection_charm.desc2").withStyle(ChatFormatting.AQUA));
+            components.add(Component.translatable("item.hbmsntm.protection_charm.desc3").withStyle(ChatFormatting.AQUA));
         }
 
         components.add(Component.empty());

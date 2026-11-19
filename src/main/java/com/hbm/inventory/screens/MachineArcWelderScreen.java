@@ -73,7 +73,7 @@ public class MachineArcWelderScreen extends InfoScreen<MachineArcWelderMenu> {
         }
 
         if(levels.isEmpty()) {
-            lines.add(Component.literal("No upgrades installed"));
+            lines.add(Component.translatable("upgrade.gui.none"));
             return lines;
         }
 

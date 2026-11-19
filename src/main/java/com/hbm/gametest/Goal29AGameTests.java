@@ -83,8 +83,7 @@ import static com.hbm.gametest.SmokeTestSupport.guard;
  * RecipeManager with real CraftingInputs; the damage type registry and the bypasses_armor tag as the server loaded them; iron golems standing in
  * for the pill's eater, each wearing real diamond armor; the two JEI interpreters called directly. Substitutes: a mob instead of a mock player
  * for the armor checks, since mock players never tick and so never apply armor attributes; resources are read from the mod's classpath.
- * Recorded, not changed in 29A: the NEO fuel values of coke_lignite, coke_petroleum and the three briquettes differ from the original
- * (FuelHandler.java:38,49-51), and ModuleBurnTime puts charcoal, powder_ash_coal, crystal_coal and coal_infernal into COAL where the original has no
+ * Recorded, not changed in 29A: ModuleBurnTime puts charcoal, powder_ash_coal, crystal_coal and coal_infernal into COAL where the original has no
  * such ore name for them (ModuleBurnTime.java:116-124, OreDictManager.java:335,892), in the blast furnace and in the firebox; the tests assert NEO's
  * current values for these rows and say so.
  * Not evidence: a real client (models and textures actually rendering, JEI's own runtime and its use of the interpreters, tooltips), a dedicated
@@ -153,15 +152,12 @@ public class Goal29AGameTests {
             // coal_eternal. Recorded here so the log shows which rows were left out.
             LOGGER.info("{} global_fuel_table: FuelHandler.java:22-26,30,32,39,40,42,47 have no NEO item and are not asserted", TAG);
 
-            // Recorded-only differences (not changed in 29A): the original has one coke item at 3200 (FuelHandler.java:38) and briquettes at
-            // 2000 / 1600 / 400 for metas 0-2 (:49-51).
-            check(new ItemStack(NtmItems.COKE_LIGNITE.get()).getBurnTime(null) == 2400, "coke_lignite burns " + new ItemStack(NtmItems.COKE_LIGNITE.get()).getBurnTime(null) + ", NEO's recorded value is 2400");
-            check(new ItemStack(NtmItems.COKE_PETROLEUM.get()).getBurnTime(null) == 6400, "coke_petroleum burns " + new ItemStack(NtmItems.COKE_PETROLEUM.get()).getBurnTime(null) + ", NEO's recorded value is 6400");
-            check(new ItemStack(NtmItems.BRIQUETTE_COAL.get()).getBurnTime(null) == 2400, "briquette_coal burns " + new ItemStack(NtmItems.BRIQUETTE_COAL.get()).getBurnTime(null) + ", NEO's recorded value is 2400");
-            check(new ItemStack(NtmItems.BRIQUETTE_LIGNITE.get()).getBurnTime(null) == 1800, "briquette_lignite burns " + new ItemStack(NtmItems.BRIQUETTE_LIGNITE.get()).getBurnTime(null) + ", NEO's recorded value is 1800");
-            check(new ItemStack(NtmItems.BRIQUETTE_WOOD.get()).getBurnTime(null) == 1600, "briquette_wood burns " + new ItemStack(NtmItems.BRIQUETTE_WOOD.get()).getBurnTime(null) + ", NEO's recorded value is 1600");
-            LOGGER.info("{} global_fuel_table: recorded, not changed in 29A: coke_lignite 2400 and coke_petroleum 6400 (original coke 3200, FuelHandler.java:38); "
-                    + "briquette_coal 2400, briquette_lignite 1800, briquette_wood 1600 (original 2000 / 1600 / 400, FuelHandler.java:49-51)", TAG);
+            // The original has one coke item at 3200 (FuelHandler.java:38) and briquettes at 2000 / 1600 / 400 for metas 0-2 (:49-51).
+            check(new ItemStack(NtmItems.COKE_LIGNITE.get()).getBurnTime(null) == 3200, "coke_lignite burns " + new ItemStack(NtmItems.COKE_LIGNITE.get()).getBurnTime(null) + ", expected 3200 (FuelHandler.java:38 single * 16)");
+            check(new ItemStack(NtmItems.COKE_PETROLEUM.get()).getBurnTime(null) == 3200, "coke_petroleum burns " + new ItemStack(NtmItems.COKE_PETROLEUM.get()).getBurnTime(null) + ", expected 3200 (FuelHandler.java:38 single * 16)");
+            check(new ItemStack(NtmItems.BRIQUETTE_COAL.get()).getBurnTime(null) == 2000, "briquette_coal burns " + new ItemStack(NtmItems.BRIQUETTE_COAL.get()).getBurnTime(null) + ", expected 2000 (FuelHandler.java:49 single * 10)");
+            check(new ItemStack(NtmItems.BRIQUETTE_LIGNITE.get()).getBurnTime(null) == 1600, "briquette_lignite burns " + new ItemStack(NtmItems.BRIQUETTE_LIGNITE.get()).getBurnTime(null) + ", expected 1600 (FuelHandler.java:50 single * 8)");
+            check(new ItemStack(NtmItems.BRIQUETTE_WOOD.get()).getBurnTime(null) == 400, "briquette_wood burns " + new ItemStack(NtmItems.BRIQUETTE_WOOD.get()).getBurnTime(null) + ", expected 400 (FuelHandler.java:51 single * 2)");
         }).run();
         passed("global_fuel_table").run();
         helper.succeed();
@@ -189,8 +185,8 @@ public class Goal29AGameTests {
                 new Burn("solid_fuel", new ItemStack(NtmItems.SOLID_FUEL.get()), 3200, "path solid_fuel -> SOLID, burn 3200"),
                 new Burn("rocket_fuel", new ItemStack(NtmItems.ROCKET_FUEL.get()), 6400, "path rocket_fuel -> ROCKET, burn 6400"),
                 new Burn("coke_coal", new ItemStack(NtmItems.COKE_COAL.get()), 3200, "path coke_coal -> COKE, burn 3200"),
-                new Burn("coke_lignite", new ItemStack(NtmItems.COKE_LIGNITE.get()), 2400, "path coke_lignite -> COKE (coke is tested before lignite), burn 2400"),
-                new Burn("coke_petroleum", new ItemStack(NtmItems.COKE_PETROLEUM.get()), 6400, "path coke_petroleum -> COKE, burn 6400"),
+                new Burn("coke_lignite", new ItemStack(NtmItems.COKE_LIGNITE.get()), 3200, "path coke_lignite -> COKE (coke is tested before lignite), burn 3200"),
+                new Burn("coke_petroleum", new ItemStack(NtmItems.COKE_PETROLEUM.get()), 3200, "path coke_petroleum -> COKE, burn 3200"),
                 new Burn("minecraft:oak_log", new ItemStack(Items.OAK_LOG), 300, "#minecraft:logs -> LOG (heat stays 1.0), vanilla 300"),
                 new Burn("minecraft:oak_planks", new ItemStack(Items.OAK_PLANKS), 0, "path plank -> WOOD, heat 0 (:53-54), vanilla 300"),
                 new Burn("powder_ash_wood", new ItemStack(NtmItems.POWDER_ASH_WOOD.get()), 0, "path powder_ash_wood contains wood -> WOOD, heat 0, burn 100"),

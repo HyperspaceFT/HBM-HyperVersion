@@ -123,6 +123,11 @@ def drops(ctx, a, b, item=None):
     return [e for e in entities(ctx, a, b) if e['type'] == 'minecraft:item' and (item is None or e.get('item') == item)]
 
 
+def drops_or_belt(ctx, a, b, item=None):
+    """Dropped items and moving belt items (a drop next to a belt is taken on by it): both carry item and count."""
+    return [e for e in entities(ctx, a, b) if e['type'] in ('minecraft:item', 'hbmsntm:moving_item') and (item is None or e.get('item') == item)]
+
+
 def total(es):
     out = {}
     for e in es:
@@ -402,7 +407,7 @@ def splitter(ctx, t):
     ctx.step('view', pos=[other[0] + 0.5, Y, other[2] + 2.5], look_at=[other[0] + 0.5, Y + 0.2, other[2] + 0.5], fly=False, hide_gui=True)
     ctx.step('attack', target=dict(pos=list(other), face='up', offset=[0, -0.6, 0]), any_hit=True, hold=40, after=10)
     left_cells = splitter_cells(ctx, sx, 0)
-    got = total(drops(ctx, [sx - 3, Y - 1, -3], [sx + 3, Y + 2, 3], 'hbmsntm:crane_splitter'))
+    got = total(drops_or_belt(ctx, [sx - 3, Y - 1, -3], [sx + 3, Y + 2, 3], 'hbmsntm:crane_splitter'))
     ctx.check('conveyor-cranes.splitter-break', not left_cells and got == {'hbmsntm:crane_splitter': 1},
               'splitter blocks left %s; splitter items dropped %s' % (sorted(left_cells), got))
     ctx.step('cmd', command='gamemode creative')

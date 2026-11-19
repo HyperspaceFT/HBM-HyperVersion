@@ -55,8 +55,8 @@ public abstract class RadioTorchRWBaseBlock extends RadioTorchBaseBlock {
 
         if(be instanceof RadioTorchBaseBlockEntity radio) {
             List<Component> text = new ArrayList<>();
-            if(radio.channel != null && !radio.channel.isEmpty()) text.add(Component.literal("Freq: " + radio.channel).withStyle(ChatFormatting.AQUA));
-            text.add(Component.literal("Signal: " + radio.lastState).withStyle(ChatFormatting.RED));
+            if(radio.channel != null && !radio.channel.isEmpty()) text.add(Component.translatable("block.hbmsntm.radio_torch.freq", radio.channel).withStyle(ChatFormatting.AQUA));
+            text.add(Component.translatable("block.hbmsntm.radio_torch.signal", radio.lastState).withStyle(ChatFormatting.RED));
             ILookOverlay.printGeneric(event, this.getName(), 0xffff00, 0x404000, text);
         }
     }

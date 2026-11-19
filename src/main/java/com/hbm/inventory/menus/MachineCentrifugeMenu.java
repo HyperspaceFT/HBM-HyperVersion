@@ -22,18 +22,18 @@ public class MachineCentrifugeMenu extends MenuBase<MachineCentrifugeBlockEntity
     public MachineCentrifugeMenu(int id, Inventory inventory, MachineCentrifugeBlockEntity be) {
         super(NtmMenuTypes.MACHINE_CENTRIFUGE.get(), id, be);
 
-        this.addSlot(new SlotNonRetarded(be, 0, 36, 50));
-        this.addSlot(new SlotNonRetarded(be, 1, 9, 50));
+        this.addSlot(new SlotNonRetarded(be, 0, 44, 57));
+        this.addSlot(new SlotNonRetarded(be, 1, 8, 57));
 
-        this.addSlot(new SlotTakeOnly(be, 2, 63, 50));
-        this.addSlot(new SlotTakeOnly(be, 3, 83, 50));
-        this.addSlot(new SlotTakeOnly(be, 4, 103, 50));
-        this.addSlot(new SlotTakeOnly(be, 5, 123, 50));
+        this.addSlot(new SlotTakeOnly(be, 2, 70, 57));
+        this.addSlot(new SlotTakeOnly(be, 3, 90, 57));
+        this.addSlot(new SlotTakeOnly(be, 4, 110, 57));
+        this.addSlot(new SlotTakeOnly(be, 5, 130, 57));
 
-        this.addSlot(new SlotNonRetarded(be, 6, 149, 22));
-        this.addSlot(new SlotNonRetarded(be, 7, 149, 40));
+        this.addSlot(new SlotNonRetarded(be, 6, 156, 31));
+        this.addSlot(new SlotNonRetarded(be, 7, 156, 49));
 
-        this.playerInv(inventory, 8, 104, 162);
+        this.playerInv(inventory, 11, 107, 165);
     }
 
     @Override

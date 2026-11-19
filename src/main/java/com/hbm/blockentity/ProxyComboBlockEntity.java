@@ -327,7 +327,7 @@ public class ProxyComboBlockEntity extends ProxyBaseBlockEntity implements IEner
         if (!inventory) return false;
 
         if (getCoreObject() instanceof Container container) {
-            container.isEmpty();
+            return container.isEmpty();
         }
 
         return false;

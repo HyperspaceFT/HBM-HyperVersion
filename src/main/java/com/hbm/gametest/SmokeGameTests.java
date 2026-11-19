@@ -470,8 +470,9 @@ public class SmokeGameTests {
         File custom = new File(NuclearTechMod.configDir, "hbmRecipes" + File.separator + "hbmCentrifuge.json");
         check(!custom.exists(), "a custom centrifuge table is active: " + custom.getAbsolutePath());
         int centrifuge = CentrifugeRecipes.getJeiRecipes().size();
-        // Goal28A adds the nether tungsten, cobalt and phosphorus ore rows (80); Goal28B the schist iron, gold and copper ore rows (83).
-        check(centrifuge == 83, "the centrifuge table has " + centrifuge + " rows, expected 83");
+        // Goal28A adds the nether tungsten, cobalt and phosphorus ore rows (80); Goal28B the schist iron, gold and copper ore rows (83);
+        // Goal32A the rare earth, deepslate rare earth and schist rare earth ore rows (86); Goal32B the Sellafield diamond and emerald ore rows (88).
+        check(centrifuge == 88, "the centrifuge table has " + centrifuge + " rows, expected 88");
 
         assertCraftingResult(helper, "rod_zirnox_th232", ZirnoxType.TH232);
         assertCraftingResult(helper, "rod_zirnox_natural_uranium_fuel", ZirnoxType.NATURAL_URANIUM_FUEL);

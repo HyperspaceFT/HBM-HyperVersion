@@ -14,6 +14,7 @@ import net.minecraft.world.item.Items;
 import net.minecraft.world.level.block.Block;
 import net.neoforged.neoforge.common.data.ExistingFileHelper;
 
+import java.util.List;
 import java.util.concurrent.CompletableFuture;
 
 import static com.hbm.inventory.NtmTags.Items.*;
@@ -336,5 +337,330 @@ public class NtmItemTagProvider extends ItemTagsProvider {
                 NtmItems.INGOT_COPPER.get()
         );
 
+        /*
+         * COMMON TAGS: the user-approved Goal32A list (migration/goal32a-tags.md), derived from the original's OreDictManager
+         * registrations (d4708ef9c; the comment gives each tag's registration line). The name is the material's first DictFrame
+         * name in snake case under NeoForge's prefix (ingot -> c:ingots/..., nugget -> c:nuggets/..., dust -> c:dusts/...,
+         * gem -> c:gems/..., ore -> c:ores/..., block -> c:storage_blocks/..., plate -> c:plates/...). Not published: the any
+         * and DictGroup groups, materials registered under two names, uranium (renamed with GregTech 6), c:storage_blocks/copper
+         * (NEO recipes read it), and the three "ingot" registrations whose members are ore chunks (malachite, rare earth,
+         * coltan). NEO's deepslate ore variants join their material's c:ores tag, as c:ores/aluminum already does.
+         * Every child also goes into its prefix's parent tag (c:plates is new), so the ingot mold template and the sorter's
+         * manual modes see HBM's items.
+         */
+        for(TagKey<Item> published : List.of(DUSTS_ALUMINIUM, ORES_ALUMINIUM, PLATES_STEEL, PLATES_COPPER)) {
+            this.tag(parentOf(published)).addTag(published);
+        }
+
+        // c:ingots/… (75)
+        this.common("ingots/actinium227", NtmItems.INGOT_ACTINIUM.get()); // :365
+        this.common("ingots/aluminum", NtmItems.INGOT_ALUMINIUM.get()); // :384
+        this.common("ingots/americium241", NtmItems.INGOT_AM241.get()); // :358
+        this.common("ingots/americium242", NtmItems.INGOT_AM242.get()); // :359
+        this.common("ingots/americium_rg", NtmItems.INGOT_AM_MIX.get()); // :360
+        this.common("ingots/arsenic", NtmItems.INGOT_ARSENIC.get()); // :393
+        this.common("ingots/arsenic_bronze", NtmItems.INGOT_ARSENIC_BRONZE.get()); // :389
+        this.common("ingots/asbestos", NtmItems.INGOT_ASBESTOS.get()); // :424
+        this.common("ingots/australium", NtmItems.INGOT_AUSTRALIUM.get()); // :466
+        this.common("ingots/bakelite", NtmItems.INGOT_BAKELITE.get()); // :407
+        this.common("ingots/beryllium", NtmItems.INGOT_BERYLLIUM.get()); // :399
+        this.common("ingots/bismuth", NtmItems.INGOT_BISMUTH.get()); // :392
+        this.common("ingots/bismuth_bronze", NtmItems.INGOT_BISMUTH_BRONZE.get()); // :388
+        this.common("ingots/boron", NtmItems.INGOT_BORON.get()); // :401
+        this.common("ingots/bscco", NtmItems.INGOT_BSCCO.get()); // :390
+        this.common("ingots/cadmium", NtmItems.INGOT_CADMIUM.get()); // :395
+        this.common("ingots/calcium", NtmItems.INGOT_CALCIUM.get()); // :394
+        this.common("ingots/cd_alloy", NtmItems.INGOT_CDALLOY.get()); // :387
+        this.common("ingots/cmb_steel", NtmItems.INGOT_COMBINE_STEEL.get()); // :414
+        this.common("ingots/cobalt", NtmItems.INGOT_COBALT.get()); // :400
+        this.common("ingots/cobalt60", NtmItems.INGOT_CO60.get()); // :366
+        this.common("ingots/dineutronium", NtmItems.INGOT_DINEUTRONIUM.get()); // :422
+        this.common("ingots/dura_steel", NtmItems.INGOT_DURA_STEEL.get()); // :405
+        this.common("ingots/euphemium", NtmItems.INGOT_EUPHEMIUM.get()); // :421
+        this.common("ingots/ferrouranium", NtmItems.INGOT_FERROURANIUM.get()); // :420
+        this.common("ingots/fiberglass", NtmItems.INGOT_FIBERGLASS.get()); // :423
+        this.common("ingots/ghiorsium336", NtmItems.INGOT_GH336.get()); // :373
+        this.common("ingots/gold198", NtmItems.INGOT_AU198.get()); // :367
+        this.common("ingots/gun_metal", NtmItems.INGOT_GUNMETAL.get()); // :417
+        this.common("ingots/lanthanum", NtmItems.INGOT_LANTHANIUM.get()); // :472
+        this.common("ingots/latex", NtmItems.INGOT_BIORUBBER.get()); // :408
+        this.common("ingots/lead", NtmItems.INGOT_LEAD.get()); // :391
+        this.common("ingots/lead209", NtmItems.INGOT_PB209.get()); // :368
+        this.common("ingots/lithium", NtmItems.LITHIUM.get()); // :454
+        this.common("ingots/magnetized_tungsten", NtmItems.INGOT_MAGNETIZED_TUNGSTEN.get()); // :413
+        this.common("ingots/mingrade", NtmItems.INGOT_RED_COPPER.get()); // :381
+        this.common("ingots/neptunium237", NtmItems.INGOT_NEPTUNIUM.get()); // :361
+        this.common("ingots/niobium", NtmItems.INGOT_NIOBIUM.get()); // :398
+        this.common("ingots/osmiridium", NtmItems.INGOT_OSMIRIDIUM.get()); // :425
+        this.common("ingots/plutonium", NtmItems.INGOT_PLUTONIUM.get()); // :352
+        this.common("ingots/plutonium238", NtmItems.INGOT_PU238.get()); // :354
+        this.common("ingots/plutonium239", NtmItems.INGOT_PU239.get()); // :355
+        this.common("ingots/plutonium240", NtmItems.INGOT_PU240.get()); // :356
+        this.common("ingots/plutonium241", NtmItems.INGOT_PU241.get()); // :357
+        this.common("ingots/plutonium_rg", NtmItems.INGOT_PU_MIX.get()); // :353
+        this.common("ingots/polonium210", NtmItems.INGOT_POLONIUM.get()); // :362
+        this.common("ingots/polycarbonate", NtmItems.INGOT_PC.get()); // :411
+        this.common("ingots/polymer", NtmItems.INGOT_POLYMER.get()); // :406
+        this.common("ingots/pvc", NtmItems.INGOT_PVC.get()); // :412
+        this.common("ingots/radium226", NtmItems.INGOT_RA226.get()); // :364
+        this.common("ingots/rubber", NtmItems.INGOT_RUBBER.get()); // :409
+        this.common("ingots/saturnite", NtmItems.INGOT_SATURNITE.get()); // :419
+        this.common("ingots/schrabidate", NtmItems.INGOT_SCHRABIDATE.get()); // :371
+        this.common("ingots/schrabidium", NtmItems.INGOT_SCHRABIDIUM.get()); // :369
+        this.common("ingots/schraranium", NtmItems.INGOT_SCHRARANIUM.get()); // :372
+        this.common("ingots/silicon", NtmItems.INGOT_SILICON.get()); // :402
+        this.common("ingots/solinium", NtmItems.INGOT_SOLINIUM.get()); // :370
+        this.common("ingots/starmetal", NtmItems.INGOT_STARMETAL.get()); // :416
+        this.common("ingots/steel", NtmItems.INGOT_STEEL.get()); // :385
+        this.common("ingots/strontium90", NtmItems.INGOT_SR90.get()); // :491
+        this.common("ingots/tantalum", NtmItems.INGOT_TANTALIUM.get()); // :396
+        this.common("ingots/tc_alloy", NtmItems.INGOT_TCALLOY.get()); // :386
+        this.common("ingots/technetium99", NtmItems.INGOT_TECHNETIUM.get()); // :363
+        this.common("ingots/thorium232", NtmItems.INGOT_TH232.get()); // :351
+        this.common("ingots/titanium", NtmItems.INGOT_TITANIUM.get()); // :379
+        this.common("ingots/tungsten", NtmItems.INGOT_TUNGSTEN.get()); // :382
+        this.common("ingots/tungsten_carbide", NtmItems.INGOT_TUNGSTEN_CARBIDE.get()); // :383
+        this.common("ingots/uranium233", NtmItems.INGOT_U233.get()); // :348
+        this.common("ingots/uranium235", NtmItems.INGOT_U235.get()); // :349
+        this.common("ingots/uranium238", NtmItems.INGOT_U238.get()); // :350
+        this.common("ingots/watz_mud", NtmItems.INGOT_MUD.get()); // :374
+        this.common("ingots/weapon_steel", NtmItems.INGOT_WEAPON_STEEL.get()); // :418
+        this.common("ingots/white_phosphorus", NtmItems.INGOT_PHOSPHORUS.get()); // :460
+        this.common("ingots/workers_alloy", NtmItems.INGOT_DESH.get()); // :415
+        this.common("ingots/zirconium", NtmItems.INGOT_ZIRCONIUM.get()); // :473
+
+        // c:nuggets/… (43)
+        this.common("nuggets/actinium227", NtmItems.NUGGET_ACTINIUM.get()); // :365
+        this.common("nuggets/americium241", NtmItems.NUGGET_AM241.get()); // :358
+        this.common("nuggets/americium242", NtmItems.NUGGET_AM242.get()); // :359
+        this.common("nuggets/americium_rg", NtmItems.NUGGET_AM_MIX.get()); // :360
+        this.common("nuggets/arsenic", NtmItems.NUGGET_ARSENIC.get()); // :393
+        this.common("nuggets/australium", NtmItems.NUGGET_AUSTRALIUM.get()); // :466
+        this.common("nuggets/beryllium", NtmItems.NUGGET_BERYLLIUM.get()); // :399
+        this.common("nuggets/bismuth", NtmItems.NUGGET_BISMUTH.get()); // :392
+        this.common("nuggets/boron", NtmItems.FRAGMENT_BORON.get()); // :401
+        this.common("nuggets/cerium", NtmItems.FRAGMENT_CERIUM.get()); // :475
+        this.common("nuggets/cobalt", NtmItems.FRAGMENT_COBALT.get(), NtmItems.NUGGET_COBALT.get()); // :400
+        this.common("nuggets/cobalt60", NtmItems.NUGGET_CO60.get()); // :366
+        this.common("nuggets/dineutronium", NtmItems.NUGGET_DINEUTRONIUM.get()); // :422
+        this.common("nuggets/euphemium", NtmItems.NUGGET_EUPHEMIUM.get()); // :421
+        this.common("nuggets/ghiorsium336", NtmItems.NUGGET_GH336.get()); // :373
+        this.common("nuggets/gold198", NtmItems.NUGGET_AU198.get()); // :367
+        this.common("nuggets/lanthanum", NtmItems.FRAGMENT_LANTHANIUM.get()); // :472
+        this.common("nuggets/lead", NtmItems.NUGGET_LEAD.get()); // :391
+        this.common("nuggets/lead209", NtmItems.NUGGET_PB209.get()); // :368
+        this.common("nuggets/neodymium", NtmItems.FRAGMENT_NEODYMIUM.get()); // :474
+        this.common("nuggets/neptunium237", NtmItems.NUGGET_NEPTUNIUM.get()); // :361
+        this.common("nuggets/niobium", NtmItems.NUGGET_NIOBIUM.get(), NtmItems.FRAGMENT_NIOBIUM.get()); // :398
+        this.common("nuggets/osmiridium", NtmItems.NUGGET_OSMIRIDIUM.get()); // :425
+        this.common("nuggets/plutonium", NtmItems.NUGGET_PLUTONIUM.get()); // :352
+        this.common("nuggets/plutonium238", NtmItems.NUGGET_PU238.get()); // :354
+        this.common("nuggets/plutonium239", NtmItems.NUGGET_PU239.get()); // :355
+        this.common("nuggets/plutonium240", NtmItems.NUGGET_PU240.get()); // :356
+        this.common("nuggets/plutonium241", NtmItems.NUGGET_PU241.get()); // :357
+        this.common("nuggets/plutonium_rg", NtmItems.NUGGET_PU_MIX.get()); // :353
+        this.common("nuggets/polonium210", NtmItems.NUGGET_POLONIUM.get()); // :362
+        this.common("nuggets/radium226", NtmItems.NUGGET_RA226.get()); // :364
+        this.common("nuggets/schrabidium", NtmItems.NUGGET_SCHRABIDIUM.get()); // :369
+        this.common("nuggets/silicon", NtmItems.NUGGET_SILICON.get()); // :402
+        this.common("nuggets/solinium", NtmItems.NUGGET_SOLINIUM.get()); // :370
+        this.common("nuggets/strontium90", NtmItems.NUGGET_SR90.get()); // :491
+        this.common("nuggets/tantalum", NtmItems.NUGGET_TANTALIUM.get()); // :396
+        this.common("nuggets/technetium99", NtmItems.NUGGET_TECHNETIUM.get()); // :363
+        this.common("nuggets/thorium232", NtmItems.NUGGET_TH232.get()); // :351
+        this.common("nuggets/uranium233", NtmItems.NUGGET_U233.get()); // :348
+        this.common("nuggets/uranium235", NtmItems.NUGGET_U235.get()); // :349
+        this.common("nuggets/uranium238", NtmItems.NUGGET_U238.get()); // :350
+        this.common("nuggets/workers_alloy", NtmItems.NUGGET_DESH.get()); // :415
+        this.common("nuggets/zirconium", NtmItems.NUGGET_ZIRCONIUM.get()); // :473
+
+        // c:dusts/… (67)
+        this.common("dusts/actinium227", NtmItems.POWDER_ACTINIUM.get()); // :365
+        this.common("dusts/asbestos", NtmItems.POWDER_ASBESTOS.get()); // :424
+        this.common("dusts/astatine", NtmItems.POWDER_ASTATINE.get()); // :481
+        this.common("dusts/astatine209", NtmItems.POWDER_AT209.get()); // :495
+        this.common("dusts/australium", NtmItems.POWDER_AUSTRALIUM.get()); // :466
+        this.common("dusts/bakelite", NtmItems.POWDER_BAKELITE.get()); // :407
+        this.common("dusts/beryllium", NtmItems.POWDER_BERYLLIUM.get()); // :399
+        this.common("dusts/bismuth", NtmItems.POWDER_BISMUTH.get()); // :392
+        this.common("dusts/borax", NtmItems.POWDER_BORAX.get()); // :438
+        this.common("dusts/boron", NtmItems.POWDER_BORON.get()); // :401
+        this.common("dusts/bromine", NtmItems.POWDER_BROMINE.get()); // :484
+        this.common("dusts/cadmium", NtmItems.POWDER_CADMIUM.get()); // :395
+        this.common("dusts/caesium", NtmItems.POWDER_CAESIUM.get()); // :482
+        this.common("dusts/caesium137", NtmItems.POWDER_CS137.get()); // :494
+        this.common("dusts/calcium", NtmItems.POWDER_CALCIUM.get()); // :394
+        this.common("dusts/cerium", NtmItems.POWDER_CERIUM.get()); // :475
+        this.common("dusts/chlorocalcite", NtmItems.POWDER_CHLOROCALCITE.get()); // :439
+        this.common("dusts/cmb_steel", NtmItems.POWDER_COMBINE_STEEL.get()); // :414
+        this.common("dusts/coal", NtmItems.POWDER_COAL.get()); // :335
+        this.common("dusts/cobalt", NtmItems.POWDER_COBALT.get()); // :400
+        this.common("dusts/cobalt60", NtmItems.POWDER_CO60.get()); // :366
+        this.common("dusts/coltan", NtmItems.POWDER_COLTAN_ORE.get()); // :397
+        this.common("dusts/copper", NtmItems.POWDER_COPPER.get()); // :380
+        this.common("dusts/diamond", NtmItems.POWDER_DIAMOND.get()); // :341
+        this.common("dusts/dineutronium", NtmItems.POWDER_DINEUTRONIUM.get()); // :422
+        this.common("dusts/dura_steel", NtmItems.POWDER_DURA_STEEL.get()); // :405
+        this.common("dusts/emerald", NtmItems.POWDER_EMERALD.get()); // :342
+        this.common("dusts/euphemium", NtmItems.POWDER_EUPHEMIUM.get()); // :421
+        this.common("dusts/fluorite", NtmItems.FLUORITE.get()); // :432
+        this.common("dusts/gold", NtmItems.POWDER_GOLD.get()); // :337
+        this.common("dusts/gold198", NtmItems.POWDER_AU198.get()); // :367
+        this.common("dusts/iodine", NtmItems.POWDER_IODINE.get()); // :480
+        this.common("dusts/iodine131", NtmItems.POWDER_I131.get()); // :492
+        this.common("dusts/iron", NtmItems.POWDER_IRON.get()); // :336
+        this.common("dusts/lanthanum", NtmItems.POWDER_LANTHANIUM.get()); // :472
+        this.common("dusts/lapis", NtmItems.POWDER_LAPIS.get()); // :338
+        this.common("dusts/lead", NtmItems.POWDER_LEAD.get()); // :391
+        this.common("dusts/lignite", NtmItems.POWDER_LIGNITE.get()); // :433
+        this.common("dusts/limestone", NtmItems.POWDER_LIMESTONE.get()); // :446
+        this.common("dusts/lithium", NtmItems.POWDER_LITHIUM.get()); // :454
+        this.common("dusts/magnetized_tungsten", NtmItems.POWDER_MAGNETIZED_TUNGSTEN.get()); // :413
+        this.common("dusts/mingrade", NtmItems.POWDER_RED_COPPER.get()); // :381
+        this.common("dusts/molysite", NtmItems.POWDER_MOLYSITE.get()); // :440
+        this.common("dusts/neodymium", NtmItems.POWDER_NEODYMIUM.get()); // :474
+        this.common("dusts/neptunium237", NtmItems.POWDER_NEPTUNIUM.get()); // :361
+        this.common("dusts/niobium", NtmItems.POWDER_NIOBIUM.get()); // :398
+        this.common("dusts/plutonium", NtmItems.POWDER_PLUTONIUM.get()); // :352
+        this.common("dusts/polonium210", NtmItems.POWDER_POLONIUM.get()); // :362
+        this.common("dusts/polymer", NtmItems.POWDER_POLYMER.get()); // :406
+        this.common("dusts/radium226", NtmItems.POWDER_RA226.get()); // :364
+        this.common("dusts/red_phosphorus", NtmItems.POWDER_FIRE.get()); // :461
+        this.common("dusts/saltpeter", NtmItems.NITER.get()); // :431
+        this.common("dusts/schrabidate", NtmItems.POWDER_SCHRABIDATE.get()); // :371
+        this.common("dusts/schrabidium", NtmItems.POWDER_SCHRABIDIUM.get()); // :369
+        this.common("dusts/sodium", NtmItems.POWDER_SODIUM.get()); // :455
+        this.common("dusts/steel", NtmItems.POWDER_STEEL.get()); // :385
+        this.common("dusts/strontium90", NtmItems.POWDER_SR90.get()); // :491
+        this.common("dusts/sulfur", NtmItems.SULFUR.get()); // :430
+        this.common("dusts/tantalum", NtmItems.POWDER_TANTALIUM.get()); // :396
+        this.common("dusts/tc_alloy", NtmItems.POWDER_TCALLOY.get()); // :386
+        this.common("dusts/tennessine", NtmItems.POWDER_TENNESSINE.get()); // :485
+        this.common("dusts/thorium232", NtmItems.POWDER_THORIUM.get()); // :351
+        this.common("dusts/titanium", NtmItems.POWDER_TITANIUM.get()); // :379
+        this.common("dusts/tungsten", NtmItems.POWDER_TUNGSTEN.get()); // :382
+        this.common("dusts/workers_alloy", NtmItems.POWDER_DESH.get()); // :415
+        this.common("dusts/xenon135", NtmItems.POWDER_XE135.get()); // :493
+        this.common("dusts/zirconium", NtmItems.POWDER_ZIRCONIUM.get()); // :473
+
+        // c:gems/… (8)
+        this.common("gems/cinnabar", NtmItems.CINNABAR.get()); // :437
+        this.common("gems/coal_coke", NtmItems.COKE_COAL.get()); // :434
+        this.common("gems/lignite", NtmItems.LIGNITE.get()); // :433
+        this.common("gems/lignite_coke", NtmItems.COKE_LIGNITE.get()); // :436
+        this.common("gems/pet_coke", NtmItems.COKE_PETROLEUM.get()); // :435
+        this.common("gems/sodalite", NtmItems.GEM_SODALITE.get()); // :441
+        this.common("gems/tantalum", NtmItems.GEM_TANTALIUM.get()); // :396
+        this.common("gems/volcanic", NtmItems.GEM_VOLCANIC.get()); // :442
+
+        // c:ores/… (24)
+        this.common("ores/asbestos", NtmBlocks.ORE_ASBESTOS.asItem(), NtmBlocks.ORE_GNEISS_ASBESTOS.asItem(), NtmBlocks.RESOURCE_CHRYSOTILE.asItem(), NtmBlocks.ORE_ASBESTOS_DEEPSLATE.asItem()); // :424
+        this.common("ores/bauxite", NtmBlocks.RESOURCE_BAUXITE.asItem()); // :447
+        this.common("ores/beryllium", NtmBlocks.ORE_BERYLLIUM.asItem(), NtmBlocks.ORE_BERYLLIUM_DEEPSLATE.asItem()); // :399
+        this.common("ores/borax", NtmBlocks.ORE_DEPTH_BORAX.asItem()); // :438
+        this.common("ores/cinnabar", NtmBlocks.ORE_CINNABAR.asItem(), NtmBlocks.ORE_DEPTH_CINNABAR.asItem(), NtmBlocks.ORE_CINNABAR_DEEPSLATE.asItem()); // :437
+        this.common("ores/cobalt", NtmBlocks.ORE_COBALT.asItem(), NtmBlocks.ORE_NETHER_COBALT.asItem(), NtmBlocks.ORE_COBALT_DEEPSLATE.asItem()); // :400
+        this.common("ores/coltan", NtmBlocks.ORE_COLTAN.asItem()); // :397
+        this.common("ores/fluorite", NtmBlocks.ORE_FLUORITE.asItem(), NtmBlocks.ORE_FLUORITE_DEEPSLATE.asItem()); // :432
+        this.common("ores/hematite", NtmBlocks.RESOURCE_HEMATITE.asItem()); // :443
+        this.common("ores/lead", NtmBlocks.ORE_LEAD.asItem(), NtmBlocks.ORE_LEAD_DEEPSLATE.asItem()); // :391
+        this.common("ores/lignite", NtmBlocks.ORE_LIGNITE.asItem(), NtmBlocks.ORE_LIGNITE_DEEPSLATE.asItem()); // :433
+        this.common("ores/limestone", NtmBlocks.RESOURCE_LIMESTONE.asItem()); // :446
+        this.common("ores/lithium", NtmBlocks.ORE_GNEISS_LITHIUM.asItem()); // :454
+        this.common("ores/malachite", NtmBlocks.RESOURCE_MALACHITE.asItem()); // :444
+        this.common("ores/neodymium", NtmBlocks.ORE_DEPTH_NETHER_NEODYMIUM.asItem()); // :474
+        this.common("ores/plutonium", NtmBlocks.ORE_NETHER_PLUTONIUM.asItem()); // :352
+        this.common("ores/rare_earth", NtmBlocks.ORE_RARE.asItem(), NtmBlocks.ORE_GNEISS_RARE.asItem(), NtmBlocks.ORE_RARE_DEEPSLATE.asItem()); // :471
+        this.common("ores/saltpeter", NtmBlocks.ORE_NITER.asItem(), NtmBlocks.ORE_NITER_DEEPSLATE.asItem()); // :431
+        this.common("ores/schrabidium", NtmBlocks.ORE_SCHRABIDIUM.asItem(), NtmBlocks.ORE_GNEISS_SCHRABIDIUM.asItem(), NtmBlocks.ORE_NETHER_SCHRABIDIUM.asItem()); // :369
+        this.common("ores/sulfur", NtmBlocks.ORE_SULFUR.asItem(), NtmBlocks.ORE_NETHER_SULFUR.asItem(), NtmBlocks.RESOURCE_SULFUROUS_STONE.asItem(), NtmBlocks.ORE_SULFUR_DEEPSLATE.asItem()); // :430
+        this.common("ores/thorium232", NtmBlocks.ORE_THORIUM.asItem(), NtmBlocks.ORE_THORIUM_DEEPSLATE.asItem()); // :351
+        this.common("ores/titanium", NtmBlocks.ORE_TITANIUM.asItem(), NtmBlocks.ORE_TITANIUM_DEEPSLATE.asItem()); // :379
+        this.common("ores/tungsten", NtmBlocks.ORE_TUNGSTEN.asItem(), NtmBlocks.ORE_NETHER_TUNGSTEN.asItem(), NtmBlocks.ORE_TUNGSTEN_DEEPSLATE.asItem()); // :382
+        this.common("ores/zirconium", NtmBlocks.ORE_DEPTH_ZIRCONIUM.asItem()); // :473
+
+        // c:storage_blocks/… (45)
+        this.common("storage_blocks/actinium227", NtmBlocks.BLOCK_ACTINIUM.asItem()); // :365
+        this.common("storage_blocks/aluminum", NtmBlocks.BLOCK_ALUMINIUM.asItem()); // :384
+        this.common("storage_blocks/asbestos", NtmBlocks.BLOCK_ASBESTOS.asItem()); // :424
+        this.common("storage_blocks/australium", NtmBlocks.BLOCK_AUSTRALIUM.asItem()); // :466
+        this.common("storage_blocks/beryllium", NtmBlocks.BLOCK_BERYLLIUM.asItem()); // :399
+        this.common("storage_blocks/bismuth", NtmBlocks.BLOCK_BISMUTH.asItem()); // :392
+        this.common("storage_blocks/cadmium", NtmBlocks.BLOCK_CADMIUM.asItem()); // :395
+        this.common("storage_blocks/cd_alloy", NtmBlocks.BLOCK_CDALLOY.asItem()); // :387
+        this.common("storage_blocks/cmb_steel", NtmBlocks.BLOCK_COMBINE_STEEL.asItem()); // :414
+        this.common("storage_blocks/coltan", NtmBlocks.BLOCK_COLTAN.asItem()); // :397
+        this.common("storage_blocks/dineutronium", NtmBlocks.BLOCK_DINEUTRONIUM.asItem()); // :422
+        this.common("storage_blocks/dura_steel", NtmBlocks.BLOCK_DURA_STEEL.asItem()); // :405
+        this.common("storage_blocks/euphemium", NtmBlocks.BLOCK_EUPHEMIUM.asItem()); // :421
+        this.common("storage_blocks/fiberglass", NtmBlocks.BLOCK_FIBERGLASS.asItem()); // :423
+        this.common("storage_blocks/lanthanum", NtmBlocks.BLOCK_LANTHANIUM.asItem()); // :472
+        this.common("storage_blocks/lead", NtmBlocks.BLOCK_LEAD.asItem()); // :391
+        this.common("storage_blocks/lithium", NtmBlocks.BLOCK_LITHIUM.asItem()); // :454
+        this.common("storage_blocks/magnetized_tungsten", NtmBlocks.BLOCK_MAGNETIZED_TUNGSTEN.asItem()); // :413
+        this.common("storage_blocks/mingrade", NtmBlocks.BLOCK_RED_COPPER.asItem()); // :381
+        this.common("storage_blocks/neptunium237", NtmBlocks.BLOCK_NEPTUNIUM.asItem()); // :361
+        this.common("storage_blocks/niobium", NtmBlocks.BLOCK_NIOBIUM.asItem()); // :398
+        this.common("storage_blocks/plutonium", NtmBlocks.BLOCK_PLUTONIUM.asItem()); // :352
+        this.common("storage_blocks/plutonium238", NtmBlocks.BLOCK_PU238.asItem()); // :354
+        this.common("storage_blocks/plutonium239", NtmBlocks.BLOCK_PU239.asItem()); // :355
+        this.common("storage_blocks/plutonium240", NtmBlocks.BLOCK_PU240.asItem()); // :356
+        this.common("storage_blocks/plutonium_rg", NtmBlocks.BLOCK_PU_MIX.asItem()); // :353
+        this.common("storage_blocks/polonium210", NtmBlocks.BLOCK_POLONIUM.asItem()); // :362
+        this.common("storage_blocks/radium226", NtmBlocks.BLOCK_RA226.asItem()); // :364
+        this.common("storage_blocks/saltpeter", NtmBlocks.BLOCK_NITER.asItem()); // :431
+        this.common("storage_blocks/schrabidate", NtmBlocks.BLOCK_SCHRABIDATE.asItem()); // :371
+        this.common("storage_blocks/schrabidium", NtmBlocks.BLOCK_SCHRABIDIUM.asItem()); // :369
+        this.common("storage_blocks/schraranium", NtmBlocks.BLOCK_SCHRARANIUM.asItem()); // :372
+        this.common("storage_blocks/slag", NtmBlocks.BLOCK_SLAG.asItem()); // :449
+        this.common("storage_blocks/solinium", NtmBlocks.BLOCK_SOLINIUM.asItem()); // :370
+        this.common("storage_blocks/steel", NtmBlocks.BLOCK_STEEL.asItem()); // :385
+        this.common("storage_blocks/sulfur", NtmBlocks.BLOCK_SULFUR.asItem()); // :430
+        this.common("storage_blocks/tantalum", NtmBlocks.BLOCK_TANTALIUM.asItem()); // :396
+        this.common("storage_blocks/tc_alloy", NtmBlocks.BLOCK_TCALLOY.asItem()); // :386
+        this.common("storage_blocks/thorium232", NtmBlocks.BLOCK_THORIUM.asItem()); // :351
+        this.common("storage_blocks/titanium", NtmBlocks.BLOCK_TITANIUM.asItem()); // :379
+        this.common("storage_blocks/tungsten", NtmBlocks.BLOCK_TUNGSTEN.asItem()); // :382
+        this.common("storage_blocks/uranium233", NtmBlocks.BLOCK_U233.asItem()); // :348
+        this.common("storage_blocks/uranium235", NtmBlocks.BLOCK_U235.asItem()); // :349
+        this.common("storage_blocks/uranium238", NtmBlocks.BLOCK_U238.asItem()); // :350
+        this.common("storage_blocks/workers_alloy", NtmBlocks.BLOCK_DESH.asItem()); // :415
+
+        // c:plates/… (11)
+        this.common("plates/aluminum", NtmItems.PLATE_ALUMINIUM.get()); // :384
+        this.common("plates/cmb_steel", NtmItems.PLATE_COMBINE_STEEL.get()); // :414
+        this.common("plates/dura_steel", NtmItems.PLATE_DURA_STEEL.get()); // :405
+        this.common("plates/gold", NtmItems.PLATE_GOLD.get()); // :337
+        this.common("plates/gun_metal", NtmItems.PLATE_GUNMETAL.get()); // :417
+        this.common("plates/iron", NtmItems.PLATE_IRON.get()); // :336
+        this.common("plates/lead", NtmItems.PLATE_LEAD.get()); // :391
+        this.common("plates/saturnite", NtmItems.PLATE_SATURNITE.get()); // :419
+        this.common("plates/schrabidium", NtmItems.PLATE_SCHRABIDIUM.get()); // :369
+        this.common("plates/titanium", NtmItems.PLATE_TITANIUM.get()); // :379
+        this.common("plates/weapon_steel", NtmItems.PLATE_WEAPON_STEEL.get()); // :418
+
+        // HBM items the original registers under names NeoForge already publishes (no new name).
+        this.tag(ItemTags.create(ResourceLocation.fromNamespaceAndPath("c", "ores/iron"))).add(NtmBlocks.ORE_GNEISS_IRON.asItem()); // :336
+        this.tag(ItemTags.create(ResourceLocation.fromNamespaceAndPath("c", "ores/gold"))).add(NtmBlocks.ORE_GNEISS_GOLD.asItem()); // :337
+        this.tag(ItemTags.create(ResourceLocation.fromNamespaceAndPath("c", "ores/diamond"))).add(NtmBlocks.GRAVEL_DIAMOND.asItem(), NtmBlocks.ORE_SELLAFIELD_DIAMOND.asItem()); // :341
+        this.tag(ItemTags.create(ResourceLocation.fromNamespaceAndPath("c", "ores/emerald"))).add(NtmBlocks.ORE_SELLAFIELD_EMERALD.asItem()); // :342
+        this.tag(ItemTags.create(ResourceLocation.fromNamespaceAndPath("c", "ingots/copper"))).add(NtmItems.INGOT_COPPER.get()); // :380
+        this.tag(ItemTags.create(ResourceLocation.fromNamespaceAndPath("c", "ores/copper"))).add(NtmBlocks.ORE_GNEISS_COPPER.asItem()); // :380
+
+        // The original's blockGlass (OreDictManager.java:639-644): of its six glasses NEO has boron and lead glass.
+        this.tag(ItemTags.create(ResourceLocation.fromNamespaceAndPath("c", "glass_blocks"))).add(NtmBlocks.GLASS_BORON.asItem(), NtmBlocks.GLASS_LEAD.asItem());
+
+    }
+
+    /** One published c: tag with its members, filed under its prefix's parent tag (c:ingots for c:ingots/steel). */
+    private void common(String path, Item... members) {
+        TagKey<Item> tag = ItemTags.create(ResourceLocation.fromNamespaceAndPath("c", path));
+        this.tag(tag).add(members);
+        this.tag(parentOf(tag)).addTag(tag);
+    }
+
+    private static TagKey<Item> parentOf(TagKey<Item> child) {
+        String path = child.location().getPath();
+        return ItemTags.create(ResourceLocation.fromNamespaceAndPath(child.location().getNamespace(), path.substring(0, path.indexOf('/'))));
     }
 }

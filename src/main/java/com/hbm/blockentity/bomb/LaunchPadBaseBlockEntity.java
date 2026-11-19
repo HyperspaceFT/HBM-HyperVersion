@@ -131,6 +131,12 @@ public abstract class LaunchPadBaseBlockEntity extends MachineBaseBlockEntity im
         return new int[] { 0 };
     }
 
+    // ORIG TileEntityLaunchPadBase.java:134-146: isItemValidForSlot is the missile gate; SidedInvWrapper also asks canPlaceItem.
+    @Override
+    public boolean canPlaceItem(int slot, ItemStack stack) {
+        return slot == 0 && this.isMissileValid(stack);
+    }
+
     @Override
     public boolean canPlaceItemThroughFace(int index, ItemStack stack, @Nullable Direction direction) {
         return index == 0 && this.isMissileValid(stack);
